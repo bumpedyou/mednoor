@@ -1,6 +1,6 @@
 <template>
   <div class='sidebar-mobile-title'>
-    <span class='h3'><slot></slot></span> <img :src="require('~/static/icon/chevron-left.svg')" alt='chevron-left icon'>
+    <span class='h3'><slot></slot></span> <img :src="require('~/static/icon/chevron-left.svg')" alt='chevron-left icon' @click="$emit('click', $event)">
   </div>
 </template>
 
@@ -12,6 +12,7 @@ export default {
 
 <style scoped lang='sass'>
 .sidebar-mobile-title
+  background: #fff
   padding: 1rem
   display: flex
   justify-content: center
@@ -19,8 +20,11 @@ export default {
   border-bottom: 1px solid $mdn-super-light-grey
   img
     margin-left: auto
+    &:hover
+      cursor: pointer
 
-@media screen and (min-width: $md)
-  .sidebar-mobile-title
-    display: none
+//@media screen and (min-width: $md)
+//  .sidebar-mobile-title
+//    display: none
+
 </style>

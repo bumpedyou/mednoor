@@ -28,6 +28,7 @@ export default {
 <style scoped lang='sass'>
 .chat-item
   width: 100%
+  background: #fff
   padding: 2rem 1rem
   display: flex
   align-items: center
