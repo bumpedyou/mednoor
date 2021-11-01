@@ -1,5 +1,5 @@
 <template>
-  <div :class='computedClass'>
+  <div :class='computedClass' @click='$emit("click", $event)'>
     <slot></slot>
   </div>
 </template>
@@ -29,7 +29,7 @@ export default {
 .chat-item
   width: 100%
   background: #fff
-  padding: 2rem 1rem
+  padding: 1rem
   display: flex
   align-items: center
   &:hover

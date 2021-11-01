@@ -117,9 +117,11 @@
 <script>
 import RequestModal from '~/components/RequestModal'
 export default {
+
   components: {
     RequestModal,
   },
+  middleware: ['unauthenticated'],
   data() {
     return {
       formLayout: 'horizontal',

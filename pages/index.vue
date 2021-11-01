@@ -1,13 +1,11 @@
 <template>
-<div>
-  <h1 class="text-center">Chat Section.</h1>
-  <h2 class='text-center'>User is logged in.</h2>
-</div>
+<div></div>
 </template>
 
 <script>
 
 export default {
+  layout: 'chat',
   middleware: ['authenticated', 'verified'],
   head() {
     return {
@@ -28,3 +26,7 @@ export default {
   },
 }
 </script>
+<style scoped lang='sass'>
+
+
+</style>

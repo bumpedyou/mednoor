@@ -32,7 +32,6 @@ export default {
           if (r.data){
             d = r.data
           }
-          console.log('COLIMA --->',r)
           if (r.status === 404){
             this.title = 'Not found - ' + r.status
             this.description = 'The endpoint was not found'
@@ -46,6 +45,8 @@ export default {
           }
         }else if (typeof err === 'string'){
           this.description = err
+        }else if (!err.status){
+          this.description = "Unable to connect to the server. Please check your internet connection."
         }
       }
       this.localValue = true

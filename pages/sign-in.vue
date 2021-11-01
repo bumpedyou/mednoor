@@ -64,6 +64,7 @@ export default {
   components: {
     RequestModal
   },
+  middleware: ['unauthenticated'],
   data() {
     return {
       formLayout: 'horizontal',

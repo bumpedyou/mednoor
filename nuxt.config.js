@@ -52,6 +52,7 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     '@nuxtjs/auth-next',
+    'nuxt-socket-io',
   ],
 
   auth: {
@@ -82,7 +83,7 @@ export default {
       login: '/sign-in',
       logout: '/sign-out',
       callback: '/',
-      home: '/',
+      home: '/welcome',
     },
   },
 
@@ -93,6 +94,18 @@ export default {
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {},
+
+  io: {
+    sockets: [
+      // Required
+      {
+        // At least one entry is required
+        name: 'home',
+        url: process.env.API_URL,
+        default: true,
+      },
+    ],
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {

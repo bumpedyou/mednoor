@@ -38,10 +38,11 @@
 
 <script>
 import toggleDirectiveMixin from '~/mixins/toggleDirectiveMixin'
+import userRoleMixin from '~/mixins/userRoleMixin'
 import authMixin from '~/mixins/authMixin'
 export default {
   name: 'Navbar',
-  mixins: [toggleDirectiveMixin, authMixin],
+  mixins: [toggleDirectiveMixin, authMixin, userRoleMixin],
   data: () => ({
     showChatNav: false,
     showMenuNav: false,
@@ -50,6 +51,13 @@ export default {
     menuItems(){
       const items = []
       if (this.isLoggedIn){
+        if (this.isModeratorOrHigher){
+          items.push({
+            text: 'Users List',
+            icon: 'users',
+            to: '/users-list'
+          })
+        }
         items.push({
           text: 'Sign Out',
           icon: 'sign-out',
@@ -60,7 +68,12 @@ export default {
           text: 'Sign in',
           icon: 'sign-in',
           to: '/sign-in'
-        })
+        },
+          {
+            text: 'Sign up',
+            icon: 'user-plus',
+            to: '/sign-up'
+          })
       }
       return items
     },

@@ -1,4 +1,4 @@
-export default function ({ $auth, redirect, localePath, router }) {
+export default function ({ $auth, redirect }) {
   if (!$auth.loggedIn) {
     return redirect('/sign-in')
   }
