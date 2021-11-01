@@ -1,42 +1,65 @@
 <template>
   <div>
     <navbar></navbar>
-    <div id='app-content' >
-      <div class="chats-layout">
-        <div class="chats-list">
-          <div v-if='isUser' class="moderators">
-            <div class="chat-item-title">
-              <b class="h3">Moderators</b>
+    <div id='app-content'>
+      <div :class='chatsLayoutClass'>
+        <div class='chats-list'>
+          <div v-if='isUser' class='moderators'>
+            <div class='chat-item-title'>
+              <b class='h3'>Moderators</b>
             </div>
-            <a-skeleton v-if='loadingModerators' class="pa-1"></a-skeleton>
-            <chat-item v-for="(m,i) in moderators" v-else :key='i' :active='to === m.user_uuid' @click='openChat(m.user_uuid)'>{{m.user_first_name}} {{m.user_last_name}}</chat-item>
+            <a-skeleton v-if='loadingModerators' class='pa-1'></a-skeleton>
+            <chat-item v-for='(m,i) in moderators' v-else :key='i' :active='to === m.user_uuid' @click='openChat(m.user_uuid)'>{{ m.user_first_name }} {{ m.user_last_name }}</chat-item>
           </div>
-          <div class="chats">
-            <div class="w-100">
-              <div class="chat-item-title"><b class='h3'>Your chats</b></div>
+          <div class='chats'>
+            <div class='chat-content-box'>
+              <div class='chat-item-title'><b ref='yourChats' class='h3'>Your chats</b></div>
             </div>
           </div>
         </div>
-        <div class="chat-view">
-          <div class="chat-box-wrapper">
-            <div class="chat-content">
-              <div class="chat-content-top-bar">
-                <img :src="require('~/static/icon/video.svg')" alt='video icon'>
-              </div>
-              <div class="w-100">
-                <div v-for='(msg, i) in messages' :key="'msg-' + i" :class="messageClass(msg.owner)">
-                  {{msg.message}}
+        <div ref='chatView' class='chat-view'>
+          <div ref='chatBox' class='chat-box-wrapper'>
+            <div ref='pdfArea'> <!--:class='pdfAreaClass'-->
+              <div class='chat-content'>
+                <div class='chat-content-top-bar'>
+                  <div style='margin-right: auto' class='ml-1'>
+                    William Johns
+                  </div>
+                  <div class='mr-1'>
+                    Me: {{$auth.user.user_first_name}} {{$auth.user.last_name}}
+                  </div>
+                  <img :src="require('~/static/icon/video.svg')" alt='video icon' @click='showVideo'>
+                </div>
+                <div ref='messages' :key='messages.length' class='message-container-100'>
+                  <div v-for='(msg, i) in messages' :key="'msg-' + i" :class='messageClass(msg.owner)'>
+                    <span v-if='msg'>
+                      {{ msg.message }}
+                    </span>
+                    <span v-if='msg.mimetype && msg.mimetype.includes("image")'>
+                      <img :src='msg.path' :alt='msg.originalName' class='img-fluid'>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="chat-controls">
+            <div v-if='fileName' class='upload-container'>
+              <small class='mr-1 text-muted'>{{fileName}}</small>
+              <a-progress :percent='umUploadProgress'></a-progress>
+              <a-button type='danger' @click='cancelUpload'> <a-icon type="close" /> Cancel </a-button>
+              <a-button type='primary' @click='uploadFile'> <a-icon type="upload" /> Upload </a-button>
+            </div>
+            <div class='chat-controls'>
               <div>
                 <img :src="require('~/static/icon/happy-face.svg')" alt='happy face'>
               </div>
-              <a-input v-model='message' placeholder='Type a message' @keyup.enter='sendMessage'></a-input>
-              <div class="chat-multiple-controls">
-                <img :src="require('~/static/icon/attachment.svg')" alt='attachment icon'>
-                <img :src="require('~/static/icon/send.svg')" alt='send icon' @click='sendMessage'>
+              <a-input v-model='message' placeholder='Type a message' @keyup.enter='sendMessage(null)'></a-input>
+              <div class='chat-multiple-controls'>
+                <img :src="require('~/static/icon/save.svg')" alt='save icon' @click='saveChatAsPdf'>
+                <input id='file' ref='fileInput' type='file' style='opacity: 0; display: none' @change='fileChange'/>
+                <label for='file'>
+                  <img :src="require('~/static/icon/attachment.svg')" alt='attachment icon'>
+                </label>
+                <img :src="require('~/static/icon/send.svg')" alt='send icon' @click='sendMessage(null)'>
               </div>
             </div>
           </div>
@@ -48,81 +71,268 @@
 </template>
 
 <script>
+// eslint-disable-next-line import/no-named-as-default
+import jsPDF from 'jspdf'
+import domtoimage from 'dom-to-image'
 import Navbar from '~/components/Navbar'
 import RequestModal from '~/components/RequestModal'
 import listenMixin from '~/mixins/listenMixin'
 import userRoleMixin from '~/mixins/userRoleMixin'
 import userUpdatedMixin from '~/mixins/userUpdatedMixin'
+import uploadMixin from '~/mixins/uploadMixin'
 
 export default {
   name: 'Chat',
   components: {
     Navbar,
-    RequestModal,
+    RequestModal
   },
-  mixins: [listenMixin, userRoleMixin, userUpdatedMixin],
+  mixins: [listenMixin, userRoleMixin, userUpdatedMixin, uploadMixin],
   middleware: ['authenticated', 'not-blocked', 'not-deleted'],
-  data:()=>({
+  data: () => ({
+    savingPdf: false,
     loadingModerators: true,
     message: '',
     moderators: [],
     to: '',
     messages: [],
+    file: null,
+    fileName: '',
   }),
-  mounted(){
+  computed: {
+    chatsLayoutClass() {
+      const c = ['chats-layout']
+      if (this.savingPdf) {
+        c.push('saving-pdf')
+      }
+      return c.join(' ')
+    },
+    chatViewClass() {
+      const c = ['chat-view']
+      if (this.savingPdf) {
+        c.push('saving-pdf')
+      }
+      return c.join(' ')
+    },
+    pdfAreaClass() {
+      const c = []
+      if (this.savingPdf) {
+        // position fixed does not look good when we try to save the pdf. So .saving-pdf will override styles while saving.
+        c.push('saving-pdf')
+      }
+      console.log('pdfAreaClass', c)
+      return c.join(' ')
+    }
+  },
+  watch: {
+    file(f){
+      console.log('File --->', f)
+    }
+  },
+  mounted() {
     console.log(this.$auth.user)
-    this.$api.get('/user/moderators').then(({data})=>{
+    this.$api.get('/user/moderators').then(({ data }) => {
       this.moderators = data
-    }).catch((e)=>{
+    }).catch((e) => {
       this.$refs.rmodal.$emit('error', e)
 
-    }).finally(() =>{
+    }).finally(() => {
       this.loadingModerators = false
     })
     this.run_once(this.listen)
   },
   methods: {
-    messageClass(isOwner){
+    uploadFile(){
+      console.log('Upload file!')
+      const file = this.$refs.fileInput.files
+      console.log('Files', file)
+      if (file && file.length && file.length > 0){
+        const data = new FormData()
+        data.append('file', file[0])
+
+        this.$api.post('/file', data, {
+          onUploadProgress: (evt) => {
+            console.log('ON progress', this.umUploadProgress)
+            this.onProgress(evt)
+          },
+        }).then(({data})=>{
+          console.log('Show file in chat!', data)
+          this.fileName = 0
+          this.umUploadProgress = 0
+          const opts = {
+            mimetype: data.mimetype,
+            type: 'file',
+            name: data.originalName,
+            path: process.env.API_URL + '/file/' + data.fName,
+            owner: true,
+          }
+          this.messages.push(opts)
+          this.sendMessage(opts)
+        }).catch((err)=>{
+          this.umUploadProgress = 0
+          this.$refs.rmodal.$emit('error', err)
+        }).finally(()=>{
+
+        })
+      }
+    },
+    cancelUpload(){
+      this.fileName = ''
+      this.$refs.fileInput.value = ''
+    },
+    fileChange(f){
+      console.log('On File Change')
+      const file = f.target.value
+      if (file){
+        this.fileName = file.split('\\').pop().split('/').pop();
+        console.log('Can upload', this.fileName)
+      }
+    },
+    showVideo(){
+      console.log('Video app is inactive at this time')
+      const h = this.$createElement;
+      this.$info({
+        title: 'Info',
+        content: h('div', {}, [
+          h('p', 'Video app is inactive at this time'),
+        ]),
+        onOk() {
+        }
+      });
+    },
+    saveChatAsPdf() {
+      this.savingPdf = true
+      /** WITH CSS */
+      domtoimage
+        .toPng(this.$refs.chatView)
+        .then(function(dataUrl) {
+          if (dataUrl !== 'data:,') {
+            /*
+          }
+            const img = new Image()
+            img.src = dataUrl
+            const pageHeight = 295
+            const imgWidth = 210
+            let position = 0
+            // eslint-disable-next-line new-cap
+            const doc = new jsPDF('p', 'mm')
+
+            const imgHeight = dataUrl.height * imgWidth / dataUrl.width;
+            let heightLeft = imgHeight;
+
+            // const width = doc.internal.pageSize.getWidth();
+            // const imgProps= doc.getImageProperties(dataUrl);
+            // const pdfHeight = (imgProps.height * width) / imgProps.width;
+            // doc.addImage(img, 'JPEG', 0, 0, width, pdfHeight)
+
+            doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            while (heightLeft >= 0) {
+              position += heightLeft - imgHeight; // top padding for other pages
+              doc.addPage();
+              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, imgHeight);
+              heightLeft -= pageHeight;
+            }
+            **/
+            // eslint-disable-next-line new-cap
+            const doc = new jsPDF('p', 'mm');
+
+            // var imgData = canvas.toDataURL('image/png');
+            const imgData = dataUrl;
+            const imgWidth = 210;
+            const pageHeight = 295;
+            const imgProps= doc.getImageProperties(dataUrl);
+
+            const imgHeight = imgProps.height * imgWidth / imgProps.width;
+            console.log('imgHeight: ', dataUrl, imgProps.height, imgWidth, imgProps.width);
+            let heightLeft = imgHeight;
+            let position = 0; // give some top padding to first page
+
+            doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            while (heightLeft >= 0) {
+              position += heightLeft - imgHeight; // top padding for other pages
+              doc.addPage();
+              doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+              heightLeft -= pageHeight;
+            }
+
+
+            const date = new Date()
+            const filename =
+              'timechart_' +
+              date.getFullYear() +
+              ('0' + (date.getMonth() + 1)).slice(-2) +
+              ('0' + date.getDate()).slice(-2) +
+              ('0' + date.getHours()).slice(-2) +
+              ('0' + date.getMinutes()).slice(-2) +
+              ('0' + date.getSeconds()).slice(-2) +
+              '.pdf'
+            doc.save(filename)
+          }
+        }).finally(() => {
+        this.savingPdf = false
+      })
+    },
+    messageClass(isOwner) {
       const c = ['chat-message']
-      if (isOwner){
+      if (isOwner) {
         c.push('owner')
       }
       return c.join(' ')
     },
-    sendMessage (){
-      this.socket.emit('send-message', {
-        to: this.to,
-        message: this.message,
-      })
-      this.messages.push({
-        owner: true,
-        message: this.message,
-      })
-      this.message = ''
+    sendMessage(opts) {
+      console.log('Send message: ')
+      if (opts){
+        this.socket.emit('send-message', {
+          to: this.to,
+          opts: this.opts
+        })
+      }
+      else if (this.message && this.message.length > 0){
+        console.log('else if')
+        this.socket.emit('send-message', {
+          to: this.to,
+          message: this.message
+        })
+        this.messages.push({
+          owner: true,
+          message: this.message
+        })
+        this.message = ''
+      }
     },
-    openChat(uuid){
+    openChat(uuid) {
       this.messages = []
       this.to = uuid
-      this.socket.emit('open-chat', {
-        to: uuid,
-        from: this.$auth.user.uuid
-      })
+      if (this.to) {
+        this.socket.emit('open-chat', {
+          to: uuid,
+          from: this.$auth.user.uuid
+        })
+      }
     },
-    listen(){
+    listen() {
       this.socket = this.$nuxtSocket({ persist: 'chatSocket' })
       this.socket.emit('join-room', this.$auth.user.uuid)
-      this.socket.on('open-chat', (data) =>{
+      this.socket.on('open-chat', (data) => {
         this.to = data.from
       })
-      this.socket.on('new-message', (data) =>{
-        this.messages.push({
-          owner: false,
-          message: data.message,
-        })
+      this.socket.on('new-message', (data) => {
+        if (data.opts){
+          data.opts.owner = false
+          this.messages.push(data.opts)
+        }else{
+          this.messages.push({
+            owner: false,
+            message: data.message
+          })
+        }
       })
-      this.socket.on('fetch-user', async ()=>{
+      this.socket.on('fetch-user', async () => {
         await this.$auth.fetchUser()
-        console.log('user is now', this.$auth.user)
         this.user_was_updated()
       })
     }
@@ -133,11 +343,13 @@ export default {
 <style lang='sass'>
 body
   overflow-y: hidden
+
 #app-content
   margin-top: 50px
 
 .chats-list
   display: none
+
 .chat-view
   width: 100%
   position: fixed
@@ -147,10 +359,12 @@ body
 
 .chat-box-wrapper
   width: 100%
+
   .chat-content
     display: flex
     position: relative
     margin-top: 50px
+
     .chat-content-top-bar
       position: fixed
       top: 50px
@@ -161,12 +375,15 @@ body
       align-items: center
       height: 50px
       box-shadow: 0 3px 6px $mdn-super-light-grey
-      img
-        height: 20px
-        margin-right: 1rem
-        &:hover
-          cursor: pointer
+
+    img
+      height: 20px
+      margin-right: 1rem
+
+      &:hover
+        cursor: pointer
       background: #fff
+
     .chat-message
       margin-left: 0
       margin-right: 3px
@@ -178,11 +395,22 @@ body
       padding: 0.3rem
       background-color: #fff
       color: #000000
+
     .chat-message.owner
       margin-left: auto
       background-color: $mdn-primary
       color: #fff
-
+  .upload-container
+    z-index: 202
+    background: #fff
+    height: 50px
+    padding: 0 0.5rem
+    bottom: 50px
+    position: fixed
+    left: 0
+    right: 0
+    display: flex
+    justify-content: center
   .chat-controls
     background: #fff
     border-top: 1px solid $mdn-super-light-grey
@@ -195,13 +423,16 @@ body
     left: 0
     bottom: 0
     right: 0
+
     .chat-multiple-controls
       display: flex
       justify-content: center
       align-items: center
+
     img
       margin-right: 0.3rem
       margin-left: 0.3rem
+
       &:hover
         cursor: pointer
 
@@ -212,9 +443,11 @@ body
   display: flex
   align-items: center
 
+
 @media (min-width: $md)
   .chats-layout
     width: 100%
+
     .chats-list
       position: fixed
       width: 30%
@@ -225,6 +458,7 @@ body
       height: 100%
       bottom: 0
       border: 1px solid $mdn-super-light-grey
+
       .moderators
         position: fixed
         top: 50px
@@ -232,6 +466,7 @@ body
         overflow-y: auto
         left: 0
         width: 30%
+
       .chats
         position: fixed
         top: calc(50px + 50vh)
@@ -253,13 +488,64 @@ body
     .chat-content
       .chat-content-top-bar
         left: 30%
+
       .chat-message
         width: 350px
+    .upload-container
+      left: 30%
     .chat-controls
       padding: 1rem
       height: 60px
       left: 30%
+
       img
         margin-right: 0.6rem
         margin-left: 0.6rem
+  .message-container-100
+    position: fixed
+    left: 30%
+    right: 0
+    bottom: 60px
+    top: 100px
+    overflow-y: auto
+    z-index: 201
+
+
+.saving-pdf
+  .chat-content
+    position: relative !important
+    margin-top: 0 !important
+    display: block !important
+
+  .chat-content-top-bar
+    width: 100%
+    position: relative !important
+    top: initial !important
+    left: initial !important
+    right: initial !important
+    bottom: initial !important
+
+  .message-container-100
+    position: relative !important
+    top: initial !important
+    left: initial !important
+    bottom: initial !important
+    right: initial !important
+
+  .chat-controls
+    display: none !important
+
+  .chat-view
+    position: relative !important
+    left: initial !important
+    right: initial !important
+    bottom: initial !important
+    top: initial !important
+    width: 100% !important
+    background-color: #fff !important
+
+  .chats-list
+    display: none !important
+
+
 </style>

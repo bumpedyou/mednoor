@@ -43,7 +43,7 @@ export default {
     RequestModal
   },
   layout: 'default',
-  middleware: ['authenticated', 'moderator-or-higher', 'not-blocked'],
+  middleware: ['authenticated', 'moderator-or-higher', 'not-blocked', 'not-deleted'],
   data: () => ({
     users: [],
     columns: [

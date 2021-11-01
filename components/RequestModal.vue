@@ -24,7 +24,6 @@ export default {
   mounted() {
     this.$on('error', (err) => {
       console.log('ON ERR err --->', err)
-
       if (err !== null && err !== undefined){
         if (err.response){
           const r = err.response
@@ -48,6 +47,8 @@ export default {
         }else if (!err.status){
           this.description = "Unable to connect to the server. Please check your internet connection."
         }
+      }else{
+        console.log('no error?')
       }
       this.localValue = true
     })
