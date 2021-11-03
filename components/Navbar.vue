@@ -1,7 +1,10 @@
 <template>
   <div>
     <div class='menu-top-bar'>
-      <img v-click-outside='toggleChatNavigation' class='chat-icon' :src="require('~/static/icon/chat.svg')" alt='Chat icon' @click="toggleChatNavigation(true)">
+      <!--<img v-click-outside='toggleChatNavigation' class='chat-icon' :src="require('~/static/icon/chat.svg')" alt='Chat icon' @click="toggleChatNavigation(true)">-->
+      <nuxt-link to="/" class='chat-icon'>
+        <img :src="require('~/static/icon/chat.svg')" alt='Chat icon'>
+      </nuxt-link>
       <nuxt-link to='/'>
         <div class='text'>
           MedNoor
@@ -56,6 +59,14 @@ export default {
             text: 'Users List',
             icon: 'users',
             to: '/users-list'
+          })
+        }
+
+        if (this.isAdmin || this.isSuper){
+          items.push( {
+            text: 'Allow professionals',
+            icon: 'briefcase',
+            to: '/allow-professionals'
           })
         }
         items.push({

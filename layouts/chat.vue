@@ -6,10 +6,32 @@
         <div class='chats-list'>
           <div v-if='isUser' class='moderators'>
             <div class='chat-item-title'>
-              <b class='h3'>Moderators</b>
+              <b class='h3'>My Professionals</b>
             </div>
-            <a-skeleton v-if='loadingModerators' class='pa-1'></a-skeleton>
-            <chat-item v-for='(m,i) in moderators' v-else :key='i' :active='to === m.user_uuid' @click='openChat(m.user_uuid)'>{{ m.user_first_name }} {{ m.user_last_name }}</chat-item>
+            <a-skeleton v-if='loadingItems' class='pa-1'></a-skeleton>
+            <div v-else>
+              <div v-if="moderators && moderators.length > 0">
+                <ChatItem v-for='(m,i) in moderators' :key='i' :active='to === m.user_uuid' @click='openChat(m.user_uuid)'>{{ m.user_first_name }} {{ m.user_last_name }}</ChatItem>
+              </div>
+              <div v-else class="pa-1">
+                You don't have professionals.
+                <nuxt-link to="/professionals">Professionals Available</nuxt-link>
+              </div>
+            </div>
+          </div>
+          <div v-if="isModerator" class="moderators">
+            <div class='chat-item-title'>
+              <b class='h3'>My Users</b>
+            </div>
+            <a-skeleton v-if='loadingItems' class='pa-1'></a-skeleton>
+            <div v-else>
+              <div v-if="moderators && moderators.length > 0">
+                <ChatItem v-for='(m,i) in moderators' :key='i' :active='to === m.user_uuid' @click='openChat(m.user_uuid)'>{{ m.user_first_name }} {{ m.user_last_name }}</ChatItem>
+              </div>
+              <div v-else class="pa-1">
+                You don't have users
+              </div>
+            </div>
           </div>
           <div class='chats'>
             <div class='chat-content-box'>
@@ -20,23 +42,26 @@
         <div ref='chatView' class='chat-view'>
           <div ref='chatBox' class='chat-box-wrapper'>
             <div ref='pdfArea'> <!--:class='pdfAreaClass'-->
-              <div class='chat-content'>
+              <div ref="chatContent" class='chat-content'>
                 <div class='chat-content-top-bar'>
                   <div style='margin-right: auto' class='ml-1'>
-                    William Johns
+                    {{ selectedUser }}
                   </div>
                   <div class='mr-1'>
                     Me: {{$auth.user.user_first_name}} {{$auth.user.last_name}}
                   </div>
                   <img :src="require('~/static/icon/video.svg')" alt='video icon' @click='showVideo'>
                 </div>
-                <div ref='messages' :key='messages.length' class='message-container-100'>
-                  <div v-for='(msg, i) in messages' :key="'msg-' + i" :class='messageClass(msg.owner)'>
+                <div id="messages" ref='messages' :key='messages.length' class='message-container-100'>
+                  <div v-for='(msg, i) in messages' :key="'msg-' + i" :ref="'msg-' + i" :class='messageClass(msg.owner)'>
                     <span v-if='msg'>
                       {{ msg.message }}
                     </span>
                     <span v-if='msg.mimetype && msg.mimetype.includes("image")'>
                       <img :src='msg.path' :alt='msg.originalName' class='img-fluid'>
+                    </span>
+                    <span v-else>
+                      <a target='_blank' :href="msg.path" :download="msg.path">{{msg.name}}</a>
                     </span>
                   </div>
                 </div>
@@ -54,7 +79,7 @@
               </div>
               <a-input v-model='message' placeholder='Type a message' @keyup.enter='sendMessage(null)'></a-input>
               <div class='chat-multiple-controls'>
-                <img :src="require('~/static/icon/save.svg')" alt='save icon' @click='saveChatAsPdf'>
+                <img v-if="!isUser" :src="require('~/static/icon/save.svg')" alt='save icon' @click='saveChatAsPdf'>
                 <input id='file' ref='fileInput' type='file' style='opacity: 0; display: none' @change='fileChange'/>
                 <label for='file'>
                   <img :src="require('~/static/icon/attachment.svg')" alt='attachment icon'>
@@ -80,26 +105,42 @@ import listenMixin from '~/mixins/listenMixin'
 import userRoleMixin from '~/mixins/userRoleMixin'
 import userUpdatedMixin from '~/mixins/userUpdatedMixin'
 import uploadMixin from '~/mixins/uploadMixin'
+import ChatItem from "~/components/ChatItem";
 
 export default {
   name: 'Chat',
   components: {
     Navbar,
-    RequestModal
+    RequestModal,
+    ChatItem
   },
   mixins: [listenMixin, userRoleMixin, userUpdatedMixin, uploadMixin],
   middleware: ['authenticated', 'not-blocked', 'not-deleted'],
   data: () => ({
     savingPdf: false,
-    loadingModerators: true,
+    loadingItems: true,
     message: '',
     moderators: [],
     to: '',
     messages: [],
     file: null,
     fileName: '',
+    allowed: false,
+    messagesScrollHeight: 0,
   }),
   computed: {
+    selectedUser(){
+      let u = ''
+      if (this.to){
+        this.moderators.forEach((m)=>{
+          if (m.user_uuid === this.to){
+            this.allowed = m.mypr_allowed
+            u = m.user_first_name + ' ' + m.user_last_name
+          }
+        })
+      }
+      return u
+    },
     chatsLayoutClass() {
       const c = ['chats-layout']
       if (this.savingPdf) {
@@ -130,22 +171,36 @@ export default {
     }
   },
   mounted() {
-    console.log(this.$auth.user)
-    this.$api.get('/user/moderators').then(({ data }) => {
-      this.moderators = data
-    }).catch((e) => {
-      this.$refs.rmodal.$emit('error', e)
+    if (this.isModerator){
+      this.$api.get('/my-professional/my-users/').then(({ data }) => {
+        this.moderators = data
+        console.log('Get my assigned users that are allowed');
+      }).catch((e)=>{
+        this.$refs.rmodal.$emit('error', e)
+      }).finally(() => {
+        this.loadingItems = false
+      })
+    }else{
+      this.$api.get('/my-professional').then(({ data }) => {
+        this.moderators = data
+      }).catch((e) => {
+        this.$refs.rmodal.$emit('error', e)
 
-    }).finally(() => {
-      this.loadingModerators = false
-    })
+      }).finally(() => {
+        this.loadingItems = false
+      })
+    }
     this.run_once(this.listen)
   },
   methods: {
+    scrollMessagesSection(){
+      this.$nextTick(()=>{
+        const c = this.$refs.messages
+        c.scrollTop = c.scrollHeight
+      })
+    },
     uploadFile(){
-      console.log('Upload file!')
       const file = this.$refs.fileInput.files
-      console.log('Files', file)
       if (file && file.length && file.length > 0){
         const data = new FormData()
         data.append('file', file[0])
@@ -167,6 +222,7 @@ export default {
             owner: true,
           }
           this.messages.push(opts)
+          console.log('this.sendMessage(opts)')
           this.sendMessage(opts)
         }).catch((err)=>{
           this.umUploadProgress = 0
@@ -284,25 +340,37 @@ export default {
       return c.join(' ')
     },
     sendMessage(opts) {
-      console.log('Send message: ')
-      if (opts){
-        this.socket.emit('send-message', {
-          to: this.to,
-          opts: this.opts
-        })
+
+      if (this.allowed){
+        if (opts){
+          this.socket.emit('send-message', {
+            to: this.to,
+            opts
+          })
+        }
+        else if (this.message && this.message.length > 0){
+          this.socket.emit('send-message', {
+            to: this.to,
+            message: this.message
+          })
+          this.messages.push({
+            owner: true,
+            message: this.message
+          })
+          this.message = ''
+        }
+      }else{
+        const h = this.$createElement;
+        this.$info({
+          title: 'Not allowed',
+          content: h('div', {}, [
+            h('p', 'You have to wait you be allowed to send messages to this professional.'),
+          ]),
+          onOk() {
+          }
+        });
       }
-      else if (this.message && this.message.length > 0){
-        console.log('else if')
-        this.socket.emit('send-message', {
-          to: this.to,
-          message: this.message
-        })
-        this.messages.push({
-          owner: true,
-          message: this.message
-        })
-        this.message = ''
-      }
+      this.scrollMessagesSection()
     },
     openChat(uuid) {
       this.messages = []
@@ -321,6 +389,7 @@ export default {
         this.to = data.from
       })
       this.socket.on('new-message', (data) => {
+        console.log('new message received', data)
         if (data.opts){
           data.opts.owner = false
           this.messages.push(data.opts)
@@ -330,6 +399,7 @@ export default {
             message: data.message
           })
         }
+        this.scrollMessagesSection()
       })
       this.socket.on('fetch-user', async () => {
         await this.$auth.fetchUser()
@@ -400,6 +470,10 @@ body
       margin-left: auto
       background-color: $mdn-primary
       color: #fff
+      a
+        color: #fff
+        text-decoration: underline
+
   .upload-container
     z-index: 202
     background: #fff
@@ -507,7 +581,7 @@ body
     right: 0
     bottom: 60px
     top: 100px
-    overflow-y: auto
+    overflow-y: scroll
     z-index: 201
 
 
