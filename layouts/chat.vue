@@ -129,6 +129,9 @@ export default {
     messagesScrollHeight: 0,
   }),
   computed: {
+    myID(){
+      return this.$auth.user.uuid
+    },
     selectedUser(){
       let u = ''
       if (this.to){
@@ -218,8 +221,10 @@ export default {
             mimetype: data.mimetype,
             type: 'file',
             name: data.originalName,
+            finalName: data.fName,
             path: process.env.API_URL + '/file/' + data.fName,
             owner: true,
+            uuid: data.uuid
           }
           this.messages.push(opts)
           console.log('this.sendMessage(opts)')
@@ -344,16 +349,19 @@ export default {
       if (this.allowed){
         if (opts){
           this.socket.emit('send-message', {
+            from: this.myID,
             to: this.to,
             opts
           })
         }
         else if (this.message && this.message.length > 0){
           this.socket.emit('send-message', {
+            from: this.myID,
             to: this.to,
             message: this.message
           })
           this.messages.push({
+            from: this.myID,
             owner: true,
             message: this.message
           })
@@ -378,13 +386,13 @@ export default {
       if (this.to) {
         this.socket.emit('open-chat', {
           to: uuid,
-          from: this.$auth.user.uuid
+          from: this.myID
         })
       }
     },
     listen() {
       this.socket = this.$nuxtSocket({ persist: 'chatSocket' })
-      this.socket.emit('join-room', this.$auth.user.uuid)
+      this.socket.emit('join-room', this.myID)
       this.socket.on('open-chat', (data) => {
         this.to = data.from
       })
