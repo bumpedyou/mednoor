@@ -11,7 +11,7 @@ export default {
     active: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   computed: {
     computedClass (){

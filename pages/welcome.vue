@@ -18,7 +18,7 @@ export default {
       }else if (role === 'moderator'){
         return redirect('/')
       }else if (role === 'user'){
-        return redirect('/professionals')
+        return redirect('/')
       }else{
         return redirect('/')
       }

@@ -56,8 +56,6 @@ export default {
           this.umUploadProgress = 0
         }
         if (this.$refs && this.$refs.uploadBox && (idx === null || idx)) {
-          console.log('Uplaod progress: ', uuid)
-
           const data = {
             progress: this.umUploadProgress,
           }

@@ -5,7 +5,6 @@ export default {
   methods: {
     user_was_updated() {
       if (this.isLoggedIn) {
-        console.log('User has been updated', this.$auth.user)
         const user = this.$auth.user
         if (user.blocked) {
           this.$router.push('/blocked')

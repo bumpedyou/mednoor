@@ -4,38 +4,29 @@
     <div id='app-content'>
       <div :class='chatsLayoutClass'>
         <div class='chats-list'>
-          <div v-if='isUser' class='moderators'>
+          <div class='moderators'>
             <div class='chat-item-title'>
-              <b class='h3'>My Professionals</b>
+              <b class='h3'>Chats</b>
             </div>
             <a-skeleton v-if='loadingItems' class='pa-1'></a-skeleton>
             <div v-else>
-              <div v-if="moderators && moderators.length > 0">
-                <ChatItem v-for='(m,i) in moderators' :key='i' :active='to === m.user_uuid' @click='openChat(m.user_uuid)'>{{ m.user_first_name }} {{ m.user_last_name }}</ChatItem>
+              <div v-if="moderators && moderators.length > 0" :key="'force-update-' + updateIdx">
+                <ChatItem v-for='(m,i) in moderators' :key='i' :active='to === m.user_uuid' @click='openChat(m.user_uuid)'>
+                  {{ m.user_first_name }} {{ m.user_last_name }}
+                  <div v-if="m.messages">
+                      <a-badge :count="m.messages" class="ml-1" :number-style="{
+                    backgroundColor: 'tomato',
+                    color: '#fff',
+                    boxShadow: '0 0 0 1px #eee inset',
+                    }"
+                    />
+                  </div>
+                </ChatItem>
               </div>
               <div v-else class="pa-1">
                 You don't have professionals.
                 <nuxt-link to="/professionals">Professionals Available</nuxt-link>
               </div>
-            </div>
-          </div>
-          <div v-if="isModerator" class="moderators">
-            <div class='chat-item-title'>
-              <b class='h3'>My Users</b>
-            </div>
-            <a-skeleton v-if='loadingItems' class='pa-1'></a-skeleton>
-            <div v-else>
-              <div v-if="moderators && moderators.length > 0">
-                <ChatItem v-for='(m,i) in moderators' :key='i' :active='to === m.user_uuid' @click='openChat(m.user_uuid)'>{{ m.user_first_name }} {{ m.user_last_name }}</ChatItem>
-              </div>
-              <div v-else class="pa-1">
-                You don't have users
-              </div>
-            </div>
-          </div>
-          <div class='chats'>
-            <div class='chat-content-box'>
-              <div class='chat-item-title'><b ref='yourChats' class='h3'>Your chats</b></div>
             </div>
           </div>
         </div>
@@ -53,10 +44,24 @@
                   <img :src="require('~/static/icon/video.svg')" alt='video icon' @click='showVideo'>
                 </div>
                 <div id="messages" ref='messages' :key='messages.length' class='message-container-100'>
-                  <div v-for='(msg, i) in messages' :key="'msg-' + i" :ref="'msg-' + i" :class='messageClass(msg.owner)'>
+                  <div v-for='(msg, i) in messages' :key="'msg-' + i" :ref="'msg-' + i" :class='messageClass(msg)'>
+                    {{msg}}
                     <span v-if='msg'>
                       {{ msg.message }}
                     </span>
+                    <span v-if="msg.mess_message">
+                      {{msg.mess_message}}
+                    </span>
+                    <div v-if="msg && msg.file_name">
+                      <span v-if='isImg(msg.file_name)'>
+                        <img :src='filePath(msg.file_name)' alt='chat-img' class='img-fluid'>
+                      </span>
+                      <span v-else>
+                      <a target='_blank' :href="filePath(msg.file_name)" :download="filePath(msg.file_name)">
+                        {{msg.file_title}}
+                      </a>
+                    </span>
+                    </div>
                     <span v-if='msg.mimetype && msg.mimetype.includes("image")'>
                       <img :src='msg.path' :alt='msg.originalName' class='img-fluid'>
                     </span>
@@ -127,6 +132,7 @@ export default {
     fileName: '',
     allowed: false,
     messagesScrollHeight: 0,
+    updateIdx: 0,
   }),
   computed: {
     myID(){
@@ -196,10 +202,18 @@ export default {
     this.run_once(this.listen)
   },
   methods: {
+    filePath(s){
+      return  process.env.API_URL + '/file/' + s
+    },
+    isImg(fileName) {
+      return(fileName.match(/\.(jpeg|jpg|gif|png)$/) != null);
+    },
     scrollMessagesSection(){
       this.$nextTick(()=>{
         const c = this.$refs.messages
-        c.scrollTop = c.scrollHeight
+        if (c){
+          c.scrollTop = c.scrollHeight
+        }
       })
     },
     uploadFile(){
@@ -337,16 +351,25 @@ export default {
         this.savingPdf = false
       })
     },
-    messageClass(isOwner) {
+    messageClass(msg) {
       const c = ['chat-message']
-      if (isOwner) {
+      if (msg.isOwner || msg.owner || msg.mess_sender === this.myID) {
         c.push('owner')
       }
       return c.join(' ')
     },
     sendMessage(opts) {
-
-      if (this.allowed){
+      if (!this.to){
+        const h = this.$createElement;
+        this.$info({
+          title: 'Chat not selected',
+          content: h('div', {}, [
+            h('p', 'Please select a chat first.'),
+          ]),
+          onOk() {
+          }
+        });
+      }else if (this.allowed){
         if (opts){
           this.socket.emit('send-message', {
             from: this.myID,
@@ -382,32 +405,61 @@ export default {
     },
     openChat(uuid) {
       this.messages = []
+      if (!this.to){
+        this.$api.get('/conversation/id/' + this.myID + '/' + uuid).then(({data})=>{
+          this.$api.get('/conversation/messages/' + data.conversationId).then(({data})=>{
+            this.messages = data
+            this.$nextTick(()=>{
+              this.scrollMessagesSection()
+            })
+          })
+        })
+      }
       this.to = uuid
+
+      /*
       if (this.to) {
         this.socket.emit('open-chat', {
           to: uuid,
           from: this.myID
         })
-      }
+      } */
     },
     listen() {
       this.socket = this.$nuxtSocket({ persist: 'chatSocket' })
       this.socket.emit('join-room', this.myID)
       this.socket.on('open-chat', (data) => {
-        this.to = data.from
+        /*
+        if (!this.to) {
+          // Open chat only when other chat is not selected
+          this.to = data.from
+        } */
+
       })
       this.socket.on('new-message', (data) => {
-        console.log('new message received', data)
-        if (data.opts){
-          data.opts.owner = false
-          this.messages.push(data.opts)
-        }else{
-          this.messages.push({
-            owner: false,
-            message: data.message
-          })
+        this.moderators = this.moderators.map((eme)=>{
+          if (eme.mypr_proffesional === data.from || eme.mypr_uuid === data.form){
+            if (eme.messages){
+              eme.messages = eme.messages + 1
+            }else{
+              eme.messages = 1
+            }
+            this.updateIdx++
+          }
+          return eme
+        })
+        if (this.to){
+          if (data.opts){
+            data.opts.owner = false
+            this.messages.push(data.opts)
+          }else{
+            this.messages.push({
+              owner: false,
+              message: data.message
+            })
+          }
+          this.scrollMessagesSection()
         }
-        this.scrollMessagesSection()
       })
       this.socket.on('fetch-user', async () => {
         await this.$auth.fetchUser()
