@@ -31,16 +31,22 @@ export default {
           if (r.data){
             d = r.data
           }
-          if (r.status === 404){
-            this.title = 'Not found - ' + r.status
-            this.description = 'The endpoint was not found'
-          }else if (r.status === 500){
-            this.title = 'Internal server error ' + r.status
-            this.description = "This isn't your fault. We are working hard to fix this problem."
-          }else if (r.msg){
-            this.description = r.msg
+          if (r){
+            if (r.status === 404){
+              this.title = 'Not found - ' + r.status
+              this.description = 'The endpoint was not found'
+            }else if (r.status === 500){
+              this.title = 'Internal server error ' + r.status
+              this.description = "This isn't your fault. We are working hard to fix this problem."
+            }else if (r.msg){
+              this.description = r.msg
+            }else if (d.msg) {
+              this.description = d.msg
+            }
           }else if (d.msg){
             this.description = d.msg
+          }else{
+            this.description = 'Unknown error'
           }
         }else if (typeof err === 'string'){
           this.description = err
