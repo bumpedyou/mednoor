@@ -2,7 +2,7 @@
   <div>
     <div class='menu-top-bar'>
       <!--<img v-click-outside='toggleChatNavigation' class='chat-icon' :src="require('~/static/icon/chat.svg')" alt='Chat icon' @click="toggleChatNavigation(true)">-->
-      <nuxt-link to="/" class='chat-icon'>
+      <nuxt-link v-if="!isAdmin && !isModerator" to="/" class='chat-icon'>
         <img :src="require('~/static/icon/chat.svg')" alt='Chat icon'>
       </nuxt-link>
       <nuxt-link to='/'>
@@ -16,11 +16,12 @@
       <transition name='side-slide' mode='out-in'>
         <div v-if='showChatNav' class='sidebar'>
           <sidebar-mobile-title>Chats</sidebar-mobile-title>
+          <chat-item>Mobile chats in maintenance. You can still chat using a desktop sized screen.</chat-item>
+          <!--
           <div>
             <chat-item>Johan Johnson</chat-item>
-            <chat-item active>Marcus Smith</chat-item>
-            <chat-item>John Doe</chat-item>
           </div>
+          -->
         </div>
       </transition>
       <transition name='side-slide' mode='in-out'>
@@ -43,8 +44,14 @@
 import toggleDirectiveMixin from '~/mixins/toggleDirectiveMixin'
 import userRoleMixin from '~/mixins/userRoleMixin'
 import authMixin from '~/mixins/authMixin'
+import SidebarMobileTitle from '~/components/SidebarMobileTitle'
+import ChatItem from "~/components/ChatItem";
 export default {
   name: 'Navbar',
+  components: {
+    SidebarMobileTitle,
+    ChatItem,
+  },
   mixins: [toggleDirectiveMixin, authMixin, userRoleMixin],
   data: () => ({
     showChatNav: false,

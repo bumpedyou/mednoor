@@ -24,8 +24,13 @@
                 </ChatItem>
               </div>
               <div v-else class="pa-1">
-                You don't have professionals.
-                <nuxt-link to="/professionals">Professionals Available</nuxt-link>
+                <div v-if="isUser">
+                  You don't have professionals.
+                  <nuxt-link to="/professionals">Professionals Available</nuxt-link>
+                </div>
+                <div v-else-if="isModerator">
+                  You do not have any users right now.
+                </div>
               </div>
             </div>
           </div>
@@ -45,7 +50,6 @@
                 </div>
                 <div id="messages" ref='messages' :key='messages.length' class='message-container-100'>
                   <div v-for='(msg, i) in messages' :key="'msg-' + i" :ref="'msg-' + i" :class='messageClass(msg)'>
-                    {{msg}}
                     <span v-if='msg'>
                       {{ msg.message }}
                     </span>
@@ -194,7 +198,6 @@ export default {
         this.moderators = data
       }).catch((e) => {
         this.$refs.rmodal.$emit('error', e)
-
       }).finally(() => {
         this.loadingItems = false
       })
@@ -404,13 +407,17 @@ export default {
       this.scrollMessagesSection()
     },
     openChat(uuid) {
-      this.messages = []
       if (!this.to){
+        this.messages = []
+
         this.$api.get('/conversation/id/' + this.myID + '/' + uuid).then(({data})=>{
           this.$api.get('/conversation/messages/' + data.conversationId).then(({data})=>{
             this.messages = data
             this.$nextTick(()=>{
               this.scrollMessagesSection()
+              setTimeout(()=>{
+                this.scrollMessagesSection()
+              }, 500)
             })
           })
         })
@@ -576,6 +583,7 @@ body
   padding: 1rem
   display: flex
   align-items: center
+  border-right: 1px solid $mdn-super-light-grey
 
 
 @media (min-width: $md)
