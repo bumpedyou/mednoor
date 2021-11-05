@@ -41,7 +41,7 @@
                   <img :src="require('~/static/icon/video.svg')" alt='video icon' @click='showVideo'>
                 </div>
                 <div id="messages" ref='messages' :key='messages.length' class='message-container-100'>
-                  <div v-if="!allowed && to" class="messages-overlay">
+                  <div v-if="!allowed && to && !isAdmin" class="messages-overlay">
                     <div v-if="isModerator">
                       <p class="h3 text-center">
                         This user is not allowed to send you messages.
