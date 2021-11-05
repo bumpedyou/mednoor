@@ -43,12 +43,17 @@ export default {
         await this.$auth.fetchUser()
         this.user_was_updated()
       })
+      this.socket.on('new-message', ()=>{
+        this.playNotification()
+      })
     }
   }
 }
 </script>
 
-<style scoped lang='sass'>
+<style lang='sass'>
+body
+  overflow-y: auto
 #app-content
   margin-top: 50px
 </style>

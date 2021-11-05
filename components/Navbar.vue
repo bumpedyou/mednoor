@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class='menu-top-bar'>
-      <!--<img v-click-outside='toggleChatNavigation' class='chat-icon' :src="require('~/static/icon/chat.svg')" alt='Chat icon' @click="toggleChatNavigation(true)">-->
-      <nuxt-link v-if="!isAdmin && !isModerator" to="/" class='chat-icon'>
+     <img v-if="isSmall || isMiddle" v-click-outside='toggleChatNavigation' class='chat-icon' :src="require('~/static/icon/chat.svg')" alt='Chat icon' @click="toggleChatNavigation(true)">
+      <nuxt-link v-else to="/" class='chat-icon'>
         <img :src="require('~/static/icon/chat.svg')" alt='Chat icon'>
       </nuxt-link>
       <nuxt-link to='/'>
@@ -16,7 +16,7 @@
       <transition name='side-slide' mode='out-in'>
         <div v-if='showChatNav' class='sidebar'>
           <sidebar-mobile-title>Chats</sidebar-mobile-title>
-          <chat-item>Mobile chats in maintenance. You can still chat using a desktop sized screen.</chat-item>
+          <ChatItems :data="moderators" :selected-chat="to" @open-chat="openChat"></ChatItems>
           <!--
           <div>
             <chat-item>Johan Johnson</chat-item>
@@ -45,17 +45,21 @@ import toggleDirectiveMixin from '~/mixins/toggleDirectiveMixin'
 import userRoleMixin from '~/mixins/userRoleMixin'
 import authMixin from '~/mixins/authMixin'
 import SidebarMobileTitle from '~/components/SidebarMobileTitle'
-import ChatItem from "~/components/ChatItem";
+import breakpoints from "~/mixins/breakpoints";
+import ChatItems from "~/components/ChatItems";
+import chatMixin from "~/mixins/chatMixin";
+
 export default {
   name: 'Navbar',
   components: {
+    ChatItems,
     SidebarMobileTitle,
-    ChatItem,
   },
-  mixins: [toggleDirectiveMixin, authMixin, userRoleMixin],
+  mixins: [toggleDirectiveMixin, authMixin, userRoleMixin, breakpoints, chatMixin],
   data: () => ({
     showChatNav: false,
     showMenuNav: false,
+    to: '',
   }),
   computed: {
     menuItems(){
@@ -76,6 +80,15 @@ export default {
             to: '/allow-professionals'
           })
         }
+
+        if (this.isUser){
+          items.push({
+            text: 'Available professionals',
+            icon: 'tie',
+            to: '/professionals'
+          })
+        }
+
         items.push({
           text: 'Sign Out',
           icon: 'sign-out',
@@ -95,8 +108,38 @@ export default {
       }
       return items
     },
+    query (){
+      return this.$route.query
+    }
+  },
+  watch: {
+    query (){
+      console.log('The query has changed')
+      this.setChatFromRoute()
+    },
+  },
+  mounted() {
+    this.getChats()
+    this.setChatFromRoute()
   },
   methods: {
+    setChatFromRoute(){
+      const c = this.$route.query
+      if (c && c.chat){
+        this.to = c.chat
+      }
+    },
+    openChat(uuid){
+      this.$router.push({
+        path: '/',
+        query: {
+          chat: uuid
+        }
+      })
+    },
+    showChatMobile(){
+      console.log('Show Chat Mobile!')
+    },
     toggleChatNavigation(clickFromInside){
       this.showChatNav = this.toggleDirective(this.showChatNav, clickFromInside)
     },

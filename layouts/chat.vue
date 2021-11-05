@@ -11,17 +11,7 @@
             <a-skeleton v-if='loadingItems' class='pa-1'></a-skeleton>
             <div v-else>
               <div v-if="moderators && moderators.length > 0" :key="'force-update-' + updateIdx">
-                <ChatItem v-for='(m,i) in moderators' :key='i' :active='to === m.user_uuid' @click='openChat(m.user_uuid)'>
-                  {{ m.user_first_name }} {{ m.user_last_name }}
-                  <div v-if="m.messages">
-                      <a-badge :count="m.messages" class="ml-1" :number-style="{
-                    backgroundColor: 'tomato',
-                    color: '#fff',
-                    boxShadow: '0 0 0 1px #eee inset',
-                    }"
-                    />
-                  </div>
-                </ChatItem>
+                <ChatItems :data="moderators" :selected-chat="to" @open-chat="openChat"></ChatItems>
               </div>
               <div v-else class="pa-1">
                 <div v-if="isUser">
@@ -114,22 +104,22 @@ import listenMixin from '~/mixins/listenMixin'
 import userRoleMixin from '~/mixins/userRoleMixin'
 import userUpdatedMixin from '~/mixins/userUpdatedMixin'
 import uploadMixin from '~/mixins/uploadMixin'
-import ChatItem from "~/components/ChatItem";
+import ChatItems from "~/components/ChatItems";
+import chatMixin from '~/mixins/chatMixin'
+
 
 export default {
   name: 'Chat',
   components: {
+    ChatItems,
     Navbar,
     RequestModal,
-    ChatItem
   },
-  mixins: [listenMixin, userRoleMixin, userUpdatedMixin, uploadMixin],
+  mixins: [listenMixin, userRoleMixin, userUpdatedMixin, uploadMixin, chatMixin],
   middleware: ['authenticated', 'not-blocked', 'not-deleted'],
   data: () => ({
     savingPdf: false,
-    loadingItems: true,
     message: '',
-    moderators: [],
     to: '',
     messages: [],
     file: null,
@@ -176,35 +166,32 @@ export default {
       }
       console.log('pdfAreaClass', c)
       return c.join(' ')
+    },
+    query (){
+      return this.$route.query
     }
   },
   watch: {
+    query (){
+      console.log('The query has changed')
+      this.setChatFromRoute()
+    },
     file(f){
       console.log('File --->', f)
     }
   },
   mounted() {
-    if (this.isModerator){
-      this.$api.get('/my-professional/my-users/').then(({ data }) => {
-        this.moderators = data
-        console.log('Get my assigned users that are allowed');
-      }).catch((e)=>{
-        this.$refs.rmodal.$emit('error', e)
-      }).finally(() => {
-        this.loadingItems = false
-      })
-    }else{
-      this.$api.get('/my-professional').then(({ data }) => {
-        this.moderators = data
-      }).catch((e) => {
-        this.$refs.rmodal.$emit('error', e)
-      }).finally(() => {
-        this.loadingItems = false
-      })
-    }
+    this.setChatFromRoute()
+    this.getChats()
     this.run_once(this.listen)
   },
   methods: {
+    setChatFromRoute(){
+      const c = this.$route.query
+      if (c && c.chat && c.chat !== this.to){
+        this.openChat(c.chat)
+      }
+    },
     filePath(s){
       return  process.env.API_URL + '/file/' + s
     },
@@ -407,9 +394,8 @@ export default {
       this.scrollMessagesSection()
     },
     openChat(uuid) {
-      if (!this.to){
+      if (!this.to || this.to !== uuid){
         this.messages = []
-
         this.$api.get('/conversation/id/' + this.myID + '/' + uuid).then(({data})=>{
           this.$api.get('/conversation/messages/' + data.conversationId).then(({data})=>{
             this.messages = data
@@ -444,6 +430,7 @@ export default {
 
       })
       this.socket.on('new-message', (data) => {
+        this.playNotification()
         this.moderators = this.moderators.map((eme)=>{
           if (eme.mypr_proffesional === data.from || eme.mypr_uuid === data.form){
             if (eme.messages){
@@ -487,12 +474,16 @@ body
 .chats-list
   display: none
 
+.chat-content-top-bar
+  background-color: #fff
+
 .chat-view
   width: 100%
   position: fixed
   top: 50px
   overflow-y: auto
   bottom: 50px
+  font-size: 12px
 
 .chat-box-wrapper
   width: 100%
@@ -533,13 +524,14 @@ body
       background-color: #fff
       color: #000000
 
+    .chat-message
+      background-color: #DBF3FA
+      color: #211235
+      a
+        color: #333
+        text-decoration: underline
     .chat-message.owner
       margin-left: auto
-      background-color: $mdn-primary
-      color: #fff
-      a
-        color: #fff
-        text-decoration: underline
 
   .upload-container
     z-index: 202
@@ -584,6 +576,17 @@ body
   display: flex
   align-items: center
   border-right: 1px solid $mdn-super-light-grey
+
+.message-container-100
+  position: fixed
+  left: 0
+  right: 0
+  bottom: 60px
+  top: 100px
+  overflow-y: scroll
+  z-index: 201
+  box-sizing: border-box
+  overflow-x: hidden
 
 
 @media (min-width: $md)
