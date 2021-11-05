@@ -14,13 +14,15 @@ import MFooter from '~/components/MFooter'
 import authMixin from '~/mixins/authMixin'
 import listenMixin from '~/mixins/listenMixin'
 import userUpdatedMixin from '~/mixins/userUpdatedMixin'
+import chatMixin from '~/mixins/chatMixin'
+
 export default {
   name: 'Default',
   components: {
     Navbar,
     MFooter
   },
-  mixins: [authMixin, listenMixin, userUpdatedMixin],
+  mixins: [authMixin, listenMixin, userUpdatedMixin, chatMixin],
   data: ()=>({
     socket: null,
   }),
@@ -44,7 +46,11 @@ export default {
         this.user_was_updated()
       })
       this.socket.on('new-message', ()=>{
-        this.playNotification()
+        // this.playNotification()
+      })
+      this.socket.on('user-reload', ()=>{
+        console.log('on user reload')
+        this.getChats(true)
       })
     }
   }

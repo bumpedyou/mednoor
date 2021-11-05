@@ -9,7 +9,7 @@ export default {
     loadingItems: true,
   }),
   methods: {
-    mergeWithConversations() {
+    mergeWithConversations(addMessages) {
       this.loadingItems = true
       this.$api
         .get('/conversation/my-conversations')
@@ -35,6 +35,12 @@ export default {
                 u.user_last_name = item.u2_ln
               }
               u.mypr_allowed = true
+
+              console.log('Add messages', addMessages)
+
+              if (addMessages) {
+                u.messages = 1
+              }
               this.moderators.push(u)
             }
           })
@@ -47,7 +53,7 @@ export default {
           this.loadingItems = false
         })
     },
-    getChats() {
+    getChats(addMessages) {
       if (this.isLoggedIn) {
         this.loadingItems = true
         if (this.isAdmin) {
@@ -55,7 +61,7 @@ export default {
             .get('/user')
             .then(({ data }) => {
               this.moderators = data
-              this.mergeWithConversations()
+              this.mergeWithConversations(addMessages)
             })
             .catch((e) => {
               this.$refs.rmodal.$emit('error', e)
@@ -81,6 +87,7 @@ export default {
             .get('/my-professional')
             .then(({ data }) => {
               this.moderators = data
+              this.mergeWithConversations()
             })
             .catch((e) => {
               this.$refs.rmodal.$emit('error', e)

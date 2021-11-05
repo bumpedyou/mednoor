@@ -32,6 +32,7 @@ export default {
   padding: 1rem
   display: flex
   align-items: center
+  border-right: 1px solid $mdn-super-light-grey
   &:hover
     cursor: pointer
     background-color: $mdn-super-light-grey

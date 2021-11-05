@@ -53,8 +53,8 @@
                 </a-form-item>
               </a-col>
             </a-row>
-            <a-form-item label='Date of birth'>
-              <a-input v-model='date' placeholder='YYYY-MM-DD' @blur='checkDOB'>
+            <a-form-item label='Date of birth (MM-DD-YYYY)'>
+              <a-input v-model='date' placeholder='MM-DD-YYYY'>
                 <a-icon slot='prefix' type='calendar' style='color:rgba(0,0,0,.25)' />
               </a-input>
             </a-form-item>
@@ -128,49 +128,84 @@ export default {
       form: this.$form.createForm(this, { name: 'coordinated' }),
       loading: false,
       date: '',
+      day: '',
+      month: '',
+      year: '',
     }
   },
   watch: {
     date(v){
-      // Auto format date into YYYY-MM-DD
+      // Auto format date into mm-dd-yyyy
+
       const allowed = ['0','1','2','3','4','5','6','7','8','9']
       let str = ''
       for (let i = 0; i<v.length; i++){
-        if ((v.charAt(i) === '/' || v.charAt(i) === '-') && (i === 4 || i === 7 || i === 6 )){
+        if ((v.charAt(i) === '/' || v.charAt(i) === '-') && (i === 2 || i === 5 )){
           str+= v.charAt(i)
         }else if (allowed.includes(v.charAt(i))){
           str+= v.charAt(i)
         }
       }
-      if (str.length > 4){
+      const lastChar = v.charAt(v.length-1)
+      if (str.length ===  1 && !allowed.includes(lastChar)){
+        str = '0' + str + '/'
+      }
+
+      if (str.length ===  4 && !allowed.includes(lastChar)){
+        const last = str.charAt(str.length-1)
+        const x = str.substr(0,3)
+        str = x + '0' + last + '/'
+      }
+
+      if (str.length > 3){
         str = str.split('');
-        str[4] = '-';
+        str[2] = '/';
         str = str.join('');
       }
-      if (str.length === 7){
-        if (!allowed.includes(str.charAt(6))){
-          console.log('Not a number, append 0')
-          str = str.substr(0,5) + '0' + str.substr(5,1)
-        }
-      }
-      if (str.length > 7){
+      if (str.length > 5){
         str = str.split('');
-        str[7] = '-';
+        str[5] = '/';
         str = str.join('');
       }
-      if (str.length > 10){
+      if (str.length >= 10){
         str = str.substr(0, 10)
+        const dateParts = str.split('/')
+        if (dateParts.length === 3){
+          // MM-DD-YYYY
+          this.month = dateParts[0]
+          this.day = dateParts[1]
+          this.year = dateParts[2]
+          let err = null
+
+          if (this.month < 1){
+            err = 'The month cannot be zero'
+          }else if (this.month > 12){
+            err = 'The month cannot be greater than twelve'
+          }
+
+          if (this.day < 1){
+            err = 'The day cannot be zero'
+          }else if (this.day > 31) {
+            err = 'The day cannot be greater than 31'
+          }
+
+          const currentYear = new Date().getFullYear()
+          if (this.year <= (currentYear-100)){
+            err = 'The year cannot be more than 100 years away from ' + currentYear
+          }else if (this.year > currentYear){
+            err = 'The year cannot be later than ' + currentYear
+          }
+
+          if (err){
+            this.$refs.rmodal.$emit('error', err)
+          }
+
+        }
       }
       this.date = str
     }
   },
   methods: {
-    checkDOB(){
-      console.log(this.date)
-      if (this.date.length === 9){
-        this.date = this.date.substr(0,8) + '0' + this.date.substr(8,1)
-      }
-    },
     onChange(e) {
     },
     handleSubmit(e) {
@@ -178,7 +213,9 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           this.loading = true
-          values.dob = this.date
+          // date --->
+          values.dob = [this.year, this.month, this.day].join('-')
+
           this.$api
             .post('/user', values)
             .then(async ({ data }) => {
@@ -192,7 +229,7 @@ export default {
                     },
                   })
                   .then(() => {
-                    // this.$refs.requests_dialog.onSuccess('Cuenta creada!')
+                    // redirect
                   })
                   .catch((e) => {
                     console.log('catch in loginWith: ' , e)

@@ -3,6 +3,15 @@ import authMixin from '~/mixins/authMixin'
 export default {
   mixins: [authMixin],
   computed: {
+    userRoleTxt() {
+      if (this.isLoggedIn) {
+        return this.$auth.user.roleTxt
+          ? this.$auth.user.roleTxt.toLowerCase()
+          : 'guest'
+      } else {
+        return 'guest'
+      }
+    },
     userRole() {
       if (this.isLoggedIn) {
         return this.$auth.user.role

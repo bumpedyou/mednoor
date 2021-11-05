@@ -27,7 +27,7 @@
             </div>
           </div>
         </div>
-        <div ref='chatView' class='chat-view'>
+        <div v-if="to" ref='chatView' class='chat-view'>
           <div ref='chatBox' class='chat-box-wrapper'>
             <div ref='pdfArea'> <!--:class='pdfAreaClass'-->
               <div ref="chatContent" class='chat-content'>
@@ -39,6 +39,7 @@
                     Me: {{$auth.user.user_first_name}} {{$auth.user.last_name}}
                   </div>
                   <img :src="require('~/static/icon/video.svg')" alt='video icon' @click='showVideo'>
+                  <img :src="require('~/static/icon/close.svg')" alt='close icon' @click='leaveChat'>
                 </div>
                 <div id="messages" ref='messages' :key='messages.length' class='message-container-100'>
                   <div v-if="!allowed && to && !isAdmin" class="messages-overlay">
@@ -195,7 +196,6 @@ export default {
         // position fixed does not look good when we try to save the pdf. So .saving-pdf will override styles while saving.
         c.push('saving-pdf')
       }
-      console.log('pdfAreaClass', c)
       return c.join(' ')
     },
     query (){
@@ -204,12 +204,8 @@ export default {
   },
   watch: {
     query (){
-      console.log('The query has changed')
       this.setChatFromRoute()
     },
-    file(f){
-      console.log('File --->', f)
-    }
   },
   mounted() {
     this.setChatFromRoute()
@@ -217,12 +213,15 @@ export default {
     this.run_once(this.listen)
   },
   methods: {
+    leaveChat(){
+      this.to = null
+      this.chats = []
+    },
     handleOk(){
       this.confirmLoading = true
       this.moderators.forEach((moderator)=>{
         if (moderator.user_uuid === this.to){
           this.$api.post('/my-professional/allow/' + moderator.mypr_id).then(({data})=>{
-            console.log('Ask me to reload users')
             this.socket.emit('ask-me-to-reload-users')
           }).catch((err)=>{
             this.$refs.rmodal.$emit('error', err)
@@ -464,21 +463,25 @@ export default {
         })
       }
       this.to = uuid
-
-      /*
-      if (this.to) {
-        this.socket.emit('open-chat', {
-          to: uuid,
-          from: this.myID
-        })
-      } */
+      this.moderators = this.moderators.map((moderator)=>{
+        if (moderator.user_uuid === this.to || moderator.mypr_uuid === this.to || moderator.mypr_proffesional === this.to){
+          moderator.messages = null
+        }
+        return moderator
+      })
     },
     listen() {
       this.socket = this.$nuxtSocket({ persist: 'chatSocket' })
       this.socket.emit('join-room', this.myID)
       this.socket.on('user-reload', ()=>{
         console.log('Event user-reload was fired. :D')
-        this.getChats()
+        if (this.isUser){
+          console.log('is user')
+          this.getChats(true)
+        }else{
+          console.log('is else')
+          this.getChats(false)
+        }
         this.openNotification()
       })
       this.socket.on('open-chat', (data) => {
@@ -490,21 +493,30 @@ export default {
 
       })
       this.socket.on('new-message', (data) => {
+        console.log('new-message')
         this.playNotification()
-        this.mergeWithConversations()
-        this.moderators = this.moderators.map((eme)=>{
-          console.log(eme.mypr_proffesional, eme.mypr_uuid, data.from)
-          if (typeof data.from === 'string' && (eme.mypr_proffesional === data.from || eme.mypr_uuid === data.form)){
-            if (eme.messages){
-              eme.messages = eme.messages + 1
-            }else{
-              eme.messages = 1
+        this.mergeWithConversations(true)
+        if (data.from !== this.to){
+          this.moderators = this.moderators.map((eme)=>{
+            if ((eme.mypr_proffesional !== undefined || eme.mypr_uuid !== undefined || eme.user_uuid !== undefined) && data.from !== undefined){
+              console.log('Data.from is --->', data.from)
+              if ((eme.mypr_proffesional === data.from || eme.mypr_uuid === data.from || eme.user_uuid === data.from)){
+                if (eme.messages){
+                  console.log('Eme++ is --->', eme, data.from)
+                  eme.messages = eme.messages + 1
+                }else{
+                  console.log('Eme=1 is --->', eme, data.from)
+                  eme.messages = 1
+                }
+                this.updateIdx++
+              }
             }
-            this.updateIdx++
-          }
-          return eme
-        })
-        if (this.to){
+            return eme
+          })
+        }
+
+
+        if (this.to && data.from === this.to){
           if (data.opts){
             data.opts.owner = false
             this.messages.push(data.opts)
@@ -594,6 +606,8 @@ body
         text-decoration: underline
     .chat-message.owner
       margin-left: auto
+    .chat-message:last-of-type
+      margin-bottom: 1rem
 
   .upload-container
     z-index: 202

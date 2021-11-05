@@ -130,13 +130,10 @@ export default {
   },
   methods: {
     listen(){
-      console.log('navbarSocket listening...')
       this.socket = this.$nuxtSocket({})
-      console.log('join', this.myId)
       this.socket.emit('join-room', this.myId)
       this.socket.on('user-reload', ()=>{
-        console.log('on user-reload-navbar')
-        this.getChats()
+        this.getChats(true)
       })
     },
     setChatFromRoute(){
