@@ -9,7 +9,13 @@
             </span>
         <span slot="action" slot-scope="text, record">
               <!--<span slot="action">-->
-                <a v-if='record.mypr_id' @click='remove(record.user_uuid)'>Remove from my professional</a>
+                <!--<a v-if='record.mypr_id' @click='remove(record.user_uuid)'>Remove from my professional</a>-->
+                <nuxt-link v-if="record.mypr_id" :to="{
+                  path: '/',
+                  query: {
+                    chat: record.mypr_proffesional
+                  }
+                }">Chat</nuxt-link>
                 <a v-else @click='save(record.user_uuid)'>Save as my proffesional</a>
               </span>
       </a-table>

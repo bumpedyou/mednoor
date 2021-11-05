@@ -48,6 +48,7 @@ import SidebarMobileTitle from '~/components/SidebarMobileTitle'
 import breakpoints from "~/mixins/breakpoints";
 import ChatItems from "~/components/ChatItems";
 import chatMixin from "~/mixins/chatMixin";
+import listenMixin from "~/mixins/listenMixin";
 
 export default {
   name: 'Navbar',
@@ -55,29 +56,29 @@ export default {
     ChatItems,
     SidebarMobileTitle,
   },
-  mixins: [toggleDirectiveMixin, authMixin, userRoleMixin, breakpoints, chatMixin],
+  mixins: [toggleDirectiveMixin, authMixin, userRoleMixin, breakpoints, chatMixin, listenMixin],
   data: () => ({
     showChatNav: false,
     showMenuNav: false,
     to: '',
   }),
   computed: {
+    myId(){
+      return this.$auth.user.uuid
+    },
     menuItems(){
       const items = []
       if (this.isLoggedIn){
+        items.push({
+          text: 'My Profile',
+          icon: 'user',
+          to: '/my-profile'
+        })
         if (this.isModeratorOrHigher){
           items.push({
             text: 'Users List',
             icon: 'users',
             to: '/users-list'
-          })
-        }
-
-        if (this.isAdmin || this.isSuper){
-          items.push( {
-            text: 'Allow professionals',
-            icon: 'briefcase',
-            to: '/allow-professionals'
           })
         }
 
@@ -88,7 +89,6 @@ export default {
             to: '/professionals'
           })
         }
-
         items.push({
           text: 'Sign Out',
           icon: 'sign-out',
@@ -113,6 +113,11 @@ export default {
     }
   },
   watch: {
+    isLoggedIn(v){
+      if (v){
+        this.run_once(this.listen)
+      }
+    },
     query (){
       console.log('The query has changed')
       this.setChatFromRoute()
@@ -121,8 +126,19 @@ export default {
   mounted() {
     this.getChats()
     this.setChatFromRoute()
+
   },
   methods: {
+    listen(){
+      console.log('navbarSocket listening...')
+      this.socket = this.$nuxtSocket({})
+      console.log('join', this.myId)
+      this.socket.emit('join-room', this.myId)
+      this.socket.on('user-reload', ()=>{
+        console.log('on user-reload-navbar')
+        this.getChats()
+      })
+    },
     setChatFromRoute(){
       const c = this.$route.query
       if (c && c.chat){

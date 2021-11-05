@@ -6,7 +6,9 @@
         <div class='chats-list'>
           <div class='moderators'>
             <div class='chat-item-title'>
-              <b class='h3'>Chats</b>
+              <b class='h3'>
+                Chats
+              </b>
             </div>
             <a-skeleton v-if='loadingItems' class='pa-1'></a-skeleton>
             <div v-else>
@@ -39,6 +41,21 @@
                   <img :src="require('~/static/icon/video.svg')" alt='video icon' @click='showVideo'>
                 </div>
                 <div id="messages" ref='messages' :key='messages.length' class='message-container-100'>
+                  <div v-if="!allowed && to" class="messages-overlay">
+                    <div v-if="isModerator">
+                      <p class="h3 text-center">
+                        This user is not allowed to send you messages.
+                      </p>
+                      <div class="flex-center">
+                        <a-button type="primary" @click="allowChat">Allow</a-button>
+                      </div>
+                    </div>
+                    <div v-else-if="isUser">
+                      <p class="h3 text-center">
+                        You have to wait until the professional accepts to chat with you.
+                      </p>
+                    </div>
+                  </div>
                   <div v-for='(msg, i) in messages' :key="'msg-' + i" :ref="'msg-' + i" :class='messageClass(msg)'>
                     <span v-if='msg'>
                       {{ msg.message }}
@@ -91,6 +108,17 @@
       </div>
     </div>
     <RequestModal ref='rmodal'></RequestModal>
+    <div>
+      <a-modal
+        title="Allow user"
+        :visible="visible"
+        :confirm-loading="confirmLoading"
+        @ok="handleOk"
+        @cancel="handleCancel"
+      >
+        <p>Do you want to allow this user to chat with you?</p>
+      </a-modal>
+    </div>
   </div>
 </template>
 
@@ -118,6 +146,8 @@ export default {
   mixins: [listenMixin, userRoleMixin, userUpdatedMixin, uploadMixin, chatMixin],
   middleware: ['authenticated', 'not-blocked', 'not-deleted'],
   data: () => ({
+    visible: false,
+    confirmLoading: false,
     savingPdf: false,
     message: '',
     to: '',
@@ -127,6 +157,7 @@ export default {
     allowed: false,
     messagesScrollHeight: 0,
     updateIdx: 0,
+    socket: null,
   }),
   computed: {
     myID(){
@@ -186,6 +217,29 @@ export default {
     this.run_once(this.listen)
   },
   methods: {
+    handleOk(){
+      this.confirmLoading = true
+      this.moderators.forEach((moderator)=>{
+        if (moderator.user_uuid === this.to){
+          this.$api.post('/my-professional/allow/' + moderator.mypr_id).then(({data})=>{
+            console.log('Ask me to reload users')
+            this.socket.emit('ask-me-to-reload-users')
+          }).catch((err)=>{
+            this.$refs.rmodal.$emit('error', err)
+          }).finally(()=>{
+            this.visible = false
+            this.confirmLoading = false
+          })
+        }
+      })
+    },
+    handleCancel(){
+      this.confirmLoading = false
+      this.visible = false
+    },
+    allowChat(){
+      this.visible = true
+    },
     setChatFromRoute(){
       const c = this.$route.query
       if (c && c.chat && c.chat !== this.to){
@@ -237,7 +291,6 @@ export default {
           this.umUploadProgress = 0
           this.$refs.rmodal.$emit('error', err)
         }).finally(()=>{
-
         })
       }
     },
@@ -359,7 +412,7 @@ export default {
           onOk() {
           }
         });
-      }else if (this.allowed){
+      }else if (this.allowed || this.isAdmin){
         if (opts){
           this.socket.emit('send-message', {
             from: this.myID,
@@ -397,15 +450,17 @@ export default {
       if (!this.to || this.to !== uuid){
         this.messages = []
         this.$api.get('/conversation/id/' + this.myID + '/' + uuid).then(({data})=>{
-          this.$api.get('/conversation/messages/' + data.conversationId).then(({data})=>{
-            this.messages = data
-            this.$nextTick(()=>{
-              this.scrollMessagesSection()
-              setTimeout(()=>{
+          if (data.conversationId){
+            this.$api.get('/conversation/messages/' + data.conversationId).then(({data})=>{
+              this.messages = data
+              this.$nextTick(()=>{
                 this.scrollMessagesSection()
-              }, 500)
+                setTimeout(()=>{
+                  this.scrollMessagesSection()
+                }, 500)
+              })
             })
-          })
+          }
         })
       }
       this.to = uuid
@@ -421,6 +476,11 @@ export default {
     listen() {
       this.socket = this.$nuxtSocket({ persist: 'chatSocket' })
       this.socket.emit('join-room', this.myID)
+      this.socket.on('user-reload', ()=>{
+        console.log('Event user-reload was fired. :D')
+        this.getChats()
+        this.openNotification()
+      })
       this.socket.on('open-chat', (data) => {
         /*
         if (!this.to) {
@@ -431,8 +491,10 @@ export default {
       })
       this.socket.on('new-message', (data) => {
         this.playNotification()
+        this.mergeWithConversations()
         this.moderators = this.moderators.map((eme)=>{
-          if (eme.mypr_proffesional === data.from || eme.mypr_uuid === data.form){
+          console.log(eme.mypr_proffesional, eme.mypr_uuid, data.from)
+          if (typeof data.from === 'string' && (eme.mypr_proffesional === data.from || eme.mypr_uuid === data.form)){
             if (eme.messages){
               eme.messages = eme.messages + 1
             }else{
@@ -587,6 +649,16 @@ body
   z-index: 201
   box-sizing: border-box
   overflow-x: hidden
+  .messages-overlay
+    position: absolute
+    background-color: #eeeeee
+    top: 0
+    left: 0
+    right: 0
+    bottom: 0
+    display: flex
+    justify-content: center
+    align-items: center
 
 
 @media (min-width: $md)
@@ -607,7 +679,7 @@ body
       .moderators
         position: fixed
         top: 50px
-        height: 50vh
+        // height: 50vh
         overflow-y: auto
         left: 0
         width: 30%
@@ -615,7 +687,7 @@ body
       .chats
         position: fixed
         top: calc(50px + 50vh)
-        height: 50vh
+        // height: 50vh
         left: 0
         right: 0
         width: 30%
