@@ -80,6 +80,16 @@ export default {
             icon: 'users',
             to: '/users-list'
           })
+          items.push({
+            text: 'Professionals List',
+            icon: 'tie',
+            to: {
+              path: '/users-list',
+              query: {
+                view: 'professionals'
+              }
+            }
+          })
         }
 
         if (this.isUser){
@@ -231,7 +241,7 @@ export default {
       padding: 1rem
       border: 1px solid $mdn-super-light-grey
       img
-        width: 30px
+        height: 20px
         margin-right: 0.9rem
     a:first-of-type
       border-top: 0

@@ -2,7 +2,7 @@
   <div>
     <a-row>
       <a-col>
-        <h1>Users list</h1>
+        <h1 class="text-capitalize">{{view}} list</h1>
         <a-skeleton v-if='loading' />
         <a-table v-else :columns='columns' :data-source='users'>
               <span slot="action" slot-scope="text, record">
@@ -69,17 +69,47 @@ export default {
     loading: true,
     loadingModal: false,
     uuid: null,
+    view: 'users',
   }),
+  watch: {
+    query(){
+      if (this.query) {
+        const q = this.query
+        if (q.view && ['users', 'professionals'].includes(q.view.toLowerCase())){
+          this.view = q.view.toLowerCase()
+          this.loadItems()
+        }
+      }
+    }
+  },
   mounted() {
-    this.$api.get('/user').then(({ data }) => {
-      this.users = data
-    }).catch(err => {
-      this.$refs.rmodal.$emit('error', err)
-    }).finally(() =>{
-      this.loading = false
-    })
+    this.loadItems()
   },
   methods: {
+    loadItems(){
+      this.loading = true
+      console.log('View is', this.view)
+      this.$api.get('/user', {
+        query: {
+          view: this.view
+        }
+      }).then(({ data }) => {
+        this.users = data
+      }).catch(err => {
+        this.$refs.rmodal.$emit('error', err)
+      }).finally(() =>{
+        this.loading = false
+      })
+    },
+    setView(){
+      if (this.query) {
+        const q = this.query
+        if (q.view && ['users', 'professionals'].includes(q.view.toLowerCase())){
+          this.view = q.view.toLowerCase()
+        }
+      }
+
+    },
     askConfirmation(uuid){
       this.uuid = uuid
       this.visible = true

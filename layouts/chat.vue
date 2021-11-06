@@ -539,8 +539,6 @@ export default {
 </script>
 
 <style lang='sass'>
-body
-  overflow-y: hidden
 
 #app-content
   margin-top: 50px
