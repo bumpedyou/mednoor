@@ -3,7 +3,7 @@
     <a-col>
       <h1>Available Professionals</h1>
       <a-skeleton v-if='loading'/>
-      <a-table v-else :columns='columns' :data-source='users'>
+      <a-table v-else-if="users.length > 0" :columns='columns' :data-source='users'>
             <span slot="full_name" slot-scope="text, record">
               {{ record.user_first_name }} {{ record.user_last_name }}
             </span>
@@ -19,6 +19,11 @@
                 <a v-else @click='save(record.user_uuid)'>Save as my proffesional</a>
               </span>
       </a-table>
+      <div v-else>
+        <p>
+          No data available at the moment.
+        </p>
+      </div>
     </a-col>
     <a-col>
       <RequestModal ref="rmodal"></RequestModal>

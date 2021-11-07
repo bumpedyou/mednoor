@@ -129,7 +129,6 @@ export default {
       }
     },
     query (){
-      console.log('The query has changed')
       this.setChatFromRoute()
     },
   },

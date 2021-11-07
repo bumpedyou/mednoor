@@ -71,26 +71,29 @@ export default {
     uuid: null,
     view: 'users',
   }),
-  watch: {
+  computed: {
     query(){
-      if (this.query) {
-        const q = this.query
-        if (q.view && ['users', 'professionals'].includes(q.view.toLowerCase())){
-          this.view = q.view.toLowerCase()
-          this.loadItems()
-        }
-      }
+      return this.$route.query
+    }
+  },
+  watch: {
+    query(v){
+      console.log('Query', v)
+      this.setView()
+      this.loadItems()
     }
   },
   mounted() {
+    this.setView()
     this.loadItems()
   },
   methods: {
     loadItems(){
+      console.log('Loading items')
       this.loading = true
-      console.log('View is', this.view)
+      console.log('Get users with view', this.view)
       this.$api.get('/user', {
-        query: {
+        params: {
           view: this.view
         }
       }).then(({ data }) => {
@@ -102,13 +105,18 @@ export default {
       })
     },
     setView(){
-      if (this.query) {
-        const q = this.query
+      if (this.$route.query) {
+        const q = this.$route.query
+        console.log('Query is ', q)
         if (q.view && ['users', 'professionals'].includes(q.view.toLowerCase())){
           this.view = q.view.toLowerCase()
+        }else{
+          this.view = 'users'
         }
+      }else{
+        this.view = 'users'
       }
-
+      console.log('Set view!', this.view)
     },
     askConfirmation(uuid){
       this.uuid = uuid
@@ -117,7 +125,6 @@ export default {
     block(uuid){
       this.askConfirmation(uuid)
       this.action = 'block'
-      console.log('Block', uuid)
     },
     unblock(uuid){
       this.askConfirmation(uuid)
@@ -146,7 +153,6 @@ export default {
         this.$api.put('/user/role/' + this.uuid, {
           key: this.action === 'update-to-professional' ? 'MODERATOR' : 'USER'
         }).then(({data})=>{
-          console.log('Updated. New data --->', data)
           this.users = this.users.map((usr)=>{
             if (usr.user_uuid === this.uuid){
               usr.usro_id = data.usro_id
@@ -186,13 +192,11 @@ export default {
       this.uuid = uuid
       this.visible = true
       this.action = 'update-to-professional'
-      console.log('Update to professional ' + uuid)
     },
     deleteUser(uuid){
       this.uuid = uuid
       this.visible = true
       this.action = 'delete'
-      console.log('Delete user ' + uuid)
     }
   }
 }
