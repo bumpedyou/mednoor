@@ -15,7 +15,7 @@
                   query: {
                     chat: record.mypr_proffesional
                   }
-                }">Chat</nuxt-link>
+                }">Chat Request</nuxt-link>
                 <a v-else @click='save(record.user_uuid)'>Save as my proffesional</a>
               </span>
       </a-table>
