@@ -9,5 +9,15 @@ export default {
     isLoggedIn() {
       return this.isMounted && this.$auth.loggedIn
     },
+    myUser() {
+      if (this.isLoggedIn) {
+        return this.$auth.user
+      } else {
+        return { uuid: null }
+      }
+    },
+    myUserId() {
+      return this.myUser.uuid
+    },
   },
 }

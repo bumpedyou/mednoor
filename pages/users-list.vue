@@ -30,7 +30,7 @@
       </a-col>
     </a-row>
     <RequestModal ref='rmodal'></RequestModal>
-    <a-modal v-model='visible' title='Confirm action' ok-text='Ok' :loading='loadingModal' cancel-text='Cancel'
+    <a-modal v-model='visible' title='Confirm action' ok-text='Ok' :confirm-loading='loadingModal' cancel-text='Cancel'
              @ok='confirmAction'>
       <p v-if="action === 'delete'">
         Delete this element

@@ -3,6 +3,11 @@
     <navbar></navbar>
     <div id='app-content'>
       <div :class='chatsLayoutClass'>
+        <div v-if='savingPdf' class='chats-overlay'>
+          <div class='flex-center'>
+            <SpinOrText v-model='savingPdf'></SpinOrText>
+          </div>
+        </div>
         <div class='chats-list'>
           <div class='moderators'>
             <div class='chat-item-title'>
@@ -12,47 +17,47 @@
             </div>
             <a-skeleton v-if='loadingItems' class='pa-1'></a-skeleton>
             <div v-else>
-              <div v-if="moderators && moderators.length > 0" :key="'force-update-' + updateIdx">
-                <ChatItems :data="moderators" :selected-chat="to" @open-chat="openChat"></ChatItems>
+              <div v-if='moderators && moderators.length > 0' :key="'force-update-' + updateIdx">
+                <ChatItems :data='moderators' :selected-chat='to' @open-chat='openChat'></ChatItems>
               </div>
-              <div v-else class="pa-1">
-                <div v-if="isUser">
-                  You don't have professionals.
-                  <nuxt-link to="/professionals">Professionals Available</nuxt-link>
+              <div v-else class='pa-1'>
+                <div v-if='isUser'>
+                  You do not have chats.
+                  <nuxt-link to='/professionals'>Professionals Available</nuxt-link>
                 </div>
-                <div v-else-if="isModerator">
+                <div v-else-if='isModerator'>
                   You do not have any users right now.
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div v-if="to" ref='chatView' class='chat-view'>
+        <div v-if='to' ref='chatView' class='chat-view'>
           <div ref='chatBox' class='chat-box-wrapper'>
             <div ref='pdfArea'> <!--:class='pdfAreaClass'-->
-              <div ref="chatContent" class='chat-content'>
+              <div ref='chatContent' class='chat-content'>
                 <div class='chat-content-top-bar'>
                   <div style='margin-right: auto' class='ml-1'>
                     {{ userName }}
                   </div>
                   <div class='mr-1'>
-                    Professional: {{professionalName}}
+                    Professional: {{ professionalName }}
                   </div>
                   <img :src="require('~/static/icon/video.svg')" alt='video icon' @click='showVideo'>
                   <img :src="require('~/static/icon/close.svg')" alt='close icon' @click='leaveChat'>
                 </div>
-                <div id="messages" ref='messages' :key='messages.length' class='message-container-100'>
-                  <div v-if="!allowed && to && !isAdmin" class="messages-overlay">
-                    <div v-if="isModerator">
-                      <p class="h3 text-center">
+                <div id='messages' ref='messages' :key='messages.length' class='message-container-100'>
+                  <div v-if='!allowed && to && !isAdmin' class='messages-overlay'>
+                    <div v-if='isModerator'>
+                      <p class='h3 text-center'>
                         This user is not allowed to send you messages.
                       </p>
-                      <div class="flex-center">
-                        <a-button type="primary" @click="allowChat">Allow</a-button>
+                      <div class='flex-center'>
+                        <a-button type='primary' @click='allowChat'>Allow</a-button>
                       </div>
                     </div>
-                    <div v-else-if="isUser">
-                      <p class="h3 text-center">
+                    <div v-else-if='isUser'>
+                      <p class='h3 text-center'>
                         You have to wait until the professional accepts to chat with you.
                       </p>
                     </div>
@@ -61,16 +66,16 @@
                     <span v-if='msg'>
                       {{ msg.message }}
                     </span>
-                    <span v-if="msg.mess_message">
-                      {{msg.mess_message}}
+                    <span v-if='msg.mess_message'>
+                      {{ msg.mess_message }}
                     </span>
-                    <div v-if="msg && msg.file_name">
+                    <div v-if='msg && msg.file_name'>
                       <span v-if='isImg(msg.file_name)'>
                         <img :src='filePath(msg.file_name)' alt='chat-img' class='img-fluid'>
                       </span>
                       <span v-else>
-                      <a target='_blank' :href="filePath(msg.file_name)" :download="filePath(msg.file_name)">
-                        {{msg.file_title}}
+                      <a target='_blank' :href='filePath(msg.file_name)' :download='filePath(msg.file_name)'>
+                        {{ msg.file_title }}
                       </a>
                     </span>
                     </div>
@@ -78,17 +83,23 @@
                       <img :src='msg.path' :alt='msg.originalName' class='img-fluid'>
                     </span>
                     <span v-else>
-                      <a target='_blank' :href="msg.path" :download="msg.path">{{msg.name}}</a>
+                      <a target='_blank' :href='msg.path' :download='msg.path'>{{ msg.name }}</a>
                     </span>
                   </div>
                 </div>
               </div>
             </div>
             <div v-if='fileName' class='upload-container'>
-              <small class='mr-1 text-muted'>{{fileName}}</small>
+              <small class='mr-1 text-muted'>{{ fileName }}</small>
               <a-progress :percent='umUploadProgress'></a-progress>
-              <a-button type='danger' @click='cancelUpload'> <a-icon type="close" /> Cancel </a-button>
-              <a-button type='primary' @click='uploadFile'> <a-icon type="upload" /> Upload </a-button>
+              <a-button type='danger' @click='cancelUpload'>
+                <a-icon type='close' />
+                Cancel
+              </a-button>
+              <a-button type='primary' @click='uploadFile'>
+                <a-icon type='upload' />
+                Upload
+              </a-button>
             </div>
             <div class='chat-controls'>
               <div>
@@ -96,8 +107,8 @@
               </div>
               <a-input v-model='message' placeholder='Type a message' @keyup.enter='sendMessage(null)'></a-input>
               <div class='chat-multiple-controls'>
-                <img v-if="!isUser" :src="require('~/static/icon/save.svg')" alt='save icon' @click='saveChatAsPdf'>
-                <input id='file' ref='fileInput' type='file' style='opacity: 0; display: none' @change='fileChange'/>
+                <img v-if='!isUser' :src="require('~/static/icon/save.svg')" alt='save icon' @click='askSavePDF'>
+                <input id='file' ref='fileInput' type='file' style='opacity: 0; display: none' @change='fileChange' />
                 <label for='file'>
                   <img :src="require('~/static/icon/attachment.svg')" alt='attachment icon'>
                 </label>
@@ -111,21 +122,33 @@
     <RequestModal ref='rmodal'></RequestModal>
     <div>
       <a-modal
-        title="Allow user"
-        :visible="visible"
-        :confirm-loading="confirmLoading"
-        @ok="handleOk"
-        @cancel="handleCancel"
+        title='Allow user'
+        :visible='visible'
+        :confirm-loading='confirmLoading'
+        @ok='handleOk'
+        @cancel='handleCancel'
       >
         <p>Do you want to allow this user to chat with you?</p>
       </a-modal>
+      <a-modal
+        title='Save chat'
+        :visible='visiblePDF'
+        :confirm-loading='confirmLoading'
+        @ok='saveChatAsPdf'
+        @cancel='handleCancel'
+      >
+        <p>
+          If you save this chat as PDF, the chat will be erased and the pdf version of the chat will be available on the
+          "My Previous Chats" section.
+        </p>
+      </a-modal>
+      <a ref='downloadUrl' :href='downloadUrl' :download='downloadUrl' target='_blank' class='d-none'></a>
     </div>
   </div>
 </template>
 
 <script>
-// eslint-disable-next-line import/no-named-as-default
-import jsPDF from 'jspdf'
+
 import domtoimage from 'dom-to-image'
 import Navbar from '~/components/Navbar'
 import RequestModal from '~/components/RequestModal'
@@ -133,9 +156,10 @@ import listenMixin from '~/mixins/listenMixin'
 import userRoleMixin from '~/mixins/userRoleMixin'
 import userUpdatedMixin from '~/mixins/userUpdatedMixin'
 import uploadMixin from '~/mixins/uploadMixin'
-import ChatItems from "~/components/ChatItems";
+import ChatItems from '~/components/ChatItems'
 import chatMixin from '~/mixins/chatMixin'
-
+import SpinOrText from '~/components/SpinOrText'
+import authMixin from '~/mixins/authMixin'
 
 export default {
   name: 'Chat',
@@ -143,8 +167,9 @@ export default {
     ChatItems,
     Navbar,
     RequestModal,
+    SpinOrText
   },
-  mixins: [listenMixin, userRoleMixin, userUpdatedMixin, uploadMixin, chatMixin],
+  mixins: [listenMixin, userRoleMixin, userUpdatedMixin, uploadMixin, chatMixin, authMixin],
   middleware: ['authenticated', 'not-blocked', 'not-deleted'],
   data: () => ({
     visible: false,
@@ -159,36 +184,41 @@ export default {
     messagesScrollHeight: 0,
     updateIdx: 0,
     socket: null,
+    visiblePDF: false,
+    pdfName: '',
   }),
   computed: {
-    user(){
+    downloadUrl(){
+      return process.env.API_URL + '/generated/' + this.pdfName
+    },
+    user() {
       return this.$auth.user
     },
-    myName(){
+    myName() {
       return this.user.user_first_name + ' ' + this.user.last_name
     },
-    professionalName(){
-      if (this.isModerator){
+    professionalName() {
+      if (this.isModerator) {
         return this.myName
-      }else{
+      } else {
         return this.selectedUser
       }
     },
-    userName(){
-      if (this.isModerator){
+    userName() {
+      if (this.isModerator) {
         return this.selectedUser
-      }else{
+      } else {
         return this.myName
       }
     },
-    myID(){
+    myID() {
       return this.user.uuid
     },
-    selectedUser(){
+    selectedUser() {
       let u = ''
-      if (this.to){
-        this.moderators.forEach((m)=>{
-          if (m.user_uuid === this.to){
+      if (this.to) {
+        this.moderators.forEach((m) => {
+          if (m.user_uuid === this.to) {
             this.allowed = m.mypr_allowed
             u = m.user_first_name + ' ' + m.user_last_name
           }
@@ -218,14 +248,14 @@ export default {
       }
       return c.join(' ')
     },
-    query (){
+    query() {
       return this.$route.query
     }
   },
   watch: {
-    query (){
+    query() {
       this.setChatFromRoute()
-    },
+    }
   },
   mounted() {
     this.setChatFromRoute()
@@ -233,55 +263,59 @@ export default {
     this.run_once(this.listen)
   },
   methods: {
-    leaveChat(){
+    askSavePDF() {
+      this.visiblePDF = true
+    },
+    leaveChat() {
       this.to = null
       this.chats = []
     },
-    handleOk(){
+    handleOk() {
       this.confirmLoading = true
-      this.moderators.forEach((moderator)=>{
-        if (moderator.user_uuid === this.to){
-          this.$api.post('/my-professional/allow/' + moderator.mypr_id).then(({data})=>{
+      this.moderators.forEach((moderator) => {
+        if (moderator.user_uuid === this.to) {
+          this.$api.post('/my-professional/allow/' + moderator.mypr_id).then(() => {
             this.socket.emit('ask-me-to-reload-users')
-          }).catch((err)=>{
+          }).catch((err) => {
             this.$refs.rmodal.$emit('error', err)
-          }).finally(()=>{
+          }).finally(() => {
             this.visible = false
             this.confirmLoading = false
           })
         }
       })
     },
-    handleCancel(){
+    handleCancel() {
       this.confirmLoading = false
       this.visible = false
+      this.visiblePDF = false
     },
-    allowChat(){
+    allowChat() {
       this.visible = true
     },
-    setChatFromRoute(){
+    setChatFromRoute() {
       const c = this.$route.query
-      if (c && c.chat && c.chat !== this.to){
+      if (c && c.chat && c.chat !== this.to) {
         this.openChat(c.chat)
       }
     },
-    filePath(s){
-      return  process.env.API_URL + '/file/' + s
+    filePath(s) {
+      return process.env.API_URL + '/file/' + s
     },
     isImg(fileName) {
-      return(fileName.match(/\.(jpeg|jpg|gif|png)$/) != null);
+      return (fileName.match(/\.(jpeg|jpg|gif|png)$/) != null)
     },
-    scrollMessagesSection(){
-      this.$nextTick(()=>{
+    scrollMessagesSection() {
+      this.$nextTick(() => {
         const c = this.$refs.messages
-        if (c){
+        if (c) {
           c.scrollTop = c.scrollHeight
         }
       })
     },
-    uploadFile(){
+    uploadFile() {
       const file = this.$refs.fileInput.files
-      if (file && file.length && file.length > 0){
+      if (file && file.length && file.length > 0) {
         const data = new FormData()
         data.append('file', file[0])
 
@@ -289,9 +323,9 @@ export default {
           onUploadProgress: (evt) => {
             console.log('ON progress', this.umUploadProgress)
             this.onProgress(evt)
-          },
-        }).then(({data})=>{
-          console.log('Show file in chat!', data)
+          }
+        }).then(({ data }) => {
+
           this.fileName = 0
           this.umUploadProgress = 0
           const opts = {
@@ -304,114 +338,75 @@ export default {
             uuid: data.uuid
           }
           this.messages.push(opts)
-          console.log('this.sendMessage(opts)')
           this.sendMessage(opts)
-        }).catch((err)=>{
+        }).catch((err) => {
           this.umUploadProgress = 0
           this.$refs.rmodal.$emit('error', err)
-        }).finally(()=>{
+        }).finally(() => {
         })
       }
     },
-    cancelUpload(){
+    cancelUpload() {
       this.fileName = ''
       this.$refs.fileInput.value = ''
     },
-    fileChange(f){
+    fileChange(f) {
       console.log('On File Change')
       const file = f.target.value
-      if (file){
-        this.fileName = file.split('\\').pop().split('/').pop();
+      if (file) {
+        this.fileName = file.split('\\').pop().split('/').pop()
         console.log('Can upload', this.fileName)
       }
     },
-    showVideo(){
+    showVideo() {
       console.log('Video app is inactive at this time')
-      const h = this.$createElement;
+      const h = this.$createElement
       this.$info({
         title: 'Info',
         content: h('div', {}, [
-          h('p', 'Video app is inactive at this time'),
+          h('p', 'Video app is inactive at this time')
         ]),
         onOk() {
         }
-      });
+      })
     },
     saveChatAsPdf() {
+      this.confirmLoading = true
       this.savingPdf = true
       /** WITH CSS */
       domtoimage
         .toPng(this.$refs.chatView)
-        .then(function(dataUrl) {
+        .then((dataUrl) => {
           if (dataUrl !== 'data:,') {
-            /*
-          }
-            const img = new Image()
-            img.src = dataUrl
-            const pageHeight = 295
-            const imgWidth = 210
-            let position = 0
-            // eslint-disable-next-line new-cap
-            const doc = new jsPDF('p', 'mm')
-
-            const imgHeight = dataUrl.height * imgWidth / dataUrl.width;
-            let heightLeft = imgHeight;
-
-            // const width = doc.internal.pageSize.getWidth();
-            // const imgProps= doc.getImageProperties(dataUrl);
-            // const pdfHeight = (imgProps.height * width) / imgProps.width;
-            // doc.addImage(img, 'JPEG', 0, 0, width, pdfHeight)
-
-            doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
-
-            while (heightLeft >= 0) {
-              position += heightLeft - imgHeight; // top padding for other pages
-              doc.addPage();
-              doc.addImage(dataUrl, 'PNG', 0, position, imgWidth, imgHeight);
-              heightLeft -= pageHeight;
-            }
-            **/
-            // eslint-disable-next-line new-cap
-            const doc = new jsPDF('p', 'mm');
-
-            // var imgData = canvas.toDataURL('image/png');
-            const imgData = dataUrl;
-            const imgWidth = 210;
-            const pageHeight = 295;
-            const imgProps= doc.getImageProperties(dataUrl);
-
-            const imgHeight = imgProps.height * imgWidth / imgProps.width;
-            console.log('imgHeight: ', dataUrl, imgProps.height, imgWidth, imgProps.width);
-            let heightLeft = imgHeight;
-            let position = 0; // give some top padding to first page
-
-            doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
-
-            while (heightLeft >= 0) {
-              position += heightLeft - imgHeight; // top padding for other pages
-              doc.addPage();
-              doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-              heightLeft -= pageHeight;
-            }
-
-
-            const date = new Date()
-            const filename =
-              'timechart_' +
-              date.getFullYear() +
-              ('0' + (date.getMonth() + 1)).slice(-2) +
-              ('0' + date.getDate()).slice(-2) +
-              ('0' + date.getHours()).slice(-2) +
-              ('0' + date.getMinutes()).slice(-2) +
-              ('0' + date.getSeconds()).slice(-2) +
-              '.pdf'
-            doc.save(filename)
+            this.$api.post('/my-professional/save-chat/', {
+              data: dataUrl,
+              to: this.to,
+              me: this.myID
+            }).then(({data})=>{
+              console.log('Pdf saved!', data)
+              if (data.file_name){
+                this.pdfName = data.file_name
+                console.log('downloadUrl', this.downloadUrl)
+                this.$nextTick(()=>{
+                  console.log(this.$refs.downloadUrl)
+                  this.$refs.downloadUrl.click()
+                })
+              }else{
+                this.$refs.rmodal.$emit('error', 'PDF File not found')
+              }
+            }).catch((err) => {
+              this.$refs.rmodal.$emit('error', err)
+            })
+          } else {
+            this.$refs.rmodal.$emit('error', 'The PDF was empty')
           }
         }).finally(() => {
-        this.savingPdf = false
-      })
+          this.visiblePDF = false
+          this.confirmLoading = false
+          setTimeout(() => {
+            this.savingPdf = false
+          }, 1500)
+        })
     },
     messageClass(msg) {
       const c = ['chat-message']
@@ -421,25 +416,24 @@ export default {
       return c.join(' ')
     },
     sendMessage(opts) {
-      if (!this.to){
-        const h = this.$createElement;
+      if (!this.to) {
+        const h = this.$createElement
         this.$info({
           title: 'Chat not selected',
           content: h('div', {}, [
-            h('p', 'Please select a chat first.'),
+            h('p', 'Please select a chat first.')
           ]),
           onOk() {
           }
-        });
-      }else if (this.allowed || this.isAdmin){
-        if (opts){
+        })
+      } else if (this.allowed || this.isAdmin) {
+        if (opts) {
           this.socket.emit('send-message', {
             from: this.myID,
             to: this.to,
             opts
           })
-        }
-        else if (this.message && this.message.length > 0){
+        } else if (this.message && this.message.length > 0) {
           this.socket.emit('send-message', {
             from: this.myID,
             to: this.to,
@@ -452,29 +446,29 @@ export default {
           })
           this.message = ''
         }
-      }else{
-        const h = this.$createElement;
+      } else {
+        const h = this.$createElement
         this.$info({
           title: 'Not allowed',
           content: h('div', {}, [
-            h('p', 'You have to wait you be allowed to send messages to this professional.'),
+            h('p', 'You have to wait you be allowed to send messages to this professional.')
           ]),
           onOk() {
           }
-        });
+        })
       }
       this.scrollMessagesSection()
     },
     openChat(uuid) {
-      if (!this.to || this.to !== uuid){
+      if (!this.to || this.to !== uuid) {
         this.messages = []
-        this.$api.get('/conversation/id/' + this.myID + '/' + uuid).then(({data})=>{
-          if (data.conversationId){
-            this.$api.get('/conversation/messages/' + data.conversationId).then(({data})=>{
+        this.$api.get('/conversation/id/' + this.myID + '/' + uuid).then(({ data }) => {
+          if (data.conversationId) {
+            this.$api.get('/conversation/messages/' + data.conversationId).then(({ data }) => {
               this.messages = data
-              this.$nextTick(()=>{
+              this.$nextTick(() => {
                 this.scrollMessagesSection()
-                setTimeout(()=>{
+                setTimeout(() => {
                   this.scrollMessagesSection()
                 }, 500)
               })
@@ -483,8 +477,8 @@ export default {
         })
       }
       this.to = uuid
-      this.moderators = this.moderators.map((moderator)=>{
-        if (moderator.user_uuid === this.to || moderator.mypr_uuid === this.to || moderator.mypr_proffesional === this.to){
+      this.moderators = this.moderators.map((moderator) => {
+        if (moderator.user_uuid === this.to || moderator.mypr_uuid === this.to || moderator.mypr_proffesional === this.to) {
           moderator.messages = null
         }
         return moderator
@@ -493,12 +487,18 @@ export default {
     listen() {
       this.socket = this.$nuxtSocket({ persist: 'chatSocket' })
       this.socket.emit('join-room', this.myID)
-      this.socket.on('user-reload', ()=>{
-        console.log('Event user-reload was fired. :D')
-        if (this.isUser){
+      this.socket.on('chat-request', () => {
+        this.openNotification({
+          title: 'New chat request',
+          description: 'You have a new chat request'
+        })
+      })
+
+      this.socket.on('user-reload', () => {
+        if (this.isUser) {
           console.log('is user')
           this.getChats(true)
-        }else{
+        } else {
           console.log('is else')
           this.getChats(false)
         }
@@ -515,16 +515,16 @@ export default {
       this.socket.on('new-message', (data) => {
         console.log('new-message')
         this.playNotification()
-        this.mergeWithConversations(true)
-        if (data.from !== this.to){
-          this.moderators = this.moderators.map((eme)=>{
-            if ((eme.mypr_proffesional !== undefined || eme.mypr_uuid !== undefined || eme.user_uuid !== undefined) && data.from !== undefined){
+        // this.mergeWithConversations(true)
+        if (data.from !== this.to) {
+          this.moderators = this.moderators.map((eme) => {
+            if ((eme.mypr_proffesional !== undefined || eme.mypr_uuid !== undefined || eme.user_uuid !== undefined) && data.from !== undefined) {
               console.log('Data.from is --->', data.from)
-              if ((eme.mypr_proffesional === data.from || eme.mypr_uuid === data.from || eme.user_uuid === data.from)){
-                if (eme.messages){
+              if ((eme.mypr_proffesional === data.from || eme.mypr_uuid === data.from || eme.user_uuid === data.from)) {
+                if (eme.messages) {
                   console.log('Eme++ is --->', eme, data.from)
                   eme.messages = eme.messages + 1
-                }else{
+                } else {
                   console.log('Eme=1 is --->', eme, data.from)
                   eme.messages = 1
                 }
@@ -535,12 +535,11 @@ export default {
           })
         }
 
-
-        if (this.to && data.from === this.to){
-          if (data.opts){
+        if (this.to && data.from === this.to) {
+          if (data.opts) {
             data.opts.owner = false
             this.messages.push(data.opts)
-          }else{
+          } else {
             this.messages.push({
               owner: false,
               message: data.message
@@ -552,6 +551,10 @@ export default {
       this.socket.on('fetch-user', async () => {
         await this.$auth.fetchUser()
         this.user_was_updated()
+      })
+      this.socket.on('chat-deleted', (data) => {
+        console.log('A chat has been deleted', data)
+        this.$router.push('/chat-ended')
       })
     }
   }
@@ -568,6 +571,20 @@ export default {
 
 .chat-content-top-bar
   background-color: #fff
+
+.chats-overlay
+  position: fixed
+  left: 0
+  right: 0
+  bottom: 0
+  top: 0
+  background: rgba(0, 0, 0, 0.9)
+  z-index: 202
+  width: 100%
+  height: 100%
+  display: flex
+  justify-content: center
+  align-items: center
 
 .chat-view
   width: 100%
@@ -619,11 +636,14 @@ export default {
     .chat-message
       background-color: #DBF3FA
       color: #211235
+
       a
         color: #333
         text-decoration: underline
+
     .chat-message.owner
       margin-left: auto
+
     .chat-message:last-of-type
       margin-bottom: 1rem
 
@@ -638,6 +658,7 @@ export default {
     right: 0
     display: flex
     justify-content: center
+
   .chat-controls
     background: #fff
     border-top: 1px solid $mdn-super-light-grey
@@ -681,6 +702,7 @@ export default {
   z-index: 201
   box-sizing: border-box
   overflow-x: hidden
+
   .messages-overlay
     position: absolute
     background-color: #eeeeee
@@ -740,8 +762,10 @@ export default {
 
       .chat-message
         width: 350px
+
     .upload-container
       left: 30%
+
     .chat-controls
       padding: 1rem
       height: 60px

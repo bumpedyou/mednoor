@@ -173,6 +173,19 @@ export default {
       this.socket.on('user-reload', () => {
         this.getChats(true)
       })
+      this.socket.on('chat-allowed', (data)=>{
+        this.openNotification({
+          title: 'Chat request accepted',
+          description: 'Your chat request has been accepted'
+        })
+        this.$router.push({
+          path: '/',
+          query: {
+            chat: data.professional
+          }
+        })
+        console.log('A new chat has been allowed')
+      })
     },
     setChatFromRoute() {
       const c = this.$route.query

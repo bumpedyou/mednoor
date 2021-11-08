@@ -74,7 +74,7 @@ export default {
             .get('/my-professional/my-users/')
             .then(({ data }) => {
               this.moderators = data
-              this.mergeWithConversations()
+              // this.mergeWithConversations()
             })
             .catch((e) => {
               this.$refs.rmodal.$emit('error', e)
@@ -87,7 +87,7 @@ export default {
             .get('/my-professional')
             .then(({ data }) => {
               this.moderators = data
-              this.mergeWithConversations()
+              // this.mergeWithConversations()
             })
             .catch((e) => {
               this.$refs.rmodal.$emit('error', e)
