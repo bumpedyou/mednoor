@@ -89,7 +89,8 @@ export default {
   methods: {
     getModerators() {
       this.loading = true
-      this.$api.get('/user/moderators/' + this.$auth.user.uuid).then(({ data }) => {
+      // this.$api.get('/user/moderators/' + this.$auth.user.uuid).then(({ data }) => {
+      this.$api.get('/user/moderators/').then(({ data }) => {
         this.users = data
       }).catch((err) => {
         this.$refs.rmodal.$emit('error', err)
