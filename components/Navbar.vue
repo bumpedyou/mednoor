@@ -1,8 +1,9 @@
 <template>
   <div>
     <div class='menu-top-bar'>
-     <img v-if="isSmall || isMiddle" v-click-outside='toggleChatNavigation' class='chat-icon' :src="require('~/static/icon/chat.svg')" alt='Chat icon' @click="toggleChatNavigation(true)">
-      <nuxt-link v-else to="/" class='chat-icon'>
+      <img v-if='isSmall || isMiddle' v-click-outside='toggleChatNavigation' class='chat-icon'
+           :src="require('~/static/icon/chat.svg')" alt='Chat icon' @click='toggleChatNavigation(true)'>
+      <nuxt-link v-else to='/' class='chat-icon'>
         <img :src="require('~/static/icon/chat.svg')" alt='Chat icon'>
       </nuxt-link>
       <nuxt-link to='/'>
@@ -10,13 +11,14 @@
           MedNoor
         </div>
       </nuxt-link>
-      <img v-click-outside='toggleMenuNavigation' class='menu-icon' :src="require('~/static/icon/menu.svg')" alt='Chat icon' @click='toggleMenuNavigation(true)'>
+      <img v-click-outside='toggleMenuNavigation' class='menu-icon' :src="require('~/static/icon/menu.svg')"
+           alt='Chat icon' @click='toggleMenuNavigation(true)'>
     </div>
     <div class='side-bars'>
       <transition name='side-slide' mode='out-in'>
         <div v-if='showChatNav' class='sidebar'>
           <sidebar-mobile-title>Chats</sidebar-mobile-title>
-          <ChatItems :data="moderators" :selected-chat="to" @open-chat="openChat"></ChatItems>
+          <ChatItems :data='moderators' :selected-chat='to' @open-chat='openChat'></ChatItems>
           <!--
           <div>
             <chat-item>Johan Johnson</chat-item>
@@ -30,7 +32,7 @@
           <ul class='sidebar-menu-items'>
             <li v-for='(item, i) in menuItems' :key='i'>
               <nuxt-link :to='item.to'>
-                <img :src="require('~/static/icon/' + item.icon +'.svg')" :alt="item.icon + ' icon'"> {{item.text}}
+                <img :src="require('~/static/icon/' + item.icon +'.svg')" :alt="item.icon + ' icon'"> {{ item.text }}
               </nuxt-link>
             </li>
           </ul>
@@ -45,41 +47,45 @@ import toggleDirectiveMixin from '~/mixins/toggleDirectiveMixin'
 import userRoleMixin from '~/mixins/userRoleMixin'
 import authMixin from '~/mixins/authMixin'
 import SidebarMobileTitle from '~/components/SidebarMobileTitle'
-import breakpoints from "~/mixins/breakpoints";
-import ChatItems from "~/components/ChatItems";
-import chatMixin from "~/mixins/chatMixin";
-import listenMixin from "~/mixins/listenMixin";
+import breakpoints from '~/mixins/breakpoints'
+import ChatItems from '~/components/ChatItems'
+import chatMixin from '~/mixins/chatMixin'
+import listenMixin from '~/mixins/listenMixin'
 
 export default {
   name: 'Navbar',
   components: {
     ChatItems,
-    SidebarMobileTitle,
+    SidebarMobileTitle
   },
   mixins: [toggleDirectiveMixin, authMixin, userRoleMixin, breakpoints, chatMixin, listenMixin],
   data: () => ({
     showChatNav: false,
     showMenuNav: false,
-    to: '',
+    to: ''
   }),
   computed: {
-    myId(){
+    myId() {
       return this.$auth.user.uuid
     },
-    menuItems(){
+    menuItems() {
       const items = []
-      if (this.isLoggedIn){
+      if (this.isLoggedIn) {
         items.push({
           text: 'My Profile',
           icon: 'user',
           to: '/my-profile'
         })
-        if (this.isModeratorOrHigher){
+
+        if (this.isModeratorOrHigher) {
           items.push({
             text: 'Users List',
             icon: 'users',
             to: '/users-list'
           })
+        }
+
+        if (this.isAdmin || this.isSuper) {
           items.push({
             text: 'Professionals List',
             icon: 'tie',
@@ -92,24 +98,47 @@ export default {
           })
         }
 
-        if (this.isUser){
+        if (this.isModerator){
+          items.push({
+            text: 'Chat Requests',
+            icon: 'message-square-plus',
+            to: '/chat-requests'
+          })
+        }
+
+
+        if (this.isUser) {
           items.push({
             text: 'Available professionals',
             icon: 'tie',
             to: '/professionals'
           })
         }
+
+        if (this.isUser || this.isModerator){
+          items.push({
+            text: 'Previous Chats (PDF)',
+            icon: 'file',
+            to: '/my-chats'
+          })
+          items.push({
+            text: 'Chats',
+            icon: 'chat',
+            to: '/'
+          })
+        }
+
         items.push({
           text: 'Sign Out',
           icon: 'sign-out',
           to: '/sign-out'
         })
-      }else{
+      } else {
         items.push({
-          text: 'Sign in',
-          icon: 'sign-in',
-          to: '/sign-in'
-        },
+            text: 'Sign in',
+            icon: 'sign-in',
+            to: '/sign-in'
+          },
           {
             text: 'Sign up',
             icon: 'user-plus',
@@ -118,19 +147,19 @@ export default {
       }
       return items
     },
-    query (){
+    query() {
       return this.$route.query
     }
   },
   watch: {
-    isLoggedIn(v){
-      if (v){
+    isLoggedIn(v) {
+      if (v) {
         this.run_once(this.listen)
       }
     },
-    query (){
+    query() {
       this.setChatFromRoute()
-    },
+    }
   },
   mounted() {
     this.getChats()
@@ -138,20 +167,20 @@ export default {
 
   },
   methods: {
-    listen(){
+    listen() {
       this.socket = this.$nuxtSocket({})
       this.socket.emit('join-room', this.myId)
-      this.socket.on('user-reload', ()=>{
+      this.socket.on('user-reload', () => {
         this.getChats(true)
       })
     },
-    setChatFromRoute(){
+    setChatFromRoute() {
       const c = this.$route.query
-      if (c && c.chat){
+      if (c && c.chat) {
         this.to = c.chat
       }
     },
-    openChat(uuid){
+    openChat(uuid) {
       this.$router.push({
         path: '/',
         query: {
@@ -159,10 +188,10 @@ export default {
         }
       })
     },
-    showChatMobile(){
+    showChatMobile() {
       console.log('Show Chat Mobile!')
     },
-    toggleChatNavigation(clickFromInside){
+    toggleChatNavigation(clickFromInside) {
       this.showChatNav = this.toggleDirective(this.showChatNav, clickFromInside)
     },
     toggleMenuNavigation(clickFromInside) {
@@ -229,19 +258,23 @@ export default {
 .sidebar-menu-items
   margin: 0
   padding: 0
+
   li
     margin: 0
     padding: 0
     list-style: none
+
     a
       display: flex
       align-items: center
       justify-content: flex-start
       padding: 1rem
       border: 1px solid $mdn-super-light-grey
+
       img
-        height: 20px
+        height: 25px
         margin-right: 0.9rem
+
     a:first-of-type
       border-top: 0
 

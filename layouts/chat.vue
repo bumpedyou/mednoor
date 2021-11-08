@@ -33,10 +33,10 @@
               <div ref="chatContent" class='chat-content'>
                 <div class='chat-content-top-bar'>
                   <div style='margin-right: auto' class='ml-1'>
-                    {{ selectedUser }}
+                    {{ userName }}
                   </div>
                   <div class='mr-1'>
-                    Me: {{$auth.user.user_first_name}} {{$auth.user.last_name}}
+                    Professional: {{professionalName}}
                   </div>
                   <img :src="require('~/static/icon/video.svg')" alt='video icon' @click='showVideo'>
                   <img :src="require('~/static/icon/close.svg')" alt='close icon' @click='leaveChat'>
@@ -161,8 +161,28 @@ export default {
     socket: null,
   }),
   computed: {
+    user(){
+      return this.$auth.user
+    },
+    myName(){
+      return this.user.user_first_name + ' ' + this.user.last_name
+    },
+    professionalName(){
+      if (this.isModerator){
+        return this.myName
+      }else{
+        return this.selectedUser
+      }
+    },
+    userName(){
+      if (this.isModerator){
+        return this.selectedUser
+      }else{
+        return this.myName
+      }
+    },
     myID(){
-      return this.$auth.user.uuid
+      return this.user.uuid
     },
     selectedUser(){
       let u = ''
