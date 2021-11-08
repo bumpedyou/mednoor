@@ -109,6 +109,9 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+    hardSource: true,
+    cache: true,
+    parallel: true,
     loaders: {
       sass: {
         implementation: require('sass'),
