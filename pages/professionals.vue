@@ -109,6 +109,7 @@ export default {
         this.$api.post('/my-professional', {
           professional: this.uuid
         }).then(() => {
+          console.log('then. getModerators')
           this.getModerators()
         }).catch((err) => {
           this.$refs.rmodal.$emit('error', err)
@@ -119,6 +120,7 @@ export default {
       }
     },
     save(uuid) {
+      console.log('Save --->', uuid)
       this.uuid = uuid
       this.action = 'save'
       this.visible = true
