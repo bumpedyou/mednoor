@@ -44,12 +44,14 @@
 
 <script>
 import RequestModal from '~/components/RequestModal'
+import userRoleMixin from '~/mixins/userRoleMixin'
 
 export default {
   name: 'UsersList',
   components: {
     RequestModal
   },
+  mixins: [userRoleMixin],
   layout: 'default',
   middleware: ['authenticated', 'moderator-or-higher', 'not-blocked', 'not-deleted'],
   data: () => ({
