@@ -9,7 +9,7 @@
                 {{ record.user_first_name }} {{ record.user_last_name }}
               </span>
               <span slot='action' slot-scope='text, record'>
-                <span v-if='isAdmin || isSuper'>
+                <span v-if='isModerator || isAdmin || isSuper'>
                   <a v-if="record.usro_key === 'USER'" @click='updateToProfessional(record.user_uuid)'>Update to Professional</a>
                   <a v-if="record.usro_key === 'MODERATOR'" @click='downgradeProfessional(record.user_uuid)'>Remove from Professionals</a>
                   <a-divider type='vertical' />

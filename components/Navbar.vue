@@ -19,11 +19,6 @@
         <div v-if='showChatNav' class='sidebar'>
           <sidebar-mobile-title>Chats</sidebar-mobile-title>
           <ChatItems :data='moderators' :selected-chat='to' @open-chat='openChat'></ChatItems>
-          <!--
-          <div>
-            <chat-item>Johan Johnson</chat-item>
-          </div>
-          -->
         </div>
       </transition>
       <transition name='side-slide' mode='in-out'>
@@ -77,7 +72,7 @@ export default {
           to: '/my-profile'
         })
 
-        if (this.isModeratorOrHigher) {
+        if (this.isAdmin || this.isSuper) {
           items.push({
             text: 'Users List',
             icon: 'users',
@@ -85,7 +80,7 @@ export default {
           })
         }
 
-        if (this.isAdmin || this.isSuper) {
+        if (this.isModerator || this.isAdmin || this.isSuper) {
           items.push({
             text: 'Professionals List',
             icon: 'tie',

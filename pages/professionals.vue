@@ -7,7 +7,6 @@
         <div slot='full_name' slot-scope='text, record'>
           {{ record.user_first_name }} {{ record.user_last_name }}
         </div>
-
         <div slot='action' slot-scope='text, record'>
           <span v-if='record.mypr_id'>
             <span v-if='record.mypr_allowed'>
