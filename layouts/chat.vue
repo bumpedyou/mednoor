@@ -410,9 +410,14 @@ export default {
     },
     messageClass(msg) {
       const c = ['chat-message']
-      if (msg.isOwner || msg.owner || msg.mess_sender === this.myID) {
-        c.push('owner')
-      }
+      const isOwner = msg.isOwner || msg.owner || msg.mess_sender === this.myID
+      if (this.isModerator || this.isAdmin || this.isSuper){
+        if (isOwner) {
+          c.push('owner')
+        }
+      }else if (!isOwner){
+          c.push('owner')
+        }
       return c.join(' ')
     },
     sendMessage(opts) {
