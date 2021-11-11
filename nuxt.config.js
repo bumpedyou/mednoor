@@ -111,7 +111,7 @@ export default {
   build: {
     hardSource: false,
     cache: true,
-    parallel: true,
+    // parallel: true,
     loaders: {
       sass: {
         implementation: require('sass'),
