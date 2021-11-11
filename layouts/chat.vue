@@ -89,6 +89,19 @@
                 </div>
               </div>
             </div>
+            
+            <div v-if="toIsTyping" class="typing-indicator">
+              <div class="typing-wrapper">
+                <div>
+                Typing
+                </div>
+                <div class="snippet" data-title=".dot-typing">
+                  <div class="stage">
+                    <div class="dot-typing"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div v-if='fileName' class='upload-container'>
               <small class='mr-1 text-muted'>{{ fileName }}</small>
               <a-progress :percent='umUploadProgress'></a-progress>
@@ -105,7 +118,7 @@
               <div>
                 <img :src="require('~/static/icon/happy-face.svg')" alt='happy face'>
               </div>
-              <a-input v-model='message' placeholder='Type a message' @keyup.enter='sendMessage(null)'></a-input>
+              <a-input v-model='message' placeholder='Type a message' @keyup="imTyping" @keyup.enter='sendMessage(null)'></a-input>
               <div class='chat-multiple-controls'>
                 <img v-if='!isUser' :src="require('~/static/icon/save.svg')" alt='save icon' @click='askSavePDF'>
                 <input id='file' ref='fileInput' type='file' style='opacity: 0; display: none' @change='fileChange' />
@@ -160,6 +173,8 @@ import ChatItems from '~/components/ChatItems'
 import chatMixin from '~/mixins/chatMixin'
 import SpinOrText from '~/components/SpinOrText'
 import authMixin from '~/mixins/authMixin'
+const debounce = require('lodash.debounce');
+
 
 export default {
   name: 'Chat',
@@ -186,8 +201,13 @@ export default {
     socket: null,
     visiblePDF: false,
     pdfName: '',
+    sentTypingEvt: false,
+    typing: null, // other user who is typing
   }),
   computed: {
+    toIsTyping(){
+      return this.to === this.typing
+    },
     downloadUrl(){
       return process.env.API_URL + '/generated/' + this.pdfName
     },
@@ -253,6 +273,9 @@ export default {
     }
   },
   watch: {
+    message: debounce (function (){
+      this.socket.emit('stopped-typing', {to: this.to})
+    },1000),
     query() {
       this.setChatFromRoute()
     }
@@ -263,6 +286,15 @@ export default {
     this.run_once(this.listen)
   },
   methods: {
+    imTyping(evt){
+      if (this.sentTypingEvt || evt.key ===  'Enter')
+        return
+      this.socket.emit('typing-to', {to: this.to, from: this.myID})
+      this.sentTypingEvt = true
+      setTimeout(()=>{
+        this.sentTypingEvt = false
+      },1600)
+    },
     askSavePDF() {
       this.visiblePDF = true
     },
@@ -541,6 +573,7 @@ export default {
         }
 
         if (this.to && data.from === this.to) {
+          this.typing = null
           if (data.opts) {
             data.opts.owner = false
             this.messages.push(data.opts)
@@ -560,6 +593,14 @@ export default {
       this.socket.on('chat-deleted', (data) => {
         console.log('A chat has been deleted', data)
         this.$router.push('/chat-ended')
+      })
+      this.socket.on('typing', (data)=>{
+        if (!this.typing){
+          this.typing = data.from
+          setTimeout(()=>{
+            this.typing = null
+          }, 1600)
+        }
       })
     }
   }
@@ -650,7 +691,7 @@ export default {
       margin-left: auto
 
     .chat-message:last-of-type
-      margin-bottom: 1rem
+      margin-bottom: 2.6rem
 
   .upload-container
     z-index: 202
@@ -720,10 +761,63 @@ export default {
     align-items: center
 
 
+.typing-indicator
+  right: 0
+  width: 100% !important
+  background: #fff
+  position: fixed
+  bottom: 50px
+  left: 0
+  z-index: 202
+  color: $mdn-super-light-grey
+  padding: 1rem
+  .typing-wrapper
+    display: flex
+    justify-content: center
+    align-item: center
+    width: 100px
+    > div:first-of-type
+      margin-right: 16px
+    > div
+      display: flex
+      justify-content: center
+      align-items: center
+      flex: 1
+
+
+.dot-typing
+  position: relative
+  left: -9999px
+  width: 5px
+  height: 5px
+  border-radius: 5px
+  background-color: $mdn-super-light-grey
+  color: $mdn-super-light-grey
+  box-shadow: 9984px 0 0 0 $mdn-super-light-grey, 9999px 0 0 0 $mdn-super-light-grey, 10014px 0 0 0 $mdn-super-light-grey
+  animation: dotTyping 1s infinite linear
+
+  @keyframes dotTyping
+    0%
+      box-shadow: 9984px 0 0 0 $mdn-super-light-grey, 9999px 0 0 0 $mdn-super-light-grey, 10014px 0 0 0 $mdn-super-light-grey
+    16.667%
+      box-shadow: 9984px -10px 0 0 $mdn-super-light-grey, 9999px 0 0 0 $mdn-super-light-grey, 10014px 0 0 0 $mdn-super-light-grey
+    33.333%
+      box-shadow: 9984px 0 0 0 $mdn-super-light-grey, 9999px 0 0 0 $mdn-super-light-grey, 10014px 0 0 0 $mdn-super-light-grey
+    50%
+      box-shadow: 9984px 0 0 0 $mdn-super-light-grey, 9999px -10px 0 0 $mdn-super-light-grey, 10014px 0 0 0 $mdn-super-light-grey
+    66.667%
+      box-shadow: 9984px 0 0 0 $mdn-super-light-grey, 9999px 0 0 0 $mdn-super-light-grey, 10014px 0 0 0 $mdn-super-light-grey
+    83.333%
+      box-shadow: 9984px 0 0 0 $mdn-super-light-grey, 9999px 0 0 0 $mdn-super-light-grey, 10014px -10px 0 0 $mdn-super-light-grey
+    100%
+      box-shadow: 9984px 0 0 0 $mdn-super-light-grey, 9999px 0 0 0 $mdn-super-light-grey, 10014px 0 0 0 $mdn-super-light-grey
+
+
 @media (min-width: $md)
+  .typing-indicator
+    left: 30%
   .chats-layout
     width: 100%
-
     .chats-list
       position: fixed
       width: 30%
@@ -824,6 +918,7 @@ export default {
 
   .chats-list
     display: none !important
+
 
 
 </style>
