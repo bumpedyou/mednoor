@@ -15,7 +15,12 @@
 
 <script>
 export default {
-  name: "PasswordUpdated"
+  name: "PasswordUpdated",
+  head() {
+    return {
+      title: 'Password Updated',
+    }
+  },
 }
 </script>
 

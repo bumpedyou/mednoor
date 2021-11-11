@@ -69,6 +69,11 @@ export default {
     ],
     socket: null,
   }),
+  head() {
+    return {
+      title: 'Chat Requests',
+    }
+  },
   mounted() {
     this.socket = this.$nuxtSocket({})
     this.socket.emit('join-room', this.myUserId)

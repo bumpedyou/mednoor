@@ -10,6 +10,11 @@
 export default {
   name: 'Blocked',
   middleware: ['authenticated', 'blocked-only'],
+  head() {
+    return {
+      title: 'Account Blocked',
+    }
+  },
 }
 </script>
 

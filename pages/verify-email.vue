@@ -38,6 +38,11 @@ export default {
     loading: false,
     code: '',
   }),
+  head() {
+    return {
+      title: 'Verify your email.',
+    }
+  },
   methods: {
     verify(){
       if(this.code && this.code.length === 9){

@@ -16,7 +16,12 @@
 
 <script>
 export default {
-  name: 'ChatEnded'
+  name: 'ChatEnded',
+  head() {
+    return {
+      title: 'Chat ended.',
+    }
+  },
 }
 </script>
 

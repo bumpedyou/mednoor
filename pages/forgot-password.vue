@@ -52,6 +52,19 @@ export default {
       code: '',
     }
   },
+    head() {
+    return {
+      title: 'Forgot my password',
+      meta: [
+        // hid is used as unique identifier. Do not use `vmid` for it as it will not work
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Reset the password of your mednoor\'s account.'
+        }
+      ]
+    }
+  },
   methods: {
     handleSubmit(e) {
       e.preventDefault()

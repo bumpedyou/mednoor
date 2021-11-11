@@ -75,6 +75,11 @@ export default {
       loading: false,
     }
   },
+  head() {
+    return {
+      title: 'Confirm reset password',
+    }
+  },
   computed: {
     email(){
       return this.$store.state.email

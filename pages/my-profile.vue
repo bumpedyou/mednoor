@@ -58,7 +58,12 @@ export default {
     email (){
       return this.user.email
     }
-  }
+  },
+  head() {
+    return {
+      title: 'My Profile',
+    }
+  },
 }
 </script>
 

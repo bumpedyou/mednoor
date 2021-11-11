@@ -56,6 +56,11 @@ export default {
       }
     ],
   }),
+  head() {
+    return {
+      title: 'Allow Professionals',
+    }
+  },
   mounted (){
     this.getItems()
   },

@@ -82,6 +82,11 @@ export default {
       loading: false
     }
   },
+  head() {
+    return {
+      title: 'Change my password',
+    }
+  },
   methods: {
     handleSubmit(e) {
       e.preventDefault()

@@ -14,7 +14,12 @@
 
 <script>
 export default {
-  name: 'Unauthorized'
+  name: 'Unauthorized',
+    head() {
+    return {
+      title: 'Unauthorized',
+    }
+  },
 }
 </script>
 

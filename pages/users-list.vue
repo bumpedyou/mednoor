@@ -84,6 +84,11 @@ export default {
     uuid: null,
     view: 'users'
   }),
+  head() {
+    return {
+      title: 'List of users',
+    }
+  },
   computed: {
     query() {
       return this.$route.query

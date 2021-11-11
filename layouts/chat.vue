@@ -204,6 +204,19 @@ export default {
     sentTypingEvt: false,
     typing: null, // other user who is typing
   }),
+    head() {
+    return {
+      title: 'Chat',
+      meta: [
+        // hid is used as unique identifier. Do not use `vmid` for it as it will not work
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Chat with professionals in the online medical center.'
+        }
+      ]
+    }
+  },
   computed: {
     toIsTyping(){
       return this.to === this.typing

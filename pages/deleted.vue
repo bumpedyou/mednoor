@@ -10,6 +10,11 @@
 export default {
   name: 'Blocked',
   middleware: ['authenticated', 'deleted-only'],
+  head() {
+    return {
+      title: 'Account Deleted',
+    }
+  },
 }
 </script>
 

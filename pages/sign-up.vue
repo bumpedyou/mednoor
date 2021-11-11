@@ -182,6 +182,19 @@ export default {
       loading: false
     }
   },
+  head() {
+    return {
+      title: 'Sign Up',
+      meta: [
+        // hid is used as unique identifier. Do not use `vmid` for it as it will not work
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Sign up to our Online Medical Center'
+        }
+      ]
+    }
+  },
   methods: {
     handleSubmit(e) {
       e.preventDefault()

@@ -1,7 +1,6 @@
 export default {
-  // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - Mednoor',
+    titleTemplate: '%s - Mednoor - Online Medical Center',
     title: 'Mednoor',
     htmlAttrs: {
       lang: 'en',
@@ -19,7 +18,6 @@ export default {
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
   },
 
-  // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
     'ant-design-vue/dist/antd.css',
     './assets/_variables.sass',

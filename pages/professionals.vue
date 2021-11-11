@@ -76,6 +76,11 @@ export default {
     action: '',
     socket: null,
   }),
+  head() {
+    return {
+      title: 'Professionals',
+    }
+  },
   mounted() {
     this.getModerators()
     this.socket = this.$nuxtSocket({})

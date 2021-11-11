@@ -15,7 +15,12 @@ export default {
   mounted(){
     this.$auth.logout()
     this.$router.push(('/sign-in'))
-  }
+  },
+  head() {
+    return {
+      title: 'Sign out',
+    }
+  },
 }
 </script>
 

@@ -37,6 +37,11 @@ export default {
     loading: false,
     code: '',
   }),
+  head() {
+    return {
+      title: 'Reset Password',
+    }
+  },
   computed: {
     email(){
       return this.$store.state.email

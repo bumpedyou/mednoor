@@ -23,7 +23,12 @@ export default {
         return redirect('/')
       }
     }
-  }
+  },
+  head() {
+    return {
+      title: 'Welcome.',
+    }
+  },
 }
 </script>
 

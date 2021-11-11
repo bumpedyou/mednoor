@@ -14,12 +14,12 @@ export default {
         {
           hid: 'description',
           name: 'description',
-          content: 'Mednoor is a real-time chat application.'
+          content: 'Mednoor is an Online Medical Center where people can chat in real time with Doctors.'
         },
         {
           hid: 'og:description',
           name: 'og:description',
-          content: 'Mednoor is a real-time chat application.'
+          content: 'Mednoor is an Online Medical Center where people can chat in real time with Doctors.'
         }
       ]
     }

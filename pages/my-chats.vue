@@ -55,6 +55,11 @@ export default {
       },
     ]
   }),
+  head() {
+    return {
+      title: 'My Chats',
+    }
+  },
   mounted(){
     console.log('Mounted')
     this.$api.get('/previous-chats').then(({data})=>{
