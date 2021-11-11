@@ -5,7 +5,7 @@
         <a-card>
           <h1 class='h1 text-center'>Sign In</h1>
           <a-form :form='form' size='small' @submit='handleSubmit'>
-            <a-form-item label='Email'>
+            <a-form-item>
               <a-input
                 v-decorator="[
             'email',
@@ -18,7 +18,7 @@
                 placeholder='Email'
               />
             </a-form-item>
-            <a-form-item label='Password'>
+            <a-form-item >
               <a-input v-decorator="
               [
                 'password',
@@ -59,10 +59,12 @@
 
 <script>
 import RequestModal from '~/components/RequestModal'
+import SpinOrText from '~/components/SpinOrText'
 
 export default {
   components: {
-    RequestModal
+    RequestModal,
+    SpinOrText
   },
   middleware: ['unauthenticated'],
   data() {

@@ -1,8 +1,11 @@
 <template>
   <div>
-    <a-row>
+    <a-row class='pa-1'>
       <a-col>
         <h1 class='text-capitalize'>{{ view }} list</h1>
+        <div>
+          <a-button @click='addUser'>Add user <img :src="require('~/static/icon/user-plus.svg')" alt='Add user icon' height='15'></a-button>
+        </div>
         <a-skeleton v-if='loading' />
         <a-table v-else :columns='columns' :data-source='users'>
               <span slot='name' slot-scope='text, record'>
@@ -98,6 +101,9 @@ export default {
     this.loadItems()
   },
   methods: {
+    addUser(){
+      this.$router.push('/add-user')
+    },
     loadItems() {
       console.log('Loading items')
       this.loading = true
