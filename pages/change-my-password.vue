@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="mh-100v">
     <a-row>
-      <a-col class='mt-1' :xs='{span: 20, offset: 2}' :md='{span: 16, offset: 4}'>
+      <a-col class='mt-1' :xs='{span: 20, offset: 2}' :md='{span: 14, offset: 6}' :lg='{span: 8, offset: 8}'>
         <a-card>
           <h1 class='h1 text-center'>Change my password</h1>
           <a-form :form='form' size='small' @submit='handleSubmit'>

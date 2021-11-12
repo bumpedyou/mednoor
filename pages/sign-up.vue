@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="pa-1 mh-100v">
     <a-row>
       <a-col
         class="mt-1"
@@ -143,6 +143,25 @@
                 </a-form-item>
               </a-col>
             </a-row>
+            <a-row>
+              <a-form-item>
+                  <a-checkbox v-decorator="[
+                      'terms_conditions',
+                      {
+                        rules: [
+             
+                          {
+                            required: true,
+                            message: 'You must agree to the terms and conditions.'
+                          },
+                        ]
+                      }
+                    ]">
+                    I Agree to the
+                  </a-checkbox>
+                  <a to="terms-and-conditions" href="/terms-and-conditions" target="_blank">Terms and conditions</a>
+              </a-form-item>
+            </a-row>
             <a-form-item>
               <a-button type="primary" html-type="submit" block>
                 <SpinOrText v-model="loading">Sign up</SpinOrText>
@@ -203,7 +222,6 @@ export default {
           this.loading = true
           // date --->
           values.dob = [this.year, this.month, this.day].join('-')
-
           this.$api
             .post('/user', values)
             .then(async ({ data }) => {

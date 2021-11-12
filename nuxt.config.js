@@ -35,7 +35,14 @@ export default {
     // https://go.nuxtjs.dev/eslint
     '@nuxtjs/eslint-module',
     '@nuxtjs/style-resources',
+    '@nuxtjs/google-fonts'
   ],
+
+  googleFonts: {
+    families: {
+      Inter: [300, 400, 700],
+    }
+  },
 
   styleResources: {
     // your settings here

@@ -85,7 +85,6 @@ export default {
     this.getModerators()
     this.socket = this.$nuxtSocket({})
     this.socket.emit('join-room', this.myUserId)
-    console.log('Listening to chat-allowed on channel ' + this.myUserId)
     this.socket.on('chat-allowed', ()=>{
       this.getModerators()
     })

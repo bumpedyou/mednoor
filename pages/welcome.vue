@@ -14,7 +14,7 @@ export default {
       const role = $auth.user.role.toLowerCase()
       console.log('Role is',role)
       if (role === 'admin' || role === 'super'){
-        return redirect('/users-list')
+        return redirect('/dashboard')
       }else if (role === 'moderator'){
         return redirect('/')
       }else if (role === 'user'){

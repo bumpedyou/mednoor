@@ -63,6 +63,7 @@
                     </div>
                   </div>
                   <div v-for='(msg, i) in messages' :key="'msg-' + i" :ref="'msg-' + i" :class='messageClass(msg)'>
+                    
                     <span v-if='msg'>
                       {{ msg.message }}
                     </span>
@@ -85,6 +86,9 @@
                     <span v-else>
                       <a target='_blank' :href='msg.path' :download='msg.path'>{{ msg.name }}</a>
                     </span>
+                    <div class="chat-time">
+                      {{hour(msg.mess_date)}}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -130,6 +134,9 @@
             </div>
           </div>
         </div>
+        <div v-else-if='isSmall'>
+          <ChatItems :data='moderators' :selected-chat='to' @open-chat='openChat'></ChatItems>
+        </div>
       </div>
     </div>
     <RequestModal ref='rmodal'></RequestModal>
@@ -173,8 +180,9 @@ import ChatItems from '~/components/ChatItems'
 import chatMixin from '~/mixins/chatMixin'
 import SpinOrText from '~/components/SpinOrText'
 import authMixin from '~/mixins/authMixin'
+import breakpoints from '~/mixins/breakpoints'
 const debounce = require('lodash.debounce');
-
+const moment = require('moment')
 
 export default {
   name: 'Chat',
@@ -184,7 +192,7 @@ export default {
     RequestModal,
     SpinOrText
   },
-  mixins: [listenMixin, userRoleMixin, userUpdatedMixin, uploadMixin, chatMixin, authMixin],
+  mixins: [listenMixin, userRoleMixin, userUpdatedMixin, uploadMixin, chatMixin, authMixin, breakpoints],
   middleware: ['authenticated', 'not-blocked', 'not-deleted'],
   data: () => ({
     visible: false,
@@ -294,11 +302,15 @@ export default {
     }
   },
   mounted() {
+    console.log('Moment is --->', moment)
     this.setChatFromRoute()
     this.getChats()
     this.run_once(this.listen)
   },
   methods: {
+    hour(date){
+      return moment(date).format('LTS');
+    },
     imTyping(evt){
       if (this.sentTypingEvt || evt.key ===  'Enter')
         return
@@ -484,15 +496,19 @@ export default {
             opts
           })
         } else if (this.message && this.message.length > 0) {
+          console.log('Send message')
+          const date = new Date()
           this.socket.emit('send-message', {
             from: this.myID,
             to: this.to,
-            message: this.message
+            message: this.message,
+            mess_date: date,
           })
           this.messages.push({
             from: this.myID,
             owner: true,
-            message: this.message
+            message: this.message,
+            mess_date: date,
           })
           this.message = ''
         }
@@ -563,19 +579,15 @@ export default {
 
       })
       this.socket.on('new-message', (data) => {
-        console.log('new-message')
         this.playNotification()
         // this.mergeWithConversations(true)
         if (data.from !== this.to) {
           this.moderators = this.moderators.map((eme) => {
             if ((eme.mypr_proffesional !== undefined || eme.mypr_uuid !== undefined || eme.user_uuid !== undefined) && data.from !== undefined) {
-              console.log('Data.from is --->', data.from)
               if ((eme.mypr_proffesional === data.from || eme.mypr_uuid === data.from || eme.user_uuid === data.from)) {
                 if (eme.messages) {
-                  console.log('Eme++ is --->', eme, data.from)
                   eme.messages = eme.messages + 1
                 } else {
-                  console.log('Eme=1 is --->', eme, data.from)
                   eme.messages = 1
                 }
                 this.updateIdx++
@@ -591,9 +603,11 @@ export default {
             data.opts.owner = false
             this.messages.push(data.opts)
           } else {
+            console.log('Push message', data)
             this.messages.push({
               owner: false,
-              message: data.message
+              message: data.message,
+              mess_date: data.mess_date,
             })
           }
           this.scrollMessagesSection()
@@ -773,7 +787,8 @@ export default {
     justify-content: center
     align-items: center
 
-
+.chat-time
+  color: $mdn-super-light-grey
 .typing-indicator
   right: 0
   width: 100% !important

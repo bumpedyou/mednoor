@@ -2,8 +2,10 @@
   <div class="m-footer">
     <a-row>
       <a-col>
-        <hr>
-        <p class="text-center">Mednoor {{year}}</p>
+        <p class="text-center">Mednoor © {{year}}</p>
+        <p class="text-center">
+          <nuxt-link to="/privacy-policy">Privacy policy</nuxt-link>
+        </p>
       </a-col>
     </a-row>
   </div>
@@ -23,6 +25,6 @@ export default {
 
 <style scoped lang='sass'>
 .m-footer
-  margin-top: 2rem
   padding: 1rem
+  background: #eee
 </style>

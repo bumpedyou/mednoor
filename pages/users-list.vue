@@ -1,10 +1,18 @@
 <template>
-  <div>
-    <a-row class='pa-1'>
+  <div class="pa-1">
+      <a-row class="mb-1">
+          <a-col>
+                <a-breadcrumb>
+                  <a-breadcrumb-item><nuxt-link to="/dashboard">Dashboard</nuxt-link></a-breadcrumb-item>
+                  <a-breadcrumb-item>List of users</a-breadcrumb-item>
+              </a-breadcrumb>
+          </a-col>
+        </a-row>
+      <a-row class='pa-1'>
       <a-col>
         <h1 class='text-capitalize'>{{ view }} list</h1>
-        <div>
-          <a-button @click='addUser'>Add user <img :src="require('~/static/icon/user-plus.svg')" alt='Add user icon' height='15'></a-button>
+        <div class="mb-1">
+          <a-button type="aero-blue" @click='addUser'>Add user <a-icon type="user-add"></a-icon></a-button>
         </div>
         <a-skeleton v-if='loading' />
         <a-table v-else :columns='columns' :data-source='users'>
@@ -55,7 +63,7 @@ export default {
     RequestModal
   },
   mixins: [userRoleMixin],
-  layout: 'default',
+  layout: 'dashboard',
   middleware: ['authenticated', 'moderator-or-higher', 'not-blocked', 'not-deleted'],
   data: () => ({
     users: [],

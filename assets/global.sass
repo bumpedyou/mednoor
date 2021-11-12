@@ -1,24 +1,44 @@
+* 
+  font-family: 'Inter', sans-serif
+  font-weight: 300
 body, p
   font-size: $mdn-sm-p
 
 h1, .h1
   font-size: $mdn-sm-h1
-  color: #000000
 h2, .h2
   font-size: $mdn-sm-h2
-  color: #000000
 h3, .h3
   font-size: $mdn-sm-h3
-  color: #000000
+h4, .h4
+  font-size: $mdn-sm-h4
+h5, .h5
+  font-size: $mdn-sm-h5
+h6, .h6
+  font-size: $mdn-sm-h6
 
 .flex-center
   display: flex
   justify-content: center
   align-items: center
 
-h1, h2, h3, h4, h5, h6
+.pull-child-right
+  display: flex
+  justify-content: flex-end
+  align-items: center
+  
+.mh-100v
+  min-height: 100vh
+.fw-b
+  font-weight: bold !important
+.d-block
+  display: block
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6
   margin-bottom: 0
   color: #000000
+  font-weight: 400
+  word-break: break-word
 .mt-1
   margin-top: 1rem
 .mt-2
@@ -35,6 +55,9 @@ h1, h2, h3, h4, h5, h6
   margin-left: 1rem
 .pa-1
   padding: 1rem
+
+.pt-0
+  padding-top: 0 !important
 
 .ant-btn
   border-radius: 0 !important
@@ -86,6 +109,30 @@ hr
   height: auto !important
   max-height: 100% !important
 
+.card-primary
+  .ant-card-head
+    background: $mdn-primary
+    color: #ffffff
+
+.card-old-rose
+  .ant-card-head
+    background: $mdn-old-rose
+    color: #ffffff
+
+.card-aero-blue
+  .ant-card-head
+    background: $mdn-aero-blue
+    color: #ffffff
+
+
+.ant-btn.ant-btn-old-rose
+  background: $mdn-old-rose
+  color: #ffffff
+
+.ant-btn.ant-btn-aero-blue
+  background: $mdn-aero-blue
+  color: #ffffff
+
 @media screen and (min-width: $md)
   h1, .h1
     font-size: $mdn-md-h1
@@ -93,5 +140,11 @@ hr
     font-size: $mdn-md-h2
   h3, .h3
     font-size: $mdn-md-h3
+  h4, .h4
+    font-size: $mdn-md-h4
+  h5, .h5
+    font-size: $mdn-md-h5
+  h6, .h6
+    font-size: $mdn-md-h6
   body, p
     font-size: $mdn-md-p

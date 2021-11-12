@@ -1,14 +1,18 @@
 <template>
   <div>
     <div class='menu-top-bar'>
-      <img v-if='isSmall || isMiddle' v-click-outside='toggleChatNavigation' class='chat-icon'
-           :src="require('~/static/icon/chat.svg')" alt='Chat icon' @click='toggleChatNavigation(true)'>
-      <nuxt-link v-else to='/' class='chat-icon'>
-        <img :src="require('~/static/icon/chat.svg')" alt='Chat icon'>
-      </nuxt-link>
+      <div class="chat-icon">
+        <!--
+        <img v-if='isSmall || isMiddle' v-click-outside='toggleChatNavigation'
+            :src="require('~/static/icon/chat.svg')" alt='Chat icon' @click='toggleChatNavigation(true)'>
+        <nuxt-link v-else to='/'>
+          <img :src="require('~/static/icon/chat.svg')" alt='Chat icon'>
+        </nuxt-link>
+        -->
+      </div>
       <nuxt-link to='/'>
         <div class='text'>
-          MedNoor
+          MedNoor Medical Center
         </div>
       </nuxt-link>
       <img v-click-outside='toggleMenuNavigation' class='menu-icon' :src="require('~/static/icon/menu.svg')"
@@ -66,6 +70,15 @@ export default {
     menuItems() {
       const items = []
       if (this.isLoggedIn) {
+
+        if (this.isAdmin || this.isSuper){
+         items.push({
+            text: 'Dashboard',
+            icon: 'dashboard',
+            to: '/dashboard'
+          })
+        }
+
         items.push({
           text: 'My Profile',
           icon: 'user',
@@ -79,6 +92,7 @@ export default {
             to: '/users-list'
           })
         }
+
 
         if (this.isModerator || this.isAdmin || this.isSuper) {
           items.push({
@@ -110,7 +124,7 @@ export default {
           })
         }
 
-        if (this.isUser || this.isModerator){
+        if (this.isLoggedIn){
           items.push({
             text: 'Previous Chats (PDF)',
             icon: 'file',
@@ -280,7 +294,7 @@ export default {
       border: 1px solid $mdn-super-light-grey
 
       img
-        height: 25px
+        height: 20px
         margin-right: 0.9rem
 
     a:first-of-type
