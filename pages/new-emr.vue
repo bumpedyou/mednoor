@@ -171,10 +171,15 @@
                         </span>
                     </SpinOrText>
                 </a-button>
-                <a-button v-if="!isTemplate" type="old-rose"><a-icon type="file-pdf"></a-icon>Print</a-button>
+                <a-button v-if="!isTemplate"  type="old-rose" @click="printRecord">
+                    <SpinOrText v-model="loadingPdf">
+                        <a-icon type="file-pdf"></a-icon>Print
+                    </SpinOrText>
+                </a-button>
             </a-col>
         </a-row>
         <RequestModal ref="rmodal" />
+        <a ref="pdfDownload" :href="pdfFile" :download="pdfFile" class="d-none"></a>
     </a-form>
 </template>
 <script>
@@ -201,6 +206,8 @@ export default {
             recordId: null,
             bmi: 0,
             isTemplateD: false,
+            loadingPdf: false,
+            pdfFile: '',
         }
     },
     computed: {
@@ -291,6 +298,34 @@ export default {
         })
     },
     methods: {
+        printRecord(){
+            if(this.recordId){
+                this.loadingPdf = true
+                console.log('Record Id', this.recordId)
+                this.$api.get('/medical-record/pdf/' + this.recordId).then(({data})=>{
+                    this.$message.success('PDF File Generated successfully')
+                    this.pdfFile = process.env.API_URL + '/generated/record/' + data.file
+                    setTimeout(()=>{
+                        this.$refs.pdfDownload.click()
+                    }, 500)
+                }).catch(()=>{
+                    this.$message.error('Could not generate the PDF')
+                }).finally(()=>{
+                    this.loadingPdf = false
+                })
+            }else{
+                this.$message.error('The record has not been created yet. Create it first.')
+            }
+        },
+        isValidUser(){
+            let r = false
+            this.usersList.forEach((user)=>{
+                if (user.value === this.userSearch){
+                    r = true
+                }
+            })
+            return r
+        },
         updateBMI(){
             const d = this.form.getFieldsValue()
             console.log('updateBMI', d)
@@ -319,17 +354,24 @@ export default {
                 })
                 if (this.recordId ) {
                     nv.patient = this.userSearch
-                    this.$api.put('/medical-record/' + this.recordId, nv).then(()=>{        
-                    this.form.resetFields()
-                    this.$message.success('The record has been updated')
-                    setTimeout(()=>{
-                        this.$router.push('/emr')
-                    }, 500)
-                    }).catch((err)=>{
-                        this.$refs.rmodal.$emit('error', err)
-                    }).finally(()=>{
+                    if (this.isValidUser()){
+                        this.$api.put('/medical-record/' + this.recordId, nv).then(()=>{        
+                        this.form.resetFields()
+                        this.$message.success('The record has been updated')
+                        setTimeout(()=>{
+                            this.$router.push('/emr')
+                        }, 500)
+                        }).catch((err)=>{
+                            this.$refs.rmodal.$emit('error', err)
+                        }).finally(()=>{
+                            this.loading = false
+                        })    
+                    }else{
                         this.loading = false
-                    })                    
+                        this.$message.error('Please select an existing user.')
+                    }
+
+                
                 } else if (this.isTemplate) {
                         this.$api.post('/medical-record', nv).then(()=>{        
                             this.form.resetFields()
@@ -344,17 +386,25 @@ export default {
                         })
                 } else {
                         nv.patient = this.userSearch
-                        this.$api.post('/medical-record/record', nv).then(()=>{        
-                            this.form.resetFields()
-                            this.$message.success('The record has been created')
-                            setTimeout(()=>{
-                                this.$router.push('/emr')
-                            }, 500)
-                        }).catch((err)=>{
-                            this.$refs.rmodal.$emit('error', err)
-                        }).finally(()=>{
+                        
+                        console.log(nv.patient)
+
+                        if (this.isValidUser()){
+                            this.$api.post('/medical-record/record', nv).then(()=>{        
+                                this.form.resetFields()
+                                this.$message.success('The record has been created')
+                                setTimeout(()=>{
+                                    this.$router.push('/emr')
+                                }, 500)
+                            }).catch((err)=>{
+                                this.$refs.rmodal.$emit('error', err)
+                            }).finally(()=>{
+                                this.loading = false
+                            })
+                        }else{
                             this.loading = false
-                        })
+                            this.$message.error('Please select an existing user.')
+                        }
                 }
             });
         },

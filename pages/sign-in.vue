@@ -112,7 +112,6 @@ export default {
     this.$api.get('/home-screen').then(({data})=>{
       if (data && data.screen && data.screen.hosc_file){
         this.file = 'hs/' + data.screen.hosc_file
-        console.log('File is now', this.file)
       }
     }).catch((e)=>{
       console.log('Failed to get the home scren', e)

@@ -8,47 +8,14 @@
         </a-col>
     </a-row>
     <a-row type="flex" :gutter="[16,16]">
-        <a-col :xs="24" :sm="24" :md="{span: 8}" :lg="{span: 4}" flex="1">
-            <a-card title="Home Screen"  style="height: 100%; flex: 1;" class="card-primary" @click="$router.push('/home-screen')">
+        <a-col v-for="(o, i) in dashboardItems" :key="'dashboard-' + i" :xs="24" :sm="24" :md="{span: 8}" :lg="{span: 4}" flex="1" >
+            <a-card :title="o.cardTitle"  style="height: 100%; flex: 1;" :class="'card-' + o.type" @click="$router.push(o.to)">
                 <p>
-                    Update the home screen image.
+                    {{o.shortTitle}}
                 </p>
-                <a-button type="primary">
-                    <a-icon type="home"></a-icon>
-                    Update Image
-                </a-button>
-            </a-card>
-        </a-col>
-        <a-col :xs="24" :sm="24" :md="{span: 8}" :lg="{span: 4}" flex="1" >
-            <a-card title="List Of Users"  style="height: 100%; flex: 1;" class="card-old-rose" @click="$router.push('/users-list')">
-                <p>
-                    Add, Delete, Block Users.
-                </p>
-                <a-button type="old-rose">
-                    <a-icon type="user"></a-icon>
-                    List of Users
-                </a-button>
-            </a-card>
-        </a-col>
-        <a-col :xs="24" :sm="24" :md="{span: 8}" :lg="{span: 4}" flex="1" >
-            <a-card title="Add User"  style="height: 100%; flex: 1;" class="card-aero-blue" @click="$router.push('/add-user')">
-                <p>
-                    Shortcut to add user
-                </p>
-                <a-button type="aero-blue">
-                    <a-icon type="user-add"></a-icon>
-                    Add User
-                </a-button>
-            </a-card>
-        </a-col>
-        <a-col :xs="24" :sm="24" :md="{span: 8}" :lg="{span: 4}" flex="1" >
-            <a-card title="EMR"  style="height: 100%; flex: 1;" class="card-success" @click="$router.push('/emr')">
-                <p>
-                    Electronic health record
-                </p>
-                <a-button type="success">
+                <a-button :type="o.type">
                     <a-icon type="medicine-box"></a-icon>
-                    Go to EMR
+                    {{o.btnText}}
                 </a-button>
             </a-card>
         </a-col>
@@ -56,8 +23,12 @@
 </div>
 </template>
 
+
 <script>
+import dashboardOptionsList from '~/mixins/dashboardOptionsList'
+
 export default {
-    layout: "dashboard"
+    mixins: [dashboardOptionsList],
+    layout: "dashboard",
 }
 </script>

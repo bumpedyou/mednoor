@@ -71,7 +71,7 @@ export default {
       const items = []
       if (this.isLoggedIn) {
 
-        if (this.isAdmin || this.isSuper){
+        if (this.isAdmin || this.isSuper || this.isModerator){
          items.push({
             text: 'Dashboard',
             icon: 'dashboard',

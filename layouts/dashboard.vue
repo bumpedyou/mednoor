@@ -8,10 +8,7 @@
                     <a-icon type="right" class="open" @click="open"></a-icon>
                 </div>
                 <ul>
-                    <li><nuxt-link to="/home-screen"><span>Home Screen</span> <a-icon type="home"></a-icon></nuxt-link></li>
-                    <li><nuxt-link to="/users-list"><span>List of users</span> <a-icon type="user"></a-icon></nuxt-link></li>
-                    <li><nuxt-link to="/add-user"><span>Add User</span> <a-icon type="user-add"></a-icon></nuxt-link></li>
-                    <li><nuxt-link to="/emr"><span>EMR</span> <a-icon type="medicine-box"></a-icon></nuxt-link></li>
+                    <li v-for="(o, i) in dashboardItems" :key="'it-' + i"><nuxt-link :to="o.to"><span>{{o.shortTitle}}</span> <a-icon :type="o.icon"></a-icon></nuxt-link></li>
                 </ul>
             </div>
             <div class="content">
@@ -23,10 +20,13 @@
 <script>
 
 import Navbar from '~/components/Navbar.vue'
+import dashboardOptionsList from '~/mixins/dashboardOptionsList'
+
 export default {
     components: {
         Navbar
     },
+    mixins: [dashboardOptionsList],
     data (){
         return {
             path: '',

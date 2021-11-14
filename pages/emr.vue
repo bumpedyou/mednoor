@@ -47,6 +47,12 @@
                         <a-divider type='vertical' />
                         <span class="red--text clickable" @click="deleteItem(record.mere_uuid)">Delete</span>
                     </div>
+                    <div slot="owner_name" slot-scope='text, record'>
+                        {{record.owner_name}} {{record.owner_last_name}}
+                    </div>
+                    <div slot="mere_date" slot-scope='text, record'>
+                        {{dateString(record.mere_date)}}
+                    </div>
                 </a-table>
             </a-col>
         </a-row>
@@ -54,8 +60,11 @@
 </template>
 
 <script>
+import dateMixin from '~/mixins/dateMixin';
+import userRoleMixin from '~/mixins/userRoleMixin';
 export default {
     name: "EMR",
+    mixins: [dateMixin, userRoleMixin],
     layout: "dashboard",
     middleware: ['authenticated', 'not-blocked', 'not-deleted'],
     data: ()=>({
@@ -105,14 +114,23 @@ export default {
                         slots: {title: 'patient'},
                         scopedSlots: {customRender: 'patient'}
                     },
+                ]
+                this.columns.push(
+                    {
+                        title: 'Created At',
+                        dataIndex: 'mere_date',
+                        key: 'mere_date',
+                        slots: {title: 'Created At'},
+                        scopedSlots: {customRender: 'mere_date'}
+                    }, 
                     {
                         title: 'Actions',
                         dataIndex: 'actions',
                         key: 'actions',
                         slots: {title: 'Actions'},
                         scopedSlots: {customRender: 'actions'}
-                    }
-                ]
+                })
+                
             }else{
                 this.columns = [
                     {
@@ -121,15 +139,35 @@ export default {
                         key: 'mere_name',
                         slots: {title: 'Template Name'},
                         scopedSlots: {customRender: 'mere_name'}
-                    },
-                    {
-                        title: 'Actions',
-                        dataIndex: 'actions',
-                        key: 'actions',
-                        slots: {title: 'Actions'},
-                        scopedSlots: {customRender: 'actions'}
                     }
                 ]
+
+                if (this.isAdmin || this.isSuper){
+                    this.columns.push(
+                    {
+                        title: 'Created By',
+                        dataIndex: 'owner_name',
+                        key: 'owner_name',
+                        slots: {title: 'Created By'},
+                        scopedSlots: {customRender: 'owner_name'}
+                    })
+                }
+
+                this.columns.push(
+                {
+                    title: 'Created At',
+                    dataIndex: 'mere_date',
+                    key: 'mere_date',
+                    slots: {title: 'Created At'},
+                    scopedSlots: {customRender: 'mere_date'}
+                }, 
+                {
+                    title: 'Actions',
+                    dataIndex: 'actions',
+                    key: 'actions',
+                    slots: {title: 'Actions'},
+                    scopedSlots: {customRender: 'actions'}
+                })
             }
             this.$api.get('/medical-record', {
                 params: {
