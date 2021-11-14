@@ -294,7 +294,7 @@ export default {
       border: 1px solid $mdn-super-light-grey
 
       img
-        height: 20px
+        height: 15px
         margin-right: 0.9rem
 
     a:first-of-type

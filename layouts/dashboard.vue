@@ -11,6 +11,7 @@
                     <li><nuxt-link to="/home-screen"><span>Home Screen</span> <a-icon type="home"></a-icon></nuxt-link></li>
                     <li><nuxt-link to="/users-list"><span>List of users</span> <a-icon type="user"></a-icon></nuxt-link></li>
                     <li><nuxt-link to="/add-user"><span>Add User</span> <a-icon type="user-add"></a-icon></nuxt-link></li>
+                    <li><nuxt-link to="/emr"><span>EMR</span> <a-icon type="medicine-box"></a-icon></nuxt-link></li>
                 </ul>
             </div>
             <div class="content">

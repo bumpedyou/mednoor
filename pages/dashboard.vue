@@ -41,6 +41,17 @@
                 </a-button>
             </a-card>
         </a-col>
+        <a-col :xs="24" :sm="24" :md="{span: 8}" :lg="{span: 4}" flex="1" >
+            <a-card title="EMR"  style="height: 100%; flex: 1;" class="card-success" @click="$router.push('/emr')">
+                <p>
+                    Electronic health record
+                </p>
+                <a-button type="success">
+                    <a-icon type="medicine-box"></a-icon>
+                    Go to EMR
+                </a-button>
+            </a-card>
+        </a-col>
     </a-row>
 </div>
 </template>

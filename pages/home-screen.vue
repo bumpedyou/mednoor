@@ -1,12 +1,12 @@
 <template>
     <div class="pa-1 mh-100v">
         <a-row class="mb-1">
-        <a-col>
-              <a-breadcrumb>
-                <a-breadcrumb-item><nuxt-link to="/dashboard">Dashboard</nuxt-link></a-breadcrumb-item>
-                <a-breadcrumb-item>Home Screen</a-breadcrumb-item>
-            </a-breadcrumb>
-        </a-col>
+          <a-col>
+                <a-breadcrumb>
+                  <a-breadcrumb-item><nuxt-link to="/dashboard">Dashboard</nuxt-link></a-breadcrumb-item>
+                  <a-breadcrumb-item>Home Screen</a-breadcrumb-item>
+              </a-breadcrumb>
+          </a-col>
         </a-row>
         <a-row v-if='src === ""'>
             <a-col :md="{span: 12, offset: 6}" :lg="{span: 8, offset: 8}">
