@@ -200,6 +200,7 @@ export default {
             userSearch: '',
             recordId: null,
             bmi: 0,
+            isTemplateD: false,
         }
     },
     computed: {
@@ -214,7 +215,7 @@ export default {
             return type
         },
         isTemplate(){
-            return this.type === 'template'
+            return this.type === 'template' || this.isTemplateD
         }
     },
     watch: {
@@ -256,11 +257,16 @@ export default {
                     this.userSearch = data.user_uuid
                 }
 
+                console.log(data.mrus_mere_uuid)
+
                 if (data && data.mrus_mere_uuid){
                     this.$route.query.type = 'record'
+                    this.isTemplateD = false
                 }else{
                     this.$route.query.type = 'template'
+                    this.isTemplateD = true
                 }
+
 
                 this.updateBMI()
 
