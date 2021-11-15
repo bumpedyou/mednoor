@@ -23,14 +23,23 @@
                 </a-button>
             </a-col>
             <a-col :xs=24 class="mb-1">
-                <a-select v-model="type" style="width: 120px" @change="handleChange">
-                    <a-select-option value="record">
-                        Record
-                    </a-select-option>
-                    <a-select-option value="template">
-                        Template
-                    </a-select-option>
-                </a-select>
+                <a-form layout="horizontal">
+                    <a-row>
+                        <a-col :md="{span: 3}" :lg="{span: 2}">
+                            <a-select v-model="type" style="width: 120px" @change="handleChange">
+                                <a-select-option value="record">
+                                    Record
+                                </a-select-option>
+                                <a-select-option value="template">
+                                    Template
+                                </a-select-option>
+                            </a-select>
+                        </a-col>
+                        <a-col :md="{span: 6}">
+                            <a-input placeholder="Search (By Id, Date, or Name) [...]" disabled />
+                        </a-col>
+                    </a-row>
+                </a-form>
             </a-col>
             <a-col :xs="24" :sm="24">
                 <a-table :columns='columns' :data-source='items'>
@@ -44,6 +53,14 @@
                                 mere: record.mere_uuid
                             }
                         }">Edit</nuxt-link>
+                        <span v-if="record.user_uuid && (isAdmin || isSuper || myUserId === record.mere_owner)">
+                            <a-divider type='vertical' />
+                            <a href="javascript:void(0)"  type="old-rose" @click="printRecord(record.mere_uuid)">
+                                <SpinOrText v-model="loadingPdf">
+                                    <a-icon type="file-pdf"></a-icon>Print
+                                </SpinOrText>
+                            </a>
+                        </span>
                         <a-divider type='vertical' />
                         <span class="red--text clickable" @click="deleteItem(record.mere_uuid)">Delete</span>
                     </div>
@@ -56,26 +73,49 @@
                 </a-table>
             </a-col>
         </a-row>
+        <a ref="pdfDownload" :href="pdfFile" :download="pdfFile" class="d-none" target="_blank"></a>
     </div>    
 </template>
 
 <script>
+import authMixin from '~/mixins/authMixin';
 import dateMixin from '~/mixins/dateMixin';
 import userRoleMixin from '~/mixins/userRoleMixin';
+import SpinOrText from '~/components/SpinOrText.vue'
+
 export default {
     name: "EMR",
-    mixins: [dateMixin, userRoleMixin],
+    components: {
+        SpinOrText,
+    },
+    mixins: [dateMixin, userRoleMixin, authMixin],
     layout: "dashboard",
     middleware: ['authenticated', 'not-blocked', 'not-deleted'],
     data: ()=>({
         columns: [],
         items: [],
         type: 'record',
+        pdfFile: '',
+        loadingPdf: false,
     }),
     mounted() {
         this.setColumns()
     },
     methods: {
+        printRecord(id){
+            this.loadingPdf = true
+            this.$api.get('/medical-record/pdf/' + id).then(({data})=>{
+                this.$message.success('PDF File Generated successfully')
+                this.pdfFile = process.env.API_URL + '/generated/record/' + data.file
+                setTimeout(()=>{
+                    this.$refs.pdfDownload.click()
+                }, 500)
+            }).catch(()=>{
+                this.$message.error('Could not generate the PDF')
+            }).finally(()=>{
+                this.loadingPdf = false
+            })
+        },
         deleteItem(v){
             const that = this
             this.$confirm({

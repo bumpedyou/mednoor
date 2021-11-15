@@ -179,7 +179,7 @@
             </a-col>
         </a-row>
         <RequestModal ref="rmodal" />
-        <a ref="pdfDownload" :href="pdfFile" :download="pdfFile" class="d-none"></a>
+        <a ref="pdfDownload" :href="pdfFile" :download="pdfFile" class="d-none" target="_blank"></a>
     </a-form>
 </template>
 <script>

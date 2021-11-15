@@ -30,8 +30,11 @@
           <sidebar-mobile-title>Menu</sidebar-mobile-title>
           <ul class='sidebar-menu-items'>
             <li v-for='(item, i) in menuItems' :key='i'>
-              <nuxt-link :to='item.to'>
-                <img :src="require('~/static/icon/' + item.icon +'.svg')" :alt="item.icon + ' icon'"> {{ item.text }}
+              <nuxt-link :to='item.to' class="sidebar-item">
+                <span>
+                 {{ item.text }}
+                </span>
+                 <img :src="require('~/static/icon/' + item.icon +'.svg')" :alt="item.icon + ' icon'">
               </nuxt-link>
             </li>
           </ul>
@@ -294,10 +297,17 @@ export default {
       border: 1px solid $mdn-super-light-grey
 
       img
-        height: 15px
+        height: 11px
         margin-right: 0.9rem
 
     a:first-of-type
       border-top: 0
+  
+  .sidebar-item
+    display: flex
+    justify-content: center
+    span
+      margin-right: auto
+
 
 </style>

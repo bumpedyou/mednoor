@@ -25,7 +25,7 @@ export default {
                     cardDescription: "Update the home screen image.",
                     btnText: 'Update Image',
                     icon: 'user',
-                    type: 'old-rose',       
+                    type: 'old-rose',
                 })
                 i.push({
                     shortTitle: 'Add User',
@@ -34,7 +34,7 @@ export default {
                     cardDescription: "Shortcut to add user",
                     btnText: 'Add User',
                     icon: 'user-add',
-                    type: 'aero-blue',       
+                    type: 'aero-blue',
                 })
             }
             if (this.isSuper || this.isAdmin || this.isModerator) {
@@ -45,7 +45,7 @@ export default {
                     cardDescription: "Electronic health record",
                     btnText: 'Go to EMR',
                     icon: 'medicine-box',
-                    type: 'aero-blue',       
+                    type: 'success',       
                 })
             }
             return i
