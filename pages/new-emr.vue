@@ -226,27 +226,29 @@ export default {
         }
     },
     watch: {
-        userSearch: debounce (function (){
+        userSearch: debounce (function (v){
+            if (v && v.length > 0){
+                this.$api.get('/user/search', {
+                    params: {
+                        searchTerm: v,
+                    }
+                }).then(({data})=>{
+                    if (data && data.length){
+                        this.usersList = data.map((user)=>{
+                            return {
+                                text: user.full_name,
+                                value: user.uuid
+                            }
+                        })
+                    }
+                }).catch((e)=>{
+                    this.$message.error('Unable to get the search results')
+                })
+            }else{
+                this.usersList = []
+            }
 
-            this.$api.get('/user/search', {
-                params: {
-                    searchTerm: this.userSearch
-                }
-            }).then(({data})=>{
-                if (data && data.length){
-                    this.usersList = data.map((user)=>{
-                        return {
-                            text: user.full_name,
-                            value: user.uuid
-                        }
-                    })
-                }
-            }).catch((e)=>{
-                console.log(e)
-                this.$message.error('Unable to get the search results')
-            })
-
-        }, 1000),
+        }, 600),
     },
     mounted(){
         

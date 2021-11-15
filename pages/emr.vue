@@ -3,8 +3,8 @@
         <a-row class="mb-1">
           <a-col>
                 <a-breadcrumb>
-                  <a-breadcrumb-item><nuxt-link to="/dashboard">Dashboard</nuxt-link></a-breadcrumb-item>
-                  <a-breadcrumb-item>EMR</a-breadcrumb-item>
+                  <a-breadcrumb-item><nuxt-link to="/dashboard">Dashboard</nuxt-link>
+                  </a-breadcrumb-item><a-breadcrumb-item>EMR</a-breadcrumb-item>
               </a-breadcrumb>
           </a-col>
         </a-row>
@@ -36,7 +36,7 @@
                             </a-select>
                         </a-col>
                         <a-col :md="{span: 6}">
-                            <a-input placeholder="Search (By Id, Date, or Name) [...]" disabled />
+                            <a-input v-model="searchTerm" :placeholder="isUser ? 'Search by MRN, Name, Or Date' : 'Search by template name'" />
                         </a-col>
                     </a-row>
                 </a-form>
@@ -56,7 +56,7 @@
                         <span v-if="record.user_uuid && (isAdmin || isSuper || myUserId === record.mere_owner)">
                             <a-divider type='vertical' />
                             <a href="javascript:void(0)"  type="old-rose" @click="printRecord(record.mere_uuid)">
-                                <SpinOrText v-model="loadingPdf">
+                                <SpinOrText :value="isPdfLoading(record.mere_uuid)" dark>
                                     <a-icon type="file-pdf"></a-icon>Print
                                 </SpinOrText>
                             </a>
@@ -82,6 +82,7 @@ import authMixin from '~/mixins/authMixin';
 import dateMixin from '~/mixins/dateMixin';
 import userRoleMixin from '~/mixins/userRoleMixin';
 import SpinOrText from '~/components/SpinOrText.vue'
+const debounce = require('lodash.debounce');
 
 export default {
     name: "EMR",
@@ -97,12 +98,31 @@ export default {
         type: 'record',
         pdfFile: '',
         loadingPdf: false,
+        printing: null,
+        searchTerm: '',
     }),
+    watch: {
+        searchTerm: debounce(function (v){
+            this.$api.get('/medical-record', {
+                params: {
+                    type: this.type,
+                    search: v,
+                }
+            }).then(({data})=>{
+                console.log('Search results', data)
+                this.items = data
+            })
+        }, 500),
+    },
     mounted() {
         this.setColumns()
     },
     methods: {
+        isPdfLoading(recordId){
+            return this.printing === recordId
+        },
         printRecord(id){
+            this.printing = id
             this.loadingPdf = true
             this.$api.get('/medical-record/pdf/' + id).then(({data})=>{
                 this.$message.success('PDF File Generated successfully')
@@ -114,6 +134,7 @@ export default {
                 this.$message.error('Could not generate the PDF')
             }).finally(()=>{
                 this.loadingPdf = false
+                this.printing = null
             })
         },
         deleteItem(v){
@@ -147,6 +168,13 @@ export default {
         setColumns(){
             if (this.type === 'record'){
                 this.columns = [
+                    {
+                        title: 'MRN',
+                        dataIndex: 'user_mrn',
+                        key: 'user_mrn',
+                        slots: {title: 'MRN'},
+                        scopedSlots: {customRender: 'user_mrn'}
+                    },
                     {
                         title: 'Patient',
                         dataIndex: 'Patient',
