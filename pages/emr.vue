@@ -36,7 +36,7 @@
                             </a-select>
                         </a-col>
                         <a-col :md="{span: 6}">
-                            <a-input v-model="searchTerm" :placeholder="isUser ? 'Search by MRN, Name, Or Date' : 'Search by template name'" />
+                            <a-input v-model="searchTerm" :placeholder="type === 'record' ? 'Search by MRN, Name, Or Date' : 'Search by template name'" />
                         </a-col>
                     </a-row>
                 </a-form>

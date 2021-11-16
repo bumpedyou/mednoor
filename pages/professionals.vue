@@ -1,5 +1,5 @@
 <template>
-  <a-row>
+  <a-row class="ma-1 mh-100v">
     <a-col>
       <h1>Available Professionals</h1>
       <a-skeleton v-if='loading' />

@@ -1,5 +1,5 @@
 <template>
-<a-row>
+<a-row class="pa-1 mh-100v">
   <a-col :xs='24' :sm='24'>
     <p class='h1'>
       Previous Chats (PDF)

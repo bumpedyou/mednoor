@@ -27,6 +27,8 @@ export default {
                     icon: 'user',
                     type: 'old-rose',
                 })
+            }
+            if (this.isSuper || this.isAdmin || this.isModerator) {
                 i.push({
                     shortTitle: 'Add User',
                     cardTitle: 'Add User',
@@ -36,8 +38,6 @@ export default {
                     icon: 'user-add',
                     type: 'aero-blue',
                 })
-            }
-            if (this.isSuper || this.isAdmin || this.isModerator) {
                 i.push({
                     shortTitle: 'EMR',
                     cardTitle: 'Electronic health record',
