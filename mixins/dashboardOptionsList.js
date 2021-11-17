@@ -48,6 +48,26 @@ export default {
                     type: 'success',       
                 })
             }
+            if (this.isAdmin || this.isModerator){
+                i.push({
+                    shortTitle: 'Terms and Conditions',
+                    cardTitle: 'Terms and conditions',
+                    to: '/update-terms-and-conditions',
+                    cardDescription: "T & C",
+                    btnText: 'Update',
+                    icon: 'audit',
+                    type: 'primary',       
+                }, 
+                {
+                    shortTitle: 'Privacy Policy',
+                    cardTitle: 'Privacy Policy',
+                    to: '/update-privacy-policy',
+                    cardDescription: "Privacy policy",
+                    btnText: 'Update',
+                    icon: 'file-protect',
+                    type: 'old-rose',       
+                })
+            }
             return i
         }
     }

@@ -9,7 +9,7 @@
           <a-col class="pa-1 mt-3" :xs="24" :sm="24" :md="{span: 20, offset: 2}" :lg="{span: 16, offset: 4}">
             <a-card>
               <div class="mednoor-heading-svg">
-                <img :src='require("~/static/light.svg")' width="50px" />
+                <img :src='require("~/static/logo.jpg")' height="40px" />
                 <div>
                 <p class='h3 text-center'>
                   Mednoor Medical Center
@@ -164,7 +164,7 @@ export default {
     display: flex
     justify-content: center
     align-itmes: center
-    background: #FFFBF1
+    background: #fff
     margin-bottom: 9px
     img
       margin-right: 6px

@@ -135,6 +135,11 @@
           </div>
         </div>
         <div v-else-if='isSmall'>
+          <div v-if="moderators.length <= 0">
+            <p class="text-center pa-1">
+              You do not have any chats right now. 
+            </p>
+          </div>
           <ChatItems :data='moderators' :selected-chat='to' @open-chat='openChat'></ChatItems>
         </div>
       </div>
@@ -302,7 +307,6 @@ export default {
     }
   },
   mounted() {
-    console.log('Moment is --->', moment)
     this.setChatFromRoute()
     this.getChats()
     this.run_once(this.listen)
@@ -378,7 +382,6 @@ export default {
 
         this.$api.post('/file', data, {
           onUploadProgress: (evt) => {
-            console.log('ON progress', this.umUploadProgress)
             this.onProgress(evt)
           }
         }).then(({ data }) => {
@@ -408,15 +411,12 @@ export default {
       this.$refs.fileInput.value = ''
     },
     fileChange(f) {
-      console.log('On File Change')
       const file = f.target.value
       if (file) {
         this.fileName = file.split('\\').pop().split('/').pop()
-        console.log('Can upload', this.fileName)
       }
     },
     showVideo() {
-      console.log('Video app is inactive at this time')
       const h = this.$createElement
       this.$info({
         title: 'Info',
@@ -440,12 +440,9 @@ export default {
               to: this.to,
               me: this.myID
             }).then(({data})=>{
-              console.log('Pdf saved!', data)
               if (data.file_name){
                 this.pdfName = data.file_name
-                console.log('downloadUrl', this.downloadUrl)
                 this.$nextTick(()=>{
-                  console.log(this.$refs.downloadUrl)
                   this.$refs.downloadUrl.click()
                 })
               }else{
@@ -496,7 +493,6 @@ export default {
             opts
           })
         } else if (this.message && this.message.length > 0) {
-          console.log('Send message')
           const date = new Date()
           this.socket.emit('send-message', {
             from: this.myID,
@@ -562,10 +558,8 @@ export default {
 
       this.socket.on('user-reload', () => {
         if (this.isUser) {
-          console.log('is user')
           this.getChats(true)
         } else {
-          console.log('is else')
           this.getChats(false)
         }
         this.openNotification()
@@ -603,7 +597,6 @@ export default {
             data.opts.owner = false
             this.messages.push(data.opts)
           } else {
-            console.log('Push message', data)
             this.messages.push({
               owner: false,
               message: data.message,
@@ -618,7 +611,6 @@ export default {
         this.user_was_updated()
       })
       this.socket.on('chat-deleted', (data) => {
-        console.log('A chat has been deleted', data)
         this.$router.push('/chat-ended')
       })
       this.socket.on('typing', (data)=>{

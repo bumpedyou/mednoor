@@ -8,7 +8,7 @@
         </a-col>
     </a-row>
     <a-row type="flex" :gutter="[16,16]">
-        <a-col v-for="(o, i) in dashboardItems" :key="'dashboard-' + i" :xs="24" :sm="24" :md="{span: 6}" :lg="{span: 3}" flex="2" style="max-width: 250px" >
+        <a-col v-for="(o, i) in dashboardItems" :key="'dashboard-' + i" :xs="24" :sm="24" :md="{span: 6}" :lg="{span: 3}" flex="2" style="max-width: 245px" >
             <a-card :title="o.cardTitle"  style="height: 100%; flex: 1;" :class="'card-' + o.type" @click="$router.push(o.to)">
                 <a-button :type="o.type">
                     <a-icon :type="o.icon"></a-icon>

@@ -1,5 +1,5 @@
 <template>
-  <a-row>
+  <a-row class="pa-1 mh-100v">
     <a-col>
       <p class='h1'>
         Chat Requests

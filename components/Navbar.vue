@@ -11,7 +11,7 @@
         -->
       </div>
       <nuxt-link to='/'>
-        <div class='text'>
+        <div class='text mednoor-logo'>
           MedNoor Medical Center
         </div>
       </nuxt-link>
@@ -115,6 +115,11 @@ export default {
             text: 'Chat Requests',
             icon: 'message-square-plus',
             to: '/chat-requests'
+          })
+          items.push({
+            text: 'My Patients',
+            icon: 'user',
+            to: '/my-patients'
           })
         }
 
@@ -227,6 +232,10 @@ export default {
 </script>
 
 <style scoped lang='sass'>
+.mednoor-logo
+  color: $mdn-primary !important
+  font-size: 14px !important
+
 .side-slide-enter
   opacity: 0
   transform: translateX(10px)
@@ -293,7 +302,7 @@ export default {
       display: flex
       align-items: center
       justify-content: flex-start
-      padding: 1rem
+      padding: 0.25rem
       border: 1px solid $mdn-super-light-grey
 
       img
