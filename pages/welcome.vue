@@ -16,7 +16,7 @@ export default {
       if (role === 'admin' || role === 'super'){
         return redirect('/dashboard')
       }else if (role === 'moderator'){
-        return redirect('/')
+        return redirect('/dashboard')
       }else if (role === 'user'){
         return redirect('/')
       }else{

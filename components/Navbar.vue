@@ -2,13 +2,6 @@
   <div>
     <div class='menu-top-bar'>
       <div class="chat-icon">
-        <!--
-        <img v-if='isSmall || isMiddle' v-click-outside='toggleChatNavigation'
-            :src="require('~/static/icon/chat.svg')" alt='Chat icon' @click='toggleChatNavigation(true)'>
-        <nuxt-link v-else to='/'>
-          <img :src="require('~/static/icon/chat.svg')" alt='Chat icon'>
-        </nuxt-link>
-        -->
       </div>
       <nuxt-link to='/'>
         <div class='text mednoor-logo'>
@@ -26,7 +19,7 @@
         </div>
       </transition>
       <transition name='side-slide' mode='in-out'>
-        <div v-if='showMenuNav' class='sidebar'>
+        <div v-if='showMenuNav' class='sidebar menu-sidebar'>
           <sidebar-mobile-title>Menu</sidebar-mobile-title>
           <ul class='sidebar-menu-items'>
             <li v-for='(item, i) in menuItems' :key='i'>
@@ -318,5 +311,17 @@ export default {
     span
       margin-right: auto
 
+@media screen and (min-width: $md)
+  .side-bars
+    .sidebar.menu-sidebar
+      width: 300px
+      left: auto
+      right: 0
+      box-shadow: 0 3px 6px $mdn-light-grey
+
+@media screen and (min-width: $lg)
+  .side-bars
+    .sidebar.menu-sidebar
+      width: 350px
 
 </style>

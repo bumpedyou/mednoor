@@ -160,6 +160,8 @@
                     I Agree to the
                   </a-checkbox>
                   <a to="terms-and-conditions" href="/terms-and-conditions" target="_blank">Terms and conditions</a>
+                  &
+                  <a to="terms-and-conditions" href="/privacy-policy" target="_blank">Privacy policy</a>
               </a-form-item>
             </a-row>
             <a-form-item>

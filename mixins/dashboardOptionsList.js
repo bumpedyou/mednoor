@@ -48,7 +48,7 @@ export default {
                     type: 'success',       
                 })
             }
-            if (this.isAdmin || this.isModerator){
+            if (this.isAdmin || this.isSuper){
                 i.push({
                     shortTitle: 'Terms and Conditions',
                     cardTitle: 'Terms and conditions',

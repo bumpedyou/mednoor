@@ -2,10 +2,13 @@
   <div class="m-footer">
     <a-row>
       <a-col>
-        <p class="text-center">Mednoor © {{year}}</p>
         <p class="text-center">
           <nuxt-link to="/privacy-policy">Privacy policy</nuxt-link>
+          -
+          <nuxt-link to="/terms-and-conditions">Terms and conditions</nuxt-link>
         </p>
+        <p class="text-center">Mednoor © {{year}}</p>
+
       </a-col>
     </a-row>
   </div>
