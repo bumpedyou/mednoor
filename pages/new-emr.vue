@@ -1,6 +1,6 @@
 <template>
-    <a-form class="pa-1 mh-100v" :form="form" @submit="handleSubmit">
-        <a-row class="mb-1">
+<div class="pa-1 mh-100v">
+    <a-row class="mb-1">
           <a-col>
                 <a-breadcrumb>
                   <a-breadcrumb-item><nuxt-link to="/dashboard">Dashboard</nuxt-link></a-breadcrumb-item>
@@ -15,7 +15,11 @@
                   </a-breadcrumb-item>
               </a-breadcrumb>
           </a-col>
-        </a-row>
+    </a-row>
+    <div v-if="loadingData">
+        <a-skeleton/>
+    </div>
+    <a-form v-else :form="form" @submit="handleSubmit">
         <a-row>
             <a-col :xs="24">
                 <p class="h1">
@@ -190,7 +194,9 @@
         </a-row>
         <RequestModal ref="rmodal" />
         <a ref="pdfDownload" :href="pdfFile" :download="pdfFile" class="d-none" target="_blank"></a>
-    </a-form>
+    </a-form>    
+</div>
+
 </template>
 <script>
 import RequestModal from '~/components/RequestModal.vue'
@@ -207,6 +213,7 @@ export default {
     middleware: ['authenticated', 'not-blocked', 'not-deleted'],
     data () {
         return {
+            loadingData: false,
             form: this.$form.createForm(this, { name: 'medical-record-' + this.type }),
             loading: false,
             templates: [], // Full data of the templates
@@ -255,7 +262,8 @@ export default {
                         })
                     }
                 }).catch((e)=>{
-                    this.$message.error('Unable to get the search results')
+                    this.$toast.error('Unable to get the search results')
+                    // this.$message.error('Unable to get the search results')
                 })
             }else{
                 this.usersList = []
@@ -267,6 +275,7 @@ export default {
         
         if (this.$route.query.mere){
             this.recordId = this.$route.query.mere
+            this.loadingData = true
             this.$api.get('/medical-record/' + this.recordId).then(({data})=>{
                 this.setData(data)
                 if (data.mrus_user_uuid){
@@ -293,7 +302,10 @@ export default {
 
             }).catch(()=>{
                 this.recordId = null
-                this.$message.error('Could not find the record.')
+                // this.$message.error('Could not find the record.')
+                this.$toast.error('Could not find the record.')
+            }).finally(()=>{
+                this.loadingData = false
             })
         }
 
@@ -317,18 +329,21 @@ export default {
             if(this.recordId){
                 this.loadingPdf = true
                 this.$api.get('/medical-record/pdf/' + this.recordId).then(({data})=>{
-                    this.$message.success('PDF File Generated successfully')
+                    // this.$message.success('PDF File Generated successfully')
+                    this.$toast.success('PDF File Generated successfully')
                     this.pdfFile = process.env.API_URL + '/generated/record/' + data.file
                     setTimeout(()=>{
                         this.$refs.pdfDownload.click()
                     }, 500)
                 }).catch(()=>{
-                    this.$message.error('Could not generate the PDF')
+                    // this.$message.error('Could not generate the PDF')
+                    this.$toast.error('Could not generate the PDF')
                 }).finally(()=>{
                     this.loadingPdf = false
                 })
             }else{
-                this.$message.error('The record has not been created yet. Create it first.')
+                this.$toast.success('The record has not been created yet. Create it first')
+                // this.$message.error('The record has not been created yet. Create it first.')
             }
         },
         isValidUser(){
@@ -369,13 +384,15 @@ export default {
                     nv.patient = this.userSearch
                     if (!this.isTemplate && !this.isValidUser()){
                         this.loading = false
-                        this.$message.error('Please select an existing user.')
+                        // this.$message.error('Please select an existing user.')
+                        this.$toast.error('Please select an existing user.')
                         return
                     }
 
                     this.$api.put('/medical-record/' + this.recordId, nv).then(()=>{        
                         this.form.resetFields()
-                        this.$message.success('The record has been updated')
+                        // this.$message.success('The record has been updated')
+                        this.$toast.success('The record has been updated!')
                         setTimeout(()=>{
                             this.$router.push('/emr')
                         }, 500)
@@ -388,7 +405,8 @@ export default {
                 } else if (this.isTemplate) {
                         this.$api.post('/medical-record', nv).then(()=>{        
                             this.form.resetFields()
-                            this.$message.success('The template has been created')
+                            // this.$message.success('The template has been created')
+                            this.$toast.success('The template has been created')
                             setTimeout(()=>{
                                 this.$router.push('/emr')
                             }, 500)
@@ -404,7 +422,8 @@ export default {
                         if (this.isValidUser()){
                             this.$api.post('/medical-record/record', nv).then(()=>{        
                                 this.form.resetFields()
-                                this.$message.success('The record has been created')
+                                // this.$message.success('The record has been created')
+                                this.$toast.success('The record has been created')
                                 setTimeout(()=>{
                                     this.$router.push('/emr')
                                 }, 500)
@@ -415,7 +434,8 @@ export default {
                             })
                         }else{
                             this.loading = false
-                            this.$message.error('Please select an existing user.')
+                            // this.$message.error('Please select an existing user.')
+                            this.$toast.error('Please select an existing user.')
                         }
                 }
             });

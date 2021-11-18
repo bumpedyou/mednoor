@@ -8,8 +8,19 @@
           MedNoor Medical Center
         </div>
       </nuxt-link>
-      <img v-click-outside='toggleMenuNavigation' class='menu-icon' :src="require('~/static/icon/menu.svg')"
-           alt='Chat icon' @click='toggleMenuNavigation(true)'>
+      <div v-click-outside='toggleMenuNavigation' class='menu-icon' @click='toggleMenuNavigation(true)' >
+                  <div v-if="isLoggedIn">
+                  <div v-if="isAdmin">
+                    <a-button type="raisin-black">
+                      ADMIN <a-icon type="caret-down" />
+                    </a-button>
+                  </div>
+                  <div v-else>
+                    {{$auth.user.user_first_name}} {{$auth.user.last_name}} <a-icon type="caret-down" />
+                  </div>
+                </div>
+        <img v-else :src="require('~/static/icon/menu.svg')" alt='Chat icon'>
+      </div>
     </div>
     <div class='side-bars'>
       <transition name='side-slide' mode='out-in'>
@@ -27,7 +38,7 @@
                 <span>
                  {{ item.text }}
                 </span>
-                 <img :src="require('~/static/icon/' + item.icon +'.svg')" :alt="item.icon + ' icon'">
+                <img :src="require('~/static/icon/' + item.icon +'.svg')" :alt="item.icon + ' icon'">
               </nuxt-link>
             </li>
           </ul>
@@ -265,6 +276,8 @@ export default {
 
   .menu-icon
     margin-left: auto
+    &:hover
+      cursor: pointer
 
   .text
     font-size: 1rem
@@ -314,7 +327,7 @@ export default {
 @media screen and (min-width: $md)
   .side-bars
     .sidebar.menu-sidebar
-      width: 300px
+      width: 200px
       left: auto
       right: 0
       box-shadow: 0 3px 6px $mdn-light-grey
@@ -322,6 +335,6 @@ export default {
 @media screen and (min-width: $lg)
   .side-bars
     .sidebar.menu-sidebar
-      width: 350px
+      width: 210px
 
 </style>

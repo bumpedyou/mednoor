@@ -23,12 +23,12 @@ export default {
                     cardTitle: 'List Of Users',
                     to: '/users-list',
                     cardDescription: "Update the home screen image.",
-                    btnText: 'Update Image',
+                    btnText: 'List of users',
                     icon: 'user',
                     type: 'old-rose',
                 })
             }
-            if (this.isSuper || this.isAdmin || this.isModerator) {
+            if (this.isModerator) {
                 i.push({
                     shortTitle: 'Add User',
                     cardTitle: 'Add User',
@@ -38,6 +38,8 @@ export default {
                     icon: 'user-add',
                     type: 'aero-blue',
                 })
+            }
+            if (this.isAdmin || this.isSuper || this.isModerator){
                 i.push({
                     shortTitle: 'EMR',
                     cardTitle: 'Electronic health record',

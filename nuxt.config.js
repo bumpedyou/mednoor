@@ -58,7 +58,14 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/auth-next',
     'nuxt-socket-io',
+    '@nuxtjs/toast',
   ],
+
+  toast: {
+    theme: "bubble", 
+    position: 'top-right',
+    duration: '2369',
+  },
 
   auth: {
     strategies: {

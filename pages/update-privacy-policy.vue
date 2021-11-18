@@ -37,6 +37,7 @@ export default {
         SpinOrText,
     },
     mixins: [vmodelMixin],
+    layout: 'dashboard',
     data(){
         return {
             loadingBtn: false,
