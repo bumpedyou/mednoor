@@ -13,14 +13,17 @@
             <p class="h1">
                 Update Terms and Conditions
             </p>
-            <client-only>
-                <t-editor ref="editor" v-model="txt"></t-editor>
-            </client-only>
-            <a-button class="mt-1" type="primary" @click="update">
-                <spin-or-text v-model="loadingBtn">
-                    Update Terms and Conditions
-                </spin-or-text>
-            </a-button>
+            <a-skeleton v-if="loading"/>
+            <div v-else>
+                <client-only>
+                    <t-editor ref="editor" v-model="txt"></t-editor>
+                </client-only>
+                <a-button class="mt-1" type="primary" @click="update">
+                    <spin-or-text v-model="loadingBtn">
+                        Update Terms and Conditions
+                    </spin-or-text>
+                </a-button>
+            </div>
         </a-col>
     </a-row>
 </div>
@@ -42,6 +45,7 @@ export default {
         return {
             loadingBtn: false,
             txt: '',
+            loading: true,
         }
     },
     mounted(){
@@ -51,6 +55,10 @@ export default {
                 const t = data.teco_text
                 this.$refs.editor.editor.commands.setContent(t)
             }
+        }).finally(()=>{
+            setTimeout(()=>{
+                this.loading = false
+            }, 600)
         })
     },
     methods: {

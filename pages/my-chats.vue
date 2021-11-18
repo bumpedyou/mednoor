@@ -4,7 +4,8 @@
     <p class='h1'>
       Previous Chats (PDF)
     </p>
-    <a-table :columns='columns' :data-source='items'>
+    <a-skeleton v-if="loading"/>
+    <a-table v-else :columns='columns' :data-source='items'>
       <div slot='date' slot-scope='text, record'>
         {{dateString(record.date)}}
       </div>
@@ -27,6 +28,7 @@ export default {
   mixins: [authMixin, dateMixin],
   middleware: ['authenticated', 'not-blocked', 'not-deleted'],
   data: ()=>({
+    loading: true,
     items: [],
     components: {
       RequestModal
@@ -84,9 +86,10 @@ export default {
         }
 
       })
-      console.log('Final items are --->', this.items)
     }).catch((err)=>{
       this.$refs.rmodal.$emit('error', err)
+    }).finally(()=>{
+      this.loading = false
     })
   },
   methods: {

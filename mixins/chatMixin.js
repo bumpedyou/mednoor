@@ -56,6 +56,7 @@ export default {
     getChats(addMessages) {
       if (this.isLoggedIn) {
         this.loadingItems = true
+        /*
         if (this.isAdmin) {
           this.$api
             .get('/user')
@@ -69,7 +70,10 @@ export default {
             .finally(() => {
               this.loadingItems = false
             })
-        } else if (this.isModerator) {
+        } else */
+        if(this.isAdmin){
+          this.mergeWithConversations()
+        }else if (this.isModerator) {
           this.$api
             .get('/my-professional/my-users/')
             .then(({ data }) => {

@@ -1,6 +1,6 @@
 export default {
   head: {
-    titleTemplate: '%s - Mednoor - Online Medical Center',
+    titleTemplate: '%s - Online Medical Center',
     title: 'Mednoor',
     htmlAttrs: {
       lang: 'en',

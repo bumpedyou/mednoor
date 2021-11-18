@@ -1,13 +1,7 @@
 <template>
-  <div class="pa-1 mh-100v">
-    <a-row>
-      <a-col
-        class="mt-1"
-        :xs="{ span: 20, offset: 2 }"
-        :md="{ span: 12, offset: 6 }"
-        :lg="{ span: 10, offset: 7 }"
-        :xl="{ span: 8, offset: 8 }"
-      >
+  <div>
+      <a-row>
+          <a-col class="pa-1 mt-3" :xs="24" :sm="24" :md="{span: 20, offset: 2}" :lg="{span: 16, offset: 4}">
         <a-card>
           <h1 class="h1 text-center">Sign up</h1>
           <a-form :form="form" size="small" @submit="handleSubmit">
@@ -198,6 +192,7 @@ export default {
     SpinOrText
   },
   mixins: [formMixin],
+  layout: 'home',
   middleware: ['unauthenticated'],
   data() {
     return {

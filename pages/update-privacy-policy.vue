@@ -13,14 +13,17 @@
             <p class="h1">
                 Update Privacy Policy
             </p>
-            <client-only>
-                <t-editor ref="editor" v-model="txt"></t-editor>
-            </client-only>
-            <a-button class="mt-1" type="primary" @click="update">
-                <spin-or-text v-model="loadingBtn">
-                    Update privacy Policy
-                </spin-or-text>
-            </a-button>
+            <a-skeleton v-if="loading"></a-skeleton>
+            <div v-else>
+                <client-only>
+                    <t-editor ref="editor" v-model="txt"></t-editor>
+                </client-only>
+                <a-button class="mt-1" type="primary" @click="update">
+                    <spin-or-text v-model="loadingBtn">
+                        Update privacy Policy
+                    </spin-or-text>
+                </a-button>
+            </div>
         </a-col>
     </a-row>
 </div>
@@ -42,6 +45,7 @@ export default {
         return {
             loadingBtn: false,
             txt: '',
+            loading: true,
         }
     },
     mounted(){
@@ -50,6 +54,10 @@ export default {
                 const t = data.prpo_text
                 this.$refs.editor.editor.commands.setContent(t)
             }
+        }).finally(()=>{
+            setTimeout(()=>{
+                this.loading = false
+            }, 600)
         })
     },
     methods: {
@@ -58,9 +66,9 @@ export default {
             this.$api.put('/content/privacy-policy', {
                 txt: this.txt,
             }).then(()=>{
-                this.$message.success('Content has been updated successfully')
+                this.$toast.success('Content has been updated successfully')
             }).catch(()=>{
-                this.$message.error('There was a problem. Please try again later.')
+                this.$toast.error('There was a problem. Please try again later.')
             }).finally(()=>{
                 this.loadingBtn = false
             })

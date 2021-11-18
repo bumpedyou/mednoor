@@ -42,7 +42,8 @@
                 </a-form>
             </a-col>
             <a-col :xs="24" :sm="24">
-                <a-table :columns='columns' :data-source='items'>
+                <a-skeleton v-if="loadingData"/>
+                <a-table v-else :columns='columns' :data-source='items'>
                     <div slot='patient' slot-scope='text, record'>
                         {{ record.user_first_name }} {{ record.user_last_name }}
                     </div>
@@ -100,6 +101,7 @@ export default {
         loadingPdf: false,
         printing: null,
         searchTerm: '',
+        loadingData: false,
     }),
     watch: {
         searchTerm: debounce(function (v){
@@ -109,7 +111,6 @@ export default {
                     search: v,
                 }
             }).then(({data})=>{
-                console.log('Search results', data)
                 this.items = data
             })
         }, 500),
@@ -162,7 +163,6 @@ export default {
             });
         },
         handleChange(v){
-            console.log('Handle change!', v)
             this.setColumns()
         },
         setColumns(){
@@ -237,13 +237,15 @@ export default {
                     scopedSlots: {customRender: 'actions'}
                 })
             }
+            this.loadingData = true
             this.$api.get('/medical-record', {
                 params: {
                     type: this.type
                 }
             }).then(({data})=>{
                 this.items = data
-                console.log(this.items)
+            }).finally(()=>{
+                this.loadingData = false
             })
         }
     }

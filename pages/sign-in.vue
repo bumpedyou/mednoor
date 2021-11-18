@@ -1,11 +1,6 @@
 <template>
   <div>
-    <a-row>
-      <a-col v-if="!isSmall" :xs="24" :sm="24" :md="12">
-        <BackgroundItem :file="file" source="api"  height="calc(100vh - 50px)"></BackgroundItem>
-      </a-col>
-      <a-col :xs="24" :sm="24" :md="12">
-        <a-row>
+      <a-row>
           <a-col class="pa-1 mt-3" :xs="24" :sm="24" :md="{span: 20, offset: 2}" :lg="{span: 16, offset: 4}">
             <a-card>
               <div class="mednoor-heading-svg">
@@ -67,10 +62,7 @@
               </a-form>
             </a-card>
           </a-col>
-        </a-row>
-
-      </a-col>
-    </a-row>
+      </a-row>
     <RequestModal ref='rmodal'></RequestModal>
   </div>
 </template>
@@ -86,6 +78,7 @@ export default {
     SpinOrText
   },
   mixins: [breakpoints],
+  layout: 'home',
   middleware: ['unauthenticated'],
   data() {
     return {

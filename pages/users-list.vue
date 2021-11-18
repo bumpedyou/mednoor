@@ -104,7 +104,6 @@ export default {
   },
   watch: {
     query(v) {
-      console.log('Query', v)
       this.setView()
       this.loadItems()
     }
@@ -118,9 +117,7 @@ export default {
       this.$router.push('/add-user')
     },
     loadItems() {
-      console.log('Loading items')
       this.loading = true
-      console.log('Get users with view', this.view)
       this.$api.get('/user', {
         params: {
           view: this.view
@@ -136,7 +133,6 @@ export default {
     setView() {
       if (this.$route.query) {
         const q = this.$route.query
-        console.log('Query is ', q)
         if (q.view && ['users', 'professionals'].includes(q.view.toLowerCase())) {
           this.view = q.view.toLowerCase()
         } else {
@@ -145,7 +141,6 @@ export default {
       } else {
         this.view = 'users'
       }
-      console.log('Set view!', this.view)
     },
     askConfirmation(uuid) {
       this.uuid = uuid
