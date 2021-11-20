@@ -68,6 +68,15 @@ export default {
                     btnText: 'Update',
                     icon: 'file-protect',
                     type: 'old-rose',       
+                },
+                {
+                    shortTitle: 'Pages',
+                    cardTitle: 'Pages',
+                    to: '/pages',
+                    cardDescription: "Pages",
+                    btnText: 'Pages',
+                    icon: 'file',
+                    type: 'raisin-black',       
                 })
             }
             return i

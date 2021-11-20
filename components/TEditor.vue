@@ -1,41 +1,38 @@
 <template>
 <div>
-        <div v-if="editor">
-        <button :class="{ 'is-active': editor.isActive('heading', { level: 1 }) }" @click="editor.chain().focus().toggleHeading({ level: 1 }).run()">
+    <div v-if="editor" class="editor-contols">
+        <button v-if="showH1" type="button" :class="{ 'is-active': editor.isActive('heading', { level: 1 }) }" @click="editor.chain().focus().toggleHeading({ level: 1 }).run()">
             h1
         </button>
-        <button :class="{ 'is-active': editor.isActive('heading', { level: 2 }) }" @click="editor.chain().focus().toggleHeading({ level: 2 }).run()">
+        <button type="button" :class="{ 'is-active': editor.isActive('heading', { level: 2 }) }" @click="editor.chain().focus().toggleHeading({ level: 2 }).run()">
             h2
         </button>
-        <button :class="{ 'is-active': editor.isActive('heading', { level: 3 }) }" @click="editor.chain().focus().toggleHeading({ level: 3 }).run()">
+        <button type="button" :class="{ 'is-active': editor.isActive('heading', { level: 3 }) }" @click="editor.chain().focus().toggleHeading({ level: 3 }).run()">
             h3
         </button>
-        <button :class="{ 'is-active': editor.isActive('paragraph') }" @click="editor.chain().focus().setParagraph().run()">
+        <button type="button" :class="{ 'is-active': editor.isActive('paragraph') }" @click="editor.chain().focus().setParagraph().run()">
             paragraph
         </button>
-        <button :class="{ 'is-active': editor.isActive('bold') }" @click="editor.chain().focus().toggleBold().run()">
-            bold
+        <button type="button" :class="{ 'is-active': editor.isActive('bold') }" @click="editor.chain().focus().toggleBold().run()">
+            <a-icon type="bold" />
         </button>
-        <button :class="{ 'is-active': editor.isActive('italic') }" @click="editor.chain().focus().toggleItalic().run()">
-            italic
+        <button type="button" :class="{ 'is-active': editor.isActive('italic') }" @click="editor.chain().focus().toggleItalic().run()">
+            <a-icon type="italic" />
         </button>
-        <button :class="{ 'is-active': editor.isActive('strike') }" @click="editor.chain().focus().toggleStrike().run()">
-            strike
+        <button type="button" :class="{ 'is-active': editor.isActive('strike') }" @click="editor.chain().focus().toggleStrike().run()">
+            <a-icon type="strikethrough" />
         </button>
-        <button :class="{ 'is-active': editor.isActive('highlight') }" @click="editor.chain().focus().toggleHighlight().run()">
-            highlight
+        <button type="button" :class="{ 'is-active': editor.isActive('highlight') }" @click="editor.chain().focus().toggleHighlight().run()">
+            <a-icon type="highlight" />
         </button>
-        <button :class="{ 'is-active': editor.isActive({ textAlign: 'left' }) }" @click="editor.chain().focus().setTextAlign('left').run()">
-            left
+        <button type="button" @click="addImage">
+            <a-icon type="file-image" />
         </button>
-        <button :class="{ 'is-active': editor.isActive({ textAlign: 'center' }) }" @click="editor.chain().focus().setTextAlign('center').run()">
-            center
+        <button type="button" :class="{ 'is-active': editor.isActive('bulletList') }" @click="editor.commands.toggleBulletList()">
+          <a-icon type="unordered-list" />
         </button>
-        <button :class="{ 'is-active': editor.isActive({ textAlign: 'right' }) }" @click="editor.chain().focus().setTextAlign('right').run()">
-            right
-        </button>
-        <button :class="{ 'is-active': editor.isActive({ textAlign: 'justify' }) }" @click="editor.chain().focus().setTextAlign('justify').run()">
-            justify
+        <button type="button" :class="{ 'is-active': editor.isActive('orderedList') }" @click="editor.commands.toggleOrderedList()">
+          <a-icon type="ordered-list" />
         </button>
     </div>
     <editor-content v-model="localValue" :editor="editor" class="TEditor">
@@ -54,7 +51,14 @@ import StarterKit from '@tiptap/starter-kit'
 import TextAlign from '@tiptap/extension-text-align'
 // eslint-disable-next-line import/no-named-as-default
 import Highlight from '@tiptap/extension-highlight'
+// eslint-disable-next-line import/no-named-as-default
+import Image from '@tiptap/extension-image'
+// eslint-disable-next-line import/no-named-as-default
+import BulletList from '@tiptap/extension-bullet-list'
+// eslint-disable-next-line import/no-named-as-default
+import OrderedList from '@tiptap/extension-ordered-list'
 import vmodelMixin from '~/mixins/vmodelMixin'
+
 
 export default {
   name: "TEditor",
@@ -63,6 +67,13 @@ export default {
   },
   mixins: [vmodelMixin],
 
+  props: {
+    enableH1: {
+      type: Boolean,
+      default: true,
+    }
+  },
+
   data() {
     return {
       editor: null,
@@ -70,6 +81,9 @@ export default {
   },
 
   computed :{
+    showH1(){
+      return this.$props.enableH1
+    },
     content (){
       if (this.editor){
         return this.editor.getHTML()
@@ -89,7 +103,10 @@ export default {
       extensions: [
         StarterKit,
         TextAlign,
-        Highlight
+        Highlight,
+        Image,
+        BulletList,
+        OrderedList
       ],
     })
   },
@@ -101,6 +118,13 @@ export default {
     setHTML(data){
       this.editor.setHTML(data)
     },
+     addImage() {
+      const url = window.prompt('URL')
+
+      if (url) {
+        this.editor.chain().focus().setImage({ src: url }).run()
+      }
+    },
   },
 }
 </script>
@@ -109,7 +133,9 @@ export default {
 
 .TEditor 
   div
+    margin-top: 0
     border: 2px solid $mdn-raisin-black
+    border-top: 0
     min-height: 300px
 
 
@@ -167,5 +193,19 @@ export default {
     margin: 2rem 0
 
 
-
+.editor-contols
+  border: 2px solid $mdn-raisin-black
+  margin-bottom: 0
+  display: flex
+  button
+    margin: 0
+    display: inline-flex
+    outline: 0
+    border: 0
+    background: #fff
+    justify-content: center
+    align-items: center
+  button.is-active
+    background: #011F4B
+    color: #fff
 </style>

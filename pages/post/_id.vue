@@ -1,0 +1,95 @@
+<template>
+    <div class="pa-1 mh-100v">
+        <a-row>
+            <a-col :xs="24" :md="{span: 12, offset: 6}">
+               <a-skeleton v-if="loading"/>
+               <div v-else-if="not_found">
+                   <p class="h1 text-center">
+                       Not Found
+                   </p>
+                   <p class="text-center">
+                       The post that you were looking for does not exist or it was deleted.
+                   </p>
+                   <p class="text-center">
+                    <nuxt-link to="/">
+                        Home
+                    </nuxt-link>
+                   </p>
+               </div>
+               <div v-else>
+                   <main>
+                        <h1 class="ml-0 pl-0">{{data.page_title}}</h1>
+                        <p class='mb-0 d-flex text-muted mt-1 mb-1'>
+                            <span class="mr-auto d-flex">Publication Date: {{dateStringDate(data.page_createdAt)}}</span>
+                            <span v-if="data.page_createdAt !== page_updated_at" class="ml-auto d-flex">Last Updated: {{dateStringDate(data.page_updated_at)}}</span>
+                        </p>
+                        <hr>
+                        <!-- eslint-disable vue/no-v-html -->
+                        <pre v-html="data.page_content"></pre>
+                        <!--eslint-enable-->
+                        <p class="text-muted">
+                            Share 
+                        </p>
+                        <div class="share-links">
+                            <a :href="shareTwitter" target="_blank">
+                                <a-icon type="twitter" />
+                            </a>
+                            <a :href="shareFb" target="_blank">
+                                <a-icon type="facebook" />
+                            </a>
+                            <a :href="shareLd" target="_blank">
+                                <a-icon type="linkedin" />
+                            </a>
+                        </div>
+                   </main>
+               </div>
+            </a-col>
+        </a-row>
+    </div>
+</template>
+<script>
+import dateMixin from '~/mixins/dateMixin'
+
+export default {
+    mixins: [dateMixin],
+    data (){
+        return {
+            title: '',
+            uuid: null,
+            loading: true,
+            not_found: false,
+            data: [],
+        }
+    },
+    computed: {
+        url(){
+            console.log(process.env)
+            return process.env.BASE_URL + '/page/' + this.uuid
+        },
+        shareTwitter(){
+            return 'https://twitter.com/intent/tweet?text=' + this.url
+        },
+        shareFb(){
+            return 'https://www.facebook.com/sharer/sharer.php?u=' +encodeURIComponent(this.url)
+        },
+        shareLd(){
+            return 'https://www.linkedin.com/sharing/share-offsite/?url=' +encodeURIComponent(this.url)
+        },
+    },
+    mounted(){
+        this.uuid = this.$route.params.id
+        this.loading = true
+        
+        this.$api.get('/page/' + this.uuid).then(({data})=>{
+            this.loading = false
+            this.data = data
+        }).catch(()=>{
+            this.uuid = null
+            this.not_found = true
+            this.loading = false
+        })
+    },
+    methods:{
+    },
+}
+</script>

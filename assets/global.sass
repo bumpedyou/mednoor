@@ -36,6 +36,11 @@ h6, .h6
 .d-none
   display: none !important
 
+.share-links
+  i
+    font-size: 2rem !important
+    margin-right: 1rem
+
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6
   margin-bottom: 0
   color: #000000
@@ -67,11 +72,19 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6
 .ant-btn.ant-btn-primary
   background: $mdn-primary
 
+.mr-auto
+  margin-right: auto
+.ml-auto
+  margin-left: auto
+
 b
   color: #333
 
 b.b-white
   color: #ffffff !important
+
+.d-flex
+  display: flex !important
 
 
 .text-center
@@ -141,6 +154,13 @@ hr
     background: $mdn-green
     color: #FFFFFF
 
+
+.card-raisin-black
+  .ant-card-head
+    background: $mdn-raisin-black
+    color: #FFFFFF
+
+
 .ant-btn.ant-btn-old-rose
   background: $mdn-old-rose
   color: #ffffff
@@ -168,6 +188,19 @@ hr
   .anticon 
     svg
       width: 9px !important
+
+pre
+  table-layout: fixed
+  width: 100%
+  display: table
+  white-space: -moz-pre-wrap /* Mozilla, supported since 1999 */
+  white-space: -pre-wrap /* Opera */
+  white-space: -o-pre-wrap /* Opera */
+  white-space: pre-wrap /* CSS3 - Text module (Candidate Recommendation) http://www.w3.org/TR/css3-text/#white-space */
+  word-wrap: break-word /* IE 5.5+ */
+
+.text-muted
+  color: $mdn-light-grey
 
 @media screen and (min-width: $md)
   h1, .h1

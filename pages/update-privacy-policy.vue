@@ -1,6 +1,6 @@
 <template>
 <div class="pa-1 mh-100v">
-      <a-row class="mb-1">
+    <a-row class="mb-1">
       <a-col>
             <a-breadcrumb>
             <a-breadcrumb-item><nuxt-link to="/dashboard">Dashboard</nuxt-link></a-breadcrumb-item>
