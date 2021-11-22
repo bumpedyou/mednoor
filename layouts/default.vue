@@ -35,8 +35,6 @@ export default {
       }
     }
   },
-  mounted(){
-  },
   methods: {
     listen() {
       this.socket = this.$nuxtSocket({ persist: 'defaultSocket' })
@@ -45,11 +43,7 @@ export default {
         await this.$auth.fetchUser()
         this.user_was_updated()
       })
-      this.socket.on('new-message', ()=>{
-        // this.playNotification()
-      })
       this.socket.on('user-reload', ()=>{
-        console.log('on user reload')
         this.getChats(true)
       })
     }

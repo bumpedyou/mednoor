@@ -9,11 +9,7 @@
           <nuxt></nuxt>
         </div>
         <div class='lang-container'>
-          <nuxt-link :to="switchLocalePath('es')">Spanish</nuxt-link>
-          <span style='margin-left: 0.5rem; margin-right: 0.5rem'>
-            |
-          </span>
-          <nuxt-link :to="switchLocalePath('en')">English</nuxt-link>
+          <flags-picker></flags-picker>
         </div>
       </a-col>
     </a-row>
@@ -22,8 +18,10 @@
 
 <script>
 import breakpoints from '~/mixins/breakpoints'
+import FlagsPicker from '~/components/FlagsPicker'
 
 export default {
+  components: { FlagsPicker },
   mixins: [breakpoints],
   data() {
     return {
@@ -37,14 +35,12 @@ export default {
         this.file = 'hs/' + data.screen.hosc_file
       }
     }).catch((e) => {
-      console.log('Failed to get the home scren', e)
+      console.log('Failed to get the home screen', e)
     })
   },
   mounted() {
     this.mounted = true
   },
-  methods: {
-  }
 }
 </script>
 <style lang='sass'>
@@ -55,5 +51,4 @@ export default {
     margin-top: auto
     display: flex
     justify-content: center
-
 </style>

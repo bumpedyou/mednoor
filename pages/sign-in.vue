@@ -124,6 +124,7 @@ export default {
                   }
                 })
                 .then(() => {
+                  this.$router.push(this.localePath('/welcome'))
                   console.log('Success')
                 })
                 .catch((e) => {

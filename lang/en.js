@@ -196,6 +196,21 @@ export default {
   ch_lis_upd: 'Chat list updated',
   ych_hb_upd: 'Your chat list has been updated.',
   go_emr: 'Go to EMR',
+  dont_h_chats: 'You do not have chats.',
+  dont_h_users: 'You do not have any users right now.',
+  th_uina: 'This user is not allowed to send you messages.',
+  allow: 'Allow',
+  you_htw_acc: 'You have to wait until the professional accepts to chat with you.',
+  typing: 'Typing',
+  upload: 'Upload',
+  dont_h_urs_rn: 'You do not have any chats right now.',
+  do_y_wnt_all: 'Do you want to allow this user to chat with you?',
+  ifys: 'If you save this chat as PDF, the chat will be erased and the pdf version of the chat will be available on the "My Previous Chats" section.',
+  chnts: 'Chat not selected',
+  slchf: 'Please select a chat first.',
+  not_allw: 'Not allowed',
+  yh_tw: 'You have to wait you be allowed to send messages to this professional.',
+  new_chreq: 'New chat request',
   v: {
     email_req: 'Email is required',
     ln_req: 'Last Name is required',
@@ -230,5 +245,6 @@ export default {
     index: 'Mednoor is an Online Medical Center where people can chat in real time with Doctors.',
     sign_in: 'Sign in to you Mednoor account.',
     sign_up: 'Sign up to our Online Medical Center',
+    chat: 'Chat with professionals in the online medical center.',
   }
 }

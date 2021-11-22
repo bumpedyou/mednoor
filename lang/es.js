@@ -196,6 +196,21 @@ export default {
   ch_lis_upd: 'Lista de chats actualizada',
   ych_hb_upd: 'Su lista de chat ha sido actualizada',
   go_emr: 'Ir a EMR',
+  dont_h_chats: 'No tiene chats',
+  dont_h_users: 'No tiene usuarios por el momento',
+  th_uina: 'Este usuario no tiene permitido enviarle mensajes',
+  allow: 'Admitir',
+  you_htw_acc: 'Tiene que esperar a que el profesional acepte chatear con usted.',
+  typing: 'Escribiendo',
+  upload: 'Subir',
+  dont_h_urs_rn: 'No tiene chats por el momento.',
+  do_y_wnt_all: '¿Desea permitir que este usuario chatee con usted?',
+  ifys: 'Si guarda este chat como PDF, el chat será eliminado y el pdf estará disponible en la sección "Mis chats anteriores"',
+  chnts: 'Chat no selecionado',
+  slchf: 'Por favor seleccione un chat primero',
+  not_allw: 'No admitido',
+  yh_tw: 'Tiene que esperar hasta que sea admitido para mandar mensajes a este profesional.',
+  new_chreq: 'Nueva solicitud de chat',
   v: {
     email_req: 'El email es requerido',
     ln_req: 'El apellido es requerido',
@@ -229,5 +244,6 @@ export default {
     index: 'Mednoor es un centro médico online dónde la gente puede chatear en tiempo real con Doctores',
     sign_in: 'Ingrear a mi cuenta de Mednoor',
     sign_up: 'Registrarse en el contro Médico Mednoor',
+    chat: 'Chatear con un profesional en el centro médico Mednoor.',
   }
 }

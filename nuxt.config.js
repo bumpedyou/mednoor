@@ -41,16 +41,14 @@ export default {
   i18n: {
     strategy: 'prefix',
     locales: [
-      { code: 'en', iso: 'en-US', file: 'en.js', dir: 'ltr' },
-      { code: 'es', iso: 'es-MX', file: 'es.js', dir: 'ltr' },
+      { name: 'Español', code: 'en', iso: 'en-US', file: 'en.js'},
+      { name: 'English', code: 'es', iso: 'es-MX', file: 'es.js'},
     ],
     defaultLocale: 'en',
     vueI18n: {
       fallbackLocale: 'en',
     },
     langDir: 'lang/',
-    parsePages: false,
-    detectBrowserLanguage: false,
   },
 
   googleFonts: {
@@ -107,11 +105,12 @@ export default {
       },
     },
     redirect: {
-      login: '/en/sign-in',
-      logout: '/en/sign-out',
-      callback: '/en',
-      home: '/en/welcome',
+      login: '/sign-in',
+      logout: '/sign-out',
+      callback: '/',
+      home: '/welcome',
     },
+    plugins: [ '~/plugins/auth.js' ]
   },
 
   env: {

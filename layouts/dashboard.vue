@@ -44,7 +44,6 @@ export default {
     },
     mounted(){
         this.path = this.$route.path
-        console.log('Path is', this.path, this.$route)
     },
     methods: {
         close(){

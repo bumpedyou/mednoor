@@ -12,7 +12,7 @@
           <div class='moderators'>
             <div class='chat-item-title'>
               <b class='h3'>
-                Chats
+                {{$t('chats')}}
               </b>
             </div>
             <a-skeleton v-if='loadingItems' class='pa-1'></a-skeleton>
@@ -22,11 +22,11 @@
               </div>
               <div v-else class='pa-1'>
                 <div v-if='isUser'>
-                  You do not have chats.
-                  <nuxt-link :to="localePath('/professionals')">Professionals Available</nuxt-link>
+                  {{$t('dont_h_chats')}}
+                  <nuxt-link :to="localePath('/professionals')"> <a-divider type='vertical'/>{{ $t('av_prof') }}</nuxt-link>
                 </div>
                 <div v-else-if='isModerator'>
-                  You do not have any users right now.
+                  {{ $t('dont_h_users') }}
                 </div>
               </div>
             </div>
@@ -41,7 +41,7 @@
                     {{ userName }}
                   </div>
                   <div class='mr-1'>
-                    Professional: {{ professionalName }}
+                    {{$t('professional')}}: {{ professionalName }}
                   </div>
                   <img :src="require('~/static/icon/video.svg')" alt='video icon' @click='showVideo'>
                   <img :src="require('~/static/icon/close.svg')" alt='close icon' @click='leaveChat'>
@@ -50,20 +50,19 @@
                   <div v-if='!allowed && to && !isAdmin' class='messages-overlay'>
                     <div v-if='isModerator'>
                       <p class='h3 text-center'>
-                        This user is not allowed to send you messages.
+                        {{$t('th_uina')}}
                       </p>
                       <div class='flex-center'>
-                        <a-button type='primary' @click='allowChat'>Allow</a-button>
+                        <a-button type='primary' @click='allowChat'>{{$t('allow')}}</a-button>
                       </div>
                     </div>
                     <div v-else-if='isUser'>
                       <p class='h3 text-center'>
-                        You have to wait until the professional accepts to chat with you.
+                        {{$t('you_htw_acc')}}
                       </p>
                     </div>
                   </div>
                   <div v-for='(msg, i) in messages' :key="'msg-' + i" :ref="'msg-' + i" :class='messageClass(msg)'>
-
                     <span v-if='msg'>
                       {{ msg.message }}
                     </span>
@@ -97,7 +96,7 @@
             <div v-if="toIsTyping" class="typing-indicator">
               <div class="typing-wrapper">
                 <div>
-                Typing
+                  {{ $t('typing') }}
                 </div>
                 <div class="snippet" data-title=".dot-typing">
                   <div class="stage">
@@ -115,7 +114,7 @@
               </a-button>
               <a-button type='primary' @click='uploadFile'>
                 <a-icon type='upload' />
-                Upload
+                {{$t('upload')}}
               </a-button>
             </div>
             <div class='chat-controls'>
@@ -137,7 +136,7 @@
         <div v-else-if='isSmall'>
           <div v-if="moderators.length <= 0">
             <p class="text-center pa-1">
-              You do not have any chats right now.
+              {{$t('dont_h_urs_rn')}}
             </p>
           </div>
           <ChatItems :data='moderators' :selected-chat='to' @open-chat='openChat'></ChatItems>
@@ -153,7 +152,7 @@
         @ok='handleOk'
         @cancel='handleCancel'
       >
-        <p>Do you want to allow this user to chat with you?</p>
+        <p>{{$t('do_y_wnt_all')}}</p>
       </a-modal>
       <a-modal
         title='Save chat'
@@ -162,10 +161,7 @@
         @ok='saveChatAsPdf'
         @cancel='handleCancel'
       >
-        <p>
-          If you save this chat as PDF, the chat will be erased and the pdf version of the chat will be available on the
-          "My Previous Chats" section.
-        </p>
+        <p>{{$t('ifys')}}</p>
       </a-modal>
       <a ref='downloadUrl' :href='downloadUrl' :download='downloadUrl' target='_blank' class='d-none'></a>
     </div>
@@ -221,11 +217,10 @@ export default {
     return {
       title: 'Mednoor',
       meta: [
-        // hid is used as unique identifier. Do not use `vmid` for it as it will not work
         {
           hid: 'description',
           name: 'description',
-          content: 'Chat with professionals in the online medical center.'
+          content: this.$t('seo.chat')
         }
       ]
     }
@@ -289,7 +284,6 @@ export default {
     pdfAreaClass() {
       const c = []
       if (this.savingPdf) {
-        // position fixed does not look good when we try to save the pdf. So .saving-pdf will override styles while saving.
         c.push('saving-pdf')
       }
       return c.join(' ')
@@ -478,9 +472,9 @@ export default {
       if (!this.to) {
         const h = this.$createElement
         this.$info({
-          title: 'Chat not selected',
+          title: this.$t('chnts'),
           content: h('div', {}, [
-            h('p', 'Please select a chat first.')
+            h('p', this.$t('slchf'))
           ]),
           onOk() {
           }
@@ -511,9 +505,9 @@ export default {
       } else {
         const h = this.$createElement
         this.$info({
-          title: 'Not allowed',
+          title: this.$t('not_allw'),
           content: h('div', {}, [
-            h('p', 'You have to wait you be allowed to send messages to this professional.')
+            h('p', this.$t('yh_tw'))
           ]),
           onOk() {
           }
@@ -532,7 +526,7 @@ export default {
                 this.scrollMessagesSection()
                 setTimeout(() => {
                   this.scrollMessagesSection()
-                }, 500)
+                }, 600)
               })
             })
           }
@@ -551,8 +545,8 @@ export default {
       this.socket.emit('join-room', this.myID)
       this.socket.on('chat-request', () => {
         this.openNotification({
-          title: 'New chat request',
-          description: 'You have a new chat request'
+          title: this.$t('new_chreq'),
+          description: this.$t('new_chreq')
         })
       })
 
@@ -564,17 +558,9 @@ export default {
         }
         this.openNotification()
       })
-      this.socket.on('open-chat', (data) => {
-        /*
-        if (!this.to) {
-          // Open chat only when other chat is not selected
-          this.to = data.from
-        } */
 
-      })
       this.socket.on('new-message', (data) => {
         this.playNotification()
-        // this.mergeWithConversations(true)
         if (data.from !== this.to) {
           this.moderators = this.moderators.map((eme) => {
             if ((eme.mypr_proffesional !== undefined || eme.mypr_uuid !== undefined || eme.user_uuid !== undefined) && data.from !== undefined) {
