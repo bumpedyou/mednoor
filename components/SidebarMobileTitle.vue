@@ -23,8 +23,4 @@ export default {
     &:hover
       cursor: pointer
 
-//@media screen and (min-width: $md)
-//  .sidebar-mobile-title
-//    display: none
-
 </style>

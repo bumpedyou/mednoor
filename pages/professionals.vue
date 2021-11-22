@@ -1,7 +1,7 @@
 <template>
   <a-row class="ma-1 mh-100v">
     <a-col>
-      <h1>Available Professionals</h1>
+      <h1>{{$t('av_prof')}}</h1>
       <a-skeleton v-if='loading' />
       <a-table v-else-if='users.length > 0' :columns='columns' :data-source='users'>
         <div slot='full_name' slot-scope='text, record'>
@@ -10,18 +10,18 @@
         <div slot='action' slot-scope='text, record'>
           <span v-if='record.mypr_id'>
             <span v-if='record.mypr_allowed'>
-              Your request has been accepted.
+              {{$t('chat_acc')}}
             </span>
             <span v-else>
-              Chat Request Sent
+              {{$t('chat_sent')}}
             </span>
           </span>
-          <a v-else @click='save(record.user_uuid)'>Send Chat Request</a>
+          <a v-else @click='save(record.user_uuid)'>{{$t('send_chat')}}</a>
         </div>
       </a-table>
       <div v-else>
         <p>
-          No data available at the moment.
+          {{$t('no_data_av')}}
         </p>
       </div>
     </a-col>
@@ -30,13 +30,13 @@
     </a-col>
     <a-col>
       <a-modal
-        title='Confirm action'
+        :title="$t('conf_action')"
         :visible='visible'
         :confirm-loading='confirmLoading'
         @ok='handleOk'
         @cancel='handleCancel'
       >
-        <p>Do you want to send a chat request to this user?</p>
+        <p>{{$t('conf_send_ch')}}</p>
       </a-modal>
     </a-col>
   </a-row>
@@ -53,32 +53,34 @@ export default {
   },
   mixins: [authMixin],
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified'],
-  data: () => ({
-    visible: false,
-    columns: [
-      {
-        title: 'Full Name',
-        dataIndex: 'user_first_name',
-        key: 'user_first_name',
-        slots: { title: 'Full Name' },
-        scopedSlots: { customRender: 'full_name' }
-      },
-      {
-        title: 'Action',
-        key: 'action',
-        scopedSlots: { customRender: 'action' }
-      }
-    ],
-    users: [],
-    loading: true,
-    confirmLoading: false,
-    uuid: '',
-    action: '',
-    socket: null,
-  }),
+  data (){
+    return {
+      visible: false,
+      columns: [
+        {
+          title: this.$t('full_name'),
+          dataIndex: 'user_first_name',
+          key: 'user_first_name',
+          slots: { title: this.$t('full_name') },
+          scopedSlots: { customRender: 'full_name' }
+        },
+        {
+          title: this.$t('action'),
+          key: 'action',
+          scopedSlots: { customRender: 'action' }
+        }
+      ],
+      users: [],
+      loading: true,
+      confirmLoading: false,
+      uuid: '',
+      action: '',
+      socket: null,
+    }
+  },
   head() {
     return {
-      title: 'Professionals',
+      title: this.$t('profs'),
     }
   },
   mounted() {
@@ -111,7 +113,6 @@ export default {
         this.$api.post('/my-professional', {
           professional: this.uuid
         }).then(() => {
-          console.log('then. getModerators')
           this.getModerators()
         }).catch((err) => {
           this.$refs.rmodal.$emit('error', err)
@@ -122,7 +123,6 @@ export default {
       }
     },
     save(uuid) {
-      console.log('Save --->', uuid)
       this.uuid = uuid
       this.action = 'save'
       this.visible = true
@@ -136,7 +136,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

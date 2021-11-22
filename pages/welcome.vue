@@ -1,26 +1,24 @@
 <template>
-<div>
-
-</div>
+<div></div>
 </template>
 
 <script>
 export default {
   name: 'Welcome',
-  middleware({ $auth, store, redirect}) {
+  middleware({ $auth, store, redirect, localePath}) {
+    console.log(localePath)
     if (!$auth.loggedIn) {
-      return redirect('/')
+      return redirect(localePath('/'))
     }else{
       const role = $auth.user.role.toLowerCase()
-      console.log('Role is',role)
       if (role === 'admin' || role === 'super'){
-        return redirect('/dashboard')
+        return redirect(localePath('/dashboard'))
       }else if (role === 'moderator'){
-        return redirect('/dashboard')
+        return redirect(localePath('/dashboard'))
       }else if (role === 'user'){
-        return redirect('/')
+        return redirect(localePath('/'))
       }else{
-        return redirect('/')
+        return redirect(localePath('/'))
       }
     }
   },
@@ -31,7 +29,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-
-</style>

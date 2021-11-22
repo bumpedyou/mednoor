@@ -9,24 +9,20 @@ export default {
   middleware: ['authenticated', 'verified'],
   head() {
     return {
-      title: 'Home',
+      title: this.$t('home'),
       meta: [
         {
           hid: 'description',
           name: 'description',
-          content: 'Mednoor is an Online Medical Center where people can chat in real time with Doctors.'
+          content: this.$t('seo.index')
         },
         {
           hid: 'og:description',
           name: 'og:description',
-          content: 'Mednoor is an Online Medical Center where people can chat in real time with Doctors.'
+          content: this.$t('seo.index')
         }
       ]
     }
   },
 }
 </script>
-<style scoped lang='sass'>
-
-
-</style>

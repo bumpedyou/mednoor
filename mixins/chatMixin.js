@@ -18,7 +18,6 @@ export default {
             let exists = false
             this.moderators.forEach((mod) => {
               const mid = mod.user_uuid
-              // const mid = this.$auth.user.uuid
               if (mid === item.u1_uuid || mid === item.u2_uuid) {
                 exists = true
               }
@@ -56,21 +55,6 @@ export default {
     getChats(addMessages) {
       if (this.isLoggedIn) {
         this.loadingItems = true
-        /*
-        if (this.isAdmin) {
-          this.$api
-            .get('/user')
-            .then(({ data }) => {
-              this.moderators = data
-              this.mergeWithConversations(addMessages)
-            })
-            .catch((e) => {
-              this.$refs.rmodal.$emit('error', e)
-            })
-            .finally(() => {
-              this.loadingItems = false
-            })
-        } else */
         if(this.isAdmin){
           this.mergeWithConversations()
         }else if (this.isModerator) {
@@ -78,7 +62,6 @@ export default {
             .get('/my-professional/my-users/')
             .then(({ data }) => {
               this.moderators = data
-              // this.mergeWithConversations()
             })
             .catch((e) => {
               this.$refs.rmodal.$emit('error', e)
@@ -91,7 +74,6 @@ export default {
             .get('/my-professional')
             .then(({ data }) => {
               this.moderators = data
-              // this.mergeWithConversations()
             })
             .catch((e) => {
               this.$refs.rmodal.$emit('error', e)
@@ -108,8 +90,8 @@ export default {
     openNotification(data) {
       data = data || {}
       this.$notification.open({
-        message: data.title || 'Chat list updated',
-        description: data.description || 'Your chat list has been updated.',
+        message: data.title || this.$t('ch_lis_upd'),
+        description: data.description || this.$t('ych_hb_upd'),
         style: {
           width: '600px',
           marginLeft: `${335 - 600}px`,

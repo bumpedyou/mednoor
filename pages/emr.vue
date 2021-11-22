@@ -3,23 +3,23 @@
         <a-row class="mb-1">
           <a-col>
                 <a-breadcrumb>
-                  <a-breadcrumb-item><nuxt-link to="/dashboard">Dashboard</nuxt-link>
-                  </a-breadcrumb-item><a-breadcrumb-item>EMR</a-breadcrumb-item>
+                  <a-breadcrumb-item><nuxt-link :to="localePath('/dashboard')">{{$t('dashboard')}}</nuxt-link>
+                  </a-breadcrumb-item><a-breadcrumb-item>{{$t('emr')}}</a-breadcrumb-item>
               </a-breadcrumb>
           </a-col>
         </a-row>
         <a-row>
             <a-col :xs="24" :sm="24">
                 <p class="h1">
-                    Electronic Medical Record
+                    {{$t('emr_lng')}}
                 </p>
-                <a-button type="success" class="mb-1" @click="$router.push('/new-emr')">
+                <a-button type="success" class="mb-1" @click="$router.push(localePath('/new-emr'))">
                     <a-icon type="medicine-box"></a-icon>
-                    New EMR 
+                    {{$t('new_emr')}}
                 </a-button>
-                <a-button type="raisin-black" class="mb-1" @click="$router.push({path: '/new-emr', query: {type: 'template'}})">
+                <a-button type="raisin-black" class="mb-1" @click="$router.push({path: localePath('/new-emr'), query: {type: 'template'}})">
                     <a-icon type="medicine-box"></a-icon>
-                    New Template
+                    {{$t('new_template')}}
                 </a-button>
             </a-col>
             <a-col :xs=24 class="mb-1">
@@ -28,15 +28,15 @@
                         <a-col :md="{span: 3}" :lg="{span: 2}">
                             <a-select v-model="type" style="width: 120px" @change="handleChange">
                                 <a-select-option value="record">
-                                    Record
+                                    {{$t('record')}}
                                 </a-select-option>
                                 <a-select-option value="template">
-                                    Template
+                                    {{$t('template')}}
                                 </a-select-option>
                             </a-select>
                         </a-col>
                         <a-col :md="{span: 6}">
-                            <a-input v-model="searchTerm" :placeholder="type === 'record' ? 'Search by MRN, Name, Or Date' : 'Search by template name'" />
+                            <a-input v-model="searchTerm" :placeholder="type === 'record' ? $t('search_pl1') : $t('search_pl2')" />
                         </a-col>
                     </a-row>
                 </a-form>
@@ -49,21 +49,21 @@
                     </div>
                     <div slot="actions" slot-scope='text, record'>
                         <nuxt-link :to="{
-                            path: '/new-emr',
+                            path: localePath('/new-emr'),
                             query: {
                                 mere: record.mere_uuid
                             }
-                        }">Edit</nuxt-link>
+                        }">{{$t('edit')}}</nuxt-link>
                         <span v-if="record.user_uuid && (isAdmin || isSuper || myUserId === record.mere_owner)">
                             <a-divider type='vertical' />
                             <a href="javascript:void(0)"  type="old-rose" @click="printRecord(record.mere_uuid)">
                                 <SpinOrText :value="isPdfLoading(record.mere_uuid)" dark>
-                                    <a-icon type="file-pdf"></a-icon>Print
+                                    <a-icon type="file-pdf"></a-icon>{{$t('print')}}
                                 </SpinOrText>
                             </a>
                         </span>
                         <a-divider type='vertical' />
-                        <span class="red--text clickable" @click="deleteItem(record.mere_uuid)">Delete</span>
+                        <span class="red--text clickable" @click="deleteItem(record.mere_uuid)">{{$t('delete')}}</span>
                     </div>
                     <div slot="owner_name" slot-scope='text, record'>
                         {{record.owner_name}} {{record.owner_last_name}}
@@ -75,7 +75,7 @@
             </a-col>
         </a-row>
         <a ref="pdfDownload" :href="pdfFile" :download="pdfFile" class="d-none" target="_blank"></a>
-    </div>    
+    </div>
 </template>
 
 <script>
@@ -126,13 +126,13 @@ export default {
             this.printing = id
             this.loadingPdf = true
             this.$api.get('/medical-record/pdf/' + id).then(({data})=>{
-                this.$message.success('PDF File Generated successfully')
+                this.$message.success(this.$t('pdf_gend').toString())
                 this.pdfFile = process.env.API_URL + '/generated/record/' + data.file
                 setTimeout(()=>{
                     this.$refs.pdfDownload.click()
                 }, 500)
             }).catch(()=>{
-                this.$message.error('Could not generate the PDF')
+                this.$message.error(this.$t('pdf_fail').toString())
             }).finally(()=>{
                 this.loadingPdf = false
                 this.printing = null
@@ -141,7 +141,7 @@ export default {
         deleteItem(v){
             const that = this
             this.$confirm({
-                content: 'Are you sure you want to delete this item?',
+                content: this.$t('sure_del_item'),
                 onOk() {
                     return new Promise((resolve, reject)=>{
                         that.$api.delete('/medical-record/' + v).then(()=>{
@@ -156,7 +156,7 @@ export default {
                         })
                     })
                 },
-                cancelText: 'Cancel',
+                cancelText: this.$t('cancel'),
                 onCancel() {
                     that.$destroyAll();
                 },
@@ -169,43 +169,43 @@ export default {
             if (this.type === 'record'){
                 this.columns = [
                     {
-                        title: 'MRN',
+                        title: this.$t('emr'),
                         dataIndex: 'user_mrn',
                         key: 'user_mrn',
-                        slots: {title: 'MRN'},
+                        slots: {title: this.$t('emr')},
                         scopedSlots: {customRender: 'user_mrn'}
                     },
                     {
-                        title: 'Patient',
-                        dataIndex: 'Patient',
+                        title: this.$t('patient'),
+                        dataIndex: 'patient',
                         key: 'patient',
-                        slots: {title: 'patient'},
+                        slots: {title: this.$t('patient')},
                         scopedSlots: {customRender: 'patient'}
                     },
                 ]
                 this.columns.push(
                     {
-                        title: 'Created At',
+                        title: this.$t('created_at'),
                         dataIndex: 'mere_date',
                         key: 'mere_date',
-                        slots: {title: 'Created At'},
+                        slots: {title: this.$t('created_at')},
                         scopedSlots: {customRender: 'mere_date'}
-                    }, 
+                    },
                     {
-                        title: 'Actions',
+                        title: this.$t('actions'),
                         dataIndex: 'actions',
                         key: 'actions',
-                        slots: {title: 'Actions'},
+                        slots: {title: this.$t('actions')},
                         scopedSlots: {customRender: 'actions'}
                 })
-                
+
             }else{
                 this.columns = [
                     {
-                        title: 'Template Name',
+                        title: this.$t('template_name'),
                         dataIndex: 'mere_name',
                         key: 'mere_name',
-                        slots: {title: 'Template Name'},
+                        slots: {title: this.$t('template_name')},
                         scopedSlots: {customRender: 'mere_name'}
                     }
                 ]
@@ -213,27 +213,27 @@ export default {
                 if (this.isAdmin || this.isSuper){
                     this.columns.push(
                     {
-                        title: 'Created By',
+                        title: this.$t('created_by'),
                         dataIndex: 'owner_name',
                         key: 'owner_name',
-                        slots: {title: 'Created By'},
+                        slots: {title: this.$t('created_by')},
                         scopedSlots: {customRender: 'owner_name'}
                     })
                 }
 
                 this.columns.push(
                 {
-                    title: 'Created At',
+                    title: this.$t('created_at'),
                     dataIndex: 'mere_date',
                     key: 'mere_date',
-                    slots: {title: 'Created At'},
+                    slots: {title: this.$t('created_at')},
                     scopedSlots: {customRender: 'mere_date'}
-                }, 
+                },
                 {
-                    title: 'Actions',
+                    title: this.$t('actions'),
                     dataIndex: 'actions',
                     key: 'actions',
-                    slots: {title: 'Actions'},
+                    slots: {title: this.$t('actions')},
                     scopedSlots: {customRender: 'actions'}
                 })
             }

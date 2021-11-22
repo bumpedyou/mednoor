@@ -3,51 +3,51 @@
     <a-row>
       <a-col class='mt-1' :xs='{span: 20, offset: 2}' :md='{span: 14, offset: 6}' :lg='{span: 8, offset: 8}'>
         <a-card>
-          <h1 class='h1 text-center'>Change my password</h1>
+          <h1 class='h1 text-center'>{{$t('change_pwd')}}</h1>
           <a-form :form='form' size='small' @submit='handleSubmit'>
-            <a-form-item label='Old password'>
+            <a-form-item :label="$t('old_pwd')">
               <a-input v-decorator="
               [
                 'old_password',
                 {
                 rules: [
-                  {required: true, message: 'Password is required!'},
-                  {min: 6, message: 'Enter at least 6 characters'}
+                  {required: true, message: $t('v.pwd_req')},
+                  {min: 6, message: $t('v.min_6')}
                 ]
                 }
-              ]" placeholder='New password' type='password'>
+              ]" :placeholder="$t('new_pwd')" type='password'>
                 <a-icon slot='prefix' type='lock' style='color:rgba(0,0,0,.25)' />
               </a-input>
             </a-form-item>
             <a-row>
               <a-col :xs="12" :sm="12" :md="12">
-                <a-form-item label='New password'>
+                <a-form-item :label="$t('new_pwd')">
                   <a-input v-decorator="
               [
                 'new_password',
                 {
                 rules: [
-                  {required: true, message: 'Password is required!'},
-                  {min: 6, message: 'Enter at least 6 characters'}
+                  {required: true, message: $t('v.pwd_req')},
+                  {min: 6, message: $t('v.min_6')}
                 ]
                 }
-              ]" placeholder='New password' type='password'>
+              ]" :placeholder="$t('new_pwd')" type='password'>
                     <a-icon slot='prefix' type='lock' style='color:rgba(0,0,0,.25)' />
                   </a-input>
                 </a-form-item>
               </a-col>
               <a-col :xs="12" :sm="12" :md="12">
-                <a-form-item label='Confirm your new password'>
+                <a-form-item :label="$t('v.c_npwd')">
                   <a-input v-decorator="
               [
                 'confirm_new_password',
                 {
                 rules: [
-                  {required: true, message: 'Password is required!'},
-                  {min: 6, message: 'Enter at least 6 characters'}
+                  {required: true, message: $t('v.pwd_req')},
+                  {min: 6, message: $t('v.min_6')}
                 ]
                 }
-              ]" placeholder='Confirm your new password' type='password'>
+              ]" :placeholder="$t('v.c_npwd')" type='password'>
                     <a-icon slot='prefix' type='lock' style='color:rgba(0,0,0,.25)' />
                   </a-input>
                 </a-form-item>
@@ -55,7 +55,7 @@
             </a-row>
             <a-form-item>
               <a-button type='primary' html-type='submit' block>
-                <SpinOrText v-model='loading'>Change my password</SpinOrText>
+                <SpinOrText v-model='loading'>{{$t('change_pwd')}}</SpinOrText>
               </a-button>
             </a-form-item>
           </a-form>
@@ -84,7 +84,7 @@ export default {
   },
   head() {
     return {
-      title: 'Change my password',
+      title: this.$t('change_pwd'),
     }
   },
   methods: {
@@ -98,7 +98,7 @@ export default {
               password: values.new_password,
               confirm_password: values.confirm_new_password,
             }).then(()=>{
-              this.$router.push('/password-updated')
+              this.$router.push(this.localePath('/password-updated'))
             }).catch((e)=>{
               this.$refs.rmodal.$emit('error', e)
             }).finally(()=>{
@@ -108,12 +108,6 @@ export default {
         }
       )
     },
-    handleSelectChange(value) {
-      console.log(value)
-      this.form.setFieldsValue({
-        note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`
-      })
-    }
   }
 }
 </script>

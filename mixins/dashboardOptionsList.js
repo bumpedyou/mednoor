@@ -7,76 +7,69 @@ export default {
             const i = []
             if (this.isSuper || this.isAdmin){
                 i.push({
-                    shortTitle: 'Home Screen',
-                    cardTitle: 'Home Screen',
+                    shortTitle: this.$t('home_screen'),
+                    cardTitle: this.$t('home_screen'),
                     to: '/home-screen',
-                    cardDescription: "Update the home screen image.",
-                    btnText: 'Update Image',
+                    btnText: this.$t('home_screen'),
                     icon: 'home',
-                    type: 'primary',       
+                    type: 'primary',
                 })
             }
 
             if (this.isSuper || this.isAdmin){
                 i.push({
-                    shortTitle: 'List Of Users',
-                    cardTitle: 'List Of Users',
+                    shortTitle: this.$t('list_usrs'),
+                    cardTitle: this.$t('list_usrs'),
                     to: '/users-list',
-                    cardDescription: "Update the home screen image.",
-                    btnText: 'List of users',
+                    btnText: this.$t('list_usrs'),
                     icon: 'user',
                     type: 'old-rose',
                 })
             }
             if (this.isModerator) {
                 i.push({
-                    shortTitle: 'Add User',
-                    cardTitle: 'Add User',
+                    shortTitle: this.$t('add_urs'),
+                    cardTitle: this.$t('add_urs'),
                     to: '/add-user',
-                    cardDescription: "Shortcut to add user",
-                    btnText: 'Add User',
+                    btnText: this.$t('add_urs'),
                     icon: 'user-add',
                     type: 'aero-blue',
                 })
             }
             if (this.isAdmin || this.isSuper || this.isModerator){
                 i.push({
-                    shortTitle: 'EMR',
-                    cardTitle: 'Electronic health record',
+                    shortTitle: this.$t('emr'),
+                    cardTitle: this.$t('emr_lng'),
                     to: '/emr',
-                    cardDescription: "Electronic health record",
-                    btnText: 'Go to EMR',
+                    btnText: this.$t('go_emr'),
                     icon: 'medicine-box',
-                    type: 'success',       
+                    type: 'success',
                 })
             }
             if (this.isAdmin || this.isSuper){
                 i.push({
-                    shortTitle: 'Terms and Conditions',
-                    cardTitle: 'Terms and conditions',
+                    shortTitle: this.$t('terms_cond'),
+                    cardTitle: this.$t('terms_cond'),
                     to: '/update-terms-and-conditions',
-                    cardDescription: "T & C",
-                    btnText: 'Update',
+                    btnText: this.$t('update'),
                     icon: 'audit',
-                    type: 'primary',       
-                }, 
-                {
-                    shortTitle: 'Privacy Policy',
-                    cardTitle: 'Privacy Policy',
-                    to: '/update-privacy-policy',
-                    cardDescription: "Privacy policy",
-                    btnText: 'Update',
-                    icon: 'file-protect',
-                    type: 'old-rose',       
+                    type: 'primary',
                 },
                 {
-                    shortTitle: 'Pages',
-                    cardTitle: 'Pages',
+                    shortTitle: this.$t('privacy_p'),
+                    cardTitle: this.$t('privacy_p'),
+                    to: '/update-privacy-policy',
+                    btnText: this.$t('update'),
+                    icon: 'file-protect',
+                    type: 'old-rose',
+                },
+                {
+                    shortTitle: this.$t('pages'),
+                    cardTitle: this.$t('pages'),
                     to: '/pages',
-                    cardDescription: "Pages",
-                    btnText: 'Pages',
+                    btnText: this.$t('pages'),
                     icon: 'file',
-                    type: 'raisin-black',       
+                    type: 'raisin-black',
                 })
             }
             return i

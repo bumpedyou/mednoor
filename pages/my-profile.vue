@@ -4,17 +4,17 @@
     <a-col :xs="24" :sm="24" :md="{span: 12, offset: 6}" :lg="{span: 8, offset: 8}">
       <div>
         <p class="h3 mb-1"  style="display: flex; align-items: center">
-        Hi, {{name}} <span v-if="!isUser && userRole !== 'guest'" class="user-role ml-1">
-        Your Role:
+        {{$t('hi')}}, {{name}} <span v-if="!isUser && userRole !== 'guest'" class="user-role ml-1">
+       {{$t('your_role')}}:
         <b class="b-white">{{userRoleTxt}}</b>
       </span></p>
       </div>
-      <p class="h4">Your Information</p>
+      <p class="h4">{{$t('your_info')}}</p>
       <hr>
       <a-form layout='vertical'  :form="form" size="small" @submit="handleSubmit">
         <a-form-item
           v-model="first_name"
-          label="First Name"
+          :label="$t('fn')"
           rules="required"
         >
                   <a-input
@@ -25,49 +25,17 @@
                         rules: [
                           {
                             required: true,
-                            message: 'First Name is required!'
+                            message: $t('v.fn_req')
                           },
-                          { min: 3, message: 'Enter at least 3 characters' },
+                          { min: 3, message: $t('v.min_3') },
                           {
                             max: 30,
-                            message: 'Enter a maximum of 30 characters'
+                            message: $t('v.max_30')
                           }
                         ]
                       }
                     ]"
-                    placeholder="First Name"
-                  >
-                    <a-icon
-                      slot="prefix"
-                      type="user"
-                      style="color: rgba(0, 0, 0, 0.25)"
-                    />
-                  </a-input>        
-        </a-form-item>
-        <a-form-item
-          v-model="last_name"
-          label="Last name"
-        >
-          <a-input
-                    v-decorator="[
-                      'last_name',
-                      {
-                        initialValue: last_name,
-                        rules: [
-                          {
-                            required: true,
-                            message: 'Last Name is required!'
-                          },
-                          { min: 3, message: 'Enter at least 3 characters' },
-                          {
-                            max: 30,
-                            message: 'Enter a maximum of 30 characters'
-                          }
-                        ],
-                      }
-                    ]"
-                    placeholder="Last name"
-                    
+                    :placeholder="$t('fn')"
                   >
                     <a-icon
                       slot="prefix"
@@ -77,18 +45,49 @@
                   </a-input>
         </a-form-item>
         <a-form-item
-          label="Email"
+          v-model="last_name"
+          :label="$t('ln')"
         >
-          <a-input v-model="email" disabled placeholder="Email"  />
-        </a-form-item>    
+          <a-input
+                    v-decorator="[
+                      'last_name',
+                      {
+                        initialValue: last_name,
+                        rules: [
+                          {
+                            required: true,
+                            message: $t('v.ln_req')
+                          },
+                          { min: 3, message: $t('v.min_3') },
+                          {
+                            max: 30,
+                            message: $t('v.max_30')
+                          }
+                        ],
+                      }
+                    ]"
+                    :placeholder="$t('ln')"
+                  >
+                    <a-icon
+                      slot="prefix"
+                      type="user"
+                      style="color: rgba(0, 0, 0, 0.25)"
+                    />
+                  </a-input>
+        </a-form-item>
+        <a-form-item
+          :label="$t('email')"
+        >
+          <a-input v-model="email" disabled :placeholder="$t('email')"  />
+        </a-form-item>
         <a-form-item>
       <p class="h4">
-        Password reset
+        {{$t('pwd_reset')}}
       </p>
       <hr>
       <div>
-        <nuxt-link to="/change-my-password">
-          Change my password
+        <nuxt-link :to='localePath("change-my-password")'>
+          {{$t('change_pwd')}}
         </nuxt-link>
       </div>
         </a-form-item>
@@ -96,11 +95,11 @@
           <div class="pull-child-right">
             <a-button type="primary" html-type="submit">
               <SpinOrText v-model="loading">
-                Save Changes
+                {{$t('save_changes')}}
               </SpinOrText>
             </a-button>
           </div>
-        </a-form-item>   
+        </a-form-item>
       </a-form>
     </a-col>
   </a-row>
@@ -127,7 +126,7 @@ export default {
   },
   head() {
     return {
-      title: 'My Profile',
+      title: this.$t('my_profile'),
     }
   },
   computed: {
@@ -153,12 +152,11 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           this.loading = true
-          console.log('Put user with data ', values)
           this.$api
             .put('/user', values)
             .then(async () => {
               await this.$auth.fetchUser()
-              this.$message.success('Updated successfully!');
+              this.$toast.success(this.$t('updated_suc').toString());
             })
             .catch((e) => {
               this.$refs.rmodal.$emit('error', e)
@@ -172,7 +170,6 @@ export default {
   }
 }
 </script>
-
 <style scoped lang="sass">
   .user-role
     background-color: #444

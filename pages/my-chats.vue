@@ -2,7 +2,7 @@
 <a-row class="pa-1 mh-100v">
   <a-col :xs='24' :sm='24'>
     <p class='h1'>
-      Previous Chats (PDF)
+      {{ $t('prev_c_pdf') }}
     </p>
     <a-skeleton v-if="loading"/>
     <a-table v-else :columns='columns' :data-source='items'>
@@ -10,7 +10,7 @@
         {{dateString(record.date)}}
       </div>
       <div slot="pdf" slot-scope="text, record">
-        <a :href='pdfPath(record.pdf)' :download='pdfPath(record.pdf)' target='_blank'>Download PDF</a>
+        <a :href='pdfPath(record.pdf)' :download='pdfPath(record.pdf)' target='_blank'>{{$t('download_pdf')}}</a>
       </div>
     </a-table>
   </a-col>
@@ -27,48 +27,47 @@ export default {
   components: { RequestModal },
   mixins: [authMixin, dateMixin],
   middleware: ['authenticated', 'not-blocked', 'not-deleted'],
-  data: ()=>({
-    loading: true,
-    items: [],
-    components: {
-      RequestModal
-    },
-    columns: [
-      {
-        title: 'Chat with',
-        dataIndex: 'full_name',
-        key: 'full_name',
-        slots: {title: 'Chat with'},
-        scopedSlots: {customRender: 'full_name'}
+  data (){
+    return {
+      loading: true,
+      items: [],
+      components: {
+        RequestModal
       },
-      {
-        title: 'Date',
-        dataIndex: 'date',
-        key: 'date',
-        slots: {title: 'Date'},
-        scopedSlots: {customRender: 'date'}
-      },
-      {
-        title: 'PDF',
-        dataIndex: 'pdf',
-        key: 'pdf',
-        slots: {title: 'PDF'},
-        scopedSlots: {customRender: 'pdf'}
-      },
-    ]
-  }),
+      columns: [
+        {
+          title: this.$t('chat_w'),
+          dataIndex: 'full_name',
+          key: 'full_name',
+          slots: {title: this.$t('chat_w')},
+          scopedSlots: {customRender: 'full_name'}
+        },
+        {
+          title: this.$t('date'),
+          dataIndex: 'date',
+          key: 'date',
+          slots: {title: this.$t('date')},
+          scopedSlots: {customRender: 'date'}
+        },
+        {
+          title: 'PDF',
+          dataIndex: 'pdf',
+          key: 'pdf',
+          slots: {title: 'PDF'},
+          scopedSlots: {customRender: 'pdf'}
+        },
+      ]
+    }
+  },
   head() {
     return {
-      title: 'My Chats',
+      title: this.$t('my_chats'),
     }
   },
   mounted(){
-    console.log('Mounted')
     this.$api.get('/previous-chats').then(({data})=>{
-      console.log('My previous chats are --->', data)
       this.items = []
       data.forEach((item)=>{
-
         if (item.uuid2 === this.myUserId){
           this.items.push({
             full_name: item.fn1 + ' ' + item.ln1,
@@ -99,7 +98,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

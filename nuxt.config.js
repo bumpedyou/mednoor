@@ -32,11 +32,26 @@ export default {
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
-    // https://go.nuxtjs.dev/eslint
+    '@nuxtjs/i18n',
     '@nuxtjs/eslint-module',
     '@nuxtjs/style-resources',
-    '@nuxtjs/google-fonts'
+    '@nuxtjs/google-fonts',
   ],
+
+  i18n: {
+    strategy: 'prefix',
+    locales: [
+      { code: 'en', iso: 'en-US', file: 'en.js', dir: 'ltr' },
+      { code: 'es', iso: 'es-MX', file: 'es.js', dir: 'ltr' },
+    ],
+    defaultLocale: 'en',
+    vueI18n: {
+      fallbackLocale: 'en',
+    },
+    langDir: 'lang/',
+    parsePages: false,
+    detectBrowserLanguage: false,
+  },
 
   googleFonts: {
     families: {
@@ -62,7 +77,7 @@ export default {
   ],
 
   toast: {
-    theme: "bubble", 
+    theme: "bubble",
     position: 'top-right',
     duration: '2369',
   },
@@ -92,10 +107,10 @@ export default {
       },
     },
     redirect: {
-      login: '/sign-in',
-      logout: '/sign-out',
-      callback: '/',
-      home: '/welcome',
+      login: '/en/sign-in',
+      logout: '/en/sign-out',
+      callback: '/en',
+      home: '/en/welcome',
     },
   },
 

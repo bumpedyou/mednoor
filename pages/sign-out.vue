@@ -1,7 +1,7 @@
 <template>
 <a-row>
   <a-col span='8' offset='8'>
-    <h1 class="h1 text-center w-100 mb-1">Signing out</h1>
+    <h1 class="h1 text-center w-100 mb-1">{{$t('signing_out')}}</h1>
     <div class="f-center w-100">
       <a-spin></a-spin>
     </div>
@@ -12,18 +12,14 @@
 <script>
 export default {
   name: 'SignOut',
-  mounted(){
-    this.$auth.logout()
-    this.$router.push(('/sign-in'))
-  },
   head() {
     return {
-      title: 'Sign out',
+      title: this.$t('sign_out'),
     }
+  },
+  mounted(){
+    this.$auth.logout()
+    this.$router.push(this.localePath('/sign-in'))
   },
 }
 </script>
-
-<style scoped>
-
-</style>

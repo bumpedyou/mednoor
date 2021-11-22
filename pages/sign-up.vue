@@ -3,7 +3,7 @@
       <a-row>
           <a-col class="pa-1 mt-3" :xs="24" :sm="24" :md="{span: 20, offset: 2}" :lg="{span: 16, offset: 4}">
         <a-card>
-          <h1 class="h1 text-center">Sign up</h1>
+          <h1 class="h1 text-center">{{$t('sign_up')}}</h1>
           <a-form :form="form" size="small" @submit="handleSubmit">
             <a-form-item>
               <a-input
@@ -11,13 +11,13 @@
                   'email',
                   {
                     rules: [
-                      { required: true, message: 'Email is required!' },
-                      { max: 100, message: 'Max email length is 150' },
-                      { type: 'email', message: 'Enter a valid email' }
+                      { required: true, message: $t('v.email_req') },
+                      { max: 100, message: $t('v.max_email_150') },
+                      { type: 'email', message: $t('v.inv_email') }
                     ]
                   }
                 ]"
-                placeholder="Email"
+                :placeholder="$t('email')"
               />
             </a-form-item>
             <a-row>
@@ -30,17 +30,17 @@
                         rules: [
                           {
                             required: true,
-                            message: 'First Name is required!'
+                            message: $t('v.fn_req')
                           },
-                          { min: 3, message: 'Enter at least 3 characters' },
+                          { min: 3, message: $t('v.min_3') },
                           {
                             max: 30,
-                            message: 'Enter a maximum of 30 characters'
+                            message: $t('v.max_30')
                           }
                         ]
                       }
                     ]"
-                    placeholder="First Name"
+                    :placeholder="$t('fn')"
                   >
                     <a-icon
                       slot="prefix"
@@ -57,16 +57,16 @@
                       'last_name',
                       {
                         rules: [
-                          { required: true, message: 'Last Name is required!' },
-                          { min: 3, message: 'Enter at least 3 characters' },
+                          { required: true, message: $t('v.ln_req') },
+                          { min: 3, message: $t('v.min_3') },
                           {
                             max: 30,
-                            message: 'Enter a maximum of 30 characters'
+                            message: $t('v.max_30')
                           }
                         ]
                       }
                     ]"
-                    placeholder="Last Name"
+                    :placeholder="$t('ln')"
                   >
                     <a-icon
                       slot="prefix"
@@ -94,12 +94,12 @@
                       'password',
                       {
                         rules: [
-                          { required: true, message: 'Password is required!' },
-                          { min: 6, message: 'Enter at least 6 characters' }
+                          { required: true, message: $t('v.pwd_req') },
+                          { min: 6, message: $t('v.min_6') }
                         ]
                       }
                     ]"
-                    placeholder="Password"
+                    :placeholder="$t('pwd')"
                     type="password"
                   >
                     <a-icon
@@ -119,13 +119,13 @@
                         rules: [
                           {
                             required: true,
-                            message: 'Confirm password is required!'
+                            message: $t('v.cpwd_req')
                           },
-                          { min: 6, message: 'Enter at least 6 characters' }
+                          { min: 6, message: $t('v.min_6') }
                         ]
                       }
                     ]"
-                    placeholder="Confirm password"
+                    :placeholder="$t('cpwd')"
                     type="password"
                   >
                     <a-icon
@@ -143,35 +143,35 @@
                       'terms_conditions',
                       {
                         rules: [
-             
+
                           {
                             required: true,
-                            message: 'You must agree to the terms and conditions.'
+                            message: $t('v.ym_agree')
                           },
                         ]
                       }
                     ]">
-                      <small>I Agree to the</small>
+                      <small>{{$t('i_agree')}}</small>
                     </a-checkbox>
                   <small>
-                    <a to="terms-and-conditions" href="/terms-and-conditions" target="_blank">Terms and conditions</a>
+                    <a :href="localePath('/terms-and-conditions')" target="_blank">{{$t('terms_cond')}}</a>
                     &
-                    <a to="terms-and-conditions" href="/privacy-policy" target="_blank">Privacy</a>
+                    <a :href="localePath('/privacy-policy')" target="_blank">{{$t('privacy')}}</a>
                   </small>
               </a-form-item>
             </a-row>
             <a-form-item>
               <a-button type="primary" html-type="submit" block>
-                <SpinOrText v-model="loading">Sign up</SpinOrText>
+                <SpinOrText v-model="loading">{{$t('sign_up')}}</SpinOrText>
               </a-button>
             </a-form-item>
             <div>
               <hr />
               <small class="text-center d-block mb-0">
-                Already have an account?
+                {{$t('alr_h_acc')}}
               </small>
               <small class="text-center d-block">
-                <nuxt-link to="/sign-in">Sign In</nuxt-link>
+                <nuxt-link :to="localePath('/sign-in')">{{$t('sign_in')}}</nuxt-link>
               </small>
             </div>
           </a-form>
@@ -196,19 +196,17 @@ export default {
   middleware: ['unauthenticated'],
   data() {
     return {
-      // form: this.$form.createForm(this, { name: 'coordinated' }),
       loading: false
     }
   },
   head() {
     return {
-      title: 'Sign Up',
+      title: this.$t('sign_up'),
       meta: [
-        // hid is used as unique identifier. Do not use `vmid` for it as it will not work
         {
           hid: 'description',
           name: 'description',
-          content: 'Sign up to our Online Medical Center'
+          content: this.$t('seo.sign_up')
         }
       ]
     }
@@ -219,7 +217,6 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           this.loading = true
-          // date --->
           values.dob = [this.year, this.month, this.day].join('-')
           this.$api
             .post('/user', values)
@@ -238,7 +235,7 @@ export default {
                   .catch((e) => {
                     this.$refs.rmodal.$emit('error', e)
                   })
-              } catch (e) { 
+              } catch (e) {
                 this.$refs.rmodal.$emit('error', e)
               }
             })

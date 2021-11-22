@@ -4,25 +4,25 @@
       <a-row>
         <a-col class='mt-1' :xs='{span: 20, offset: 2}' :md='{span: 12, offset: 6}' :lg='{span: 10, offset: 7}' :xl='{span: 8, offset: 8}'>
           <a-card>
-            <h1 class='text-center'>Forgot my password</h1>
+            <h1 class='text-center'>{{$t('forgot_pwd')}}</h1>
             <p class='text-center'>
-              We'll send you a verification code to your email.
+              {{$t('fpwd_desc')}}
             </p>
             <a-form :form='form' size='small' @submit='handleSubmit'>
-              <a-form-item label='Email'>
+              <a-form-item :label="$t('email')">
                 <a-input v-decorator="['email',{
-                    rules: [{ required: true, message: 'Email is required!' },
-                    {max: 100, message: 'Max email length is 150'},
-                    {type: 'email', message: 'Enter a valid email'}
+                    rules: [{ required: true, message: $t('v.email_req') },
+                    {max: 100, message: $t('v.max_email_150')},
+                    {type: 'email', message: $t('v.inv_email')}
                     ],
                   },
                   ]"
-                  placeholder='Email'
+                  :placeholder="$t('email')"
                 />
               </a-form-item>
               <a-button block type='primary' html-type='submit'>
                 <SpinOrText v-model='loading'>
-                  Send email
+                  {{$t('send_email')}}
                 </SpinOrText>
               </a-button>
             </a-form>
@@ -54,13 +54,12 @@ export default {
   },
     head() {
     return {
-      title: 'Forgot my password',
+      title: this.$t('forgot_pwd'),
       meta: [
-        // hid is used as unique identifier. Do not use `vmid` for it as it will not work
         {
           hid: 'description',
           name: 'description',
-          content: 'Reset the password of your mednoor\'s account.'
+          content: this.$t('reset_pwd_desc')
         }
       ]
     }
@@ -76,7 +75,7 @@ export default {
             }).then(() =>{
               this.$store.commit('setEmail', values.email)
               this.$router.push({
-                path: '/reset-password',
+                path: this.localePath('/reset-password'),
               })
             }).catch((err)=>{
               this.$refs.rmodal.$emit('error', err)
@@ -91,7 +90,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

@@ -7,10 +7,10 @@
                 <img :src='require("~/static/logo.jpg")' height="40px" />
                 <div>
                 <p class='h3 text-center'>
-                  Mednoor Medical Center
+                  {{$t('med_med_cen')}}
                 </p>
                 <small class="h5 fw-b text-center d-block">
-                  Always Open
+                  {{$t('alw_open')}}
                 </small>
                 </div>
               </div>
@@ -20,12 +20,12 @@
                     v-decorator="[
                 'email',
                 {
-                  rules: [{ required: true, message: 'Email is required!' },
-                  {max: 100, message: 'Max email length is 150'},
-                  {type: 'email', message: 'Enter a valid email'}],
+                  rules: [{ required: true, message: $t('v.email_req') },
+                  {max: 100, message: $t('v.max_email_150')},
+                  {type: 'email', message: $t('v.inv_email')}],
                 },
               ]"
-                    placeholder='Email'
+                    :placeholder="$t('email')"
                   />
                 </a-form-item>
                 <a-form-item >
@@ -34,29 +34,29 @@
                     'password',
                     {
                     rules: [
-                      {required: true, message: 'Password is required!'},
-                      {min: 6, message: 'Enter at least 6 characters'}
+                      {required: true, message: $t('v.pwd_req')},
+                      {min: 6, message: $t('v.min_6')}
                     ]
                     }
-                  ]" placeholder='Password' type='password'>
+                  ]" :placeholder="$t('pwd')" type='password'>
                     <a-icon slot='prefix' type='lock' style='color:rgba(0,0,0,.25)' />
                   </a-input>
                 </a-form-item>
                 <a-form-item>
                   <a-button type='primary' html-type='submit' block>
-                    <SpinOrText v-model='loading'>Sign in</SpinOrText>
+                    <SpinOrText v-model='loading'>{{$t('sign_in')}}</SpinOrText>
                   </a-button>
                 </a-form-item>
                 <div>
                   <small class="text-center d-block mb-0">
-                    <nuxt-link to='/forgot-password'>Forgot my password</nuxt-link>
+                    <nuxt-link :to="localePath('/forgot-password')">{{$t('forgot_pwd')}}</nuxt-link>
                   </small>
                   <hr>
                   <small class='text-center d-block mb-0'>
-                    Don't have an account?
+                    {{$t('dont_h_acc')}}
                   </small>
                   <small class='text-center d-block'>
-                    <nuxt-link to='/sign-up'>Sign Up</nuxt-link>
+                    <nuxt-link :to="localePath('/sign-up')">{{$t('sign_up')}}</nuxt-link>
                   </small>
                 </div>
               </a-form>
@@ -90,13 +90,12 @@ export default {
   },
   head() {
     return {
-      title: 'Sign In',
+      title: this.$t('sign_in'),
       meta: [
-        // hid is used as unique identifier. Do not use `vmid` for it as it will not work
         {
           hid: 'description',
           name: 'description',
-          content: 'Sign in to you Mednoor account.'
+          content: this.$t('seo.sign_in')
         }
       ]
     }
@@ -125,11 +124,9 @@ export default {
                   }
                 })
                 .then(() => {
-                  // this.$refs.requests_dialog.onSuccess('Cuenta creada!')
                   console.log('Success')
                 })
                 .catch((e) => {
-                  console.log('catch in loginWith: ', e)
                   this.$refs.rmodal.$emit('error', e)
                 }).finally(()=>{
                   this.loading = false
@@ -143,12 +140,6 @@ export default {
         }
       )
     },
-    handleSelectChange(value) {
-      console.log(value)
-      this.form.setFieldsValue({
-        note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`
-      })
-    }
   }
 }
 </script>
@@ -156,7 +147,7 @@ export default {
   .mednoor-heading-svg
     display: flex
     justify-content: center
-    align-itmes: center
+    align-items: center
     background: #fff
     margin-bottom: 9px
     img

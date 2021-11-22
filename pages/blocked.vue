@@ -1,7 +1,7 @@
 <template>
   <a-row>
     <a-col>
-      <p class='h1 text-center'>You have been blocked!</p>
+      <p class='h1 text-center'>{{$t('blocked_legend')}}</p>
     </a-col>
   </a-row>
 </template>
@@ -12,7 +12,7 @@ export default {
   middleware: ['authenticated', 'blocked-only'],
   head() {
     return {
-      title: 'Account Blocked',
+      title: this.$t('acc_blocked'),
     }
   },
 }

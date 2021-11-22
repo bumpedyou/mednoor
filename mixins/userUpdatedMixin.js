@@ -7,9 +7,9 @@ export default {
       if (this.isLoggedIn) {
         const user = this.$auth.user
         if (user.blocked) {
-          this.$router.push('/blocked')
+          this.$router.push(this.localePath('/blocked'))
         } else if (this.$route.path === '/blocked') {
-          this.$router.push('/welcome')
+          this.$router.push(this.localePath('/welcome'))
         }
       }
     },

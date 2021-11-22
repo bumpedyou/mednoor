@@ -23,7 +23,6 @@ export default {
   }),
   mounted() {
     this.$on('error', (err) => {
-      console.log('ON ERR err --->', err)
       if (err !== null && err !== undefined){
         if (err.response){
           const r = err.response
@@ -33,11 +32,11 @@ export default {
           }
           if (r){
             if (r.status === 404){
-              this.title = 'Not found - ' + r.status
-              this.description = 'The endpoint was not found'
+              this.title = this.$t('not_found') + ' - ' + r.status
+              this.description = this.$t('endp_not_found')
             }else if (r.status === 500){
-              this.title = 'Internal server error ' + r.status
-              this.description = "This isn't your fault. We are working hard to fix this problem."
+              this.title = this.$t('int_srv_err') + ' ' + r.status
+              this.description = this.$t('isnt_flt')
             }else if (r.msg){
               this.description = r.msg
             }else if (d.msg) {
@@ -46,20 +45,17 @@ export default {
           }else if (d.msg){
             this.description = d.msg
           }else{
-            this.description = 'Unknown error'
+            this.description = this.$t('un_err')
           }
         }else if (typeof err === 'string'){
           this.description = err
         }else if (!err.status){
-          this.description = "Unable to connect to the server. Please check your internet connection."
+          this.description = this.$t('un_conn')
         }
       }else{
         console.log('no error?')
       }
       this.localValue = true
-    })
-    this.$on('success', (message) => {
-      console.log('Success ' + message)
     })
   },
   methods: {
@@ -70,7 +66,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

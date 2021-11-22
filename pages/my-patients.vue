@@ -3,7 +3,7 @@
         <a-row>
             <a-col :xs="24" :lg="24">
                 <p class="h1">
-                    My Patients
+                    {{$t('my_patients')}}
                 </p>
             </a-col>
         </a-row>
@@ -11,7 +11,7 @@
             <a-col>
                 <a-table :columns="columns" :data-source="items">
                     <div  slot="actions" slot-scope="text, record">
-                        <nuxt-link :to="{path: '/new-emr', query: {mere: record.mere_uuid}}">MRE</nuxt-link>
+                        <nuxt-link :to="{path: localePath('/new-emr'), query: {mere: record.mere_uuid}}">{{$t('mre')}}</nuxt-link>
                     </div>
                 </a-table>
             </a-col>
@@ -22,31 +22,33 @@
 export default {
     name: 'MyPatients',
     layout: 'default',
-    data: ()=>({
+    data (){
+      return {
         columns: [
-            {
-                title: 'Patient\'s name',
-                dataIndex: 'full_name',
-                key: 'full_name',
-                slots: {title: 'Patient\'s name'},
-                scopedSlots: {customRender: 'full_name'}
-            },
-            {
-                title: 'Action',
-                dataIndex: 'actions',
-                key: 'actions',
-                slots: {title: 'Actions'},
-                scopedSlots: {customRender: 'actions'}
-            },
+          {
+            title: this.$t('patients_name'),
+            dataIndex: 'full_name',
+            key: 'full_name',
+            slots: {title: this.$t('patients_name')},
+            scopedSlots: {customRender: 'full_name'}
+          },
+          {
+            title: this.$t('actions'),
+            dataIndex: 'actions',
+            key: 'actions',
+            slots: {title: this.$t('actions')},
+            scopedSlots: {customRender: 'actions'}
+          },
         ],
         items: [],
         loading: true,
-    }),
+      }
+    },
     mounted(){
         this.$api.get('/medical-record/patients').then(({data})=>{
             this.items = data
         }).catch(()=>{
-            this.$message.error('Could not load the')
+            this.$toast.error(this.$t('could_nl_p').toString())
         })
     }
 }

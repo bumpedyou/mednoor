@@ -1,7 +1,7 @@
 <template>
   <a-row>
     <a-col>
-      <p class='h1 text-center'>Your user has been deleted!</p>
+      <p class='h1 text-center'>{{$t('usr_del')}}</p>
     </a-col>
   </a-row>
 </template>
@@ -12,12 +12,8 @@ export default {
   middleware: ['authenticated', 'deleted-only'],
   head() {
     return {
-      title: 'Account Deleted',
+      title: this.$t('acc_del'),
     }
   },
 }
 </script>
-
-<style scoped>
-
-</style>

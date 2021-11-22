@@ -23,7 +23,7 @@
               <div v-else class='pa-1'>
                 <div v-if='isUser'>
                   You do not have chats.
-                  <nuxt-link to='/professionals'>Professionals Available</nuxt-link>
+                  <nuxt-link :to="localePath('/professionals')">Professionals Available</nuxt-link>
                 </div>
                 <div v-else-if='isModerator'>
                   You do not have any users right now.
@@ -63,7 +63,7 @@
                     </div>
                   </div>
                   <div v-for='(msg, i) in messages' :key="'msg-' + i" :ref="'msg-' + i" :class='messageClass(msg)'>
-                    
+
                     <span v-if='msg'>
                       {{ msg.message }}
                     </span>
@@ -93,7 +93,7 @@
                 </div>
               </div>
             </div>
-            
+
             <div v-if="toIsTyping" class="typing-indicator">
               <div class="typing-wrapper">
                 <div>
@@ -137,7 +137,7 @@
         <div v-else-if='isSmall'>
           <div v-if="moderators.length <= 0">
             <p class="text-center pa-1">
-              You do not have any chats right now. 
+              You do not have any chats right now.
             </p>
           </div>
           <ChatItems :data='moderators' :selected-chat='to' @open-chat='openChat'></ChatItems>

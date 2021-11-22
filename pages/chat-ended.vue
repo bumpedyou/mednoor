@@ -2,13 +2,14 @@
   <a-row class='pa-1'>
     <a-col>
       <p class="h1">
-        Your chat has ended.
+        {{$t('chat_ended')}}
       </p>
       <p>
-        Your chat has ended and you can find it on <nuxt-link to='/my-chats'>your previous chats</nuxt-link> in PDF format.
+        {{$t('chat_p1')}} <nuxt-link :to="localePath('/my-chats')">{{$t('chat_p2')}}</nuxt-link>
+        {{ $t('chat_p3') }}
       </p>
       <p>
-        Or you can go to your <nuxt-link to='/'>Chats List</nuxt-link>
+        {{$t('chat_a1')}} <nuxt-link :to="localePath('/')">{{$t('chats_list')}}</nuxt-link>
       </p>
     </a-col>
   </a-row>
@@ -19,12 +20,8 @@ export default {
   name: 'ChatEnded',
   head() {
     return {
-      title: 'Chat ended.',
+      title: this.$t('chat_ended'),
     }
   },
 }
 </script>
-
-<style scoped>
-
-</style>

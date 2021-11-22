@@ -8,14 +8,14 @@
                     <a-icon type="right" class="open" @click="open"></a-icon>
                 </div>
                 <ul>
-                    <li v-for="(o, i) in dashboardItems" :key="'it-' + i"><nuxt-link :to="o.to"><span>{{o.shortTitle}}</span> <a-icon :type="o.icon"></a-icon></nuxt-link></li>
+                    <li v-for="(o, i) in dashboardItems" :key="'it-' + i"><nuxt-link :to="localePath(o.to)"><span>{{o.shortTitle}}</span> <a-icon :type="o.icon"></a-icon></nuxt-link></li>
                 </ul>
             </div>
             <div class="content">
                 <nuxt/>
             </div>
-        </div>  
-    </div>  
+        </div>
+    </div>
 </template>
 <script>
 
@@ -113,8 +113,8 @@ export default {
                     display: none
         .content
             left: 200px
-    
-                        
+
+
     .content
         position: fixed
         left: 0
@@ -123,10 +123,10 @@ export default {
         right: 0
         overflow-y: auto
         transition: all 500ms ease
-    @media screen and (min-width: $md) 
+    @media screen and (min-width: $md)
         .sidebar
             display: block
         .content
             left: 40px
-    
+
 </style>

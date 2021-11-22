@@ -3,16 +3,16 @@
     <a-row class="mb-1">
       <a-col>
             <a-breadcrumb>
-            <a-breadcrumb-item><nuxt-link to="/dashboard">Dashboard</nuxt-link></a-breadcrumb-item>
-          <a-breadcrumb-item><nuxt-link to="/pages">Pages</nuxt-link></a-breadcrumb-item>
-          <a-breadcrumb-item>New Page</a-breadcrumb-item>
+            <a-breadcrumb-item><nuxt-link :to="localePath('/dashboard')">{{$t('dashboard')}}</nuxt-link></a-breadcrumb-item>
+          <a-breadcrumb-item><nuxt-link :to="localePath('/pages')">{{$t('pages')}}</nuxt-link></a-breadcrumb-item>
+          <a-breadcrumb-item>{{$t('new_page')}}</a-breadcrumb-item>
         </a-breadcrumb>
       </a-col>
     </a-row>
         <a-row>
             <a-col>
                 <p class="h1">
-                    New Page
+                  {{$t('new_page')}}
                 </p>
                 <a-skeleton v-if="loading"></a-skeleton>
                 <a-form v-else :form='form' size='small' @submit='handleSubmit'>
@@ -22,11 +22,11 @@
                                 'title',
                                 {
                                     rules: [
-                                    {required: true, message: 'The Title is required'},
-                                    {min: 3, message: 'Enter at least 3 characters'}
+                                    {required: true, message: $t('v.title_req')},
+                                    {min: 3, message: $t('v.min_3')}
                                     ]
                                 }
-                            ]"  placeholder="Title">
+                            ]"  :placeholder="$t('title')">
                         </a-input>
                     </a-form-item>
                     <a-form-item>
@@ -34,9 +34,9 @@
                             [
                                 'slug',
                                 {
-                                    rules: [{max: 330, message: 'Please enter a maximum of 330 characters'}]
+                                    rules: [{max: 330, message: $t('v.max_330')}]
                                 }
-                            ]" placeholder="Slug (space separated)">
+                            ]" :placeholder="$t('slug_p')">
                         </a-input>
                     </a-form-item>
                     <a-form-item>
@@ -44,9 +44,9 @@
                             [
                                 'keywords',
                                 {
-                                    rules: [{max: 330, message: 'Please enter a maximum of 330 characters'}]
+                                    rules: [{max: 330, message: $t('v.max_330')}]
                                 }
-                            ]" placeholder="Keywords (comma separated)">
+                            ]" :placeholder="$t('keywords_p')">
                     </a-input>
                     </a-form-item>
                     <a-form-item>
@@ -56,10 +56,10 @@
                         <a-button type="primary" html-type="submit">
                             <SpinOrText v-model="loadingCreate">
                                 <span v-if="uuid">
-                                    Update
+                                    {{$t('update')}}
                                 </span>
                                 <span v-else>
-                                    Create new page
+                                    {{$t('create_new_page')}}
                                 </span>
                             </SpinOrText>
                         </a-button>
@@ -98,7 +98,6 @@ export default {
             this.$api.get('/page/' + this.uuid).then(({data})=>{
                 this.loading = false
                 if (data){
-                    console.log(data)
                     this.$nextTick(()=>{
                         this.form.setFieldsValue({
                             title: data.page_title,
@@ -107,11 +106,13 @@ export default {
                         })
                         this.$refs.editor.editor.commands.setContent(data.page_content)
                     })
+                }else {
+                  this.uuid = null
                 }
 
             }).catch(()=>{
                 this.uuid = null
-                this.$refs.rmodal.$emit('error', 'The page that you were trying to edit was deleted or does not exist.')
+                this.$refs.rmodal.$emit('error', this.$t('page_does_not_exist'))
                 this.loading = false
             })
         }else{
@@ -120,7 +121,6 @@ export default {
     },
     methods: {
         handleSubmit(e){
-            console.log('Handle submit')
             e.preventDefault()
             this.form.validateFields((err, values)=>{
                 if (err){
@@ -130,7 +130,7 @@ export default {
                 values.txt = this.txt
                 if (this.uuid){
                     this.$api.put('/page/' + this.uuid, values).then(()=>{
-                        this.$toast.success('The page has been updated.')
+                        this.$toast.success(this.$t('page_hb_updated').toString())
                     }).catch(()=>{
                         this.$refs.rmodal.$emit('error', err)
                     }).finally(()=>{
@@ -138,8 +138,8 @@ export default {
                     })
                 }else{
                     this.$api.post('/page/', values).then(()=>{
-                        this.$toast.success('Page has been created!')
-                        this.$router.push('/pages')
+                        this.$toast.success(this.$t('page_hb_created').toString())
+                        this.$router.push(this.localePath('/pages'))
                     }).catch((err)=>{
                         this.$refs.rmodal.$emit('error', err)
                     }).finally(()=>{

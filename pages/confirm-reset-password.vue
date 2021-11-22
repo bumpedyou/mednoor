@@ -4,41 +4,41 @@
       <a-row>
         <a-col class='mt-1' :xs='{span: 20, offset: 2}' :md='{span: 12, offset: 6}' :lg='{span: 10, offset: 7}' :xl='{span: 8, offset: 8}'>
           <a-card>
-            <h1 class='text-center'>Reset your password</h1>
+            <h1 class='text-center'>{{$t('reset_pwd')}}</h1>
             <p class='text-center'>
               <b>{{email}}</b><br>
-              Reset your password
+              {{$t('reset_y_pwd')}}
             </p>
             <a-form :form='form' size='small' @submit='handleSubmit'>
               <a-row>
                 <a-col :xs='{span: 24}'>
-                  <a-form-item label='Password'>
+                  <a-form-item :label="$t('pwd')">
                     <a-input v-decorator="
               [
                 'password',
                 {
                 rules: [
-                  {required: true, message: 'Password is required!'},
-                  {min: 6, message: 'Enter at least 6 characters'}
+                  {required: true, message: $t('v.pwd_req')},
+                  {min: 6, message: $t('v.min_6')}
                 ]
                 }
-              ]" placeholder='Password' type='password'>
+              ]" :placeholder="$t('pwd')" type='password'>
                       <a-icon slot='prefix' type='lock' style='color:rgba(0,0,0,.25)' />
                     </a-input>
                   </a-form-item>
                 </a-col>
                 <a-col :xs='{span: 24}'>
-                  <a-form-item label='Confirm password'>
+                  <a-form-item :label="$t('cpwd')">
                     <a-input v-decorator="
               [
                 'confirm_password',
                 {
                 rules: [
-                  {required: true, message: 'Confirm password is required!'},
-                  {min: 6, message: 'Enter at least 6 characters'}
+                  {required: true, message: $t('v.cpwd_req')},
+                  {min: 6, message: $t('v.min_6')}
                   ]
                 }
-              ]" placeholder='Confirm password' type='password'>
+              ]" :placeholder="$t('v.cpwd_req')" type='password'>
                       <a-icon slot='prefix' type='lock' style='color:rgba(0,0,0,.25)' />
                     </a-input>
                   </a-form-item>
@@ -46,7 +46,7 @@
               </a-row>
               <a-button block type='primary' html-type='submit'>
                 <SpinOrText v-model='loading'>
-                  Send email
+                  {{$t('send_email')}}
                 </SpinOrText>
               </a-button>
             </a-form>
@@ -77,7 +77,7 @@ export default {
   },
   head() {
     return {
-      title: 'Confirm reset password',
+      title: this.$t('v.c_pwd_res'),
     }
   },
   computed: {
@@ -90,7 +90,7 @@ export default {
   },
   mounted(){
     if (!this.email || !this.code){
-      this.$router.push('/forgot-password')
+      this.$router.push(this.localePath('/forgot-password'))
     }
   },
   methods: {
@@ -113,12 +113,10 @@ export default {
                   },
                 })
                 .then(() => {
-                  // this.$refs.requests_dialog.onSuccess('Cuenta creada!')
-                  this.$router.push('/')
+                  this.$router.push(this.localePath('/'))
                 })
                 .catch((e) => {
-                  console.log('catch', e)
-                  this.$router.push('/sign-in')
+                  this.$router.push(this.localePath('/sign-in'))
                 })
             }).catch((err)=>{
               this.$refs.rmodal.$emit('error', err)
@@ -133,7 +131,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

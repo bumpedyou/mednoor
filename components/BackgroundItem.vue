@@ -17,11 +17,6 @@ export default{
             type: String,
             default: '',
         }
-    }, 
-    data(){
-        return {
-
-        }
     },
     computed:{
         backgroundURL(){
@@ -34,16 +29,9 @@ export default{
             }else{
                 path = process.env.BASE_URL + '/'
             }
-
             path+= this.$props.file
-
-            console.log('path is --->', path)
-
             let s = `background-image: url(${path});`
             if (this.$props.height){
-                
-                console.log('Add Height propery', this.$props.height)
-
                 s+=`height: ${this.$props.height} !important;`
             }
             return s

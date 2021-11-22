@@ -1,10 +1,8 @@
 <template>
 <a-row>
   <a-col>
-    <h1>Allow Users</h1>
-    <p>
-      Allow users to send messages to a professional.
-    </p>
+    <h1>{{$t('allo_usrs')}}</h1>
+    <p>{{$t('all_des')}}</p>
     <a-table :columns='columns' :data-source='items'>
             <span slot="professional" slot-scope="text, record">
               {{ record.fn1 }} {{ record.ln1 }}
@@ -14,8 +12,8 @@
             </span>
       <span slot="action" slot-scope="text, record">
               <!--<span slot="action">-->
-                <span v-if="record.mypr_allowed">This user is allowed</span>
-                <a v-else @click='allow(record.mypr_id)'>Allow user</a>
+                <span v-if="record.mypr_allowed">{{$t('all_urs_is')}}</span>
+                <a v-else @click='allow(record.mypr_id)'>{{$t('allo_usr')}}</a>
               </span>
     </a-table>
   </a-col>
@@ -32,33 +30,35 @@ export default {
     RequestModal
   },
   middleware: ['authenticated'],
-  data: ()=>({
-    items: [],
-    columns: [
-      {
-        title: 'Professional',
-        dataIndex: 'fn1',
-        key: 'fn1',
-        slots: {title: 'Professional'},
-        scopedSlots: {customRender: 'professional'}
-      },
-      {
-        title: 'User',
-        dataIndex: 'fn2',
-        key: 'fn2',
-        slots: {title: 'User'},
-        scopedSlots: {customRender: 'user'}
-      },
-      {
-        title: 'Action',
-        key: 'action',
-        scopedSlots: {customRender: 'action'}
-      }
-    ],
-  }),
+  data () {
+    return {
+      items: [],
+      columns: [
+        {
+          title: this.$t('professional'),
+          dataIndex: 'fn1',
+          key: 'fn1',
+          slots: {title: this.$t('professional')},
+          scopedSlots: {customRender: 'professional'}
+        },
+        {
+          title: this.$t('usr'),
+          dataIndex: 'fn2',
+          key: 'fn2',
+          slots: {title: this.$t('usr')},
+          scopedSlots: {customRender: 'user'}
+        },
+        {
+          title: this.$t('action'),
+          key: 'action',
+          scopedSlots: {customRender: 'action'}
+        }
+      ],
+    }
+  },
   head() {
     return {
-      title: 'Allow Professionals',
+      title: this.$t('all_prof'),
     }
   },
   mounted (){
@@ -67,12 +67,10 @@ export default {
   methods: {
     getItems(){
       this.$api.get('/my-professional/all').then(({data})=>{
-        console.log('Data is', data)
         this.items = data
       })
     },
     allow (id) {
-      console.log('Allow', id)
       this.$api.post('/my-professional/allow/' + id).then(({data})=>{
         this.getItems()
       }).catch((err)=>{
@@ -82,7 +80,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

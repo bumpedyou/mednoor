@@ -4,15 +4,15 @@
             <a-col :xs="24" :md="{span: 12, offset: 6}">
                <a-skeleton v-if="loading"/>
                <div v-else-if="not_found">
-                   <p class="h1 text-center">
-                       Not Found
+                   <p class="h1 text-center">as z
+                       {{$t('not_found')}}
                    </p>
                    <p class="text-center">
-                       The post that you were looking for does not exist or it was deleted.
+                       {{$t('post_nf_del')}}
                    </p>
                    <p class="text-center">
-                    <nuxt-link to="/">
-                        Home
+                    <nuxt-link :to='localePath("/")'>
+                        {{$t('home')}}
                     </nuxt-link>
                    </p>
                </div>
@@ -20,15 +20,15 @@
                    <main>
                         <h1 class="ml-0 pl-0">{{data.page_title}}</h1>
                         <p class='mb-0 d-flex text-muted mt-1 mb-1'>
-                            <span class="mr-auto d-flex">Publication Date: {{dateStringDate(data.page_createdAt)}}</span>
-                            <span v-if="data.page_createdAt !== page_updated_at" class="ml-auto d-flex">Last Updated: {{dateStringDate(data.page_updated_at)}}</span>
+                            <span class="mr-auto d-flex">{{$t('pub_date')}}: {{dateStringDate(data.page_createdAt)}}</span>
+                            <span v-if="data.page_createdAt !== page_updated_at" class="ml-auto d-flex">{{$t('last_pdate')}}: {{dateStringDate(data.page_updated_at)}}</span>
                         </p>
                         <hr>
                         <!-- eslint-disable vue/no-v-html -->
                         <pre v-html="data.page_content"></pre>
                         <!--eslint-enable-->
                         <p class="text-muted">
-                            Share 
+                            {{$t('share')}}
                         </p>
                         <div class="share-links">
                             <a :href="shareTwitter" target="_blank">
@@ -63,7 +63,6 @@ export default {
     },
     computed: {
         url(){
-            console.log(process.env)
             return process.env.BASE_URL + '/page/' + this.uuid
         },
         shareTwitter(){
@@ -79,7 +78,7 @@ export default {
     mounted(){
         this.uuid = this.$route.params.id
         this.loading = true
-        
+
         this.$api.get('/page/' + this.uuid).then(({data})=>{
             this.loading = false
             this.data = data

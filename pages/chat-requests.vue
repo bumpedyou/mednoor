@@ -2,7 +2,7 @@
   <a-row class="pa-1 mh-100v">
     <a-col>
       <p class='h1'>
-        Chat Requests
+        $t('chat_requests')
       </p>
       <a-table :columns='columns' :data-source='items'>
         <div slot='user_name' slot-scope='text, record'>
@@ -12,16 +12,16 @@
           {{dateString(text)}}
         </div>
         <div slot='actions' slot-scope='text, record'>
-          <a href='javascript:void(0)' @click='aksAccept(record.mypr_id)'>Yes</a>
+          <a href='javascript:void(0)' @click='aksAccept(record.mypr_id)'>{{$t('yes')}}</a>
           <a-divider type='vertical' />
-          No
+          {{$t('no')}}
         </div>
       </a-table>
     </a-col>
     <RequestDialog ref='rmodal'></RequestDialog>
-    <a-modal v-model='visible' title='Accept chat request' ok-text='Accept chat request' :confirm-loading='loadingModal' cancel-text='Cancel'  @ok='allowChat'>
+    <a-modal v-model='visible' title='Accept chat request' ok-text='Accept chat request' :confirm-loading='loadingModal' :cancel-text="$t('cancel')"  @ok='allowChat'>
       <p>
-        Do you really want to allow this user to chat with you?
+        {{$t('chat_ask_allow')}}
       </p>
     </a-modal>
   </a-row>
@@ -39,39 +39,41 @@ export default {
   },
   mixins: [dateMixin, authMixin],
   middleware: ['authenticated', 'not-blocked', 'not-deleted'],
-  data: () => ({
-    selectedId: null,
-    visible: false,
-    loadingModal: false,
-    items: [],
-    columns: [
-      {
-        title: 'User Name',
-        dataIndex: 'user_first_name',
-        key: 'user_first_name',
-        slots: { title: 'User Name' },
-        scopedSlots: { customRender: 'user_name' }
-      },
-      {
-        title: 'Date Requested',
-        dataIndex: 'mypr_date',
-        key: 'mypr_date',
-        slots: { title: 'Date Requested' },
-        scopedSlots: { customRender: 'mypr_date' }
-      },
-      {
-        title: 'Accept',
-        dataIndex: 'mypr_id',
-        key: 'mypr_id',
-        slots: { title: 'Accept' },
-        scopedSlots: { customRender: 'actions' }
-      }
-    ],
-    socket: null,
-  }),
+  data (){
+    return {
+      selectedId: null,
+      visible: false,
+      loadingModal: false,
+      items: [],
+      columns: [
+        {
+          title: this.$t('usr_name'),
+          dataIndex: 'user_first_name',
+          key: 'user_first_name',
+          slots: { title: this.$t('usr_name') },
+          scopedSlots: { customRender: 'user_name' }
+        },
+        {
+          title: this.$t('date_requested'),
+          dataIndex: 'mypr_date',
+          key: 'mypr_date',
+          slots: { title: this.$t('date_requested') },
+          scopedSlots: { customRender: 'mypr_date' }
+        },
+        {
+          title: this.$t('accept'),
+          dataIndex: 'mypr_id',
+          key: 'mypr_id',
+          slots: { title: this.$t('accept') },
+          scopedSlots: { customRender: 'actions' }
+        }
+      ],
+      socket: null,
+    }
+  },
   head() {
     return {
-      title: 'Chat Requests',
+      title: this.$t('chat_requests'),
     }
   },
   mounted() {
@@ -99,12 +101,7 @@ export default {
       this.$api.post('/my-professional/allow/' + this.selectedId).then(()=>{
         this.items = this.items.filter((item)=>{
           if (item.mypr_id === this.selectedId){
-            this.$router.push({
-              path: '/',
-              query: {
-                chat: item.user_uuid
-              }
-            })
+            this.$router.push({ path: this.localePath('/'), query: { chat: item.user_uuid } })
           }
           return item.mypr_id !== this.selectedId
         })
@@ -119,7 +116,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

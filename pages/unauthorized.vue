@@ -1,12 +1,10 @@
 <template>
 <a-row>
   <a-col>
-    <h1>Unauthorized</h1>
-    <p>
-      You are not authorized to access that page.
-    </p>
-    <nuxt-link to='/'>
-      Home
+    <h1>{{$t('unauthorized')}}</h1>
+    <p>{{$t('yornt_auth')}}</p>
+    <nuxt-link :to="localePath('/')">
+      {{$t('home')}}
     </nuxt-link>
   </a-col>
 </a-row>
@@ -17,12 +15,8 @@ export default {
   name: 'Unauthorized',
     head() {
     return {
-      title: 'Unauthorized',
+      title: this.$t('unauthorized'),
     }
   },
 }
 </script>
-
-<style scoped>
-
-</style>

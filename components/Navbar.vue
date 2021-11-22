@@ -3,16 +3,16 @@
     <div class='menu-top-bar'>
       <div class="chat-icon">
       </div>
-      <nuxt-link to='/'>
+      <nuxt-link :to="localePath('/')">
         <div class='text mednoor-logo'>
-          MedNoor Medical Center
+          {{$t('med_med_cen')}}
         </div>
       </nuxt-link>
       <div v-click-outside='toggleMenuNavigation' class='menu-icon' @click='toggleMenuNavigation(true)' >
                   <div v-if="isLoggedIn">
                   <div v-if="isAdmin">
                     <a-button type="raisin-black">
-                      ADMIN <a-icon type="caret-down" />
+                      {{$t('admin')}} <a-icon type="caret-down" />
                     </a-button>
                   </div>
                   <div v-else>
@@ -25,16 +25,16 @@
     <div class='side-bars'>
       <transition name='side-slide' mode='out-in'>
         <div v-if='showChatNav' class='sidebar'>
-          <sidebar-mobile-title>Chats</sidebar-mobile-title>
+          <sidebar-mobile-title>{{$t('chats')}}</sidebar-mobile-title>
           <ChatItems :data='moderators' :selected-chat='to' @open-chat='openChat'></ChatItems>
         </div>
       </transition>
       <transition name='side-slide' mode='in-out'>
         <div v-if='showMenuNav' class='sidebar menu-sidebar'>
-          <sidebar-mobile-title>Menu</sidebar-mobile-title>
+          <sidebar-mobile-title>{{$t('menu')}}</sidebar-mobile-title>
           <ul class='sidebar-menu-items'>
             <li v-for='(item, i) in menuItems' :key='i'>
-              <nuxt-link :to='item.to' class="sidebar-item">
+              <nuxt-link :to='localePath(item.to)' class="sidebar-item">
                 <span>
                  {{ item.text }}
                 </span>
@@ -77,33 +77,28 @@ export default {
     menuItems() {
       const items = []
       if (this.isLoggedIn) {
-
         if (this.isAdmin || this.isSuper || this.isModerator){
          items.push({
-            text: 'Dashboard',
+            text: this.$t('dashboard'),
             icon: 'dashboard',
             to: '/dashboard'
           })
         }
-
         items.push({
-          text: 'My Profile',
+          text: this.$t('my_profile'),
           icon: 'user',
           to: '/my-profile'
         })
-
         if (this.isAdmin || this.isSuper) {
           items.push({
-            text: 'Users List',
+            text: this.$t('usrs_list'),
             icon: 'users',
             to: '/users-list'
           })
         }
-
-
         if (this.isModerator || this.isAdmin || this.isSuper) {
           items.push({
-            text: 'Professionals List',
+            text: this.$t('professionals_list'),
             icon: 'tie',
             to: {
               path: '/users-list',
@@ -116,12 +111,12 @@ export default {
 
         if (this.isModerator){
           items.push({
-            text: 'Chat Requests',
+            text: this.$t('chat_requests'),
             icon: 'message-square-plus',
             to: '/chat-requests'
           })
           items.push({
-            text: 'My Patients',
+            text: this.$t('my_patients'),
             icon: 'user',
             to: '/my-patients'
           })
@@ -130,7 +125,7 @@ export default {
 
         if (this.isUser) {
           items.push({
-            text: 'Available professionals',
+            text: this.$t('av_prof'),
             icon: 'tie',
             to: '/professionals'
           })
@@ -138,30 +133,30 @@ export default {
 
         if (this.isLoggedIn){
           items.push({
-            text: 'Previous Chats (PDF)',
+            text: this.$t('prev_c_pdf'),
             icon: 'file',
             to: '/my-chats'
           })
           items.push({
-            text: 'Chats',
+            text: this.$t('chats'),
             icon: 'chat',
             to: '/'
           })
         }
 
         items.push({
-          text: 'Sign Out',
+          text: this.$t('sign_out'),
           icon: 'sign-out',
           to: '/sign-out'
         })
       } else {
         items.push({
-            text: 'Sign in',
+            text: this.$t('sign_in'),
             icon: 'sign-in',
             to: '/sign-in'
           },
           {
-            text: 'Sign up',
+            text: this.$t('sign_up'),
             icon: 'user-plus',
             to: '/sign-up'
           })
@@ -197,15 +192,14 @@ export default {
       this.socket.on('chat-allowed', (data)=>{
         this.openNotification({
           title: 'Chat request accepted',
-          description: 'Your chat request has been accepted'
+          description: this.$t('chat_r_acc')
         })
         this.$router.push({
-          path: '/',
+          path: this.localePath('/'),
           query: {
             chat: data.professional
           }
         })
-        console.log('A new chat has been allowed')
       })
     },
     setChatFromRoute() {
@@ -216,14 +210,11 @@ export default {
     },
     openChat(uuid) {
       this.$router.push({
-        path: '/',
+        path: this.localePath('/'),
         query: {
           chat: uuid
         }
       })
-    },
-    showChatMobile() {
-      console.log('Show Chat Mobile!')
     },
     toggleChatNavigation(clickFromInside) {
       this.showChatNav = this.toggleDirective(this.showChatNav, clickFromInside)
@@ -317,7 +308,7 @@ export default {
 
     a:first-of-type
       border-top: 0
-  
+
   .sidebar-item
     display: flex
     justify-content: center

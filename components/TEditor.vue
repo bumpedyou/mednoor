@@ -11,7 +11,7 @@
             h3
         </button>
         <button type="button" :class="{ 'is-active': editor.isActive('paragraph') }" @click="editor.chain().focus().setParagraph().run()">
-            paragraph
+            {{$t('paragraph')}}
         </button>
         <button type="button" :class="{ 'is-active': editor.isActive('bold') }" @click="editor.chain().focus().toggleBold().run()">
             <a-icon type="bold" />
@@ -40,7 +40,6 @@
         <pre><code>{{ localValue }}</code></pre>
     </div>
     </editor-content>
-
 </div>
 </template>
 
@@ -120,7 +119,6 @@ export default {
     },
      addImage() {
       const url = window.prompt('URL')
-
       if (url) {
         this.editor.chain().focus().setImage({ src: url }).run()
       }
@@ -131,7 +129,7 @@ export default {
 
 <style lang="sass">
 
-.TEditor 
+.TEditor
   div
     margin-top: 0
     border: 2px solid $mdn-raisin-black
@@ -149,45 +147,45 @@ export default {
   ol
     padding: 0 1rem
 
-  
 
-  code 
+
+  code
     background-color: rgba(#616161, 0.1)
     color: #616161
-  
+
   p
     margin-top: 0
     margin-bottom: 0
-  pre 
+  pre
     background: #0D0D0D
     color: #FFF
     font-family: 'JetBrainsMono', monospace
     padding: 0.75rem 1rem
     border-radius: 0.5rem
 
-    code 
+    code
       color: inherit
       padding: 0
       background: none
       font-size: 0.8rem
-    
-  
 
-  mark 
+
+
+  mark
     background-color: #FAF594
-  
 
-  img 
+
+  img
     max-width: 100%
     height: auto
-  
 
-  blockquote 
+
+  blockquote
     padding-left: 1rem
     border-left: 2px solid rgba(#0D0D0D, 0.1)
-  
 
-  hr 
+
+  hr
     border: none
     border-top: 2px solid rgba(#0D0D0D, 0.1)
     margin: 2rem 0

@@ -3,14 +3,14 @@
         <a-row class="mb-1">
           <a-col>
                 <a-breadcrumb>
-                  <a-breadcrumb-item><nuxt-link to="/dashboard">Dashboard</nuxt-link></a-breadcrumb-item>
-                  <a-breadcrumb-item>Home Screen</a-breadcrumb-item>
+                  <a-breadcrumb-item><nuxt-link :to="localePath('/dashboard')">{{$t('dashboard')}}</nuxt-link></a-breadcrumb-item>
+                  <a-breadcrumb-item>{{$t('home_screen')}}</a-breadcrumb-item>
               </a-breadcrumb>
           </a-col>
         </a-row>
         <a-row v-if='src === ""'>
             <a-col :md="{span: 12, offset: 6}" :lg="{span: 8, offset: 8}">
-                <h1 class="text-center">Home Screen</h1>
+                <h1 class="text-center">{{$t('home_screen')}}</h1>
                 <a-upload-dragger
                     name="file"
                     :multiple="false"
@@ -26,10 +26,10 @@
                     <a-icon type="inbox" />
                     </p>
                     <p class="ant-upload-text">
-                    Click or drag file to this area to upload
+                      {{$t('file_desc_drag')}}
                     </p>
                     <p class="ant-upload-hint">
-                        Select a short video or an image.
+                        {{$t('file_desc_sel')}}
                     </p>
                 </a-upload-dragger>
             </a-col>
@@ -41,17 +41,17 @@
             </a-col>
             <a-col :xs="{span: 24}" :sm="{span: 24}" :md="{span: 12}" class="pa-1 pt-0">
               <p class="h3">
-                Preview Example
+                {{$t('prev_ex')}}
               </p>
               <a-skeleton />
               <div>
                 <a-progress :percent='umUploadProgress'></a-progress>
               </div>
               <a-button type="danger" @click="handleRemove">
-                Cancel
+                {{$t('cancel')}}
               </a-button>
               <a-button type="primary" @click="handleUpload">
-                Upload and replace.
+                {{$t('upl_repl')}}
               </a-button>
             </a-col>
           </a-row>
@@ -93,9 +93,9 @@ export default {
         console.log(info.file, info.fileList);
       }
       if (status === 'done') {
-        this.$message.success(`${info.file.name} uploaded successfully.`);
+        this.$message.success(`${info.file.name} ` + this.$t('upl_succ'));
       } else if (status === 'error') {
-        this.$message.error(`${info.file.name} upload failed.`);
+        this.$message.error(`${info.file.name} ` + this.$t('upl_fail'));
       }
     },
      handleRemove(file) {
@@ -114,7 +114,6 @@ export default {
         }
         reader.readAsDataURL(file);
       }
-      
       return false;
     },
     handleUpload() {
@@ -123,23 +122,21 @@ export default {
       fileList.forEach(file => {
         formData.append('file', file);
       });
-
       this.uploading = true;
-
       this.$api.post(this.computedAction, formData,  {
           onUploadProgress: (evt) => {
             this.onProgress(evt)
           }
         }).then(()=>{
           this.fileList = [];
-          this.$message.success('upload successfully.');
+          this.$message.success(this.$t('upl_succ').toString());
           setTimeout(()=>{
             this.handleRemove()
             this.umUploadProgress = 0
           }, 1000)
 
       }).catch(()=>{
-          this.$message.error('upload failed.')
+          this.$message.error(this.$t('upl_fail').toString())
       }).finally(()=>{
           this.uploading = false;
       })
@@ -147,6 +144,3 @@ export default {
   },
 }
 </script>
-<style scoped lang="sass">
-
-</style>
