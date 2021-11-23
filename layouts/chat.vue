@@ -66,7 +66,7 @@
                 </div>
               </div>
             </div>
-            <typing-indicator v-model='toIsTyping'></typing-indicator>
+            <typing-indicator :value='toIsTyping'></typing-indicator>
             <div v-if='fileName' class='upload-container'>
               <small class='mr-1 text-muted'>{{ fileName }}</small>
               <a-progress :percent='umUploadProgress'></a-progress>
@@ -79,9 +79,10 @@
                 {{$t('upload')}}
               </a-button>
             </div>
+            <VEmojiPicker v-if='showEmojiPicker' class="emoji-picker" @select="selectEmoji" />
             <div class='chat-controls'>
               <div>
-                <img :src="require('~/static/icon/happy-face.svg')" alt='happy face'>
+                <img :src="require('~/static/icon/happy-face.svg')" alt='happy face' @click='showEmojiPicker = !showEmojiPicker'>
               </div>
               <a-input v-model='message' placeholder='Type a message' @keyup="imTyping" @keyup.enter='sendMessage(null)'></a-input>
               <div class='chat-multiple-controls'>
@@ -133,6 +134,7 @@
 <script>
 
 import domtoimage from 'dom-to-image'
+import { VEmojiPicker } from 'v-emoji-picker';
 import Navbar from '~/components/Navbar'
 import RequestModal from '~/components/RequestModal'
 import listenMixin from '~/mixins/listenMixin'
@@ -156,11 +158,13 @@ export default {
     ChatItems,
     Navbar,
     RequestModal,
-    SpinOrText
+    SpinOrText,
+    VEmojiPicker
   },
   mixins: [listenMixin, userRoleMixin, userUpdatedMixin, uploadMixin, chatMixin, authMixin, breakpoints],
   middleware: ['authenticated', 'not-blocked', 'not-deleted'],
   data: () => ({
+    showEmojiPicker: false,
     visible: false,
     confirmLoading: false,
     savingPdf: false,
@@ -271,6 +275,10 @@ export default {
     this.run_once(this.listen)
   },
   methods: {
+    selectEmoji(e){
+      this.message += e.data
+      this.showEmojiPicker = false
+    },
     imTyping(evt){
       if (this.sentTypingEvt || evt.key ===  'Enter')
         return
@@ -555,7 +563,7 @@ export default {
 }
 </script>
 
-<style lang='sass'>
+<style lang='sass' scoped>
 
 #app-content
   margin-top: 50px
@@ -686,11 +694,19 @@ export default {
 .chat-time
   color: $mdn-super-light-grey
 
-
+.emoji-picker
+  position: absolute
+  bottom: 10px
+  margin-left: 20px
+  z-index: 250
 
 @media screen and (min-width: $md)
+  .emoji-picker
+    bottom: 110px
+    margin-left: 30px
+    z-index: 250
   .typing-indicator
-    left: 30%
+    left: 30% !important
   .chats-layout
     width: 100%
     .chats-list

@@ -5,10 +5,10 @@ import authMixin from '~/mixins/authMixin'
 export default {
   data: () => ({
     chats: [],
-    mixins: [userRoleMixin, authMixin],
     moderators: [],
     loadingItems: true,
   }),
+  mixins: [userRoleMixin, authMixin],
   methods: {
     mergeWithConversations(addMessages) {
       this.loadingItems = true
@@ -114,7 +114,10 @@ export default {
     },
     messageClass(msg) {
       const c = ['chat-message']
-      const isOwner = msg.isOwner || msg.owner || msg.mess_sender === this.myID
+
+      const isOwner = msg.isOwner || msg.owner || msg.mess_sender === this.myUserId
+      console.log('isOwner --->', isOwner, 'myUserId ---->', this.myUser, this.myUserId)
+
       if (this.isModerator || this.isAdmin || this.isSuper){
         if (isOwner) {
           c.push('owner')

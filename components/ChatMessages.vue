@@ -1,6 +1,7 @@
 <template>
   <div>
     <div v-for='(msg, i) in msgs' :key="'msg-' + i" :ref="'msg-' + i" :class='messageClass(msg)'>
+
       <span v-if='msg'>
         {{ msg.message }}
       </span>
