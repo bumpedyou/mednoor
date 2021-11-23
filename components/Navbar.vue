@@ -3,11 +3,16 @@
     <div class='menu-top-bar'>
       <div class="chat-icon">
       </div>
+      <div class='mednoor-logo'>
+        <nuxt-link v-for='(page, i) in pages' :key='i' :to='localePath({path: "/page/" + page.page_uuid + "/" + slugify(page.page_slug)})' style='margin-left: 0.3rem; margin-right: 0.3rem'>{{page.page_title}}</nuxt-link>
+      </div>
+      <!--
       <nuxt-link :to="localePath('/')">
         <div class='text mednoor-logo'>
           {{$t('med_med_cen')}}
         </div>
       </nuxt-link>
+      -->
       <div v-click-outside='toggleMenuNavigation' class='menu-icon' @click='toggleMenuNavigation(true)' >
                   <div v-if="isLoggedIn">
                   <div v-if="isAdmin">
@@ -19,7 +24,8 @@
                     {{$auth.user.user_first_name}} {{$auth.user.last_name}} <a-icon type="caret-down" />
                   </div>
                 </div>
-        <img v-else :src="require('~/static/icon/menu.svg')" alt='Chat icon'>
+        <!--<img v-else :src="require('~/static/icon/menu.svg')" alt='Chat icon'>-->
+        Menu
       </div>
     </div>
     <div class='side-bars'>
@@ -38,7 +44,7 @@
                 <span>
                  {{ item.text }}
                 </span>
-                <img :src="require('~/static/icon/' + item.icon +'.svg')" :alt="item.icon + ' icon'">
+                <img v-if='item.icon' :src="require('~/static/icon/' + item.icon +'.svg')" :alt="item.icon + ' icon'">
               </nuxt-link>
             </li>
           </ul>
@@ -57,6 +63,8 @@ import breakpoints from '~/mixins/breakpoints'
 import ChatItems from '~/components/ChatItems'
 import chatMixin from '~/mixins/chatMixin'
 import listenMixin from '~/mixins/listenMixin'
+import utilsMixin from '~/mixins/utilsMixin'
+
 
 export default {
   name: 'Navbar',
@@ -64,11 +72,12 @@ export default {
     ChatItems,
     SidebarMobileTitle
   },
-  mixins: [toggleDirectiveMixin, authMixin, userRoleMixin, breakpoints, chatMixin, listenMixin],
+  mixins: [toggleDirectiveMixin, authMixin, userRoleMixin, breakpoints, chatMixin, listenMixin, utilsMixin],
   data: () => ({
     showChatNav: false,
     showMenuNav: false,
-    to: ''
+    to: '',
+    pages: [],
   }),
   computed: {
     myId() {
@@ -160,6 +169,12 @@ export default {
             icon: 'user-plus',
             to: '/sign-up'
           })
+        this.pages.forEach((page)=>{
+          items.push({
+            text: page.page_title,
+            to: '/page/' + page.page_uuid + '/' + this.slugify(page.page_slug)
+          })
+        })
       }
       return items
     },
@@ -180,9 +195,14 @@ export default {
   mounted() {
     this.getChats()
     this.setChatFromRoute()
-
+    this.$api.get('/page').then(({data})=>{
+      this.pages = data
+    })
   },
   methods: {
+    pageURL(page){
+      return '/page/' + page.page_uuid + '/' + this.slugify(page.page_slug)
+    },
     listen() {
       this.socket = this.$nuxtSocket({})
       this.socket.emit('join-room', this.myId)
@@ -315,6 +335,9 @@ export default {
     span
       margin-right: auto
 
+.md-only
+  display: none
+
 @media screen and (min-width: $md)
   .side-bars
     .sidebar.menu-sidebar
@@ -322,6 +345,8 @@ export default {
       left: auto
       right: 0
       box-shadow: 0 3px 6px $mdn-light-grey
+  .md-only
+    display: block
 
 @media screen and (min-width: $lg)
   .side-bars

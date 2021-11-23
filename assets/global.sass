@@ -206,6 +206,85 @@ pre
   display: flex
   justify-content: center
 
+.floating-chat
+  display: none
+  position: fixed
+  bottom: 50px
+  right: 50px
+  z-index: 400
+  .bubble
+    width: 60px
+    height: 60px
+    border-radius: 50%
+    background: transparent
+    box-shadow: 3px 3px 6px #ccc
+    &:hover
+      cursor: pointer
+    img
+      max-width: 100%
+      max-height: 100%
+      min-width: 100%
+  .chat-box
+    width: 100vw
+    height: 100vh
+    background: #fff
+    position: fixed
+    bottom: 0
+    right: 0
+    top: 0
+    left: 0
+    box-shadow: 3px 3px 6px #ccc
+    border: 1px solid #eee
+    > div
+      padding: 0.5rem
+    .chat-box-header
+      background-color: $mdn-primary
+      color: #fff
+      display: flex
+      .content
+        width: calc(100% - 30px)
+      .close
+        width: 30px
+        &:hover
+          cursor: pointer
+    .chat-box-body
+      background: #ffffff
+    .chat-box-controls
+      position: absolute
+      bottom: 0
+      left: 0
+      right: 0
+      input
+        width: 100%
+        height: 30px
+
+
+.chat-message
+  margin-left: 0
+  margin-right: 3px
+  margin-top: 3px
+  width: 200px
+  height: auto
+  border: 1px solid $mdn-super-light-grey
+  border-radius: 9px
+  padding: 0.3rem
+  background-color: #fff
+  color: #000000
+
+.chat-message
+  background-color: #DBF3FA
+  color: #211235
+  a
+    color: #333
+    text-decoration: underline
+
+.chat-message.owner
+  margin-left: auto
+.chat-message:last-of-type
+  margin-bottom: 2.6rem
+
+
+
 @media screen and (min-width: $md)
   h1, .h1
     font-size: $mdn-md-h1
@@ -221,3 +300,17 @@ pre
     font-size: $mdn-md-h6
   body, p
     font-size: $mdn-md-p
+
+    .chat-box
+      width: 250px !important
+      height: 390px !important
+      position: fixed
+      bottom: 50px !important
+      right: 50px !important
+      top: unset !important
+      left: unset !important
+      box-shadow: 3px 3px 6px #ccc
+      border: 1px solid #eee
+      > div
+        padding: 0.5rem
+

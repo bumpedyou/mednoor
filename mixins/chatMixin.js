@@ -1,3 +1,4 @@
+import moment from 'moment'
 import userRoleMixin from '~/mixins/userRoleMixin'
 import authMixin from '~/mixins/authMixin'
 
@@ -110,6 +111,27 @@ export default {
         .catch((e) => {
           console.log('Sound not played')
         })
+    },
+    messageClass(msg) {
+      const c = ['chat-message']
+      const isOwner = msg.isOwner || msg.owner || msg.mess_sender === this.myID
+      if (this.isModerator || this.isAdmin || this.isSuper){
+        if (isOwner) {
+          c.push('owner')
+        }
+      }else if (!isOwner){
+        c.push('owner')
+      }
+      return c.join(' ')
+    },
+    filePath(s) {
+      return process.env.API_URL + '/file/' + s
+    },
+    isImg(fileName) {
+      return (fileName.match(/\.(jpeg|jpg|gif|png)$/) != null)
+    },
+    hour(date){
+      return moment(date).format('LTS');
     },
   },
 }

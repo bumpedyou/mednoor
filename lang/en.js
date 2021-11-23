@@ -176,7 +176,7 @@ export default {
   verify_email: 'Verify your email',
   very: 'Verify',
   not_found: 'Not Found',
-  post_nf_del: 'The post that you were looking for does not exist or it was deleted.',
+  post_nf_del: 'The page that you were looking for does not exist or it was deleted.',
   pub_date: 'Publication Date',
   last_pdate: 'Last Updated',
   share: 'Share',
@@ -211,6 +211,7 @@ export default {
   not_allw: 'Not allowed',
   yh_tw: 'You have to wait you be allowed to send messages to this professional.',
   new_chreq: 'New chat request',
+  wha_sc_r: 'What screen do you want to replace?',
   v: {
     email_req: 'Email is required',
     ln_req: 'Last Name is required',

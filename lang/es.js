@@ -211,6 +211,7 @@ export default {
   not_allw: 'No admitido',
   yh_tw: 'Tiene que esperar hasta que sea admitido para mandar mensajes a este profesional.',
   new_chreq: 'Nueva solicitud de chat',
+  wha_sc_r: '¿Qué fondo de pantalla desea remplazar?',
   v: {
     email_req: 'El email es requerido',
     ln_req: 'El apellido es requerido',

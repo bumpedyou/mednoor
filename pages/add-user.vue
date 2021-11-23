@@ -102,7 +102,7 @@
                     {min: 6, message: $t('v.min_6')}
                     ]
                   }
-                ]" :placeholder="$t('c.cpwd')" type='password'>
+                ]" :placeholder="$t('cpwd')" type='password'>
                   <a-icon slot='prefix' type='lock' style='color:rgba(0,0,0,.25)' />
                 </a-input>
               </a-form-item>

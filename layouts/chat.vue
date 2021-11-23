@@ -62,49 +62,11 @@
                       </p>
                     </div>
                   </div>
-                  <div v-for='(msg, i) in messages' :key="'msg-' + i" :ref="'msg-' + i" :class='messageClass(msg)'>
-                    <span v-if='msg'>
-                      {{ msg.message }}
-                    </span>
-                    <span v-if='msg.mess_message'>
-                      {{ msg.mess_message }}
-                    </span>
-                    <div v-if='msg && msg.file_name'>
-                      <span v-if='isImg(msg.file_name)'>
-                        <img :src='filePath(msg.file_name)' alt='chat-img' class='img-fluid'>
-                      </span>
-                      <span v-else>
-                      <a target='_blank' :href='filePath(msg.file_name)' :download='filePath(msg.file_name)'>
-                        {{ msg.file_title }}
-                      </a>
-                    </span>
-                    </div>
-                    <span v-if='msg.mimetype && msg.mimetype.includes("image")'>
-                      <img :src='msg.path' :alt='msg.originalName' class='img-fluid'>
-                    </span>
-                    <span v-else>
-                      <a target='_blank' :href='msg.path' :download='msg.path'>{{ msg.name }}</a>
-                    </span>
-                    <div class="chat-time">
-                      {{hour(msg.mess_date)}}
-                    </div>
-                  </div>
+                  <chat-messages :messages='messages'></chat-messages>
                 </div>
               </div>
             </div>
-
-            <div v-if="toIsTyping" class="typing-indicator">
-              <div class="typing-wrapper">
-                <div>
-                  {{ $t('typing') }}
-                </div>
-                <div class="snippet" data-title=".dot-typing">
-                  <div class="stage">
-                    <div class="dot-typing"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <typing-indicator v-model='toIsTyping'></typing-indicator>
             <div v-if='fileName' class='upload-container'>
               <small class='mr-1 text-muted'>{{ fileName }}</small>
               <a-progress :percent='umUploadProgress'></a-progress>
@@ -182,12 +144,15 @@ import chatMixin from '~/mixins/chatMixin'
 import SpinOrText from '~/components/SpinOrText'
 import authMixin from '~/mixins/authMixin'
 import breakpoints from '~/mixins/breakpoints'
+import ChatMessages from '~/components/ChatMessages'
+import TypingIndicator from '~/components/TypingIndicator'
 const debounce = require('lodash.debounce');
-const moment = require('moment')
 
 export default {
   name: 'Chat',
   components: {
+    TypingIndicator,
+    ChatMessages,
     ChatItems,
     Navbar,
     RequestModal,
@@ -306,9 +271,6 @@ export default {
     this.run_once(this.listen)
   },
   methods: {
-    hour(date){
-      return moment(date).format('LTS');
-    },
     imTyping(evt){
       if (this.sentTypingEvt || evt.key ===  'Enter')
         return
@@ -354,12 +316,6 @@ export default {
         this.openChat(c.chat)
       }
     },
-    filePath(s) {
-      return process.env.API_URL + '/file/' + s
-    },
-    isImg(fileName) {
-      return (fileName.match(/\.(jpeg|jpg|gif|png)$/) != null)
-    },
     scrollMessagesSection() {
       this.$nextTick(() => {
         const c = this.$refs.messages
@@ -379,7 +335,6 @@ export default {
             this.onProgress(evt)
           }
         }).then(({ data }) => {
-
           this.fileName = 0
           this.umUploadProgress = 0
           const opts = {
@@ -455,18 +410,6 @@ export default {
             this.savingPdf = false
           }, 1500)
         })
-    },
-    messageClass(msg) {
-      const c = ['chat-message']
-      const isOwner = msg.isOwner || msg.owner || msg.mess_sender === this.myID
-      if (this.isModerator || this.isAdmin || this.isSuper){
-        if (isOwner) {
-          c.push('owner')
-        }
-      }else if (!isOwner){
-          c.push('owner')
-        }
-      return c.join(' ')
     },
     sendMessage(opts) {
       if (!this.to) {
@@ -672,31 +615,6 @@ export default {
         cursor: pointer
       background: #fff
 
-    .chat-message
-      margin-left: 0
-      margin-right: 3px
-      margin-top: 3px
-      width: 200px
-      height: auto
-      border: 1px solid $mdn-super-light-grey
-      border-radius: 9px
-      padding: 0.3rem
-      background-color: #fff
-      color: #000000
-
-    .chat-message
-      background-color: #DBF3FA
-      color: #211235
-
-      a
-        color: #333
-        text-decoration: underline
-
-    .chat-message.owner
-      margin-left: auto
-
-    .chat-message:last-of-type
-      margin-bottom: 2.6rem
 
   .upload-container
     z-index: 202
@@ -767,59 +685,10 @@ export default {
 
 .chat-time
   color: $mdn-super-light-grey
-.typing-indicator
-  right: 0
-  width: 100% !important
-  background: #fff
-  position: fixed
-  bottom: 50px
-  left: 0
-  z-index: 202
-  color: $mdn-super-light-grey
-  padding: 1rem
-  .typing-wrapper
-    display: flex
-    justify-content: center
-    align-item: center
-    width: 100px
-    > div:first-of-type
-      margin-right: 16px
-    > div
-      display: flex
-      justify-content: center
-      align-items: center
-      flex: 1
 
 
-.dot-typing
-  position: relative
-  left: -9999px
-  width: 5px
-  height: 5px
-  border-radius: 5px
-  background-color: $mdn-super-light-grey
-  color: $mdn-super-light-grey
-  box-shadow: 9984px 0 0 0 $mdn-super-light-grey, 9999px 0 0 0 $mdn-super-light-grey, 10014px 0 0 0 $mdn-super-light-grey
-  animation: dotTyping 1s infinite linear
 
-  @keyframes dotTyping
-    0%
-      box-shadow: 9984px 0 0 0 $mdn-super-light-grey, 9999px 0 0 0 $mdn-super-light-grey, 10014px 0 0 0 $mdn-super-light-grey
-    16.667%
-      box-shadow: 9984px -10px 0 0 $mdn-super-light-grey, 9999px 0 0 0 $mdn-super-light-grey, 10014px 0 0 0 $mdn-super-light-grey
-    33.333%
-      box-shadow: 9984px 0 0 0 $mdn-super-light-grey, 9999px 0 0 0 $mdn-super-light-grey, 10014px 0 0 0 $mdn-super-light-grey
-    50%
-      box-shadow: 9984px 0 0 0 $mdn-super-light-grey, 9999px -10px 0 0 $mdn-super-light-grey, 10014px 0 0 0 $mdn-super-light-grey
-    66.667%
-      box-shadow: 9984px 0 0 0 $mdn-super-light-grey, 9999px 0 0 0 $mdn-super-light-grey, 10014px 0 0 0 $mdn-super-light-grey
-    83.333%
-      box-shadow: 9984px 0 0 0 $mdn-super-light-grey, 9999px 0 0 0 $mdn-super-light-grey, 10014px -10px 0 0 $mdn-super-light-grey
-    100%
-      box-shadow: 9984px 0 0 0 $mdn-super-light-grey, 9999px 0 0 0 $mdn-super-light-grey, 10014px 0 0 0 $mdn-super-light-grey
-
-
-@media (min-width: $md)
+@media screen and (min-width: $md)
   .typing-indicator
     left: 30%
   .chats-layout
@@ -834,11 +703,9 @@ export default {
       height: 100%
       bottom: 0
       border: 1px solid $mdn-super-light-grey
-
       .moderators
         position: fixed
         top: 50px
-        // height: 50vh
         overflow-y: auto
         left: 0
         width: 30%
@@ -846,7 +713,6 @@ export default {
       .chats
         position: fixed
         top: calc(50px + 50vh)
-        // height: 50vh
         left: 0
         right: 0
         width: 30%
@@ -924,7 +790,4 @@ export default {
 
   .chats-list
     display: none !important
-
-
-
 </style>

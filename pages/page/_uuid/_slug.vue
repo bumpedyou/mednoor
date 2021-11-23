@@ -4,7 +4,7 @@
             <a-col :xs="24" :md="{span: 12, offset: 6}">
                <a-skeleton v-if="loading"/>
                <div v-else-if="not_found">
-                   <p class="h1 text-center">as z
+                   <p class="h1 text-center">
                        {{$t('not_found')}}
                    </p>
                    <p class="text-center">
@@ -21,7 +21,7 @@
                         <h1 class="ml-0 pl-0">{{data.page_title}}</h1>
                         <p class='mb-0 d-flex text-muted mt-1 mb-1'>
                             <span class="mr-auto d-flex">{{$t('pub_date')}}: {{dateStringDate(data.page_createdAt)}}</span>
-                            <span v-if="data.page_createdAt !== page_updated_at" class="ml-auto d-flex">{{$t('last_pdate')}}: {{dateStringDate(data.page_updated_at)}}</span>
+                            <span v-if="data.page_createdAt !== data.page_updated_at" class="ml-auto d-flex">{{$t('last_pdate')}}: {{dateStringDate(data.page_updated_at)}}</span>
                         </p>
                         <hr>
                         <!-- eslint-disable vue/no-v-html -->
@@ -76,7 +76,7 @@ export default {
         },
     },
     mounted(){
-        this.uuid = this.$route.params.id
+        this.uuid = this.$route.params.uuid
         this.loading = true
 
         this.$api.get('/page/' + this.uuid).then(({data})=>{
