@@ -71,7 +71,6 @@ export default {
   },
   created() {
     this.$api.get('/user/admin').then(({data})=>{
-      console.log('Admin --->', data)
     })
   },
   mounted() {

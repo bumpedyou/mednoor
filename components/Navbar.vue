@@ -1,46 +1,46 @@
 <template>
   <div>
     <div class='menu-top-bar'>
-      <div class="chat-icon">
+      <div class='chat-icon'>
       </div>
       <div class='mednoor-logo'>
-        <nuxt-link v-for='(page, i) in pages' :key='i' :to='localePath({path: "/page/" + page.page_uuid + "/" + slugify(page.page_slug)})' style='margin-left: 0.3rem; margin-right: 0.3rem'>{{page.page_title}}</nuxt-link>
+        <nuxt-link v-for='(page, i) in pages' :key='i'
+                   :to='localePath({path: "/page/" + page.page_uuid + "/" + slugify(page.page_slug)})'
+                   style='margin-left: 0.3rem; margin-right: 0.3rem'>{{ page.page_title }}
+        </nuxt-link>
       </div>
-      <!--
-      <nuxt-link :to="localePath('/')">
-        <div class='text mednoor-logo'>
-          {{$t('med_med_cen')}}
+      <div v-click-outside='toggleMenuNavigation' class='menu-icon' @click='toggleMenuNavigation(true)'>
+        <div v-if='isLoggedIn'>
+          <div v-if='isAdmin'>
+            <a-button type='raisin-black'>
+              {{ $t('admin') }}
+              <a-icon type='caret-down' />
+            </a-button>
+          </div>
+          <div v-else>
+            {{ $auth.user.user_first_name }} {{ $auth.user.last_name }}
+            <a-icon type='caret-down' />
+          </div>
         </div>
-      </nuxt-link>
-      -->
-      <div v-click-outside='toggleMenuNavigation' class='menu-icon' @click='toggleMenuNavigation(true)' >
-                  <div v-if="isLoggedIn">
-                  <div v-if="isAdmin">
-                    <a-button type="raisin-black">
-                      {{$t('admin')}} <a-icon type="caret-down" />
-                    </a-button>
-                  </div>
-                  <div v-else>
-                    {{$auth.user.user_first_name}} {{$auth.user.last_name}} <a-icon type="caret-down" />
-                  </div>
-                </div>
+        <div v-else>
+          Menu
+        </div>
         <!--<img v-else :src="require('~/static/icon/menu.svg')" alt='Chat icon'>-->
-        Menu
       </div>
     </div>
     <div class='side-bars'>
       <transition name='side-slide' mode='out-in'>
         <div v-if='showChatNav' class='sidebar'>
-          <sidebar-mobile-title>{{$t('chats')}}</sidebar-mobile-title>
+          <sidebar-mobile-title>{{ $t('chats') }}</sidebar-mobile-title>
           <ChatItems :data='moderators' :selected-chat='to' @open-chat='openChat'></ChatItems>
         </div>
       </transition>
       <transition name='side-slide' mode='in-out'>
         <div v-if='showMenuNav' class='sidebar menu-sidebar'>
-          <sidebar-mobile-title>{{$t('menu')}}</sidebar-mobile-title>
+          <sidebar-mobile-title>{{ $t('menu') }}</sidebar-mobile-title>
           <ul class='sidebar-menu-items'>
             <li v-for='(item, i) in menuItems' :key='i'>
-              <nuxt-link :to='localePath(item.to)' class="sidebar-item">
+              <nuxt-link :to='localePath(item.to)' class='sidebar-item'>
                 <span>
                  {{ item.text }}
                 </span>
@@ -77,7 +77,7 @@ export default {
     showChatNav: false,
     showMenuNav: false,
     to: '',
-    pages: [],
+    pages: []
   }),
   computed: {
     myId() {
@@ -86,8 +86,8 @@ export default {
     menuItems() {
       const items = []
       if (this.isLoggedIn) {
-        if (this.isAdmin || this.isSuper || this.isModerator){
-         items.push({
+        if (this.isAdmin || this.isSuper || this.isModerator) {
+          items.push({
             text: this.$t('dashboard'),
             icon: 'dashboard',
             to: '/dashboard'
@@ -118,7 +118,7 @@ export default {
           })
         }
 
-        if (this.isModerator){
+        if (this.isModerator) {
           items.push({
             text: this.$t('chat_requests'),
             icon: 'message-square-plus',
@@ -140,7 +140,7 @@ export default {
           })
         }
 
-        if (this.isLoggedIn){
+        if (this.isLoggedIn) {
           items.push({
             text: this.$t('prev_c_pdf'),
             icon: 'file',
@@ -169,7 +169,7 @@ export default {
             icon: 'user-plus',
             to: '/sign-up'
           })
-        this.pages.forEach((page)=>{
+        this.pages.forEach((page) => {
           items.push({
             text: page.page_title,
             to: '/page/' + page.page_uuid + '/' + this.slugify(page.page_slug)
@@ -195,12 +195,12 @@ export default {
   mounted() {
     this.getChats()
     this.setChatFromRoute()
-    this.$api.get('/page').then(({data})=>{
+    this.$api.get('/page').then(({ data }) => {
       this.pages = data
     })
   },
   methods: {
-    pageURL(page){
+    pageURL(page) {
       return '/page/' + page.page_uuid + '/' + this.slugify(page.page_slug)
     },
     listen() {
@@ -209,7 +209,7 @@ export default {
       this.socket.on('user-reload', () => {
         this.getChats(true)
       })
-      this.socket.on('chat-allowed', (data)=>{
+      this.socket.on('chat-allowed', (data) => {
         this.openNotification({
           title: 'Chat request accepted',
           description: this.$t('chat_r_acc')
@@ -287,6 +287,7 @@ export default {
 
   .menu-icon
     margin-left: auto
+
     &:hover
       cursor: pointer
 
@@ -332,6 +333,7 @@ export default {
   .sidebar-item
     display: flex
     justify-content: center
+
     span
       margin-right: auto
 
