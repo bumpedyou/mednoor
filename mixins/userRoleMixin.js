@@ -30,6 +30,9 @@ export default {
     isAdmin() {
       return this.userRole === 'admin'
     },
+    isAdminOrSuper() {
+      return this.isAdmin || this.isSuper
+    },
     isModerator() {
       // This is the same as Professional. (The keyword is moderator)
       return this.userRole === 'moderator'
