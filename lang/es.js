@@ -212,6 +212,7 @@ export default {
   yh_tw: 'Tiene que esperar hasta que sea admitido para mandar mensajes a este profesional.',
   new_chreq: 'Nueva solicitud de chat',
   wha_sc_r: '¿Qué fondo de pantalla desea remplazar?',
+  welcome: 'Bienvenido',
   v: {
     email_req: 'El email es requerido',
     ln_req: 'El apellido es requerido',
@@ -246,5 +247,8 @@ export default {
     sign_in: 'Ingrear a mi cuenta de Mednoor',
     sign_up: 'Registrarse en el contro Médico Mednoor',
     chat: 'Chatear con un profesional en el centro médico Mednoor.',
+    keywords: {
+      index: 'mednoor, en línea, online, centro médico, chat'
+    }
   }
 }

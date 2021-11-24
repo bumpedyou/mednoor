@@ -66,6 +66,11 @@ export default {
       ]
     }
   },
+  head(){
+    return {
+      title: this.$t('pages')
+    }
+  },
   mounted() {
     this.$api.get('/page').then(({ data }) => {
       this.items = data

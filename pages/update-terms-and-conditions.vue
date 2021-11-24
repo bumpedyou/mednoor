@@ -49,12 +49,18 @@ export default {
       loading: true
     }
   },
+  head(){
+    return {
+      title: this.$t('update_tc')
+    }
+  },
   mounted() {
     this.$api.get('/content/terms-conditions').then(({ data }) => {
       this.loading = false
       this.$nextTick(() => {
         if (data && data.teco_text) {
           const t = data.teco_text
+          this.$refs.editor.editor.commands.setContent(t)
           this.$refs.editor.editor.commands.setContent(t)
         }
       })

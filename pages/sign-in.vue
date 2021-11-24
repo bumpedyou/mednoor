@@ -100,18 +100,10 @@ export default {
       ]
     }
   },
-  created(){
-    this.$api.get('/home-screen').then(({data})=>{
-      if (data && data.screen && data.screen.hosc_file){
-        this.file = 'hs/' + data.screen.hosc_file
-      }
-    }).catch((e)=>{
-      console.log('Failed to get the home scren', e)
-    })
-  },
   methods: {
     handleSubmit(e) {
       e.preventDefault()
+
       this.form.validateFields(async (err, values) => {
           if (!err) {
             this.loading = true

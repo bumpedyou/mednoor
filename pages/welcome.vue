@@ -24,7 +24,7 @@ export default {
   },
   head() {
     return {
-      title: 'Welcome.',
+      title: this.$t('welcome'),
     }
   },
 }

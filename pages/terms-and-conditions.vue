@@ -10,7 +10,7 @@
 export default {
     data() {
         return {
-            content: ''
+            title: this.$t('terms_cond')
         }
     },
     mounted(){

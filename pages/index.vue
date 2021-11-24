@@ -20,6 +20,11 @@ export default {
           hid: 'og:description',
           name: 'og:description',
           content: this.$t('seo.index')
+        },
+        {
+          hid: 'keywords',
+          name: 'keywords',
+          content: this.$t('seo.keywords.index')
         }
       ]
     }
