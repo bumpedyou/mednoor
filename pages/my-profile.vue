@@ -1,24 +1,25 @@
 <template>
 <div class="mh-100v">
   <a-row class="pa-1">
-    <a-col :xs="24" :sm="24" :md="{span: 12, offset: 6}" :lg="{span: 8, offset: 8}">
+    <a-col :xs="24" :sm="24">
       <div>
         <p class="h3 mb-1"  style="display: flex; align-items: center">
-        {{$t('hi')}}, {{name}} <span v-if="!isUser && userRole !== 'guest'" class="user-role ml-1">
+          {{$t('hi')}}, {{name}} <span v-if="!isUser && userRole !== 'guest'" class="user-role ml-1">
        {{$t('your_role')}}:
         <b class="b-white">{{userRoleTxt}}</b>
       </span></p>
       </div>
-      <p class="h4">{{$t('your_info')}}</p>
-      <hr>
-      <a-form layout='vertical'  :form="form" size="small" @submit="handleSubmit">
-        <a-form-item
-          v-model="first_name"
-          :label="$t('fn')"
-          rules="required"
-        >
-                  <a-input
-                    v-decorator="[
+      <div>
+        <a-tabs default-active-key="1">
+          <a-tab-pane key="1" tab="Basic information">
+            <a-form layout='vertical'  :form="form" size="small" @submit="handleSubmit">
+              <a-form-item
+                v-model="first_name"
+                :label="$t('fn')"
+                rules="required"
+              >
+                <a-input
+                  v-decorator="[
                       'first_name',
                       {
                         initialValue: first_name,
@@ -35,21 +36,21 @@
                         ]
                       }
                     ]"
-                    :placeholder="$t('fn')"
-                  >
-                    <a-icon
-                      slot="prefix"
-                      type="user"
-                      style="color: rgba(0, 0, 0, 0.25)"
-                    />
-                  </a-input>
-        </a-form-item>
-        <a-form-item
-          v-model="last_name"
-          :label="$t('ln')"
-        >
-          <a-input
-                    v-decorator="[
+                  :placeholder="$t('fn')"
+                >
+                  <a-icon
+                    slot="prefix"
+                    type="user"
+                    style="color: rgba(0, 0, 0, 0.25)"
+                  />
+                </a-input>
+              </a-form-item>
+              <a-form-item
+                v-model="last_name"
+                :label="$t('ln')"
+              >
+                <a-input
+                  v-decorator="[
                       'last_name',
                       {
                         initialValue: last_name,
@@ -66,41 +67,48 @@
                         ],
                       }
                     ]"
-                    :placeholder="$t('ln')"
-                  >
-                    <a-icon
-                      slot="prefix"
-                      type="user"
-                      style="color: rgba(0, 0, 0, 0.25)"
-                    />
-                  </a-input>
-        </a-form-item>
-        <a-form-item
-          :label="$t('email')"
-        >
-          <a-input v-model="email" disabled :placeholder="$t('email')"  />
-        </a-form-item>
-        <a-form-item>
-      <p class="h4">
-        {{$t('pwd_reset')}}
-      </p>
-      <hr>
-      <div>
-        <nuxt-link :to='localePath("change-my-password")'>
-          {{$t('change_pwd')}}
-        </nuxt-link>
+                  :placeholder="$t('ln')"
+                >
+                  <a-icon
+                    slot="prefix"
+                    type="user"
+                    style="color: rgba(0, 0, 0, 0.25)"
+                  />
+                </a-input>
+              </a-form-item>
+              <a-form-item
+                :label="$t('email')"
+              >
+                <a-input v-model="email" disabled :placeholder="$t('email')"  />
+              </a-form-item>
+              <a-form-item>
+                <div class="pull-child-right">
+                  <a-button type="primary" html-type="submit">
+                    <SpinOrText v-model="loading">
+                      {{$t('save_changes')}}
+                    </SpinOrText>
+                  </a-button>
+                </div>
+              </a-form-item>
+            </a-form>
+          </a-tab-pane>
+          <a-tab-pane key="2" tab="Password" force-render>
+            <a-form-item>
+              <p class="h4">
+                {{$t('pwd_reset')}}
+              </p>
+              <hr>
+              <div>
+                <nuxt-link :to='localePath("change-my-password")'>
+                  {{$t('change_pwd')}}
+                </nuxt-link>
+              </div>
+            </a-form-item>
+          </a-tab-pane>
+        </a-tabs>
       </div>
-        </a-form-item>
-        <a-form-item>
-          <div class="pull-child-right">
-            <a-button type="primary" html-type="submit">
-              <SpinOrText v-model="loading">
-                {{$t('save_changes')}}
-              </SpinOrText>
-            </a-button>
-          </div>
-        </a-form-item>
-      </a-form>
+
+
     </a-col>
   </a-row>
 

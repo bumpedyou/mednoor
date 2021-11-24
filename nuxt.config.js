@@ -107,7 +107,7 @@ export default {
     redirect: {
       login: '/sign-in',
       logout: '/sign-out',
-      callback: '/',
+      callback: '/sign-in',
       home: '/welcome',
     },
     plugins: [ '~/plugins/auth.js' ]

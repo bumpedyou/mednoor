@@ -212,6 +212,7 @@ export default {
   yh_tw: 'You have to wait you be allowed to send messages to this professional.',
   new_chreq: 'New chat request',
   wha_sc_r: 'What screen do you want to replace?',
+  welcome: 'Welcome',
   v: {
     email_req: 'Email is required',
     ln_req: 'Last Name is required',
@@ -233,7 +234,6 @@ export default {
     c_pwd_res: 'Confirm reset password',
     en_tmp_name: 'Please enter a template name',
     ym_agree: 'You must agree to the terms and conditions.',
-
     month_czero: 'The month cannot be zero',
     mcb_gt_zero: 'The month cannot be greater than twelve',
     day_czero: 'The day cannot be zero',
@@ -247,5 +247,8 @@ export default {
     sign_in: 'Sign in to you Mednoor account.',
     sign_up: 'Sign up to our Online Medical Center',
     chat: 'Chat with professionals in the online medical center.',
+    keywords: {
+      index: 'mednoor, online, medical center, chat'
+    }
   }
 }

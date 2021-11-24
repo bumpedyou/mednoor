@@ -25,7 +25,12 @@
 import dashboardOptionsList from '~/mixins/dashboardOptionsList'
 
 export default {
-    mixins: [dashboardOptionsList],
-    layout: "dashboard",
+  mixins: [dashboardOptionsList],
+  layout: "dashboard",
+  head (){
+    return {
+      title: this.$t('dashboard')
+    }
+  }
 }
 </script>

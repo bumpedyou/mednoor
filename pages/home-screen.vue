@@ -94,6 +94,11 @@ export default {
       type: 'sign-up',
     }
   },
+  head(){
+    return {
+      title: this.$t('home_screen')
+    }
+  },
   computed: {
     computedAction() {
       return process.env.API_URL + '/home-screen'

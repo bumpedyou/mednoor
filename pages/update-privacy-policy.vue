@@ -49,6 +49,11 @@ export default {
       loading: true
     }
   },
+  head(){
+    return {
+      title: this.$t('update_pp')
+    }
+  },
   mounted() {
     this.$api.get('/content/privacy-policy').then(({ data }) => {
       this.loading = false

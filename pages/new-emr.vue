@@ -272,6 +272,11 @@ export default {
       bp: '',
     }
   },
+  head(){
+    return {
+      title: this.$t('new_emr')
+    }
+  },
   computed: {
     isDisabled() {
       return !!this.recordId && this.type === 'record' || this.recordId && !this.isTemplate
