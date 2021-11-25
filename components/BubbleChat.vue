@@ -79,7 +79,9 @@ export default {
   mounted(){
     if (this.guestId){
       this.$api.get('/conversation/guest/' + this.guestId).then(({data})=>{
-        this.messages = data
+        if (data){
+          this.messages = data
+        }
         this.scrollMessagesSection()
       })
     }
