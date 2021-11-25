@@ -117,16 +117,16 @@
                 :placeholder="$t('bp')" :disabled='isDisabled' />
             </a-form-item>
             <a-form-item
-              :label="$('pulse')">
+              :label="$t('pulse')">
               <a-input
                 v-decorator="['pulse', { rules: [{ max: 10, message: $t('max_10') }] }]"
-                :placeholder="$('pulse')" :disabled='isDisabled' />
+                :placeholder="$t('pulse')" :disabled='isDisabled' />
             </a-form-item>
             <a-form-item
-              :label="$('resp_rate')">
+              :label="$t('resp_rate')">
               <a-input
                 v-decorator="['resp_rate', { rules: [{ max: 10, message: $t('v.max_10') }] }]"
-                :placeholder="$('resp_rate')" :disabled='isDisabled' />
+                :placeholder="$t('resp_rate')" :disabled='isDisabled' />
             </a-form-item>
             <a-form-item
               :label="$t('temp')">
@@ -196,11 +196,11 @@
                   :placeholder="$t('plan')" :rows='6' :disabled='isDisabled' />
               </a-form-item>
             </a-tab-pane>
-            <a-tab-pane key='7' :tab="$('sign')" force-render>
+            <a-tab-pane key='7' :tab="$t('sign')" force-render>
               <a-form-item>
                 <a-textarea
                   v-decorator="['sign', { rules: [{ max: 2000, message: $t('v.max_2000') }] }]"
-                  :placeholder="$('sign')" :rows='6' :disabled='isDisabled' />
+                  :placeholder="$t('sign')" :rows='6' :disabled='isDisabled' />
               </a-form-item>
             </a-tab-pane>
             <a-tab-pane key='8' :tab="$t('addendum')" force-render>
