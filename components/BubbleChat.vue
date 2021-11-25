@@ -12,14 +12,19 @@
           <a-icon type='close'></a-icon>
         </div>
       </div>
-      <div class='chat-box-body'>
+      <div ref="messages" class='chat-box-body'>
         <chat-messages :messages='messages'></chat-messages>
         <div style='position:relative !important'>
           <typing-indicator v-model='isTyping'></typing-indicator>
         </div>
       </div>
       <div class='chat-box-controls'>
-        <a-input v-model="message" type='text' @keyup.enter="sendMessage"/>
+        <div class="chat-input">
+          <a-input v-model="message" placeholder="Type a message here" type='text' @keyup.enter="sendMessage"/>
+        </div>
+        <div class="chat-controls">
+          <img :src="require('~/static/icon/send.svg')" alt='send icon' @click='sendMessage'>
+        </div>
       </div>
     </div>
     <a-modal
@@ -71,9 +76,11 @@ export default {
     }
   },
   mounted(){
-    console.log('the guest is is', this.guestId)
     if (this.guestId){
-      console.log('We need to get the conversation between guest and admin')
+      this.$api.get('/conversation/guest/' + this.guestId).then(({data})=>{
+        this.messages = data
+        this.scrollMessagesSection()
+      })
     }
   },
   created() {
@@ -85,8 +92,6 @@ export default {
   },
   methods: {
     sendMessage(){
-      console.log('sendMessage', this.message)
-
       if (!this.to){
         this.$toast.error('The administrator is not available. Try again later')
         return 0
@@ -107,6 +112,7 @@ export default {
         })
         this.message = ''
       }
+      this.scrollMessagesSection()
     },
     handleOk(){
       if (this.name.length <= 0){
@@ -144,6 +150,9 @@ export default {
         this.run_once(this.listen)
       }
       this.chatOpened = true
+      this.$nextTick(()=>{
+        this.scrollMessagesSection()
+      })
       if (this.messages.length <= 0){
         this.isTyping = true
         setTimeout(()=>{
@@ -165,6 +174,7 @@ export default {
             })
             this.isTyping = false
             this.playNotification()
+            this.scrollMessagesSection()
           }, 500)
         }, 1000)
       }
@@ -221,12 +231,16 @@ export default {
       height: 300px
     .chat-box-controls
       position: absolute
+      display: flex
       bottom: 0
       left: 0
       right: 0
       input
         width: 100%
         height: 30px
+      img
+        width: 20px
+        margin-left: 0.6rem
 
 .typing-indicator
   bottom: 40px !important

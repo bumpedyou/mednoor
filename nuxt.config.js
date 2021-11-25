@@ -41,8 +41,8 @@ export default {
   i18n: {
     strategy: 'prefix',
     locales: [
-      { name: 'Español', code: 'en', iso: 'en-US', file: 'en.js'},
-      { name: 'English', code: 'es', iso: 'es-MX', file: 'es.js'},
+      { name: 'Español', code: 'en', iso: 'en-US', file: 'en.js' },
+      { name: 'English', code: 'es', iso: 'es-MX', file: 'es.js' },
     ],
     defaultLocale: 'en',
     vueI18n: {
@@ -54,7 +54,7 @@ export default {
   googleFonts: {
     families: {
       Inter: [300, 400, 700],
-    }
+    },
   },
 
   styleResources: {
@@ -72,10 +72,11 @@ export default {
     '@nuxtjs/auth-next',
     'nuxt-socket-io',
     '@nuxtjs/toast',
+    'cookie-universal-nuxt',
   ],
 
   toast: {
-    theme: "bubble",
+    theme: 'bubble',
     position: 'top-right',
     duration: '2369',
   },
@@ -110,7 +111,7 @@ export default {
       callback: '/sign-in',
       home: '/welcome',
     },
-    plugins: [ '~/plugins/auth.js' ]
+    plugins: ['~/plugins/auth.js'],
   },
 
   env: {

@@ -148,7 +148,6 @@ import authMixin from '~/mixins/authMixin'
 import breakpoints from '~/mixins/breakpoints'
 import ChatMessages from '~/components/ChatMessages'
 import TypingIndicator from '~/components/TypingIndicator'
-const debounce = require('lodash.debounce');
 
 export default {
   name: 'Chat',
@@ -168,8 +167,6 @@ export default {
     visible: false,
     confirmLoading: false,
     savingPdf: false,
-    message: '',
-    to: '',
     messages: [],
     file: null,
     fileName: '',
@@ -262,9 +259,6 @@ export default {
     }
   },
   watch: {
-    message: debounce (function (){
-      this.socket.emit('stopped-typing', {to: this.to})
-    },1000),
     query() {
       this.setChatFromRoute()
     }
@@ -323,14 +317,6 @@ export default {
       if (c && c.chat && c.chat !== this.to) {
         this.openChat(c.chat)
       }
-    },
-    scrollMessagesSection() {
-      this.$nextTick(() => {
-        const c = this.$refs.messages
-        if (c) {
-          c.scrollTop = c.scrollHeight
-        }
-      })
     },
     uploadFile() {
       const file = this.$refs.fileInput.files
@@ -491,74 +477,7 @@ export default {
         return moderator
       })
     },
-    listen() {
-      this.socket = this.$nuxtSocket({ persist: 'chatSocket' })
-      this.socket.emit('join-room', this.myID)
-      this.socket.on('chat-request', () => {
-        this.openNotification({
-          title: this.$t('new_chreq'),
-          description: this.$t('new_chreq')
-        })
-      })
 
-      this.socket.on('user-reload', () => {
-        if (this.isUser) {
-          this.getChats(true)
-        } else {
-          this.getChats(false)
-        }
-        this.openNotification()
-      })
-
-      this.socket.on('new-message', (data) => {
-        this.playNotification()
-        if (data.from !== this.to) {
-          this.moderators = this.moderators.map((eme) => {
-            if ((eme.mypr_proffesional !== undefined || eme.mypr_uuid !== undefined || eme.user_uuid !== undefined) && data.from !== undefined) {
-              if ((eme.mypr_proffesional === data.from || eme.mypr_uuid === data.from || eme.user_uuid === data.from)) {
-                if (eme.messages) {
-                  eme.messages = eme.messages + 1
-                } else {
-                  eme.messages = 1
-                }
-                this.updateIdx++
-              }
-            }
-            return eme
-          })
-        }
-
-        if (this.to && data.from === this.to) {
-          this.typing = null
-          if (data.opts) {
-            data.opts.owner = false
-            this.messages.push(data.opts)
-          } else {
-            this.messages.push({
-              owner: false,
-              message: data.message,
-              mess_date: data.mess_date,
-            })
-          }
-          this.scrollMessagesSection()
-        }
-      })
-      this.socket.on('fetch-user', async () => {
-        await this.$auth.fetchUser()
-        this.user_was_updated()
-      })
-      this.socket.on('chat-deleted', (data) => {
-        this.$router.push('/chat-ended')
-      })
-      this.socket.on('typing', (data)=>{
-        if (!this.typing){
-          this.typing = data.from
-          setTimeout(()=>{
-            this.typing = null
-          }, 1600)
-        }
-      })
-    }
   }
 }
 </script>

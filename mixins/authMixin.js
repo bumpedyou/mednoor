@@ -6,6 +6,14 @@ export default {
     this.isMounted = true
   },
   computed: {
+    guestId() {
+      const c = this.$cookies.get('temporalUser')
+      if (c) {
+        return c.user_uuid
+      } else {
+        return null
+      }
+    },
     isLoggedIn() {
       return this.isMounted && this.$auth.loggedIn
     },

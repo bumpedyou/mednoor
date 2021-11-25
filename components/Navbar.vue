@@ -23,9 +23,8 @@
           </div>
         </div>
         <div v-else>
-          Menu
+          <img :src="require('~/static/icon/menu.svg')" alt='Chat icon' class="d-sm-only">
         </div>
-        <!--<img v-else :src="require('~/static/icon/menu.svg')" alt='Chat icon'>-->
       </div>
     </div>
     <div class='side-bars'>

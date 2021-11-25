@@ -6,16 +6,34 @@ export default {
     dashboardItems() {
       const i = []
       if (this.isAdminOrSuper) {
-        i.push({
-          shortTitle: this.$t('home_screen'),
-          cardTitle: this.$t('home_screen'),
-          to: '/home-screen',
-          btnText: this.$t('home_screen'),
-          icon: 'home',
-          type: 'primary',
-        })
+        i.push(
+          {
+            shortTitle: this.$t('home_screen'),
+            cardTitle: this.$t('home_screen'),
+            to: '/home-screen',
+            btnText: this.$t('home_screen'),
+            icon: 'home',
+            type: 'primary',
+          },
+          {
+            shortTitle: 'Main Text',
+            cardTitle: 'Main Text',
+            to: '/main-text',
+            btnText: 'Main Text',
+            icon: 'file-text',
+            type: 'raisin-black',
+          }
+        )
       }
       if (this.isModeratorOrHigher) {
+        i.push({
+          shortTitle: this.$t('my_chats'),
+          cardTitle: this.$t('my_chats'),
+          to: '/',
+          btnText: this.$t('my_chats'),
+          icon: 'message',
+          type: 'success',
+        })
         i.push({
           shortTitle: this.$t('list_usrs'),
           cardTitle: this.$t('list_usrs'),
@@ -69,7 +87,7 @@ export default {
               },
             },
             btnText: this.$t('professionals_list'),
-            icon: 'file',
+            icon: 'team',
             type: 'old-rose',
           }
         )

@@ -12,7 +12,7 @@
     </a-row>
     <a-row>
       <a-col class="mb-1">
-        <flags-picker></flags-picker>
+        <flags-picker dark></flags-picker>
       </a-col>
     </a-row>
   </div>
@@ -34,5 +34,10 @@ export default {
 <style scoped lang='sass'>
 .m-footer
   padding: 1rem
-  background: #eee
+  background: #475cff
+  color: #FFF !important
+  a
+    color: #FFF !important
+    text-decoration: underline
+
 </style>

@@ -1,7 +1,7 @@
 <template>
-  <div class='flags-picker'>
-    <div v-for='(f, i) in $i18n.locales' :key='i' @click='locale(f.code)'>
-      <img :src="require('~/static/flags/' + f.code + '.png')" height="30px" :alt='f.code'>
+  <div :class="computedClass">
+    <div v-for='(f, i) in $i18n.locales' :key='i' class='flag' @click='locale(f.code)'>
+      <small>{{f.name}}</small>
     </div>
   </div>
 </template>
@@ -9,6 +9,21 @@
 <script>
 export default {
   name: 'FlagsPicker',
+  props: {
+    dark: {
+      type: Boolean,
+      default: false,
+    }
+  },
+  computed: {
+    computedClass() {
+      const c = ['flags-picker']
+      if (this.$props.dark){
+        c.push('dark')
+      }
+      return c.join(' ')
+    }
+  },
   methods: {
     locale(code){
       this.$i18n.setLocale(code)
@@ -22,10 +37,17 @@ export default {
   display: flex
   justify-content: center
   align-items: center
+  .flag
+    color: $mdn-primary
+    &:hover
+      cursor: pointer
   div
     margin-right: 0.6rem
     margin-left: 0.6rem
   img
     &:hover
       cursor: pointer
+.flags-picker.dark
+  .flag
+    color: white
 </style>

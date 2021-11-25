@@ -27,7 +27,7 @@
               {
                 rules: [
                   { required: true, message: $t('v.email_req') },
-                  {max: 100, message: $t('v.max_email_150')},
+                  {max: 150, message: $t('v.max_email_150')},
                   {type: 'email', message: $t('v.inv_email')}
                 ],
               },

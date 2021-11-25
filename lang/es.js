@@ -61,7 +61,7 @@ export default {
   template_name: 'Nombre de la plantilla',
   created_by: 'Creado por',
   forgot_pwd: 'Olvide mi contraseña',
-  fpwd_desc: "Le enviaremos un código de verificación a su email",
+  fpwd_desc: 'Le enviaremos un código de verificación a su email',
   send_email: 'Enviar email',
   reset_pwd_desc: 'Restablecer la contraseña de su cuenta de mednoor',
   home_screen: 'Fondo de pantalla',
@@ -128,7 +128,8 @@ export default {
   keywords_p: 'Palabras clave (Separadas por comas)',
   update: 'Actualizar',
   create_new_page: 'Crear nueva página',
-  page_does_not_exist: 'la página que estaba tratando de editar fue eliminada o no existe.',
+  page_does_not_exist:
+    'la página que estaba tratando de editar fue eliminada o no existe.',
   page_hb_updated: 'La página ha sido actualizada.',
   page_hb_created: 'La página ha sido creada',
   pwd_updated_suc: 'La contraseña se ha actualizado con éxito',
@@ -176,7 +177,8 @@ export default {
   verify_email: 'Verificar tu email',
   very: 'Verificar',
   not_found: 'No encontrado',
-  post_nf_del: 'La publicación que esta buscando no existe o ha sido eliminada.',
+  post_nf_del:
+    'La publicación que esta buscando no existe o ha sido eliminada.',
   pub_date: 'Fecha de publicación',
   last_pdate: 'Ultima vez actualizado',
   share: 'Compartir',
@@ -189,9 +191,11 @@ export default {
   chat_r_acc: 'Su solicitud de chat ha sido aceptada',
   endp_not_found: 'El endpoint no se ha encontrado',
   int_srv_err: 'Error de Servidor Interno',
-  isnt_flt: 'Este no es su problema. Estamos trabajando duro para arreglar este problema.',
+  isnt_flt:
+    'Este no es su problema. Estamos trabajando duro para arreglar este problema.',
   un_err: 'Error desconocido',
-  un_conn: 'Incapaz de conectarse al servidor. Por favor revise su conexión de internet.',
+  un_conn:
+    'Incapaz de conectarse al servidor. Por favor revise su conexión de internet.',
   paragraph: 'Parrafo',
   ch_lis_upd: 'Lista de chats actualizada',
   ych_hb_upd: 'Su lista de chat ha sido actualizada',
@@ -200,7 +204,8 @@ export default {
   dont_h_users: 'No tiene usuarios por el momento',
   th_uina: 'Este usuario no tiene permitido enviarle mensajes',
   allow: 'Admitir',
-  you_htw_acc: 'Tiene que esperar a que el profesional acepte chatear con usted.',
+  you_htw_acc:
+    'Tiene que esperar a que el profesional acepte chatear con usted.',
   typing: 'Escribiendo',
   upload: 'Subir',
   dont_h_urs_rn: 'No tiene chats por el momento.',
@@ -209,7 +214,8 @@ export default {
   chnts: 'Chat no selecionado',
   slchf: 'Por favor seleccione un chat primero',
   not_allw: 'No admitido',
-  yh_tw: 'Tiene que esperar hasta que sea admitido para mandar mensajes a este profesional.',
+  yh_tw:
+    'Tiene que esperar hasta que sea admitido para mandar mensajes a este profesional.',
   new_chreq: 'Nueva solicitud de chat',
   wha_sc_r: '¿Qué fondo de pantalla desea remplazar?',
   welcome: 'Bienvenido',
@@ -226,8 +232,11 @@ export default {
     min_6: 'Ingrese al menos 6 caracteres',
     max_10: 'Ingrese máximo 10 caracteres',
     max_30: 'Ingrese máximo 30 caracteres',
+    max_100: 'Ingrese máximo 100 caracteres',
     max_330: 'Ingrese máximo 330 caracteres',
+    max_500: 'Ingrese máximo 500 caracteres',
     max_2000: 'Ingrese máximo 2000 caracteres',
+    max_10000: 'Ingrese máximo 10,000 caracteres',
     pwd_req: 'La contraseña es requerida',
     cpwd_req: 'La confirmación de contraseña es requerida',
     c_npwd: 'Confirme su nueva contraseña',
@@ -239,16 +248,17 @@ export default {
     day_czero: 'El día no puede ser cero',
     day_cgte_31: 'El día no puede ser mayor a 31',
     year_caw_f: 'El año no puede estar alejado por más de 100 años de ',
-    ycbl_than:'El año no puede ser superior a '
+    ycbl_than: 'El año no puede ser superior a ',
   },
   seo: {
     add_user: 'Agregar usuario a Mednoor',
-    index: 'Mednoor es un centro médico online dónde la gente puede chatear en tiempo real con Doctores',
+    index:
+      'Mednoor es un centro médico online dónde la gente puede chatear en tiempo real con Doctores',
     sign_in: 'Ingrear a mi cuenta de Mednoor',
     sign_up: 'Registrarse en el contro Médico Mednoor',
     chat: 'Chatear con un profesional en el centro médico Mednoor.',
     keywords: {
-      index: 'mednoor, en línea, online, centro médico, chat'
-    }
-  }
+      index: 'mednoor, en línea, online, centro médico, chat',
+    },
+  },
 }

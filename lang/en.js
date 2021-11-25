@@ -63,7 +63,7 @@ export default {
   forgot_pwd: 'Forgot my password',
   fpwd_desc: "We'll send you a verification code to your email.",
   send_email: 'Send email',
-  reset_pwd_desc: 'Reset the password of your mednoor\'s account.',
+  reset_pwd_desc: "Reset the password of your mednoor's account.",
   home_screen: 'Home Screen',
   home: 'Home',
   file_desc_drag: 'Click or drag file to this area to upload',
@@ -78,7 +78,7 @@ export default {
   date: 'Date',
   my_chats: 'My Chats',
   my_patients: 'My Patients',
-  patients_name: 'Patient\'s name',
+  patients_name: "Patient's name",
   could_nl_p: 'Could not load the records',
   hi: 'Hi',
   your_role: 'Your Role',
@@ -128,7 +128,8 @@ export default {
   keywords_p: 'Keywords (comma separated)',
   update: 'Update',
   create_new_page: 'Create new page',
-  page_does_not_exist: 'The page that you were trying to edit was deleted or does not exist.',
+  page_does_not_exist:
+    'The page that you were trying to edit was deleted or does not exist.',
   page_hb_updated: 'The page has been updated.',
   page_hb_created: 'Page has been created',
   pwd_updated_suc: 'Password updated successfully',
@@ -154,7 +155,7 @@ export default {
   alw_open: 'Always Open',
   sign_in: 'Sign in',
   sign_up: 'Sign Up',
-  dont_h_acc: 'Don\'t have an account?',
+  dont_h_acc: "Don't have an account?",
   signing_out: 'Signing out',
   sign_out: 'Sign out',
   i_agree: 'I Agree to the',
@@ -176,7 +177,8 @@ export default {
   verify_email: 'Verify your email',
   very: 'Verify',
   not_found: 'Not Found',
-  post_nf_del: 'The page that you were looking for does not exist or it was deleted.',
+  post_nf_del:
+    'The page that you were looking for does not exist or it was deleted.',
   pub_date: 'Publication Date',
   last_pdate: 'Last Updated',
   share: 'Share',
@@ -189,9 +191,10 @@ export default {
   chat_r_acc: 'Your chat request has been accepted',
   endp_not_found: 'The endpoint was not found',
   int_srv_err: 'Internal server error',
-  isnt_flt: 'This isn\'t your fault. We are working hard to fix this problem.',
+  isnt_flt: "This isn't your fault. We are working hard to fix this problem.",
   un_err: 'Unknown error',
-  un_conn: 'Unable to connect to the server. Please check your internet connection.',
+  un_conn:
+    'Unable to connect to the server. Please check your internet connection.',
   paragraph: 'paragraph',
   ch_lis_upd: 'Chat list updated',
   ych_hb_upd: 'Your chat list has been updated.',
@@ -200,7 +203,8 @@ export default {
   dont_h_users: 'You do not have any users right now.',
   th_uina: 'This user is not allowed to send you messages.',
   allow: 'Allow',
-  you_htw_acc: 'You have to wait until the professional accepts to chat with you.',
+  you_htw_acc:
+    'You have to wait until the professional accepts to chat with you.',
   typing: 'Typing',
   upload: 'Upload',
   dont_h_urs_rn: 'You do not have any chats right now.',
@@ -209,7 +213,8 @@ export default {
   chnts: 'Chat not selected',
   slchf: 'Please select a chat first.',
   not_allw: 'Not allowed',
-  yh_tw: 'You have to wait you be allowed to send messages to this professional.',
+  yh_tw:
+    'You have to wait you be allowed to send messages to this professional.',
   new_chreq: 'New chat request',
   wha_sc_r: 'What screen do you want to replace?',
   welcome: 'Welcome',
@@ -226,8 +231,11 @@ export default {
     min_6: 'Enter at least 6 characters',
     max_10: 'Enter a maximum of 10 characters',
     max_30: 'Enter a maximum of 30 characters',
+    max_100: 'Enter a maximum of 100 characters',
     max_330: 'Enter a maximum of 330 characters',
+    max_500: 'Enter a maximum of 500 characters',
     max_2000: 'Enter a maximum of 2000 characters',
+    max_10000: 'Enter a maximum of 10,000 characters',
     pwd_req: 'Password is required',
     cpwd_req: 'Confirm password is required',
     c_npwd: 'Confirm your new password',
@@ -239,16 +247,17 @@ export default {
     day_czero: 'The day cannot be zero',
     day_cgte_31: 'The day cannot be greater than 31',
     year_caw_f: 'The year cannot be more than 100 years away from',
-    ycbl_than:'The year cannot be later than'
+    ycbl_than: 'The year cannot be later than',
   },
   seo: {
     add_user: 'Add a user to mednoor',
-    index: 'Mednoor is an Online Medical Center where people can chat in real time with Doctors.',
+    index:
+      'Mednoor is an Online Medical Center where people can chat in real time with Doctors.',
     sign_in: 'Sign in to you Mednoor account.',
     sign_up: 'Sign up to our Online Medical Center',
     chat: 'Chat with professionals in the online medical center.',
     keywords: {
-      index: 'mednoor, online, medical center, chat'
-    }
-  }
+      index: 'mednoor, online, medical center, chat',
+    },
+  },
 }
