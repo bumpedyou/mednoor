@@ -90,7 +90,7 @@ export default {
     this.$api.get('/user/admin').then(({data})=>{
       if (data && data.user_uuid){
         this.to = data.user_uuid
-        this.adminName = [data.user_first_name, data.user_last_name].join(' ')
+        this.adminName = data.name
       }
     })
   },
