@@ -6,7 +6,7 @@
     <div v-if='chatOpened' class='chat-box'>
       <div class='chat-box-header'>
         <div class='content'>
-          Jacke Smith
+          {{ adminName }}
         </div>
         <div class='close' @click='chatOpened = false'>
           <a-icon type='close'></a-icon>
@@ -57,6 +57,7 @@ export default {
   mixins: [chatMixin, listenMixin],
   data(){
     return {
+      adminName: 'Admin',
       visible: false,
       confirmLoading: false,
       messages: [],
@@ -87,6 +88,7 @@ export default {
     this.$api.get('/user/admin').then(({data})=>{
       if (data && data.user_uuid){
         this.to = data.user_uuid
+        this.adminName = [data.user_first_name, data.user_last_name].join(' ')
       }
     })
   },
