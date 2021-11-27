@@ -48,7 +48,7 @@ export default {
           to: '/emr',
           btnText: this.$t('go_emr'),
           icon: 'medicine-box',
-          type: 'success',
+          type: 'aero-blue',
         })
       }
       if (this.isAdminOrSuper) {
@@ -59,7 +59,7 @@ export default {
             to: '/update-terms-and-conditions',
             btnText: this.$t('update'),
             icon: 'audit',
-            type: 'primary',
+            type: 'salmon',
           },
           {
             shortTitle: this.$t('privacy_p'),
@@ -67,7 +67,7 @@ export default {
             to: '/update-privacy-policy',
             btnText: this.$t('update'),
             icon: 'file-protect',
-            type: 'old-rose',
+            type: 'purple',
           },
           {
             shortTitle: this.$t('pages'),
@@ -75,7 +75,7 @@ export default {
             to: '/pages',
             btnText: this.$t('pages'),
             icon: 'file',
-            type: 'raisin-black',
+            type: 'primary',
           },
           {
             shortTitle: this.$t('professionals_list'),
@@ -88,6 +88,22 @@ export default {
             },
             btnText: this.$t('professionals_list'),
             icon: 'team',
+            type: 'raisin-black',
+          },
+          {
+            shortTitle: 'Categories',
+            cardTitle: 'Categories',
+            to: '/categories',
+            btnText: 'Categories',
+            icon: 'table',
+            type: 'success',
+          },
+          {
+            shortTitle: 'Professional Requests',
+            cardTitle: 'Professional Requests',
+            to: '/professional-requests',
+            btnText: 'List of requests',
+            icon: 'list',
             type: 'old-rose',
           }
         )

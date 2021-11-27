@@ -23,7 +23,7 @@
           </div>
         </div>
         <div v-else>
-          <img :src="require('~/static/icon/menu.svg')" alt='Chat icon' class="d-sm-only">
+          <img :src="require('~/static/icon/menu.svg')" alt='Chat icon'>
         </div>
       </div>
     </div>
@@ -63,6 +63,7 @@ import ChatItems from '~/components/ChatItems'
 import chatMixin from '~/mixins/chatMixin'
 import listenMixin from '~/mixins/listenMixin'
 import utilsMixin from '~/mixins/utilsMixin'
+import userUpdatedMixin from "~/mixins/userUpdatedMixin";
 
 
 export default {
@@ -71,7 +72,7 @@ export default {
     ChatItems,
     SidebarMobileTitle
   },
-  mixins: [toggleDirectiveMixin, authMixin, userRoleMixin, breakpoints, chatMixin, listenMixin, utilsMixin],
+  mixins: [toggleDirectiveMixin, authMixin, userRoleMixin, breakpoints, chatMixin, listenMixin, utilsMixin, userUpdatedMixin],
   data: () => ({
     showChatNav: false,
     showMenuNav: false,
@@ -205,8 +206,19 @@ export default {
     listen() {
       this.socket = this.$nuxtSocket({})
       this.socket.emit('join-room', this.myId)
+      this.socket.on('professional-request', () => {
+        this.$toast.success('A user has asked to become a professional')
+        this.playNotification()
+      })
       this.socket.on('user-reload', () => {
         this.getChats(true)
+      })
+      console.log('Listening to fetch user', this.myId)
+      this.socket.on('fetch-user', async ()=>{
+        console.log('Fetching user')
+        await this.$auth.fetchUser()
+        this.user_was_updated()
+        console.log('Was updated!')
       })
       this.socket.on('chat-allowed', (data) => {
         this.openNotification({

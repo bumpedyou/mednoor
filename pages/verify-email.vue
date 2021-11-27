@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="pa-1 mh-100v">
     <div>
       <a-row>
         <a-col class='mt-1' :xs='{span: 20, offset: 2}' :md='{span: 12, offset: 6}' :lg='{span: 10, offset: 7}' :xl='{span: 8, offset: 8}'>
@@ -49,7 +49,7 @@ export default {
         this.loading = true
         this.$api.post('/user/verify', {
           code: this.code
-        }).then(async ({ data }) => {
+        }).then(async () => {
           await this.$auth.fetchUser()
           await this.$router.push(this.localePath('/'))
         }).catch((e)=>{

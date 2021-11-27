@@ -53,7 +53,9 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6
 .mt-3
   margin-top: 3rem
 .mb-1
-  margin-bottom: 1rem
+  margin-bottom: 1rem !important
+.mb-2
+  margin-bottom: 2rem !important
 .mb-0
   margin-bottom: 0
 .mr-1
@@ -154,11 +156,20 @@ hr
     background: $mdn-green
     color: #FFFFFF
 
-
 .card-raisin-black
   .ant-card-head
     background: $mdn-raisin-black
-    color: #FFFFFF
+    color: $mdn-white
+
+.card-purple
+  .ant-card-head
+    background: $mdn-purple !important
+    color: $mdn-white
+
+.card-salmon
+  .ant-card-head
+    background: $mdn-salmon !important
+    color: $mdn-white
 
 
 .ant-btn.ant-btn-old-rose
@@ -176,6 +187,18 @@ hr
 .ant-btn.ant-btn-raisin-black
   background: $mdn-raisin-black
   color: #ffffff
+
+.ant-btn.ant-btn-purple
+  background: $mdn-purple
+  color: #ffffff
+
+.ant-btn.ant-btn-salmon
+  background: $mdn-salmon
+  color: #ffffff
+
+
+.primary--text
+  color: $mdn-primary
 
 .red--text
   color: tomato !important
@@ -232,6 +255,14 @@ pre
 
 .d-md-only
   display: none !important
+
+.card-deck
+  display: flex
+  flex-wrap: wrap
+  .ant-card
+    margin-right: 0.3rem
+    margin-left: 0.3rem
+    margin-bottom: 0.3rem
 
 @media screen and (min-width: $md)
   .d-md-only

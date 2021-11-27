@@ -9,8 +9,8 @@
     </a-row>
     <a-row>
         <a-col  :xs="24" :sm="24" >
-          <div class="dashboard-items">
-            <a-card v-for="(o, i) in dashboardItems" :key="'dashboard-' + i" :title="o.cardTitle"  style="height: 100%; flex: 1;" :class="'card-' + o.type" @click="$router.push(localePath(o.to))">
+          <div class="card-deck">
+            <a-card v-for="(o, i) in dashboardItems" :key="'dashboard-' + i" :title="o.cardTitle"  style="height: 100%; flex: 1;" :class="'card-' + o.type + ' mb-2'" @click="$router.push(localePath(o.to))">
               <a-button :type="o.type">
                 <a-icon :type="o.icon"></a-icon>
                 {{o.btnText}}
@@ -36,13 +36,3 @@ export default {
   }
 }
 </script>
-<style scoped lang="sass">
-.dashboard-items
-  display: flex
-  flex-wrap: wrap
-  .ant-card
-    margin-right: 0.3rem
-    margin-left: 0.3rem
-    margin-bottom: 0.3rem
-
-</style>

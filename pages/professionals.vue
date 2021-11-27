@@ -1,7 +1,10 @@
 <template>
-  <a-row class="ma-1 mh-100v">
+  <a-row class="pa-1 mh-100v">
     <a-col>
       <h1>{{$t('av_prof')}}</h1>
+      <p>
+        If you already have a chat with a professional you can go to <nuxt-link :to="localePath('/')">My chats</nuxt-link>
+      </p>
       <a-skeleton v-if='loading' />
       <a-table v-else-if='users.length > 0' :columns='columns' :data-source='users'>
         <div slot='full_name' slot-scope='text, record'>

@@ -230,6 +230,7 @@ export default {
     min_2: 'Ingrese al menos 2 caracteres',
     min_3: 'Ingrese al menos 3 caracteres',
     min_6: 'Ingrese al menos 6 caracteres',
+    min_10: 'Ingrese al menos 10 caracteres',
     max_10: 'Ingrese máximo 10 caracteres',
     max_30: 'Ingrese máximo 30 caracteres',
     max_100: 'Ingrese máximo 100 caracteres',

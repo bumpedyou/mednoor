@@ -6,7 +6,6 @@
 export default {
   name: 'Welcome',
   middleware({ $auth, store, redirect, localePath}) {
-    console.log(localePath)
     if (!$auth.loggedIn) {
       return redirect(localePath('/'))
     }else{
@@ -16,7 +15,7 @@ export default {
       }else if (role === 'moderator'){
         return redirect(localePath('/dashboard'))
       }else if (role === 'user'){
-        return redirect(localePath('/'))
+        return redirect(localePath('/view-mode'))
       }else{
         return redirect(localePath('/'))
       }
