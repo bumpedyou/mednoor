@@ -1,40 +1,52 @@
 <template>
   <div class="pa-1">
-      <a-row class="mb-1">
-          <a-col>
-                <a-breadcrumb>
-                  <a-breadcrumb-item><nuxt-link :to="localePath('/dashboard')">{{ $t('dashboard') }}</nuxt-link></a-breadcrumb-item>
-                  <a-breadcrumb-item>{{$t('list_usrs')}}</a-breadcrumb-item>
-              </a-breadcrumb>
-          </a-col>
-        </a-row>
-      <a-row class='pa-1'>
+    <a-row class="mb-1">
       <a-col>
-        <h1 class='text-capitalize'>{{ view }} {{$t('list')}}</h1>
+        <a-breadcrumb>
+          <a-breadcrumb-item>
+            <nuxt-link :to="localePath('/dashboard')">{{ $t('dashboard') }}</nuxt-link>
+          </a-breadcrumb-item>
+          <a-breadcrumb-item>{{ $t('list_usrs') }}</a-breadcrumb-item>
+        </a-breadcrumb>
+      </a-col>
+    </a-row>
+    <a-row class='pa-1'>
+      <a-col>
+        <h1 class='text-capitalize'>{{ view }} {{ $t('list') }}</h1>
         <div class="mb-1">
-          <a-button type="aero-blue" @click='addUser'>{{$t('add_urs')}} <a-icon type="user-add"></a-icon></a-button>
+          <a-button type="aero-blue" @click='addUser'>{{ $t('add_urs') }}
+            <a-icon type="user-add"></a-icon>
+          </a-button>
         </div>
-        <a-skeleton v-if='loading' />
+        <a-skeleton v-if='loading'/>
         <a-table v-else :columns='columns' :data-source='users'>
               <span slot='name' slot-scope='text, record'>
                 {{ record.user_first_name }} {{ record.user_last_name }}
               </span>
-              <span slot='action' slot-scope='text, record'>
+          <span slot='action' slot-scope='text, record'>
                 <span v-if='isAdmin || isSuper'>
                   <a v-if="record.usro_key === 'USER'" @click='updateToProfessional(record.user_uuid)'>{{ $t('updt_prof') }}</a>
-                  <a v-if="record.usro_key === 'MODERATOR'" @click='downgradeProfessional(record.user_uuid)'>{{$t('rem_prof')}}</a>
-                  <a-divider type='vertical' />
+                  <a v-if="record.usro_key === 'MODERATOR'" @click='downgradeProfessional(record.user_uuid)'>{{ $t('rem_prof') }}</a>
+                  <a-divider type='vertical'/>
                   <a v-if='record.user_blocked' @click='unblock(record.user_uuid)'>
-                    {{$t('unblock')}}
+                    {{ $t('unblock') }}
                   </a>
                   <a v-else @click='block(record.user_uuid)'>
-                    {{$t('block')}}
+                    {{ $t('block') }}
                   </a>
-                  <a-divider type='vertical' />
-                  <a v-if='(Boolean(record.user_deleted)) === false' @click='deleteUser(record.user_uuid)'>{{$t('delete')}}</a>
+                  <a-divider type='vertical'/>
+                  <a v-if='(Boolean(record.user_deleted)) === false' @click='deleteUser(record.user_uuid)'>{{ $t('delete') }}</a>
+
                 </span>
                 <span v-else>
-                  {{$t('no_acts_av')}}
+                  <a v-if='record.user_blocked' @click='unblock(record.user_uuid)'>
+                    {{ $t('unblock') }}
+                  </a>
+                  <a v-else @click='block(record.user_uuid)'>
+                    {{ $t('block') }}
+                  </a>
+                  <a-divider type='vertical'/>
+                  <a v-if='(Boolean(record.user_deleted)) === false' @click='deleteUser(record.user_uuid)'>{{ $t('delete') }}</a>
                 </span>
               </span>
         </a-table>
@@ -44,10 +56,10 @@
     <a-modal v-model='visible' :title="$t('conf_action')" ok-text='Ok' :confirm-loading='loadingModal' :cancel-text="$t('cancel')"
              @ok='confirmAction'>
       <p v-if="action === 'delete'">
-        {{$t('del_el')}}
+        {{ $t('del_el') }}
       </p>
       <p v-else>
-       {{$t('conf_act')}}
+        {{ $t('conf_act') }}
       </p>
     </a-modal>
   </div>
@@ -65,15 +77,15 @@ export default {
   mixins: [userRoleMixin],
   layout: 'dashboard',
   middleware: ['authenticated', 'moderator-or-higher', 'not-blocked', 'not-deleted'],
-  data (){
+  data() {
     return {
       users: [],
       columns: [
         {
           dataIndex: 'user_first_name',
           key: this.$t('name'),
-          slots: { title: this.$t('name') },
-          scopedSlots: { customRender: 'name' }
+          slots: {title: this.$t('name')},
+          scopedSlots: {customRender: 'name'}
         },
         {
           title: this.$t('role'),
@@ -83,7 +95,7 @@ export default {
         {
           title: this.$t('action'),
           key: 'action',
-          scopedSlots: { customRender: 'action' }
+          scopedSlots: {customRender: 'action'}
         }
       ],
       visible: false,
@@ -115,7 +127,7 @@ export default {
     this.loadItems()
   },
   methods: {
-    addUser(){
+    addUser() {
       this.$router.push(this.localePath('/add-user'))
     },
     loadItems() {
@@ -124,7 +136,7 @@ export default {
         params: {
           view: this.view
         }
-      }).then(({ data }) => {
+      }).then(({data}) => {
         this.users = data
       }).catch(err => {
         this.$refs.rmodal.$emit('error', err)
@@ -178,7 +190,7 @@ export default {
         this.loadingModal = true
         this.$api.put('/user/role/' + this.uuid, {
           key: this.action === 'update-to-professional' ? 'MODERATOR' : 'USER'
-        }).then(({ data }) => {
+        }).then(({data}) => {
           this.users = this.users.map((usr) => {
             if (usr.user_uuid === this.uuid) {
               usr.usro_id = data.usro_id
