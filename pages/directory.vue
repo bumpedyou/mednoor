@@ -34,7 +34,7 @@
       <div v-if="loadingResults">
         <a-skeleton></a-skeleton>
       </div>
-      <a-col v-else-if="term && searched">
+      <a-col v-else-if="searched">
         <h4>Search Results</h4>
         <hr class="mb-1">
         <div v-if="results.length > 0">
