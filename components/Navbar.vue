@@ -1,13 +1,20 @@
 <template>
-  <div>
+  <div class="nv-top">
     <div class='menu-top-bar'>
       <div class='chat-icon'>
+        <nuxt-link v-if="isLoggedIn" :to="localePath('/')">
+          <img :src='require("~/static/logo.jpg")' height="40px" />
+        </nuxt-link>
+        <nuxt-link v-else :to="localePath('/sign-in')">
+          <img :src='require("~/static/logo.jpg")' height="40px" />
+        </nuxt-link>
       </div>
       <div class='mednoor-logo'>
         <nuxt-link v-for='(page, i) in pages' :key='i'
                    :to='localePath({path: "/page/" + page.page_uuid + "/" + slugify(page.page_slug)})'
                    style='margin-left: 0.3rem; margin-right: 0.3rem'>{{ page.page_title }}
         </nuxt-link>
+        <nuxt-link :to="localePath('/directory')">Directory</nuxt-link>
       </div>
       <div v-click-outside='toggleMenuNavigation' class='menu-icon' @click='toggleMenuNavigation(true)'>
         <div v-if='isLoggedIn'>
@@ -64,7 +71,6 @@ import chatMixin from '~/mixins/chatMixin'
 import listenMixin from '~/mixins/listenMixin'
 import utilsMixin from '~/mixins/utilsMixin'
 import userUpdatedMixin from "~/mixins/userUpdatedMixin";
-
 
 export default {
   name: 'Navbar',
@@ -258,6 +264,10 @@ export default {
 </script>
 
 <style scoped lang='sass'>
+
+.nv-top, .nv-top *
+  font-family: 'Spartan', sans-serif !important
+
 .mednoor-logo
   color: $mdn-primary !important
   font-size: 14px !important
@@ -281,11 +291,11 @@ export default {
   right: 0
   bottom: 0
   background-color: #fff
-  box-shadow: 0 3px 6px $mdn-super-light-grey
   display: flex
   align-items: center
   padding: 0 1rem
   z-index: 200
+  border-bottom: 1px solid #87bfac
 
   img
     height: 20px !important

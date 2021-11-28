@@ -53,7 +53,8 @@ export default {
 
   googleFonts: {
     families: {
-      Inter: [300, 400, 700],
+      Spartan: [300, 400, 500],
+      Overpass: [300, 400, 700],
     },
   },
 

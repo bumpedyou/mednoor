@@ -11,7 +11,7 @@
       </div>
       <div>
         <a-tabs default-active-key="1">
-          <a-tab-pane key="1" tab="Basic information">
+          <a-tab-pane key="1" tab="Personal Informatino">
             <a-form layout='vertical'  :form="form" size="small" @submit="handleSubmit">
               <a-form-item
                 v-model="first_name"
@@ -105,6 +105,29 @@
               </div>
             </a-form-item>
           </a-tab-pane>
+          <a-tab-pane v-if="isModerator" key="3" tab="Professional Information" force-render>
+            <a-form :form="profForm">
+              <a-form-item>
+                <a-auto-complete v-model="category" :data-source="categories" placeholder="Enter a category">
+                </a-auto-complete>
+              </a-form-item>
+              <a-form-item>
+                <a-form-item>
+                  <a-input v-decorator="['npi', {
+                  rules: [
+                    {required: true, message: 'The NPI is required'},
+                    {min: 10, message: $t('v.min_10')},
+                    {max: 10, message: $t('v.max_10')},
+                  ]
+                }]" placeholder="NPI" :max-length="10" disabled></a-input>
+                </a-form-item>
+              </a-form-item>
+              <a-form-item>
+                <a-button type="primary">Save</a-button>
+              </a-form-item>
+            </a-form>
+          </a-tab-pane>
+
         </a-tabs>
       </div>
 
@@ -129,7 +152,11 @@ export default {
   data (){
     return {
       form: this.$form.createForm(this, { name: 'coordinated' }),
+      profForm: this.$form.createForm(this),
       loading: false,
+      category: null,
+      npi: '',
+      categories: [],
     }
   },
   head() {
@@ -152,6 +179,33 @@ export default {
     },
     email (){
       return this.user.email
+    }
+  },
+  mounted() {
+    console.log('Mounted', this.isModerator)
+    if (this.isModerator){
+
+      this.$api.get('/category').then(({data})=>{
+        if (data){
+          this.categories = data.map((c)=>{
+            return {
+              value: c.cate_id.toString(),
+              text: c.cate_category,
+            }
+          })
+          this.$api.get('/professional/my-record').then(({data})=>{
+            console.log('----->', data)
+            if (data){
+              this.category = data.profe_cate_id.toString()
+              this.profForm.setFieldsValue({
+                npi: data.profe_npi,
+              })
+            }
+          })
+        }
+      }).catch(()=>{
+        this.$toast.error('Failed to load categories.')
+      })
     }
   },
   methods: {

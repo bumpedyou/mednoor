@@ -1,7 +1,7 @@
 <template>
-  <div class='pa-1 mh-100v'>
+  <div class='pa-1 mh-100v bg-eee'>
     <a-row>
-      <a-col :xs='24' :md='{span: 12, offset: 6}'>
+      <a-col :xs='24' :md='{span: 16, offset: 4}' class="content">
         <a-skeleton v-if='loading' />
         <div v-else-if='not_found'>
           <p class='h1 text-center'>
@@ -23,7 +23,7 @@
               <span class='mr-auto d-flex'>{{ $t('pub_date') }}: {{ dateStringDate(data.page_createdAt) }}</span>
               <span v-if='data.page_createdAt !== data.page_updated_at' class='ml-auto d-flex'>{{ $t('last_pdate') }}: {{ dateStringDate(data.page_updated_at) }}</span>
             </p>
-            <hr>
+            <hr class="mb-1">
             <!-- eslint-disable vue/no-v-html -->
             <pre v-html='data.page_content'></pre>
             <!--eslint-enable-->
@@ -108,3 +108,10 @@ export default {
   methods: {}
 }
 </script>
+<style scoped lang="sass">
+.content
+  background-color: #fff
+  border: 1px solid #eee
+  padding: 1rem
+
+</style>
