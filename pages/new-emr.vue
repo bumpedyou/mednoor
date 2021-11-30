@@ -33,13 +33,13 @@
                     </span>
             <span v-else>
                         <span v-if='recordId'>{{$t('update_record')}}</span>
-                        <span v-else>{{$t('chat_record')}}</span>
+                        <span v-else>New Encounter</span>
                     </span>
           </p>
         </a-col>
       </a-row>
       <a-row>
-        <a-col :xs='24' :sm='24' :md='12'>
+        <a-col :xs='24' :sm='24'>
           <a-form-item>
             <a-input v-if='isTemplate'
                      v-decorator="[
@@ -56,6 +56,17 @@
                              :disabled='!!recordId'>
               <a-icon slot='suffix' type='search' style='color:rgba(0,0,0,.25)' />
             </a-auto-complete>
+          </a-form-item>
+        </a-col>
+        <a-col :xs='24' :sm='24' :md='12'>
+          <a-form-item>
+            <a-input v-model="date" placeholder="MM-DD-YYYY">
+              <a-icon
+                slot="prefix"
+                type="calendar"
+                style="color: rgba(0, 0, 0, 0.25)"
+              />
+            </a-input>
           </a-form-item>
         </a-col>
         <a-col v-if='!isTemplate' :xs='24' :sm='24' :md='12'>
@@ -443,6 +454,8 @@ export default {
           nv[key] = values[key] || ''
         })
         nv.bp = this.bp
+        nv.date = [this.year, this.month, this.day].join('-')
+
         if (this.recordId) {
           nv.patient = this.userSearch
           if (!this.isTemplate && !this.isValidUser()) {

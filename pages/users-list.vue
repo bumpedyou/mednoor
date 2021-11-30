@@ -86,10 +86,25 @@ export default {
       users: [],
       columns: [
         {
+          title: 'First Name',
           dataIndex: 'user_first_name',
           key: this.$t('name'),
           slots: {title: this.$t('name')},
-          scopedSlots: {customRender: 'name'}
+          scopedSlots: {customRender: 'first_name'}
+        },
+        {
+          title: 'Last Name',
+          dataIndex: 'user_last_name',
+          key: this.$t('name'),
+          slots: {title: this.$t('name')},
+          scopedSlots: {customRender: 'first_name'}
+        },
+        {
+          title: 'Email',
+          dataIndex: 'user_email',
+          key: 'Email',
+          slots: {title: 'Email'},
+          scopedSlots: {customRender: 'email'}
         },
         {
           title: this.$t('role'),
