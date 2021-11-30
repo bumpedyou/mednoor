@@ -20,12 +20,17 @@
         </div>
         <a-skeleton v-if='loading'/>
         <a-table v-else :columns='columns' :data-source='users'>
-              <span slot='name' slot-scope='text, record'>
-                <nuxt-link :to="localePath('/user/' + record.user_uuid)">
-                  {{ record.user_first_name }} {{ record.user_last_name }}
-                </nuxt-link>
-              </span>
-          <span slot='action' slot-scope='text, record'>
+          <div slot='name' slot-scope='text, record'>
+            <nuxt-link :to="localePath('/user/' + record.user_uuid)">
+              {{ record.user_first_name }} {{ record.user_last_name }}
+            </nuxt-link>
+          </div>
+
+          <div slot='user_date_of_birth' slot-scope="text, record">
+            {{dateString(record.user_date_of_birth)}}
+          </div>
+
+          <div slot='action' slot-scope='text, record'>
                 <span v-if='isAdmin || isSuper'>
                   <!--
                   <a v-if="record.usro_key === 'USER'" @click='updateToProfessional(record.user_uuid)'>{{ $t('updt_prof') }}</a>
@@ -42,7 +47,7 @@
                   <a v-if='(Boolean(record.user_deleted)) === false' @click='deleteUser(record.user_uuid)'>{{ $t('delete') }}</a>
 
                 </span>
-                <span v-else-if="isModerator">
+            <span v-else-if="isModerator">
                   <a v-if='record.user_blocked' @click='unblock(record.user_uuid)'>
                     {{ $t('unblock') }}
                   </a>
@@ -52,7 +57,7 @@
                   <a-divider type='vertical'/>
                   <a v-if='(Boolean(record.user_deleted)) === false' @click='deleteUser(record.user_uuid)'>{{ $t('delete') }}</a>
                 </span>
-              </span>
+          </div>
         </a-table>
       </a-col>
     </a-row>
@@ -72,13 +77,14 @@
 <script>
 import RequestModal from '~/components/RequestModal'
 import userRoleMixin from '~/mixins/userRoleMixin'
+import dateMixin from "~/mixins/dateMixin";
 
 export default {
   name: 'UsersList',
   components: {
     RequestModal
   },
-  mixins: [userRoleMixin],
+  mixins: [userRoleMixin, dateMixin],
   layout: 'dashboard',
   middleware: ['authenticated', 'moderator-or-higher', 'not-blocked', 'not-deleted'],
   data() {
@@ -95,7 +101,7 @@ export default {
         {
           title: 'Last Name',
           dataIndex: 'user_last_name',
-          key: this.$t('name'),
+          key: 'user_last_name',
           slots: {title: this.$t('name')},
           scopedSlots: {customRender: 'first_name'}
         },
@@ -105,6 +111,12 @@ export default {
           key: 'Email',
           slots: {title: 'Email'},
           scopedSlots: {customRender: 'email'}
+        },
+        {
+          title: 'DOB',
+          dataIndex: 'user_date_of_birth',
+          key: 'user_date_of_birth',
+          scopedSlots: {customRender: 'user_date_of_birth'}
         },
         {
           title: this.$t('role'),
