@@ -126,8 +126,8 @@
       >
         <p>{{$t('ifys')}}</p>
       </a-modal>
-      <a ref='downloadUrl' :href='downloadUrl' :download='downloadUrl' target='_blank' class='d-none'></a>
     </div>
+    <a ref='downloadUrlRef' :href='downloadUrl' :download='downloadUrl' target='_blank' class='d-none'></a>
   </div>
 </template>
 
@@ -386,7 +386,7 @@ export default {
               if (data.file_name){
                 this.pdfName = data.file_name
                 this.$nextTick(()=>{
-                  this.$refs.downloadUrl.click()
+                  this.$refs.downloadUrlRef.click()
                 })
               }else{
                 this.$refs.rmodal.$emit('error', 'PDF File not found')

@@ -6,6 +6,11 @@
     </p>
     <a-skeleton v-if="loading"/>
     <a-table v-else :columns='columns' :data-source='items'>
+      <div slot="full_name" slot-scope="text, record">
+        <nuxt-link :to="localePath('/user/' + record.uuid)">
+          {{record.full_name}}
+        </nuxt-link>
+      </div>
       <div slot='date' slot-scope='text, record'>
         {{dateString(record.date)}}
       </div>

@@ -1,5 +1,15 @@
 <template>
   <div ref="container" class="pa-1 mh-100v">
+    <a-row class='mb-1'>
+      <a-col>
+        <a-breadcrumb>
+          <a-breadcrumb-item>
+            <nuxt-link :to="localePath('/dashboard')">{{ $t('dashboard') }}</nuxt-link>
+          </a-breadcrumb-item>
+          <a-breadcrumb-item>Categories</a-breadcrumb-item>
+        </a-breadcrumb>
+      </a-col>
+    </a-row>
     <a-row>
       <a-col :xs="24">
         <p class="h1 mb-1">Categories</p>
@@ -65,6 +75,7 @@ import RequestModal from '~/components/RequestModal'
 export default {
   name: "Categories",
   components: {SpinOrText, RequestModal},
+  layout: 'dashboard',
   middleware: ['authenticated', 'verified', 'not-blocked', 'not-deleted', 'admin-or-super'],
   data() {
     return {

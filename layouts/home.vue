@@ -12,6 +12,13 @@
         <div class='lang-container'>
           <flags-picker></flags-picker>
         </div>
+        <div class="main-text">
+          <div v-if="main_text" class="middle-text">
+          <pre>
+            {{ main_text }}
+          </pre>
+          </div>
+        </div>
       </a-col>
     </a-row>
     <a-row>
@@ -27,20 +34,22 @@
 import breakpoints from '~/mixins/breakpoints'
 import FlagsPicker from '~/components/FlagsPicker'
 import Navbar from '~/components/Navbar'
-import BackgroundItem from "~/components/BackgroundItem";
-import MFooter from "~/components/MFooter";
+import BackgroundItem from "~/components/BackgroundItem"
+import MFooter from "~/components/MFooter"
 import BubbleChat from "~/components/BubbleChat"
 
 export default {
-  components: { Navbar, FlagsPicker, BackgroundItem, MFooter, BubbleChat },
+  components: {Navbar, FlagsPicker, BackgroundItem, MFooter, BubbleChat},
   mixins: [breakpoints],
   data() {
     return {
       mounted: false,
+      loadingMainTxt: true,
+      main_text: '',
     }
   },
   computed: {
-    file(){
+    file() {
       const type = this.$route.path.split('/').slice(-1)[0]
       return 'hs/' + type + '.png'
     }
@@ -48,14 +57,30 @@ export default {
   mounted() {
     this.mounted = true
   },
+  created() {
+    this.$api.get('/main-text').then(({data}) => {
+      this.loadingMainTxt = false
+      if (data && data.mate_text) {
+        this.main_text = data.mate_text
+      }
+    })
+  }
 }
 </script>
 <style lang='sass' scoped>
 .right-side
   .content
     margin-bottom: auto
+
   .lang-container
     margin-top: auto
     display: flex
     justify-content: center
+
+.main-text
+  margin-top: 4rem
+  display: flex
+  justify-content: center
+  align-items: center
+  text-align: center
 </style>

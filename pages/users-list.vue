@@ -21,13 +21,17 @@
         <a-skeleton v-if='loading'/>
         <a-table v-else :columns='columns' :data-source='users'>
               <span slot='name' slot-scope='text, record'>
-                {{ record.user_first_name }} {{ record.user_last_name }}
+                <nuxt-link :to="localePath('/user/' + record.user_uuid)">
+                  {{ record.user_first_name }} {{ record.user_last_name }}
+                </nuxt-link>
               </span>
           <span slot='action' slot-scope='text, record'>
                 <span v-if='isAdmin || isSuper'>
+                  <!--
                   <a v-if="record.usro_key === 'USER'" @click='updateToProfessional(record.user_uuid)'>{{ $t('updt_prof') }}</a>
                   <a v-if="record.usro_key === 'MODERATOR'" @click='downgradeProfessional(record.user_uuid)'>{{ $t('rem_prof') }}</a>
                   <a-divider type='vertical'/>
+                  -->
                   <a v-if='record.user_blocked' @click='unblock(record.user_uuid)'>
                     {{ $t('unblock') }}
                   </a>
@@ -38,7 +42,7 @@
                   <a v-if='(Boolean(record.user_deleted)) === false' @click='deleteUser(record.user_uuid)'>{{ $t('delete') }}</a>
 
                 </span>
-                <span v-else>
+                <span v-else-if="isModerator">
                   <a v-if='record.user_blocked' @click='unblock(record.user_uuid)'>
                     {{ $t('unblock') }}
                   </a>

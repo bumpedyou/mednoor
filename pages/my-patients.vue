@@ -10,6 +10,11 @@
     <a-row>
       <a-col>
         <a-table :columns='columns' :data-source='items'>
+          <div slot="full_name" slot-scope="text, record">
+            <nuxt-link :to="localePath('/user/' + record.user_uuid)">
+              {{record.full_name}}
+            </nuxt-link>
+          </div>
           <div slot='actions' slot-scope='text, record'>
             <nuxt-link :to="{path: localePath('/new-emr'), query: {mere: record.mere_uuid}}">{{ $t('mre') }}</nuxt-link>
           </div>
@@ -22,6 +27,7 @@
 export default {
   name: 'MyPatients',
   layout: 'default',
+  middleware: ['authenticated'],
   data() {
     return {
       columns: [

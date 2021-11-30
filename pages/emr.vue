@@ -48,7 +48,9 @@
         <a-skeleton v-if='loadingData' />
         <a-table v-else :columns='columns' :data-source='items'>
           <div slot='patient' slot-scope='text, record'>
-            {{ record.user_first_name }} {{ record.user_last_name }}
+            <nuxt-link :to="localePath('/user/' + record.user_uuid)">
+              {{ record.user_first_name }} {{ record.user_last_name }}
+            </nuxt-link>
           </div>
           <div slot='actions' slot-scope='text, record'>
             <nuxt-link :to="{
@@ -70,7 +72,9 @@
             <span class='red--text clickable' @click='deleteItem(record.mere_uuid)'>{{ $t('delete') }}</span>
           </div>
           <div slot='owner_name' slot-scope='text, record'>
-            {{ record.owner_name }} {{ record.owner_last_name }}
+            <nuxt-link :to="localePath('/user/' + record.owner_uuid)">
+              {{ record.owner_name }} {{ record.owner_last_name }}
+            </nuxt-link>
           </div>
           <div slot='mere_date' slot-scope='text, record'>
             {{ dateString(record.mere_date) }}

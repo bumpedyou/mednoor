@@ -1,5 +1,15 @@
 <template>
   <div class="pa-1 mh-100v">
+    <a-row class='mb-1'>
+      <a-col>
+        <a-breadcrumb>
+          <a-breadcrumb-item>
+            <nuxt-link :to="localePath('/dashboard')">{{ $t('dashboard') }}</nuxt-link>
+          </a-breadcrumb-item>
+          <a-breadcrumb-item>Main Text</a-breadcrumb-item>
+        </a-breadcrumb>
+      </a-col>
+    </a-row>
     <a-row>
       <a-col>
         <p class="h1">

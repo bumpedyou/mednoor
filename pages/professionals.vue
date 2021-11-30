@@ -8,7 +8,9 @@
       <a-skeleton v-if='loading' />
       <a-table v-else-if='users.length > 0' :columns='columns' :data-source='users'>
         <div slot='full_name' slot-scope='text, record'>
-          {{ record.user_first_name }} {{ record.user_last_name }}
+          <nuxt-link :to="localePath('/user/' + record.user_uuid)">
+            {{ record.user_first_name }} {{ record.user_last_name }}
+          </nuxt-link>
         </div>
         <div slot='action' slot-scope='text, record'>
           <span v-if='record.mypr_id'>

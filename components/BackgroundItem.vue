@@ -1,10 +1,6 @@
 <template>
   <div class="bg-img" :style="backgroundURL">
-    <div v-if="main_text" class="middle-text">
-      <pre>
-        {{main_text}}
-      </pre>
-    </div>
+
   </div>
 </template>
 <script>
@@ -26,8 +22,7 @@ export default {
   },
   data (){
     return {
-      loadingMainTxt: true,
-      main_text: '',
+
     }
   },
   computed: {
@@ -50,12 +45,7 @@ export default {
     }
   },
   created() {
-    this.$api.get('/main-text').then(({data})=>{
-      this.loadingMainTxt = false
-      if (data && data.mate_text){
-        this.main_text = data.mate_text
-      }
-    })
+
   }
 }
 </script>

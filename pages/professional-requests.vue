@@ -1,5 +1,15 @@
 <template>
   <div class="pa-1 mh-100v">
+    <a-row class='mb-1'>
+      <a-col>
+        <a-breadcrumb>
+          <a-breadcrumb-item>
+            <nuxt-link :to="localePath('/dashboard')">{{ $t('dashboard') }}</nuxt-link>
+          </a-breadcrumb-item>
+          <a-breadcrumb-item>Professional Requests</a-breadcrumb-item>
+        </a-breadcrumb>
+      </a-col>
+    </a-row>
     <a-row>
       <a-col>
         <p class="h1">Professional Requests</p>
@@ -8,7 +18,9 @@
         <a-skeleton v-if="loading"></a-skeleton>
         <a-table v-else :columns="columns" :data-source="data">
           <div slot='user_first_name' slot-scope='text, record'>
-            {{record.user_first_name}} {{record.user_last_name}}
+            <nuxt-link :to="localePath('/user/' + record.user_uuid)">
+              {{record.user_first_name}} {{record.user_last_name}}
+            </nuxt-link>
           </div>
           <div slot="actions" slot-scope='text, record'>
             <span class="primary--text clickable" @click="askAllow(record.profe_uuid)">Allow</span>
@@ -35,6 +47,7 @@ import listenMixin from "~/mixins/listenMixin";
 export default {
   name: "ProfessionalRequests",
   mixins: [listenMixin],
+  layout: 'dashboard',
   middleware: ['authenticated', 'not-deleted', 'not-blocked', 'admin-or-super'],
   data (){
     return {

@@ -6,7 +6,7 @@
       </p>
       <a-table :columns='columns' :data-source='items'>
         <div slot='user_name' slot-scope='text, record'>
-          {{ record.user_first_name }} {{ record.user_last_name }}
+          <nuxt-link :to="localePath('/user/' + record.user_uuid)">{{ record.user_first_name }} {{ record.user_last_name }}</nuxt-link>
         </div>
         <div slot='mypr_date' slot-scope='text'>
           {{dateString(text)}}

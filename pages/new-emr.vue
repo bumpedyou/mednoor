@@ -52,7 +52,7 @@
                      type='text'
                      :placeholder="$t('template_name')">
             </a-input>
-            <a-auto-complete v-else v-model='userSearch' :data-source='usersList' :placeholder="$t('template_name')"
+            <a-auto-complete v-else v-model='userSearch' :data-source='usersList' placeholder="Search patient"
                              :disabled='!!recordId'>
               <a-icon slot='suffix' type='search' style='color:rgba(0,0,0,.25)' />
             </a-auto-complete>
@@ -119,7 +119,7 @@
             <a-form-item
               :label="$t('pulse')">
               <a-input
-                v-decorator="['pulse', { rules: [{ max: 10, message: $t('max_10') }] }]"
+                v-decorator="['pulse', { rules: [{ max: 10, message: $t('v.max_10') }] }]"
                 :placeholder="$t('pulse')" :disabled='isDisabled' />
             </a-form-item>
             <a-form-item

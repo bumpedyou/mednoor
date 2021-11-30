@@ -21,17 +21,17 @@
       <p class="h1">
         {{user.user_first_name}} {{user.user_last_name}}
       </p>
-      <a-row>
+      <a-row v-if="isUserModerator">
         <a-col :xs='24' :md="12">
           <a-table ref="table" :pagination="false" :columns="columns" :data-source="data">
           </a-table>
         </a-col>
       </a-row>
-      <a-row class="mt-1">
+      <a-row v-if="isUserModerator" class="mt-1">
         <p v-if="isLoggedIn">
           Send Chat Request
         </p>
-        <a-button type="primary" @click="$router.push(localePath('/sign-in'))">
+        <a-button v-else type="primary" @click="$router.push(localePath('/sign-in'))">
           Sign in to chat with {{user.user_first_name}}
         </a-button>
       </a-row>
@@ -71,8 +71,22 @@ export default {
     ],
     data: [],
   }),
+  computed: {
+    exists(){
+      return this.user && this.user.usro_key
+    },
+    role(){
+      if (this.exists){
+        return this.user.usro_key
+      }else{
+        return ''
+      }
+    },
+    isUserModerator(){
+      return this.role === 'MODERATOR'
+    }
+  },
   mounted(){
-
     const q = this.$route.params
     if (q && q.uuid){
       this.$api.get('/user/' + q.uuid).then(({data})=>{
@@ -85,8 +99,6 @@ export default {
               npi: data.profe_npi || '',
             }
           ]
-
-
         }else {
           this.not_found = false
         }
@@ -97,7 +109,7 @@ export default {
         this.loading = false
       })
     }
-  },
+  }
 }
 </script>
 
