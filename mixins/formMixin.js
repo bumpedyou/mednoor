@@ -1,9 +1,11 @@
+import inputMixin from '~/mixins/inputMixin'
+
 export default {
+  mixins: [inputMixin],
   data() {
     return {
       form: null,
       date: '',
-      allowed: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
       day: '',
       month: '',
       year: '',
@@ -12,7 +14,7 @@ export default {
   watch: {
     date(v) {
       // Auto format date into mm-dd-yyyy
-      if(v) {
+      if(v && v.length) {
         let str = ''
         for (let i = 0; i < v.length; i++) {
           if (
@@ -84,15 +86,6 @@ export default {
         }
         this.date = str
       }
-    },
-  },
-  methods: {
-    addSlash(str) {
-      const last = str.charAt(str.length - 1)
-      if (this.allowed.includes(last)) {
-        return str.substr(0, str.length - 1) + '/' + last
-      }
-      return str
     },
   },
   mounted(){

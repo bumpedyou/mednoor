@@ -27,7 +27,15 @@
           </div>
 
           <div slot='user_date_of_birth' slot-scope="text, record">
-            {{dateString(record.user_date_of_birth)}}
+            <span v-if='record && record.user_date_of_birth'>
+              {{dateString(record.user_date_of_birth)}}
+            </span>
+          </div>
+
+          <div slot='user_phone_no' slot-scope='text, record'>
+            <span v-if='record && record.user_country_code'>
+              +{{record.user_country_code}} {{record.user_phone_no}}
+            </span>
           </div>
 
           <div slot='action' slot-scope='text, record'>
@@ -47,7 +55,7 @@
                   <a v-if='(Boolean(record.user_deleted)) === false' @click='deleteUser(record.user_uuid)'>{{ $t('delete') }}</a>
 
                 </span>
-            <span v-else-if="isModerator">
+            <div v-else-if="isModerator">
                   <a v-if='record.user_blocked' @click='unblock(record.user_uuid)'>
                     {{ $t('unblock') }}
                   </a>
@@ -56,7 +64,7 @@
                   </a>
                   <a-divider type='vertical'/>
                   <a v-if='(Boolean(record.user_deleted)) === false' @click='deleteUser(record.user_uuid)'>{{ $t('delete') }}</a>
-                </span>
+                </div>
           </div>
         </a-table>
       </a-col>
@@ -117,6 +125,12 @@ export default {
           dataIndex: 'user_date_of_birth',
           key: 'user_date_of_birth',
           scopedSlots: {customRender: 'user_date_of_birth'}
+        },
+        {
+          title: 'Phone No.',
+          dataIndex: 'user_phone_no',
+          key: 'user_phone_no',
+          scopedSlots: {customRender: 'user_phone_no'}
         },
         {
           title: this.$t('role'),

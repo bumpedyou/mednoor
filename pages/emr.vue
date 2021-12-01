@@ -72,9 +72,12 @@
             <span class='red--text clickable' @click='deleteItem(record.mere_uuid)'>{{ $t('delete') }}</span>
           </div>
           <div slot='owner_name' slot-scope='text, record'>
-            <nuxt-link :to="localePath('/user/' + record.owner_uuid)">
+            <nuxt-link v-if='record && record.owner_uuid' :to="localePath('/user/' + record.owner_uuid)">
               {{ record.owner_name }} {{ record.owner_last_name }}
             </nuxt-link>
+            <span v-else>
+                            {{ record.owner_name }} {{ record.owner_last_name }}
+            </span>
           </div>
           <div slot='mere_date' slot-scope='text, record'>
             {{ dateString(record.mere_date) }}

@@ -51,7 +51,7 @@ export default {
           code: this.code
         }).then(async () => {
           await this.$auth.fetchUser()
-          await this.$router.push(this.localePath('/'))
+          await this.$router.push(this.localePath('/view-mode'))
         }).catch((e)=>{
           this.$refs.rmodal.$emit('error', e)
         }).finally(()=>{

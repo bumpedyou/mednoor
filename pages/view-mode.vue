@@ -29,7 +29,7 @@
 <script>
 export default {
   name: "ViewMode",
-
+  middleware: ['authenticated', 'verified', 'not-blocked', 'not-deleted'],
   mounted() {
     this.$api.get('/professional/my-record').then(({data})=> {
       if (data && data.profe_uuid) {

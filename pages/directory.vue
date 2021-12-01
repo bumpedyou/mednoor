@@ -8,7 +8,7 @@
     </p>
     <div v-if="categories">
       <div v-for="(c,i) in categories" :key="i">
-        <a-checkbox>
+        <a-checkbox :ref="'checkbox-' + i" @change='categoryChanged(i)'>
           {{c.cate_category}}
         </a-checkbox>
       </div>
@@ -16,10 +16,12 @@
     <p v-else class="text">
       No categories were found.
     </p>
+    <!--
     <p class="filter-name mt-1">
       Country
     </p>
     <a-auto-complete placeholder="Country Name"></a-auto-complete>
+    -->
   </div>
   <div class="content pa-1">
     <a-row>
@@ -88,6 +90,14 @@ export default {
     })
   },
   methods: {
+    categoryChanged(i){
+      this.$nextTick(()=>{
+        const r = this.$refs['checkbox-' + i]
+        if (r) {
+          console.log(r)
+        }
+      })
+    },
     search(){
       console.log('search', this.term);
       this.loadingResults = true

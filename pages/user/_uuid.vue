@@ -18,9 +18,26 @@
   </a-row>
   <a-row v-else>
     <a-col>
-      <p class="h1">
+      <p class="h1" style='display: flex; align-items: center'>
         {{user.user_first_name}} {{user.user_last_name}}
+        <a-button v-if='user && user.usro_key' type='raisin-black' class='ml-1'>
+          {{user.usro_role}}
+        </a-button>
       </p>
+      <a-row class='mt-1 mb-1'>
+        <a-col>
+          <p>
+            <b>Date of birth:</b> <span v-if='user && user.user_date_of_birth'>
+            {{dateString(user.user_date_of_birth)}}
+          </span>
+          </p>
+          <p>
+            <b>Phone Number:</b> <span v-if='user && user.user_country_code'>
+            +{{user.user_country_code}} {{user.user_phone_no}}
+          </span>
+          </p>
+        </a-col>
+      </a-row>
       <a-row v-if="isUserModerator">
         <a-col :xs='24' :md="12">
           <a-table ref="table" :pagination="false" :columns="columns" :data-source="data">
@@ -31,7 +48,7 @@
         <p v-if="isLoggedIn">
           Send Chat Request
         </p>
-        <a-button v-else type="primary" @click="$router.push(localePath('/sign-in'))">
+        <a-button v-else type="primary" class='mt-1' @click="$router.push(localePath('/sign-in'))">
           Sign in to chat with {{user.user_first_name}}
         </a-button>
       </a-row>
@@ -44,12 +61,13 @@
 <script>
 import RequestModal from '~/components/RequestModal'
 import authMixin from "~/mixins/authMixin";
+import dateMixin from '~/mixins/dateMixin'
 export default {
   name: "Uuid",
   components: {
     RequestModal,
   },
-  mixins: [authMixin],
+  mixins: [authMixin, dateMixin],
   data: ()=>({
     loading: true,
     not_found: false,

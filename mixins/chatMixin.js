@@ -107,8 +107,8 @@ export default {
           this.user_was_updated()
         }
       })
-      this.socket.on('chat-deleted', (data) => {
-        this.$router.push('/chat-ended')
+      this.socket.on('chat-deleted', () => {
+        this.$router.push(this.localePath('/chat-ended'))
       })
       this.socket.on('typing', (data) => {
         if (!this.typing) {

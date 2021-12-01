@@ -386,7 +386,9 @@ export default {
               if (data.file_name){
                 this.pdfName = data.file_name
                 this.$nextTick(()=>{
-                  this.$refs.downloadUrlRef.click()
+                  if (this.$refs.downloadUrlRef){
+                    this.$refs.downloadUrlRef.click()
+                  }
                 })
               }else{
                 this.$refs.rmodal.$emit('error', 'PDF File not found')

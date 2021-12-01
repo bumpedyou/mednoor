@@ -83,7 +83,7 @@
                   {
                   rules: [
                     {required: true, message: $t('v.pw_req')},
-                    {min: 6, message: $t('min_6')}
+                    {min: 6, message: $t('v.min_6')}
                   ]
                   }
                 ]" :placeholder="$t('pwd')" type='password'>

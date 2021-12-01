@@ -84,14 +84,14 @@
               <a-row>
                 <a-col :xs="24" :sm="24" :md="3" :lg="4">
                   <a-form-item
-                    label="Area Code"
+                    label="Country code"
                   >
-                    <a-input v-model="area_code" placeholder="Area Code"  />
+                    <a-input v-model="country_code" placeholder="Country code" />
                   </a-form-item>
                 </a-col>
                 <a-col :xs="24" :sm="24" :md="21" :lg="20">
                   <a-form-item
-                    label="Phone Number."
+                    label="Phone Number"
                   >
                     <a-input v-model="phone_no"  placeholder="Phone Number." />
                   </a-form-item>
@@ -150,20 +150,24 @@
 
     </a-col>
   </a-row>
-
+  <request-modal ref='rmodal'></request-modal>
 </div>
 </template>
 
 <script>
 import userRoleMixin from "~/mixins/userRoleMixin";
 import SpinOrText from '~/components/SpinOrText.vue'
+import inputMixin from '~/mixins/inputMixin'
+import authMixin from '~/mixins/authMixin'
+import RequestModal from '~/components/RequestModal'
 
 export default {
   name: "MyProfile",
   components: {
-    SpinOrText
+    SpinOrText,
+    RequestModal,
   },
-  mixins: [userRoleMixin],
+  mixins: [userRoleMixin, inputMixin, authMixin],
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified'],
   data (){
     return {
@@ -173,9 +177,8 @@ export default {
       category: null,
       npi: '',
       categories: [],
-      area_code: '',
+      country_code: '',
       phone_no: '',
-      allowed: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
     }
   },
   head() {
@@ -201,21 +204,50 @@ export default {
     }
   },
   watch: {
-    area_code(v){
-      if (v){
-        this.area_code = v.substr(5)
+    country_code(v){
+      let str = ''
+
+      if (v && v.length){
+
+        if (v.length === 1){
+          v = this.prependCharacter(v, '+')
+        }
+
+        console.log(v)
+
+        for(let i = 0; i<v.length; i++){
+          const char = v.charAt(i)
+
+          console.log(`char[${i}] = ${char}`)
+
+          if (this.allowed.includes(char) || char === '+' && i === 0){
+            console.log('+=' + char)
+            str+= char.toString()
+          }
+        }
+        if (str.length > 4){
+          str = str.substr(0,4)
+        }
+        this.country_code = str
       }
     },
     phone_no (v){
       if (v){
-        this.phone_no = v.substr(0,15)
+        v = v.substr(0,10)
+        this.phone_no = this.numbersOnly(v)
       }
     }
   },
   mounted() {
-    console.log('Mounted', this.isModerator)
+    if (this.myUserId){
+      this.$api.get('/user/'+ this.myUserId).then(({data})=>{
+        if (data && data.user_uuid){
+          this.phone_no = data.user_phone_no
+          this.country_code = '+' + data.user_country_code
+        }
+      })
+    }
     if (this.isModerator){
-
       this.$api.get('/category').then(({data})=>{
         if (data){
           this.categories = data.map((c)=>{
@@ -245,6 +277,18 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           this.loading = true
+
+          values.country_code = this.country_code
+          values.phone_no = this.phone_no
+
+          if (this.country_code.length < 1){
+            this.$toast.error('The country code is not valid')
+            return false
+          }
+          if (this.phone_no.length <10){
+            this.$toast.error('The phone number must have 10 digits.')
+            return false
+          }
           this.$api
             .put('/user', values)
             .then(async () => {
