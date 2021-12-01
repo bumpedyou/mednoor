@@ -81,6 +81,22 @@
               >
                 <a-input v-model="email" disabled :placeholder="$t('email')"  />
               </a-form-item>
+              <a-row>
+                <a-col :xs="24" :sm="24" :md="3" :lg="4">
+                  <a-form-item
+                    label="Area Code"
+                  >
+                    <a-input v-model="area_code" placeholder="Area Code"  />
+                  </a-form-item>
+                </a-col>
+                <a-col :xs="24" :sm="24" :md="21" :lg="20">
+                  <a-form-item
+                    label="Phone Number."
+                  >
+                    <a-input v-model="phone_no"  placeholder="Phone Number." />
+                  </a-form-item>
+                </a-col>
+              </a-row>
               <a-form-item>
                 <div class="pull-child-right">
                   <a-button type="primary" html-type="submit">
@@ -157,6 +173,9 @@ export default {
       category: null,
       npi: '',
       categories: [],
+      area_code: '',
+      phone_no: '',
+      allowed: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
     }
   },
   head() {
@@ -179,6 +198,18 @@ export default {
     },
     email (){
       return this.user.email
+    }
+  },
+  watch: {
+    area_code(v){
+      if (v){
+        this.area_code = v.substr(5)
+      }
+    },
+    phone_no (v){
+      if (v){
+        this.phone_no = v.substr(0,15)
+      }
     }
   },
   mounted() {

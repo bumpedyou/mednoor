@@ -16,7 +16,7 @@
             </nuxt-link>
           </div>
           <div slot='actions' slot-scope='text, record'>
-            <nuxt-link :to="{path: localePath('/new-emr'), query: {mere: record.mere_uuid}}">{{ $t('mre') }}</nuxt-link>
+            <nuxt-link :to="{path: localePath('/new-emr'), query: {mere: record.mere_uuid}}">{{ $t('emr') }}</nuxt-link>
           </div>
         </a-table>
       </a-col>

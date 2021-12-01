@@ -14,7 +14,7 @@
                           {{$t('emr_template')}}
                       </span>
             <span v-else>
-                          {{$t('emr')}}
+                          Encounter
                       </span>
           </a-breadcrumb-item>
         </a-breadcrumb>
@@ -285,7 +285,7 @@ export default {
   },
   head(){
     return {
-      title: this.$t('new_emr')
+      title: 'New Encounter'
     }
   },
   computed: {

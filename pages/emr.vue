@@ -17,7 +17,7 @@
         </p>
         <a-button type='success' class='mb-1' @click="$router.push(localePath('/new-emr'))">
           <a-icon type='medicine-box'></a-icon>
-          {{ $t('new_emr') }}
+          New Encounter
         </a-button>
         <a-button type='raisin-black' class='mb-1'
                   @click="$router.push({path: localePath('/new-emr'), query: {type: 'template'}})">
