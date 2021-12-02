@@ -82,21 +82,21 @@
             <a-tab-pane key='1' :tab="$t('allergies')" force-render>
               <a-form-item>
                 <a-textarea
-                  v-decorator="['allergies', { rules: [{ max: 2000, message: $t('v.max_10000') }] }]"
+                  v-decorator="['allergies', { rules: [] }]"
                   :placeholder="$t('allergies')" :rows='6' :disabled='isDisabled' />
               </a-form-item>
             </a-tab-pane>
             <a-tab-pane key='2' :tab="$t('current_meds')" force-render>
               <a-form-item>
                 <a-textarea
-                  v-decorator="['current_meds', { rules: [{ max: 2000, message: $t('v.max_10000') }] }]"
+                  v-decorator="['current_meds', { rules: [] }]"
                   :placeholder="$t('current_meds')" :rows='6' :disabled='isDisabled' />
               </a-form-item>
             </a-tab-pane>
             <a-tab-pane key='3' :tab="$t('med_htry')" force-render>
               <a-form-item>
                 <a-textarea
-                  v-decorator="['medical_history', { rules: [{ max: 2000, message: $t('v.max_10000') }] }]"
+                  v-decorator="['medical_history', { rules: [] }]"
                   :placeholder="$t('med_htry')" :rows='6' :disabled='isDisabled' />
               </a-form-item>
             </a-tab-pane>
@@ -104,14 +104,14 @@
               <a-form-item>
 
                 <a-textarea
-                  v-decorator="['social_history', { rules: [{ max: 2000, message: $t('v.max_10000') }] }]"
+                  v-decorator="['social_history', { rules: [] }]"
                   :placeholder="$t('soc_htry')" :rows='6' :disabled='isDisabled' />
               </a-form-item>
             </a-tab-pane>
             <a-tab-pane key='5' :tab="$t('fam_hry')" force-render>
               <a-form-item>
                 <a-textarea
-                  v-decorator="['family_history', { rules: [{ max: 2000, message: $t('v.max_10000') }] }]"
+                  v-decorator="['family_history', { rules: [] }]"
                   :placeholder="$t('fam_hry')" :rows='6' :disabled='isDisabled' />
               </a-form-item>
             </a-tab-pane>
@@ -168,56 +168,56 @@
             <a-tab-pane key='1' :tab="$t('chief_complaint')" force-render>
               <a-form-item>
                 <a-textarea
-                  v-decorator="['chief_complaint', { rules: [{ max: 2000, message: $t('v.max_10000') }] }]"
+                  v-decorator="['chief_complaint', { rules: [] }]"
                   :placeholder="$t('chief_complaint')" :rows='6' :disabled='isDisabled' />
               </a-form-item>
             </a-tab-pane>
             <a-tab-pane key='2' :tab="$t('hpi')" force-render>
               <a-form-item>
                 <a-textarea
-                  v-decorator="['hip', { rules: [{ max: 2000, message: $t('v.max_10000') }] }]"
+                  v-decorator="['hip', { rules: [] }]"
                   :placeholder="$t('hpi')" :rows='6' :disabled='isDisabled' />
               </a-form-item>
             </a-tab-pane>
             <a-tab-pane key='3' :tab="$t('subject')" force-render>
               <a-form-item>
                 <a-textarea
-                  v-decorator="['subject', { rules: [{ max: 2000, message: $t('v.max_10000') }] }]"
+                  v-decorator="['subject', { rules: [] }]"
                   :placeholder="$t('subject')" :rows='6' :disabled='isDisabled' />
               </a-form-item>
             </a-tab-pane>
             <a-tab-pane key='4' :tab="$t('objective')" force-render>
               <a-form-item>
                 <a-textarea
-                  v-decorator="['objective', { rules: [{ max: 2000, message: $t('v.max_10000') }] }]"
+                  v-decorator="['objective', { rules: [] }]"
                   :placeholder="$t('objective')" :rows='6' :disabled='isDisabled' />
               </a-form-item>
             </a-tab-pane>
             <a-tab-pane key='5' :tab="$t('assessment')" force-render>
               <a-form-item>
                 <a-textarea
-                  v-decorator="['assessment', { rules: [{ max: 2000, message: $t('v.max_10000') }] }]"
+                  v-decorator="['assessment', { rules: [] }]"
                   :placeholder="$t('assessment')" :rows='6' :disabled='isDisabled' />
               </a-form-item>
             </a-tab-pane>
             <a-tab-pane key='6' :tab="$t('plan')" force-render>
               <a-form-item>
                 <a-textarea
-                  v-decorator="['plan', { rules: [{ max: 2000, message: $t('v.max_10000') }] }]"
+                  v-decorator="['plan', { rules: [] }]"
                   :placeholder="$t('plan')" :rows='6' :disabled='isDisabled' />
               </a-form-item>
             </a-tab-pane>
             <a-tab-pane key='7' :tab="$t('sign')" force-render>
               <a-form-item>
                 <a-textarea
-                  v-decorator="['sign', { rules: [{ max: 2000, message: $t('v.max_10000') }] }]"
+                  v-decorator="['sign', { rules: [] }]"
                   :placeholder="$t('sign')" :rows='6' :disabled='isDisabled' />
               </a-form-item>
             </a-tab-pane>
             <a-tab-pane key='8' :tab="$t('addendum')" force-render>
               <a-form-item>
                 <a-textarea
-                  v-decorator="['addendum', { rules: [{ max: 2000, message: $t('v.max_10000') }] }]"
+                  v-decorator="['addendum', { rules: [] }]"
                   :placeholder="$t('addendum')" :rows='6' />
               </a-form-item>
             </a-tab-pane>
@@ -274,7 +274,7 @@ export default {
       templates: [], // Full data of the templates
       templatesList: [], // key and value
       usersList: [],
-      userSearch: '',
+      userSea10,
       recordId: null,
       bmi: 0,
       isTemplateD: false,

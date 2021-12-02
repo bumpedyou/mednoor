@@ -8,7 +8,7 @@
     </p>
     <div v-if="categories">
       <div v-for="(c,i) in categories" :key="i">
-        <a-checkbox :ref="'checkbox-' + i" @change='categoryChanged(i)'>
+        <a-checkbox :ref="'checkbox-' + i" @change='categoryChanged(c)'>
           {{c.cate_category}}
         </a-checkbox>
       </div>
@@ -81,6 +81,7 @@ export default {
     results: '',
     searched: false,
     loadingResults: false,
+    selectedCategories: [],
   }),
   mounted(){
     this.$api.get('/category').then(({data})=>{
@@ -90,13 +91,18 @@ export default {
     })
   },
   methods: {
-    categoryChanged(i){
-      this.$nextTick(()=>{
-        const r = this.$refs['checkbox-' + i]
-        if (r) {
-          console.log(r)
+    categoryChanged(category){
+      if (category && category.cate_id){
+        const c = category.cate_id
+        if (this.selectedCategories.includes(c)){
+          this.selectedCategories = this.selectedCategories.filter((cat)=>{
+            return cat !== c
+          })
+        }else{
+          this.selectedCategories.push(c)
         }
-      })
+      }
+      this.search()
     },
     search(){
       console.log('search', this.term);
@@ -105,6 +111,7 @@ export default {
         params: {
           searchTerm: this.term,
           type: 'MODERATOR',
+          categories: this.selectedCategories
         }
       }).then(({data})=>{
         if (data){
