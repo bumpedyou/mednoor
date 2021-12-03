@@ -1,7 +1,7 @@
 <template>
 <a-row class="pa-1 mh-100v">
   <a-col :xs='24' :sm='24'>
-    <p class='h1'>
+    <p class='h4 mb-1'>
       {{ $t('prev_c_pdf') }}
     </p>
     <a-skeleton v-if="loading"/>

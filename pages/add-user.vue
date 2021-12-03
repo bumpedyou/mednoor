@@ -18,7 +18,7 @@
              :md='{ span: 12, offset: 6 }'
              :lg='{ span: 10, offset: 7 }'
              :xl='{ span: 8, offset: 8 }'>
-        <p class='h1 text-center'>{{ $t('add_urs') }}</p>
+        <p class='h4 mb-1 text-center'>{{ $t('add_urs') }}</p>
         <a-form :form='form' size='small' @submit='handleSubmit'>
           <a-form-item>
             <a-input

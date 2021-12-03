@@ -12,7 +12,7 @@
     </a-row>
     <a-row class='pa-1'>
       <a-col>
-        <h1 class='text-capitalize'>{{ view }} {{ $t('list') }}</h1>
+        <p class='h4 text-capitalize'>{{ view }} {{ $t('list') }}</p>
         <div class="mb-1">
           <a-button type="aero-blue" @click='addUser'>{{ $t('add_urs') }}
             <a-icon type="user-add"></a-icon>

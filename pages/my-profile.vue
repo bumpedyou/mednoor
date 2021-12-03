@@ -3,7 +3,7 @@
   <a-row class="pa-1">
     <a-col :xs="24" :sm="24">
       <div>
-        <p class="h3 mb-1"  style="display: flex; align-items: center">
+        <p class="h4 mb-1"  style="display: flex; align-items: center">
           {{$t('hi')}}, {{name}} <span v-if="!isUser && userRole !== 'guest'" class="user-role ml-1">
        {{$t('your_role')}}:
         <b class="b-white">{{userRoleTxt}}</b>

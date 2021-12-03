@@ -26,7 +26,7 @@
     <a-form v-else :form='form' @submit='handleSubmit'>
       <a-row>
         <a-col :xs='24'>
-          <p class='h1'>
+          <p class='h4 mb-1'>
                     <span v-if='isTemplate'>
                         <span v-if='recordId'>{{$t('update_template')}}</span>
                         <span v-else>{{$t('create_template')}}</span>
@@ -274,7 +274,7 @@ export default {
       templates: [], // Full data of the templates
       templatesList: [], // key and value
       usersList: [],
-      userSea10,
+      userSearch: '',
       recordId: null,
       bmi: 0,
       isTemplateD: false,

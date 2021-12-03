@@ -12,7 +12,7 @@
     </a-row>
     <a-row>
       <a-col :xs="24">
-        <p class="h1 mb-1">Categories</p>
+        <p class="h4 mb-1">Categories</p>
       </a-col>
       <a-col>
         <a-form ref="form" :form="form" @submit.prevent>

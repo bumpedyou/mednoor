@@ -1,7 +1,7 @@
 <template>
 <div class="directory mh-100v mt-1">
   <div class="filters pa-1">
-    <p class="h1">Filters</p>
+    <p class="h4 mb-1">Filters</p>
     <hr>
     <p class="filter-name">
       Category

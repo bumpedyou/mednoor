@@ -12,7 +12,7 @@
     </a-row>
     <a-row>
       <a-col>
-        <p class="h1">Professional Requests</p>
+        <p class="h4 mb-1">Professional Requests</p>
       </a-col>
       <a-col>
         <a-skeleton v-if="loading"></a-skeleton>

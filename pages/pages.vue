@@ -12,7 +12,7 @@
     </a-row>
     <a-row>
       <a-col :xs='24'>
-        <p class='h1'>{{ $t('Pages') }}</p>
+        <p class='h4 mb-1'>{{ $t('Pages') }}</p>
         <a-button type='raisin-black' @click="$router.push(localePath('/new-page'))">{{ $t('new_page') }}</a-button>
         <a-skeleton v-if='loading' />
         <a-table v-else :columns='columns' :data-source='items'>

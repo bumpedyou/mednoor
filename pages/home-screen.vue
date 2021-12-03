@@ -12,7 +12,7 @@
     </a-row>
     <a-row v-if='src === ""'>
       <a-col :md='{span: 12, offset: 6}' :lg='{span: 8, offset: 8}'>
-        <h1 class='text-center mb-1'>{{ $t('home_screen') }}</h1>
+        <p class='h4 text-center mb-1'>{{ $t('home_screen') }}</p>
         <a-form-item label='What screen do you want to replace?'>
           <a-select default-value='sign-up' style='width: 120px' class='mb-1' @change='setType'>
             <a-select-option value='sign-up'>

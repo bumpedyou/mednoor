@@ -12,7 +12,7 @@
     </a-row>
     <a-row>
       <a-col>
-        <p class="h1">
+        <p class="h4 mb-1">
           Main Text
         </p>
         <p>

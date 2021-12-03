@@ -12,7 +12,7 @@
     </a-row>
     <a-row>
       <a-col :xs='24'>
-        <p class='h1'>
+        <p class='h4 mb-1'>
           {{ $t('update_tc') }}
         </p>
         <a-skeleton v-if='loading' />

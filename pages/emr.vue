@@ -12,7 +12,7 @@
     </a-row>
     <a-row>
       <a-col :xs='24' :sm='24'>
-        <p class='h1'>
+        <p class='h4 mb-1'>
           {{ $t('emr_lng') }}
         </p>
         <a-button type='success' class='mb-1' @click="$router.push(localePath('/new-emr'))">

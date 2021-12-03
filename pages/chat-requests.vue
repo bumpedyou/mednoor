@@ -1,7 +1,7 @@
 <template>
   <a-row class="pa-1 mh-100v">
     <a-col>
-      <p class='h1'>
+      <p class='h4 mb-1'>
         {{$t('chat_requests')}}
       </p>
       <a-table :columns='columns' :data-source='items'>
