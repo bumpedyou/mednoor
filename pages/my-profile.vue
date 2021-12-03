@@ -98,7 +98,7 @@
                 </a-col>
               </a-row>
               <a-form-item>
-                <div class="pull-child-right">
+                <div class="pull-child-left">
                   <a-button type="primary" html-type="submit">
                     <SpinOrText v-model="loading">
                       {{$t('save_changes')}}
