@@ -1,7 +1,14 @@
 <template>
 <div class="directory mh-100v mt-1">
-  <div class="filters pa-1">
-    <p class="h4 mb-1">Filters</p>
+  <div v-show='isFilterOpened' class="filters pa-1">
+    <div class='d-flex'>
+      <div>
+        <p class="h4 mb-1">Filters</p>
+      </div>
+      <div class='ml-auto'>
+        <a-icon type='close' class='clickable red--text' @click='isFilterOpened = false'></a-icon>
+      </div>
+    </div>
     <hr>
     <p class="filter-name">
       Category
@@ -24,6 +31,13 @@
     -->
   </div>
   <div class="content pa-1">
+    <a-row>
+      <a-col>
+        <div class="pull-child-right mb-1">
+          <span class='clickable primary--text' @click='isFilterOpened = true'>Filters <a-icon type="filter" /></span>
+        </div>
+      </a-col>
+    </a-row>
     <a-row>
       <a-col>
         <a-form-item>
@@ -82,6 +96,7 @@ export default {
     searched: false,
     loadingResults: false,
     selectedCategories: [],
+    isFilterOpened: false,
   }),
   mounted(){
     this.$api.get('/category').then(({data})=>{
@@ -131,7 +146,15 @@ export default {
 .directory
   background: #eee
   .filters
-    display: none
+    position: fixed
+    top: 0
+    left: 0
+    right: 0
+    bottom: 0
+    overflow-y: scroll
+    z-index: 230
+    background-color: #fff
+    padding: 2rem
   .content
     width: 100%
     background: #fff
@@ -159,12 +182,6 @@ export default {
   .directory
     display: flex
     padding: 1rem
-    .filters
-      display: block
-      width: 300px
-      border: 1px solid #eee
-      background-color: #fff
-      margin-right: 0.6rem
 
 
 </style>
