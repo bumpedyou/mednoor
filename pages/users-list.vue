@@ -1,6 +1,6 @@
 <template>
-  <div class="pa-1">
-    <a-row class="mb-1">
+  <div class='pa-1'>
+    <a-row class='mb-1'>
       <a-col>
         <a-breadcrumb>
           <a-breadcrumb-item>
@@ -12,65 +12,76 @@
     </a-row>
     <a-row class='pa-1'>
       <a-col>
-        <p class='h4 text-capitalize'>{{ view }} {{ $t('list') }}</p>
-        <div class="mb-1">
-          <a-button type="aero-blue" @click='addUser'>{{ $t('add_urs') }}
-            <a-icon type="user-add"></a-icon>
+        <p class='h4 mb-1 text-capitalize'>{{ view }} {{ $t('list') }}</p>
+        <div class='mb-1'>
+          <a-button type='aero-blue' @click='addUser'>{{ $t('add_urs') }}
+            <a-icon type='user-add'></a-icon>
           </a-button>
         </div>
-        <a-skeleton v-if='loading'/>
-        <a-table v-else :columns='columns' :data-source='users'>
+
+        <a-input-search v-model='search' placeholder='Filter by name/last name' class='mb-1'></a-input-search>
+
+        <a-skeleton v-if='loading' />
+        <a-table v-else :columns='columns' :data-source='filteredUsers'>
           <div slot='name' slot-scope='text, record'>
             <nuxt-link :to="localePath('/user/' + record.user_uuid)">
               {{ record.user_first_name }} {{ record.user_last_name }}
             </nuxt-link>
           </div>
 
-          <div slot='user_date_of_birth' slot-scope="text, record">
+          <div slot='user_date_of_birth' slot-scope='text, record'>
             <span v-if='record && record.user_date_of_birth'>
-              {{dateString(record.user_date_of_birth)}}
+              {{ dateString(record.user_date_of_birth) }}
             </span>
           </div>
 
           <div slot='user_phone_no' slot-scope='text, record'>
             <span v-if='record && record.user_country_code'>
-              +{{record.user_country_code}} {{record.user_phone_no}}
+              +{{ record.user_country_code }} {{ record.user_phone_no }}
             </span>
           </div>
 
           <div slot='action' slot-scope='text, record'>
-                <span v-if='isAdmin || isSuper'>
-                  <!--
-                  <a v-if="record.usro_key === 'USER'" @click='updateToProfessional(record.user_uuid)'>{{ $t('updt_prof') }}</a>
-                  <a v-if="record.usro_key === 'MODERATOR'" @click='downgradeProfessional(record.user_uuid)'>{{ $t('rem_prof') }}</a>
-                  <a-divider type='vertical'/>
-                  -->
-                  <a v-if='record.user_blocked' @click='unblock(record.user_uuid)'>
-                    {{ $t('unblock') }}
-                  </a>
-                  <a v-else @click='block(record.user_uuid)'>
-                    {{ $t('block') }}
-                  </a>
-                  <a-divider type='vertical'/>
-                  <a v-if='(Boolean(record.user_deleted)) === false' @click='deleteUser(record.user_uuid)'>{{ $t('delete') }}</a>
+            <div v-if='isAdmin || isSuper'>
+              <!--
+              <a v-if="record.usro_key === 'USER'" @click='updateToProfessional(record.user_uuid)'>{{ $t('updt_prof') }}</a>
+              <a v-if="record.usro_key === 'MODERATOR'" @click='downgradeProfessional(record.user_uuid)'>{{ $t('rem_prof') }}</a>
+              <a-divider type='vertical'/>
+              -->
+              <a v-if='record.user_blocked' @click='unblock(record.user_uuid)'>
+                {{ $t('unblock') }}
+              </a>
+              <a v-else @click='block(record.user_uuid)'>
+                {{ $t('block') }}
+              </a>
+              <a-divider type='vertical' />
+              <a v-if='(Boolean(record.user_deleted)) === false' @click='deleteUser(record.user_uuid)'>{{ $t('delete')
+                }}</a>
 
-                </span>
-            <div v-else-if="isModerator">
-                  <a v-if='record.user_blocked' @click='unblock(record.user_uuid)'>
-                    {{ $t('unblock') }}
-                  </a>
-                  <a v-else @click='block(record.user_uuid)'>
-                    {{ $t('block') }}
-                  </a>
-                  <a-divider type='vertical'/>
-                  <a v-if='(Boolean(record.user_deleted)) === false' @click='deleteUser(record.user_uuid)'>{{ $t('delete') }}</a>
-                </div>
+            </div>
+            <div v-else-if='isModerator'>
+              <a v-if='record.user_blocked' @click='unblock(record.user_uuid)'>
+                {{ $t('unblock') }}
+              </a>
+              <a v-else @click='block(record.user_uuid)'>
+                {{ $t('block') }}
+              </a>
+              <a-divider type='vertical' />
+              <a v-if='(Boolean(record.user_deleted)) === false' @click='deleteUser(record.user_uuid)'>{{ $t('delete')
+                }}</a>
+            </div>
           </div>
+
+          <div slot='checkbox' slot-scope='text, record'>
+            <a-checkbox :checked='record.usro_key === "MODERATOR"' @change='changePro(record)'>PRO</a-checkbox>
+          </div>
+
         </a-table>
       </a-col>
     </a-row>
     <RequestModal ref='rmodal'></RequestModal>
-    <a-modal v-model='visible' :title="$t('conf_action')" ok-text='Ok' :confirm-loading='loadingModal' :cancel-text="$t('cancel')"
+    <a-modal v-model='visible' :title="$t('conf_action')" ok-text='Ok' :confirm-loading='loadingModal'
+             :cancel-text="$t('cancel')"
              @ok='confirmAction'>
       <p v-if="action === 'delete'">
         {{ $t('del_el') }}
@@ -85,7 +96,7 @@
 <script>
 import RequestModal from '~/components/RequestModal'
 import userRoleMixin from '~/mixins/userRoleMixin'
-import dateMixin from "~/mixins/dateMixin";
+import dateMixin from '~/mixins/dateMixin'
 
 export default {
   name: 'UsersList',
@@ -100,47 +111,54 @@ export default {
       users: [],
       columns: [
         {
+          title: 'MRN',
+          dataIndex: 'mrn',
+          key: 'mrn',
+          slots: { title: 'MRN' },
+          scopedSlots: { customRender: 'mrn' }
+        },
+        {
           title: 'First Name',
           dataIndex: 'user_first_name',
           key: this.$t('name'),
-          slots: {title: this.$t('name')},
-          scopedSlots: {customRender: 'first_name'}
+          slots: { title: this.$t('name') },
+          scopedSlots: { customRender: 'first_name' }
         },
         {
           title: 'Last Name',
           dataIndex: 'user_last_name',
           key: 'user_last_name',
-          slots: {title: this.$t('name')},
-          scopedSlots: {customRender: 'first_name'}
+          slots: { title: this.$t('name') },
+          scopedSlots: { customRender: 'first_name' }
         },
         {
           title: 'Email',
           dataIndex: 'user_email',
           key: 'Email',
-          slots: {title: 'Email'},
-          scopedSlots: {customRender: 'email'}
+          slots: { title: 'Email' },
+          scopedSlots: { customRender: 'email' }
         },
         {
           title: 'DOB',
           dataIndex: 'user_date_of_birth',
           key: 'user_date_of_birth',
-          scopedSlots: {customRender: 'user_date_of_birth'}
+          scopedSlots: { customRender: 'user_date_of_birth' }
         },
         {
           title: 'Phone No.',
           dataIndex: 'user_phone_no',
           key: 'user_phone_no',
-          scopedSlots: {customRender: 'user_phone_no'}
-        },
-        {
-          title: this.$t('role'),
-          dataIndex: 'usro_role',
-          key: 'role'
+          scopedSlots: { customRender: 'user_phone_no' }
         },
         {
           title: this.$t('action'),
           key: 'action',
-          scopedSlots: {customRender: 'action'}
+          scopedSlots: { customRender: 'action' }
+        },
+        {
+          title: 'PRO',
+          key: 'checkbox',
+          scopedSlots: { customRender: 'checkbox' }
         }
       ],
       visible: false,
@@ -148,15 +166,31 @@ export default {
       loading: true,
       loadingModal: false,
       uuid: null,
-      view: 'users'
+      view: 'users',
+      search: '',
     }
   },
   head() {
     return {
-      title: this.$t('list_usrs'),
+      title: this.$t('list_usrs')
     }
   },
   computed: {
+    filteredUsers() {
+      if (this.search){
+        return this.users.filter((r)=>{
+          console.log(r)
+          const fn = r.user_first_name.toLowerCase()
+          const ln = r.user_last_name.toLowerCase()
+          const fullName = [fn, ln].join(" ")
+          const email = r.user_email.toLowerCase()
+          const search = this.search.toLowerCase()
+          return  fn.includes(search) || ln.includes(search) || email.includes(search) || fullName.includes(search)
+        })
+      }else{
+        return this.users
+      }
+    },
     query() {
       return this.$route.query
     }
@@ -172,6 +206,16 @@ export default {
     this.loadItems()
   },
   methods: {
+    changePro(r){
+      console.log('Update to pro. (?)', r)
+      const key = r.usro_key
+      if (key === 'MODERATOR'){
+        this.action = 'update-to-user'
+      }else{
+        this.action = 'update-to-professional'
+      }
+      this.askConfirmation(r.user_uuid)
+    },
     addUser() {
       this.$router.push(this.localePath('/add-user'))
     },
@@ -181,7 +225,7 @@ export default {
         params: {
           view: this.view
         }
-      }).then(({data}) => {
+      }).then(({ data }) => {
         this.users = data
       }).catch(err => {
         this.$refs.rmodal.$emit('error', err)
@@ -235,7 +279,7 @@ export default {
         this.loadingModal = true
         this.$api.put('/user/role/' + this.uuid, {
           key: this.action === 'update-to-professional' ? 'MODERATOR' : 'USER'
-        }).then(({data}) => {
+        }).then(({ data }) => {
           this.users = this.users.map((usr) => {
             if (usr.user_uuid === this.uuid) {
               usr.usro_id = data.usro_id
