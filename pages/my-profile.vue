@@ -122,7 +122,7 @@
             </a-form-item>
           </a-tab-pane>
           <a-tab-pane v-if="isModerator" key="3" tab="Professional Information" force-render>
-            <a-form :form="profForm">
+            <a-form :form="profForm" @submit.prevent='saveProfessional'>
               <a-form-item>
                 <a-auto-complete v-model="category" :data-source="categories" placeholder="Enter a category">
                 </a-auto-complete>
@@ -135,11 +135,15 @@
                     {min: 10, message: $t('v.min_10')},
                     {max: 10, message: $t('v.max_10')},
                   ]
-                }]" placeholder="NPI" :max-length="10" disabled></a-input>
+                }]" placeholder="NPI" :max-length="10"></a-input>
                 </a-form-item>
               </a-form-item>
               <a-form-item>
-                <a-button type="primary">Save</a-button>
+                <a-button type="primary" html-type='submit'>
+                  <SpinOrText v-model='loadingSaveP'>
+                    {{$t('save_changes')}}
+                  </SpinOrText>
+                </a-button>
               </a-form-item>
             </a-form>
           </a-tab-pane>
@@ -179,6 +183,7 @@ export default {
       categories: [],
       country_code: '',
       phone_no: '',
+      loadingSaveP: false,
     }
   },
   head() {
@@ -213,15 +218,9 @@ export default {
           v = this.prependCharacter(v, '+')
         }
 
-        console.log(v)
-
         for(let i = 0; i<v.length; i++){
           const char = v.charAt(i)
-
-          console.log(`char[${i}] = ${char}`)
-
           if (this.allowed.includes(char) || char === '+' && i === 0){
-            console.log('+=' + char)
             str+= char.toString()
           }
         }
@@ -257,7 +256,6 @@ export default {
             }
           })
           this.$api.get('/professional/my-record').then(({data})=>{
-            console.log('----->', data)
             if (data){
               this.category = data.profe_cate_id.toString()
               this.profForm.setFieldsValue({
@@ -303,7 +301,31 @@ export default {
             })
         }
       })
-    }
+    },
+    saveProfessional(e){
+      e.preventDefault()
+      this.profForm.validateFields((err, values) => {
+        if (err) {
+          console.log(err)
+          return false
+        }
+
+        if (!this.category){
+          this.$toast.error('Please select a category.')
+          return false
+        }
+
+        this.loadingSaveP = true
+        values.category = this.category
+        this.$api.put('/professional', values).then(()=>{
+          this.$toast.success(this.$t('updated_suc').toString());
+        }).catch((e)=>{
+          this.$refs.rmodal.$emit('error', e)
+        }).finally(() => {
+          this.loadingSaveP = false
+        })
+      })
+    },
   }
 }
 </script>
