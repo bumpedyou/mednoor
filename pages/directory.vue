@@ -105,7 +105,6 @@ export default {
       this.search()
     },
     search(){
-      console.log('search', this.term);
       this.loadingResults = true
       this.$api.get('/user/search', {
         params: {
