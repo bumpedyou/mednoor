@@ -1,7 +1,7 @@
-export default function ({ $auth, redirect }) {
+export default function ({ $auth, redirect, localePath }) {
   const role = $auth.user.role.toLowerCase()
 
   if (role !== 'admin' && role !== 'moderator' && role !== 'super') {
-    return redirect('/unauthorized')
+    return redirect(localePath('/unauthorized'))
   }
 }

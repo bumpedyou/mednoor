@@ -10,10 +10,10 @@
     <a-row>
         <a-col  :xs="24" :sm="24" >
           <div class="card-deck">
-            <a-card v-for="(o, i) in dashboardItems" :key="'dashboard-' + i" :title="o.cardTitle"  style="height: 100%; flex: 1;" :class="'card-' + o.type + ' mb-2'" @click="$router.push(localePath(o.to))">
+            <a-card v-for="(o, i) in dashboardItems" :key="'dashboard-' + i"   style="height: 100%; flex: 1;" :class="'card-' + o.type + ' mb-2'" @click="$router.push(localePath(o.to))">
               <a-button :type="o.type">
                 <a-icon :type="o.icon"></a-icon>
-                {{o.btnText}}
+                {{o.cardTitle}}
               </a-button>
             </a-card>
           </div>

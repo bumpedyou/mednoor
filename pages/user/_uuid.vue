@@ -32,9 +32,19 @@
           </span>
           </p>
           <p>
-            <b>Phone Number:</b> <span v-if='user && user.user_country_code'>
+            <b>Phone Number:</b>
+            <span v-if='user && user.user_country_code'>
             +{{user.user_country_code}} {{user.user_phone_no}}
-          </span>
+            </span>
+            <span v-else>
+              No phone number was provided.
+            </span>
+          </p>
+          <p>
+            <b>Email:</b>
+            <span v-if='user && user.user_email'>
+              {{user.user_email}}
+            </span>
           </p>
         </a-col>
       </a-row>

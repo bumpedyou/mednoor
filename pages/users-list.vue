@@ -43,11 +43,6 @@
 
           <div slot='action' slot-scope='text, record'>
             <div v-if='isAdmin || isSuper'>
-              <!--
-              <a v-if="record.usro_key === 'USER'" @click='updateToProfessional(record.user_uuid)'>{{ $t('updt_prof') }}</a>
-              <a v-if="record.usro_key === 'MODERATOR'" @click='downgradeProfessional(record.user_uuid)'>{{ $t('rem_prof') }}</a>
-              <a-divider type='vertical'/>
-              -->
               <a v-if='record.user_blocked' @click='unblock(record.user_uuid)'>
                 {{ $t('unblock') }}
               </a>
@@ -59,7 +54,8 @@
                 }}</a>
 
             </div>
-            <div v-else-if='isModerator'>
+            <!--
+            <div v-else-if=''>
               <a v-if='record.user_blocked' @click='unblock(record.user_uuid)'>
                 {{ $t('unblock') }}
               </a>
@@ -70,12 +66,12 @@
               <a v-if='(Boolean(record.user_deleted)) === false' @click='deleteUser(record.user_uuid)'>{{ $t('delete')
                 }}</a>
             </div>
+            <div></div>
+            -->
           </div>
-
           <div slot='checkbox' slot-scope='text, record'>
             <a-checkbox :checked='record.usro_key === "MODERATOR"' @change='changePro(record)'>PRO</a-checkbox>
           </div>
-
         </a-table>
       </a-col>
     </a-row>
@@ -154,11 +150,6 @@ export default {
           title: this.$t('action'),
           key: 'action',
           scopedSlots: { customRender: 'action' }
-        },
-        {
-          title: 'PRO',
-          key: 'checkbox',
-          scopedSlots: { customRender: 'checkbox' }
         }
       ],
       visible: false,
@@ -167,7 +158,7 @@ export default {
       loadingModal: false,
       uuid: null,
       view: 'users',
-      search: '',
+      search: ''
     }
   },
   head() {
@@ -177,17 +168,17 @@ export default {
   },
   computed: {
     filteredUsers() {
-      if (this.search){
-        return this.users.filter((r)=>{
+      if (this.search) {
+        return this.users.filter((r) => {
           console.log(r)
           const fn = r.user_first_name.toLowerCase()
           const ln = r.user_last_name.toLowerCase()
-          const fullName = [fn, ln].join(" ")
+          const fullName = [fn, ln].join(' ')
           const email = r.user_email.toLowerCase()
           const search = this.search.toLowerCase()
-          return  fn.includes(search) || ln.includes(search) || email.includes(search) || fullName.includes(search)
+          return fn.includes(search) || ln.includes(search) || email.includes(search) || fullName.includes(search)
         })
-      }else{
+      } else {
         return this.users
       }
     },
@@ -204,14 +195,21 @@ export default {
   mounted() {
     this.setView()
     this.loadItems()
+    if (this.isAdmin || this.isSuper) {
+      this.columns.push({
+        title: 'PRO',
+        key: 'checkbox',
+        scopedSlots: { customRender: 'checkbox' }
+      })
+    }
   },
   methods: {
-    changePro(r){
+    changePro(r) {
       console.log('Update to pro. (?)', r)
       const key = r.usro_key
-      if (key === 'MODERATOR'){
+      if (key === 'MODERATOR') {
         this.action = 'update-to-user'
-      }else{
+      } else {
         this.action = 'update-to-professional'
       }
       this.askConfirmation(r.user_uuid)
@@ -262,57 +260,59 @@ export default {
       this.action = 'update-to-user'
     },
     confirmAction() {
-      this.loadingModal = true
-      if (this.action === 'delete') {
-        this.$api.delete('/user/' + this.uuid).then(() => {
-          this.users = this.users.filter((user) => {
-            return user.user_uuid !== this.uuid
-          })
-          this.uuid = null
-        }).catch((err) => {
-          this.$refs.rmodal.$emit('error', err)
-        }).finally(() => {
-          this.visible = false
-          this.loadingModal = false
-        })
-      } else if (this.action === 'update-to-professional' || this.action === 'update-to-user') {
+      if (this.isAdmin || this.isSuper) {
         this.loadingModal = true
-        this.$api.put('/user/role/' + this.uuid, {
-          key: this.action === 'update-to-professional' ? 'MODERATOR' : 'USER'
-        }).then(({ data }) => {
-          this.users = this.users.map((usr) => {
-            if (usr.user_uuid === this.uuid) {
-              usr.usro_id = data.usro_id
-              usr.usro_key = data.usro_key
-              usr.usro_role = data.usro_role
-            }
-            return usr
+        if (this.action === 'delete') {
+          this.$api.delete('/user/' + this.uuid).then(() => {
+            this.users = this.users.filter((user) => {
+              return user.user_uuid !== this.uuid
+            })
+            this.uuid = null
+          }).catch((err) => {
+            this.$refs.rmodal.$emit('error', err)
+          }).finally(() => {
+            this.visible = false
+            this.loadingModal = false
           })
-        }).catch((err) => {
-          this.$refs.rmodal.$emit('error', err)
-        }).finally(() => {
-          this.visible = false
-          this.loadingModal = false
-        })
-      } else if (this.action === 'block' || this.action === 'unblock') {
-        this.loadingModal = true
-        const blocked = this.action === 'block'
-        this.$api.put('/user/blocked/' + this.uuid, {
-          blocked
-        }).then(() => {
-          this.users = this.users.map((user) => {
-            if (user.user_uuid === this.uuid) {
-              user.user_blocked = blocked
-            }
-            return user
+        } else if (this.action === 'update-to-professional' || this.action === 'update-to-user') {
+          this.loadingModal = true
+          this.$api.put('/user/role/' + this.uuid, {
+            key: this.action === 'update-to-professional' ? 'MODERATOR' : 'USER'
+          }).then(({ data }) => {
+            this.users = this.users.map((usr) => {
+              if (usr.user_uuid === this.uuid) {
+                usr.usro_id = data.usro_id
+                usr.usro_key = data.usro_key
+                usr.usro_role = data.usro_role
+              }
+              return usr
+            })
+          }).catch((err) => {
+            this.$refs.rmodal.$emit('error', err)
+          }).finally(() => {
+            this.visible = false
+            this.loadingModal = false
           })
-        }).catch((err) => {
-          this.$refs.rmodal.$emit('error', err)
-        }).finally(() => {
-          this.loadingModal = false
-          this.visible = false
-          this.uuid = null
-        })
+        } else if (this.action === 'block' || this.action === 'unblock') {
+          this.loadingModal = true
+          const blocked = this.action === 'block'
+          this.$api.put('/user/blocked/' + this.uuid, {
+            blocked
+          }).then(() => {
+            this.users = this.users.map((user) => {
+              if (user.user_uuid === this.uuid) {
+                user.user_blocked = blocked
+              }
+              return user
+            })
+          }).catch((err) => {
+            this.$refs.rmodal.$emit('error', err)
+          }).finally(() => {
+            this.loadingModal = false
+            this.visible = false
+            this.uuid = null
+          })
+        }
       }
     },
     updateToProfessional(uuid) {

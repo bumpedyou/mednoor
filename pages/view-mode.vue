@@ -2,7 +2,7 @@
   <div class="pa-1 mh-100v">
     <a-row>
       <a-col :xs="24">
-        <p class="h1 mb-1">
+        <p class="h4 mb-1">
           What do you want to do?
         </p>
       </a-col>
@@ -16,8 +16,8 @@
             </a-button>
           </a-card>
           <a-card title="Professional" class="card-primary">
-            <a-button type="primary" @click="$router.push(localePath('/join-professionals'))">
-              Join the professional's directory.
+            <a-button type="primary" @click="$router.push(localePath('/pin'))">
+              Professional.
             </a-button>
           </a-card>
         </div>
@@ -34,7 +34,8 @@ export default {
     this.$api.get('/professional/my-record').then(({data})=> {
       if (data && data.profe_uuid) {
         if (data.profe_accepted){
-          this.$router.push(this.localePath('/'))
+          this.$router.push(this.localePath('/pin'))
+          // this.$router.push(this.localePath('/'))
         }else{
           this.$router.push(this.localePath('/thanks-for-applying'))
         }

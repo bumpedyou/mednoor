@@ -111,7 +111,7 @@ export default {
             to: '/users-list'
           })
         }
-        if (this.isModerator || this.isAdmin || this.isSuper) {
+        if (this.isAdmin || this.isSuper) {
           items.push({
             text: this.$t('professionals_list'),
             icon: 'tie',

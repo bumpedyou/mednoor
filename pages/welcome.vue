@@ -13,8 +13,11 @@ export default {
       if (role === 'admin' || role === 'super'){
         return redirect(localePath('/dashboard'))
       }else if (role === 'moderator'){
-        return redirect(localePath('/dashboard'))
+        console.log('Redirect to view-mode')
+        return redirect(localePath('/view-mode'))
+        // return redirect(localePath('/dashboard')) // We have to give time to enter the pin
       }else if (role === 'user'){
+        console.log('Redirect to view-mode')
         return redirect(localePath('/view-mode'))
       }else{
         return redirect(localePath('/'))

@@ -1,5 +1,5 @@
-export default function ({ $auth, redirect }) {
+export default function ({ $auth, redirect, localePath }) {
   if ($auth.user && !$auth.user.deleted) {
-    return redirect('/welcome')
+    return redirect(localePath('/welcome'))
   }
 }

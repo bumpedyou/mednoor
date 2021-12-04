@@ -50,6 +50,14 @@ export default {
           icon: 'medicine-box',
           type: 'aero-blue',
         })
+        i.push({
+          shortTitle: 'Chat requests',
+          cardTitle: 'Chat requests',
+          to: '/chat-requests',
+          btnText: 'Chat requests',
+          icon: 'chat',
+          type: 'raisin-black',
+        })
       }
       if (this.isAdminOrSuper) {
         i.push(

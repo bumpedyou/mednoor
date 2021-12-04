@@ -1,5 +1,5 @@
-export default function ({ $auth, redirect }) {
+export default function ({ $auth, redirect,localePath }) {
   if (!$auth.loggedIn) {
-    return redirect('/sign-in')
+    return redirect(localePath('/sign-in'))
   }
 }

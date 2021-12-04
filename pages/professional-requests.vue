@@ -92,6 +92,7 @@ export default {
   mounted() {
     this.run_once(this.listen)
     this.loadData()
+    console.log('Mounted!!')
   },
   methods: {
     loadData(){
@@ -113,10 +114,13 @@ export default {
     handleOk(){
       this.confirmLoading = true
       this.$api.post('/professional/accept/' + this.uuid).then(()=>{
+        console.log('Accepted')
         this.data = this.data.filter((it)=>{
           return it.profe_uuid !== this.uuid
         })
       }).catch((err)=>{
+        console.log('Not accepted')
+        console.log(err)
         this.$toast.error(err)
       }).finally(()=>{
         this.visible = false
@@ -129,6 +133,7 @@ export default {
     askAllow(uuid){
       this.uuid = uuid
       this.visible = true
+      console.log('Ask allow')
     }
   }
 }

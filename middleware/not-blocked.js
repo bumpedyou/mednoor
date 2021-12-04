@@ -1,5 +1,5 @@
-export default function ({ $auth, redirect }) {
+export default function ({ $auth, redirect, localePath }) {
   if ($auth.user && $auth.user.blocked) {
-    return redirect('/blocked')
+    return redirect(localePath('/blocked'))
   }
 }

@@ -1,13 +1,13 @@
 <template>
   <div class="pa-1 mh-100v">
-    <a-row>
+    <a-row v-if='loading'>
+      <a-skeleton></a-skeleton>
+    </a-row>
+    <a-row v-else>
       <a-col>
-        <h1>Do you want to be a provider?</h1>
+        <p class='h4 mb-1'>You do not have a PIN</p>
       </a-col>
-      <a-col v-if="loading">
-        <a-skeleton></a-skeleton>
-      </a-col>
-      <a-col v-else-if="error">
+      <a-col v-if="error">
         <p class="h1">
           Error while loading the data.
         </p>
@@ -17,13 +17,14 @@
       </a-col>
       <a-col v-else>
         <a-form :form="form" @submit.prevent="handleSubmit">
-          <a-row>
-            <a-col :xs="24" :sm="24" :md="12">
-              <a-form-item>
-                <a-auto-complete v-model="category" :data-source="categories" placeholder="Enter a category">
-                </a-auto-complete>
-              </a-form-item>
+          <a-row class='mb-1'>
+            <a-col>
+              <a-checkbox v-model='checked'>
+                I would like to be a new provider at Mednoor.
+              </a-checkbox>
             </a-col>
+          </a-row>
+          <a-row>
             <a-col :xs="24" :sm="24" :md="12">
               <a-form-item>
                 <a-input v-decorator="['npi', {
@@ -32,7 +33,13 @@
                     {min: 10, message: $t('v.min_10')},
                     {max: 10, message: $t('v.max_10')},
                   ]
-                }]" placeholder="NPI" :max-length="10"></a-input>
+                }]" placeholder="My NPI" :max-length="10"></a-input>
+              </a-form-item>
+            </a-col>
+            <a-col :xs="24" :sm="24" :md="12">
+              <a-form-item>
+                <a-auto-complete v-model="category" :data-source="categories" placeholder="Enter a category">
+                </a-auto-complete>
               </a-form-item>
             </a-col>
           </a-row>
@@ -65,6 +72,7 @@ export default {
       loadingSubmit: false,
       loading: true,
       error: false,
+      checked: false,
     }
   },
   mounted() {
@@ -108,6 +116,11 @@ export default {
 
         if (isNaN(npi)){
           this.$toast.error('NPI must contain numbers only.')
+          return 0
+        }
+
+        if (!this.checked){
+          this.$toast.error('Please check the checkbox.')
           return 0
         }
 
