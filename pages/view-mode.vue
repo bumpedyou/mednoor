@@ -1,26 +1,30 @@
 <template>
   <div class="pa-1 mh-100v">
-    <a-row>
-      <a-col :xs="24">
-        <p class="h4 mb-1">
-          What do you want to do?
-        </p>
+    <a-row class='mb-1'>
+      <a-col>
+        <div class="flex-center">
+          <img alt='Mednoor Logo' :src='require("~/static/logo.jpg")'>
+        </div>
       </a-col>
     </a-row>
-    <a-row>
-      <a-col xs:="24">
-        <div class="card-deck">
-          <a-card title="Patient" class="card-success">
-            <a-button type="success" @click="$router.push(localePath('/professionals'))">
-              Talk to a professional
-            </a-button>
-          </a-card>
-          <a-card title="Professional" class="card-primary">
-            <a-button type="primary" @click="$router.push(localePath('/pin'))">
-              Professional.
-            </a-button>
-          </a-card>
-        </div>
+    <a-row :gutter="16">
+      <a-col xs:="24" :sm='{span: 12}'>
+        <a-card class="bg-gradient-sun clickable" @click="$router.push(localePath('/professionals'))">
+          <div class='flex-center mh-50v'>
+            <p class="h3">
+              I'm a patient
+            </p>
+          </div>
+        </a-card>
+      </a-col>
+      <a-col xs:="24" :sm='{span: 12}'>
+        <a-card class="bg-gradient-blue clickable" @click="$router.push(localePath('/pin'))">
+          <div class='flex-center mh-50v' >
+            <p class="h3">
+              I'm a professional
+            </p>
+          </div>
+        </a-card>
       </a-col>
     </a-row>
   </div>
@@ -30,18 +34,6 @@
 export default {
   name: "ViewMode",
   middleware: ['authenticated', 'verified', 'not-blocked', 'not-deleted'],
-  mounted() {
-    this.$api.get('/professional/my-record').then(({data})=> {
-      if (data && data.profe_uuid) {
-        if (data.profe_accepted){
-          this.$router.push(this.localePath('/pin'))
-          // this.$router.push(this.localePath('/'))
-        }else{
-          this.$router.push(this.localePath('/thanks-for-applying'))
-        }
-      }
-    })
-  }
 }
 </script>
 

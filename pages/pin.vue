@@ -10,10 +10,9 @@
       <p class='h4 mb-1'>
         PIN
       </p>
-      <a-form-item>
+      <a-form-item label='PIN'>
         <PincodeInput v-model='pin' placeholder="0" :length="6"></PincodeInput>
       </a-form-item>
-
       <small class="d-flex mb-1">
         <nuxt-link :to='localePath("/forgot-pin")'>Forgot My PIN</nuxt-link> <a-divider type='vertical'></a-divider> <nuxt-link :to='localePath("/generate-new-pin")'>Generate a new PIN</nuxt-link>
       </small>
@@ -56,14 +55,10 @@ export default {
     }
   },
   mounted() {
-    console.log('[PIN] Mounted')
     this.$api.get('/professional/my-record').then(({data}) =>{
-      console.log('------------------>', data, data.profe_uuid)
       if (data && data.profe_uuid){
-        console.log('Has record')
         this.has_record = true
       }else{
-        console.log('Does not have a record. Redirect')
         this.$router.push(this.localePath('/join-professionals'))
       }
     }).catch((err) =>{
@@ -78,7 +73,6 @@ export default {
         this.$toast.error('The pin code must contain 6 digits.')
         return false
       }
-
       this.loading = true
       this.$api.post('/professional/verify-pin', {
         pin: this.pin,
@@ -89,6 +83,7 @@ export default {
           }else if (data.success){
             // Store the PIN
             this.$toast.success('Entering...')
+            this.$router.push(this.localePath('/dashboard'))
           }else{
             this.$toast.error('Incorrect pin')
           }
