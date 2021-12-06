@@ -11,7 +11,7 @@
       </div>
       <div>
         <a-tabs default-active-key="1">
-          <a-tab-pane key="1" tab="Personal Informatino">
+          <a-tab-pane key="1" tab="Personal Information">
             <a-form layout='vertical'  :form="form" size="small" @submit="handleSubmit">
               <a-form-item
                 v-model="first_name"
@@ -120,7 +120,7 @@
               </div>
             </a-form-item>
             <hr>
-            <a-form-item>
+            <a-form-item v-if="isModerator">
               <p class="h4">
                 PIN
               </p>

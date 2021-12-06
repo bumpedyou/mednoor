@@ -1,39 +1,44 @@
 <template>
   <div class="pa-1 mh-100v">
-    <a-row class='mb-1'>
+    <a-row>
       <a-col>
         <div class="flex-center">
           <img alt='Mednoor Logo' :src='require("~/static/logo.jpg")'>
         </div>
+        <p class='primary--text text-center'>
+          Medical Center
+        </p>
       </a-col>
     </a-row>
-    <a-row :gutter="24">
-      <a-col xs:="24" :sm='{span: 12}'>
-        <div class='flex-center mh-50v w-100'>
-          <a-card class="bg-gradient-sun clickable" style='width: 300px;max-width: 100% !important' @click="$router.push(localePath('/professionals'))">
-            <div class='flex-center'>
-              <p class="h3 pa-1 text-center">
-                <span class='text-muted-dark'>I am a</span><br>
-                <span style='font-weight: bold'>Patient</span>
-              </p>
+    <div class='pa-1'>
+      <a-row>
+        <a-col xs:="24" :sm='{span: 12}' :md='{span: 5, offset: 7}' :lg='{span: 3, offset: 9}'>
+          <div class='flex-center mh-300p w-100'>
+            <div class="bg-gradient-sun clickable pa-05" style='width: 183px;max-width: 100% !important' @click="$router.push(localePath('/professionals'))">
+              <div class='flex-center'>
+                <p class="h3 text-center">
+                  <small class='text-muted-dark'>I am a</small><br>
+                  <span style='font-weight: bold; color: #ffffff' class='h4'>Patient</span>
+                </p>
+              </div>
             </div>
-          </a-card>
-        </div>
-      </a-col>
-      <a-col xs:="24" :sm='{span: 12}'>
-        <div class='flex-center mh-50v w-100'>
-          <a-card class="bg-gradient-blue clickable" style='width: 300px;max-width: 100% !important' @click="$router.push(localePath('/pin'))">
-            <div class='flex-center' >
-              <p class="h3 pa-1 text-center">
-                <span class='text-muted-dark'>
+          </div>
+        </a-col>
+        <a-col xs:="24" :sm='{span: 12}' :md='{span: 5}' :lg='{span: 3}'>
+          <div class='flex-center mh-300p w-100'>
+            <div class="bg-gradient-blue clickable pa-05" style='width: 183px;max-width: 100% !important' @click="$router.push(localePath('/pin'))">
+              <div class='flex-center' >
+                <p class="h3 text-center">
+                <small class='text-muted-dark'>
                   I am a
-                </span><br><span style='font-weight: bold'>Professional</span>
-              </p>
+                </small><br><span class='h4' style='font-weight: bold; color: #fff !important' >Professional</span>
+                </p>
+              </div>
             </div>
-          </a-card>
-        </div>
-      </a-col>
-    </a-row>
+          </div>
+        </a-col>
+      </a-row>
+    </div>
   </div>
 </template>
 
