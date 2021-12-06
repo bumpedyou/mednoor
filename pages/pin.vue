@@ -14,7 +14,7 @@
         <PincodeInput v-model='pin' placeholder="0" :length="6"></PincodeInput>
       </a-form-item>
       <small class="d-flex mb-1">
-        <nuxt-link :to='localePath("/forgot-pin")'>Forgot My PIN</nuxt-link> <a-divider type='vertical'></a-divider> <nuxt-link :to='localePath("/generate-new-pin")'>Generate a new PIN</nuxt-link>
+        <nuxt-link :to='localePath("/forgot-pin")'>Forgot My PIN</nuxt-link>
       </small>
       <a-button type='primary' @click='enter'>
         <SpinOrText v-model='loading'>
@@ -28,10 +28,10 @@
 </template>
 
 <script>
+import {mapMutations} from 'vuex'
 import inputMixin from '~/mixins/inputMixin'
 import SpinOrText from '~/components/SpinOrText'
 import RequestModal from '~/components/RequestModal'
-
 export default {
   name: 'Pin',
   components: {
@@ -49,12 +49,19 @@ export default {
       hasRecord: false,
     }
   },
+  computed: {
+    ...mapMutations({
+      setPin: 'pin/setPIN',
+      setValid: 'pin/setValid'
+    })
+  },
   watch: {
     pin(v){
       this.pin = this.numbersOnly(v)
     }
   },
   mounted() {
+
     this.$api.get('/professional/my-record').then(({data}) =>{
       if (data && data.profe_uuid){
         this.has_record = true
@@ -82,8 +89,15 @@ export default {
             this.$toast.error('Please wait until a professional reviews your profile.')
           }else if (data.success){
             // Store the PIN
-            this.$toast.success('Entering...')
-            this.$router.push(this.localePath('/dashboard'))
+            this.$store.commit('pin/setPIN', this.pin)
+            this.$store.commit('pin/setValid', true)
+            const q = this.$route.query
+            console.log('The query is', q)
+            if (q && q.callback){
+              this.$router.push(decodeURIComponent(q.callback))
+            }else{
+              this.$router.push(this.localePath('/dashboard'))
+            }
           }else{
             this.$toast.error('Incorrect pin')
           }

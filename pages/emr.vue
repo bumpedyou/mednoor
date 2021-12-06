@@ -104,7 +104,7 @@ export default {
   },
   mixins: [dateMixin, userRoleMixin, authMixin],
   layout: 'dashboard',
-  middleware: ['authenticated', 'not-blocked', 'not-deleted'],
+  middleware: ['authenticated', 'not-blocked', 'not-deleted', 'pin-set'],
   data: () => ({
     columns: [],
     items: [],

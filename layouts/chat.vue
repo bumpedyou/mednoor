@@ -161,7 +161,7 @@ export default {
     VEmojiPicker
   },
   mixins: [listenMixin, userRoleMixin, userUpdatedMixin, uploadMixin, chatMixin, authMixin, breakpoints],
-  middleware: ['authenticated', 'not-blocked', 'not-deleted'],
+  middleware: ['authenticated', 'not-blocked', 'not-deleted', 'pin-set'],
   data: () => ({
     showEmojiPicker: false,
     visible: false,

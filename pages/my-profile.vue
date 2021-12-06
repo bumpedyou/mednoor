@@ -108,15 +108,25 @@
               </a-form-item>
             </a-form>
           </a-tab-pane>
-          <a-tab-pane key="2" tab="Password" force-render>
+          <a-tab-pane key="2" tab="Security" force-render>
             <a-form-item>
               <p class="h4">
                 {{$t('pwd_reset')}}
               </p>
-              <hr>
               <div>
                 <nuxt-link :to='localePath("change-my-password")'>
                   {{$t('change_pwd')}}
+                </nuxt-link>
+              </div>
+            </a-form-item>
+            <hr>
+            <a-form-item>
+              <p class="h4">
+                PIN
+              </p>
+              <div>
+                <nuxt-link :to='localePath("change-my-pin")'>
+                  Change my PIN
                 </nuxt-link>
               </div>
             </a-form-item>
@@ -127,7 +137,7 @@
                 <a-auto-complete v-model="category" :data-source="categories" placeholder="Enter a category">
                 </a-auto-complete>
               </a-form-item>
-              <a-form-item>
+              <a-form-item v-if='isModerator'>
                 <a-form-item>
                   <a-input v-decorator="['npi', {
                   rules: [

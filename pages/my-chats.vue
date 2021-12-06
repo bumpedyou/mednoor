@@ -31,7 +31,7 @@ export default {
   name: 'MyChats',
   components: { RequestModal },
   mixins: [authMixin, dateMixin],
-  middleware: ['authenticated', 'not-blocked', 'not-deleted'],
+  middleware: ['authenticated', 'not-blocked', 'not-deleted', 'pin-set'],
   data (){
     return {
       loading: true,

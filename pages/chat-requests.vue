@@ -38,7 +38,7 @@ export default {
     RequestDialog
   },
   mixins: [dateMixin, authMixin],
-  middleware: ['authenticated', 'not-blocked', 'not-deleted'],
+  middleware: ['authenticated', 'not-blocked', 'not-deleted', 'pin-set'],
   data (){
     return {
       selectedId: null,
