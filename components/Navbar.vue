@@ -9,28 +9,40 @@
           <img :src='require("~/static/logo.jpg")' height="40px" />
         </nuxt-link>
       </div>
-      <div class='mednoor-logo'>
+      <div v-if='!isSmall' class='mednoor-logo'>
         <nuxt-link v-for='(page, i) in pages' :key='i'
                    :to='localePath({path: "/page/" + page.page_uuid + "/" + slugify(page.page_slug)})'
                    style='margin-left: 0.3rem; margin-right: 0.3rem'>{{ page.page_title }}
         </nuxt-link>
         <nuxt-link :to="localePath('/directory')">Directory</nuxt-link>
       </div>
-      <div v-click-outside='toggleMenuNavigation' class='menu-icon' @click='toggleMenuNavigation(true)'>
-        <div v-if='isLoggedIn'>
-          <div v-if='isAdmin'>
-            <a-button type='raisin-black'>
-              {{ $t('admin') }}
-              <a-icon type='caret-down' />
-            </a-button>
-          </div>
-          <div v-else>
-            {{ $auth.user.user_first_name }} {{ $auth.user.last_name }}
-            <a-icon type='caret-down' />
+      <div class='menu-icon'>
+        <div class='mr-1'>
+          <div class='lang-selector'  @click='showLocales = !showLocales'>
+            <div class='current'>
+              {{selectedLocale.toUpperCase()}} <a-icon type="caret-down" />
+            </div>
+            <ul v-if='showLocales' class='options'>
+              <li v-for='(l, i) in $i18n.localeCodes' :key='i' :class='l === selectedLocale ? "active" : ""' @click='$i18n.setLocale(l)'>{{l.toUpperCase()}}</li>
+            </ul>
           </div>
         </div>
-        <div v-else>
-          <img :src="require('~/static/icon/menu.svg')" alt='Chat icon'>
+        <div v-click-outside='toggleMenuNavigation' @click='toggleMenuNavigation(true)'>
+          <div v-if='isLoggedIn'>
+            <div v-if='isAdmin'>
+              <a-button type='raisin-black'>
+                {{ $t('admin') }}
+                <a-icon type='caret-down' />
+              </a-button>
+            </div>
+            <div v-else>
+              {{ $auth.user.user_first_name }} {{ $auth.user.last_name }}
+              <a-icon type='caret-down' />
+            </div>
+          </div>
+          <div v-else>
+            <img :src="require('~/static/icon/menu.svg')" alt='Chat icon'>
+          </div>
         </div>
       </div>
     </div>
@@ -83,7 +95,8 @@ export default {
     showChatNav: false,
     showMenuNav: false,
     to: '',
-    pages: []
+    pages: [],
+    showLocales: false,
   }),
   computed: {
     myId() {
@@ -186,6 +199,13 @@ export default {
     },
     query() {
       return this.$route.query
+    },
+    selectedLocale(){
+      if (this.$i18n){
+        return this.$i18n.localeProperties.code
+      }else{
+        return ''
+      }
     }
   },
   watch: {
@@ -307,10 +327,33 @@ export default {
     margin-right: auto
 
   .menu-icon
+    display: flex
+    justify-content: center
+    align-items: center
     margin-left: auto
-
+    position: relative
     &:hover
       cursor: pointer
+    .lang-selector
+      position: relative
+      .current
+        width: 100%
+        height: 100%
+        &:hover
+          cursor: pointer
+      .options
+        position: absolute
+        top: 38px
+        right: 0
+        left: 0
+        margin: 0
+        padding: 0
+        border: 1px solid #eee
+        li
+          list-style: none
+          padding: 0.5rem
+        .active
+          background: #ccc
 
   .text
     font-size: 1rem

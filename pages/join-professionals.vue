@@ -1,11 +1,16 @@
 <template>
   <div class="pa-1 mh-100v">
+    <a-row class='mb-1'>
+      <a-col>
+        <a-button @click='$router.push(localePath("/view-mode"))'>Go Back <a-icon type='arrow-left'></a-icon></a-button>
+      </a-col>
+    </a-row>
     <a-row v-if='loading'>
       <a-skeleton></a-skeleton>
     </a-row>
     <a-row v-else>
       <a-col>
-        <p class='h4 mb-1'>You do not have a PIN</p>
+        <p class='h4 mb-1'>Required Information</p>
       </a-col>
       <a-col v-if="error">
         <p class="h1">
@@ -79,7 +84,7 @@ export default {
     this.$api.get('/professional/my-record').then(({data})=>{
       if (data && data.profe_uuid){
         console.log(data)
-        if (data.profe_accepted){
+        if (data.profe_is_active){
           this.$router.push(this.localePath('/'))
         }else{
           this.$router.push(this.localePath('/thanks-for-applying'))

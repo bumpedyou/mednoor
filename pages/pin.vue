@@ -1,5 +1,17 @@
 <template>
 <div class='pa-1 mh-100v'>
+  <a-row class='mb-1'>
+    <a-col>
+      <a-breadcrumb>
+        <a-breadcrumb-item>
+          <nuxt-link :to="localePath('/view-mode')">Home</nuxt-link>
+        </a-breadcrumb-item>
+        <a-breadcrumb-item>
+          <nuxt-link :to="localePath('/pin')">PIN</nuxt-link>
+        </a-breadcrumb-item>
+      </a-breadcrumb>
+    </a-col>
+  </a-row>
   <a-row v-if='loadingMyRecord'>
     <a-col>
       <a-skeleton></a-skeleton>
@@ -66,7 +78,7 @@ export default {
       if (data && data.profe_uuid){
         this.has_record = true
       }else{
-        this.$router.push(this.localePath('/join-professionals'))
+        this.$router.push(this.localePath('/become-a-provider'))
       }
     }).catch((err) =>{
       this.$refs.rmodal.$emit('error', err)

@@ -60,13 +60,7 @@
         </a-col>
         <a-col :xs='24' :sm='24' :md='12'>
           <a-form-item>
-            <a-input v-model="date" placeholder="MM-DD-YYYY">
-              <a-icon
-                slot="prefix"
-                type="calendar"
-                style="color: rgba(0, 0, 0, 0.25)"
-              />
-            </a-input>
+            <a-date-picker v-model='date' format='MM-DD-YYYY' @change="onChange"></a-date-picker>
           </a-form-item>
         </a-col>
         <a-col v-if='!isTemplate' :xs='24' :sm='24' :md='12'>
@@ -401,6 +395,9 @@ export default {
     })
   },
   methods: {
+    onChange(v){
+      console.log('The date has changed. ', v)
+    },
     printRecord() {
       if (this.recordId) {
         this.loadingPdf = true
@@ -454,8 +451,12 @@ export default {
           nv[key] = values[key] || ''
         })
         nv.bp = this.bp
-        nv.date = [this.year, this.month, this.day].join('-')
 
+        if (!this.date || !this.date.isValid()){
+          return this.$toast.error('Please enter a valid date')
+        }
+
+        nv.date = this.date.format('YYYY-MM-DD')
         if (this.recordId) {
           nv.patient = this.userSearch
           if (!this.isTemplate && !this.isValidUser()) {

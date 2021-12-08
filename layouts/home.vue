@@ -9,9 +9,11 @@
         <div class='content'>
           <nuxt></nuxt>
         </div>
+        <!--
         <div class='lang-container'>
           <flags-picker></flags-picker>
         </div>
+        -->
         <div class="main-text">
           <div v-if="main_text" class="middle-text">
           <pre>
@@ -32,14 +34,20 @@
 
 <script>
 import breakpoints from '~/mixins/breakpoints'
-import FlagsPicker from '~/components/FlagsPicker'
+// import FlagsPicker from '~/components/FlagsPicker'
 import Navbar from '~/components/Navbar'
 import BackgroundItem from "~/components/BackgroundItem"
 import MFooter from "~/components/MFooter"
 import BubbleChat from "~/components/BubbleChat"
 
 export default {
-  components: {Navbar, FlagsPicker, BackgroundItem, MFooter, BubbleChat},
+  components: {
+    Navbar,
+    // FlagsPicker,
+    BackgroundItem,
+    MFooter,
+    BubbleChat
+  },
   mixins: [breakpoints],
   data() {
     return {

@@ -4,7 +4,13 @@
     <a-col>
       <a-breadcrumb>
         <a-breadcrumb-item>
-          <nuxt-link :to="localePath('/forgot-pin')">Forgot MY PIN</nuxt-link>
+          <nuxt-link :to="localePath('/view-mode')">Home</nuxt-link>
+        </a-breadcrumb-item>
+        <a-breadcrumb-item>
+          <nuxt-link :to="localePath('/pin')">PIN</nuxt-link>
+        </a-breadcrumb-item>
+        <a-breadcrumb-item>
+          Forgot my PIN
         </a-breadcrumb-item>
       </a-breadcrumb>
     </a-col>

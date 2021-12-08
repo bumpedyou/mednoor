@@ -256,28 +256,26 @@ export default {
         }
       })
     }
-    if (this.isModerator){
-      this.$api.get('/category').then(({data})=>{
-        if (data){
-          this.categories = data.map((c)=>{
-            return {
-              value: c.cate_id.toString(),
-              text: c.cate_category,
-            }
-          })
-          this.$api.get('/professional/my-record').then(({data})=>{
-            if (data){
-              this.category = data.profe_cate_id.toString()
-              this.profForm.setFieldsValue({
-                npi: data.profe_npi,
-              })
-            }
-          })
-        }
-      }).catch(()=>{
-        this.$toast.error('Failed to load categories.')
-      })
-    }
+    this.$api.get('/category').then(({data})=>{
+      if (data){
+        this.categories = data.map((c)=>{
+          return {
+            value: c.cate_id.toString(),
+            text: c.cate_category,
+          }
+        })
+        this.$api.get('/professional/my-record').then(({data})=>{
+          if (data){
+            this.category = data.profe_cate_id.toString()
+            this.profForm.setFieldsValue({
+              npi: data.profe_npi,
+            })
+          }
+        })
+      }
+    }).catch(()=>{
+      this.$toast.error('Failed to load categories.')
+    })
   },
   methods: {
     handleSubmit(e){
