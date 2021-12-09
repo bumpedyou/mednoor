@@ -8,7 +8,8 @@
     </a-col>
     <a-col>
       <a-form-item label="Current PIN">
-        <PincodeInput v-model='current_pin' placeholder="0" :length="6"></PincodeInput>
+        <PincodeInput v-show='current_enabled' v-model='current_pin' placeholder="0" :length="6"></PincodeInput>
+        <a-alert v-if='!current_enabled' type='info' :show-icon='true' message="You do not have a PIN."></a-alert>
       </a-form-item>
       <hr>
       <a-form-item label='New PIN'>
@@ -42,11 +43,23 @@ export default {
     new_pin: '',
     verify_new_pin: '',
     loading: false,
+    current_enabled: true,
   }),
   computed: {
+    c_pin(){
+      return this.$store.state.pin.pin
+    },
     enabled(){
       return this.new_pin.length === 6 && this.new_pin === this.verify_new_pin && this.current_pin.length === 6 && this.new_pin !== this.current_pin
     },
+  },
+  mounted () {
+    console.log(this.c_pin)
+    if (this.c_pin === 'reset1'){
+      console.log('reset')
+      this.current_pin = '000000'
+      this.current_enabled = false
+    }
   },
   methods: {
     resetPIN(){

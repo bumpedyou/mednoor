@@ -1,6 +1,11 @@
 <template>
 <div class="mh-100v">
-  <a-row class="pa-1">
+  <a-row v-if='loadingPage'>
+    <a-col cols='12'>
+      <a-skeleton></a-skeleton>
+    </a-col>
+  </a-row>
+  <a-row v-else class="pa-1">
     <a-col :xs="24" :sm="24">
       <div>
         <p class="h4 mb-1"  style="display: flex; align-items: center">
@@ -10,7 +15,8 @@
       </span></p>
       </div>
       <div>
-        <a-tabs default-active-key="1">
+
+        <a-tabs v-if='showTabs' :default-active-key="tab.toString()">
           <a-tab-pane key="1" tab="Personal Information">
             <a-form layout='vertical'  :form="form" size="small" @submit="handleSubmit">
               <a-form-item
@@ -131,23 +137,92 @@
               </div>
             </a-form-item>
           </a-tab-pane>
-          <a-tab-pane v-if="isModerator" key="3" tab="Professional Information" force-render>
+          <a-tab-pane v-if="isProfessional" key="3" tab="Professional Information" force-render>
+            {{isComplete}}
+            <div v-if='!isComplete'>
+              <a-alert message='Please complete your profile information' :show-icon='true' type='warning' :banner='true'></a-alert>
+            </div>
             <a-form :form="profForm" @submit.prevent='saveProfessional'>
-              <a-form-item>
-                <a-auto-complete v-model="category" :data-source="categories" placeholder="Enter a category">
-                </a-auto-complete>
-              </a-form-item>
-              <a-form-item v-if='isModerator'>
-                <a-form-item>
-                  <a-input v-decorator="['npi', {
+              <a-row>
+                <a-col :md='12'>
+                  <a-form-item label='Category'>
+                    <a-auto-complete v-model="category" :data-source="categories" placeholder="Enter a category">
+                    </a-auto-complete>
+                  </a-form-item>
+                </a-col>
+                <a-col :md='12'>
+                  <a-form-item v-if='isProfessional'>
+                    <a-form-item label='NPI'>
+                      <a-input v-decorator="['npi', {
                   rules: [
                     {required: true, message: 'The NPI is required'},
                     {min: 10, message: $t('v.min_10')},
                     {max: 10, message: $t('v.max_10')},
                   ]
                 }]" placeholder="NPI" :max-length="10"></a-input>
-                </a-form-item>
-              </a-form-item>
+                    </a-form-item>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-row>
+                <a-col :md='12'>
+                  <a-form-item label='Specialty'>
+                    <a-input v-decorator="['specialty', {
+                  rules: [
+                    {required: true, message: 'The specialty is required'},
+                    {min: 1, message: 'Enter at least 1 character'},
+                    {max: 60, message: 'Enter a maximum of 60 characters'},
+                  ]
+                }]" placeholder='Specialty'></a-input>
+                  </a-form-item>
+                </a-col>
+                <a-col :md='12'>
+                  <a-form-item label='Practice Name'>
+                    <a-input v-decorator="['practice_name', {
+                  rules: [
+                    {required: true, message: 'The practice name is required'},
+                    {min: 1, message: 'Enter at least 1 character'},
+                    {max: 60, message: 'Enter a maximum of 60 characters'},
+                  ]
+                }]" placeholder='Practice Name'></a-input>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-row>
+                <a-col :md='12' :lg='8'>
+                  <a-form-item label='Medical License'>
+                    <a-input v-decorator="['medical_license', {
+                  rules: [
+                    {required: true, message: 'The Medical license is required'},
+                    {min: 3, message: 'Enter at least 3 characters'},
+                    {max: 12, message: 'Enter a maximum of 12 characters'},
+                  ]
+                }]" placeholder='Medical License'></a-input>
+                  </a-form-item>
+                </a-col>
+                <a-col :md='12' :lg='8'>
+                  <a-form-item label='License State'>
+                    <a-input v-decorator="['license_state', {
+                  rules: [
+                    {required: true, message: 'The License state name is required'},
+                    {min: 2, message: 'Enter at least 2 characters'},
+                    {max: 30, message: 'Enter a maximum of 30 characters'},
+                  ]
+                }]" placeholder='License State.'></a-input>
+                  </a-form-item>
+                </a-col>
+                <a-col :md='12' :lg='8'>
+                  <a-form-item label='Credentials'>
+                    <a-input v-decorator="['credentials', {
+                  rules: [
+                    {required: true, message: 'The credentials are required.'},
+                    {min: 2, message: 'Enter at least 2 characters'},
+                    {max: 30, message: 'Enter a maximum of 30 characters'},
+                  ]
+                }]" placeholder='Credentials'></a-input>
+                  </a-form-item>
+                </a-col>
+              </a-row>
               <a-form-item>
                 <a-button type="primary" html-type='submit'>
                   <SpinOrText v-model='loadingSaveP'>
@@ -157,11 +232,8 @@
               </a-form-item>
             </a-form>
           </a-tab-pane>
-
         </a-tabs>
       </div>
-
-
     </a-col>
   </a-row>
   <request-modal ref='rmodal'></request-modal>
@@ -185,8 +257,11 @@ export default {
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified'],
   data (){
     return {
+      showTabs: true,
+      isComplete: false,
+      tab: 1,
       form: this.$form.createForm(this, { name: 'coordinated' }),
-      profForm: this.$form.createForm(this),
+      profForm: null,
       loading: false,
       category: null,
       npi: '',
@@ -194,6 +269,8 @@ export default {
       country_code: '',
       phone_no: '',
       loadingSaveP: false,
+      loadingPage: true,
+      isProfessional: false,
     }
   },
   head() {
@@ -264,20 +341,56 @@ export default {
             text: c.cate_category,
           }
         })
-        this.$api.get('/professional/my-record').then(({data})=>{
-          if (data){
-            this.category = data.profe_cate_id.toString()
-            this.profForm.setFieldsValue({
-              npi: data.profe_npi,
-            })
-          }
-        })
+        this.getMyRecord()
       }
     }).catch(()=>{
       this.$toast.error('Failed to load categories.')
     })
+
   },
   methods: {
+    getMyRecord(){
+      this.$api.get('/professional/my-record').then(({data})=>{
+        this.loadingPage = false
+        if (data){
+          this.profForm = this.$form.createForm(this)
+          this.isProfessional = true
+
+          this.$nextTick(()=>{
+
+            this.category = data.profe_cate_id.toString()
+            console.log(data)
+
+            this.isComplete = data.profe_specialty && data.profe_practice_name && data.profe_medical_license && data.profe_license_state && data.profe_credentials
+
+            if (!this.isComplete) {
+              this.showTabs = false
+              this.tab = 3
+              console.log('Show tabs --> F')
+              setTimeout(() =>{
+                this.$nextTick(()=>{
+                  this.showTabs = true
+                })
+              }, 100)
+            }
+
+            setTimeout(() => {
+              this.$nextTick(()=>{
+                this.profForm.setFieldsValue({
+                  npi: data.profe_npi,
+                  specialty: data.profe_specialty,
+                  practice_name: data.profe_practice_name,
+                  medical_license: data.profe_medical_license,
+                  license_state: data.profe_license_state,
+                  credentials: data.profe_credentials
+                })
+              })
+            }, 200)
+
+          })
+        }
+      })
+    },
     handleSubmit(e){
       e.preventDefault()
       this.form.validateFields((err, values) => {
@@ -326,6 +439,7 @@ export default {
         this.loadingSaveP = true
         values.category = this.category
         this.$api.put('/professional', values).then(()=>{
+          this.getMyRecord()
           this.$toast.success(this.$t('updated_suc').toString());
         }).catch((e)=>{
           this.$refs.rmodal.$emit('error', e)

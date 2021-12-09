@@ -73,10 +73,30 @@ export default {
     }
   },
   mounted() {
-
     this.$api.get('/professional/my-record').then(({data}) =>{
       if (data && data.profe_uuid){
         this.has_record = true
+        const isComplete = data.profe_specialty && data.profe_practice_name && data.profe_medical_license && data.profe_license_state && data.profe_credentials
+
+        if (!isComplete){
+          return this.$router.push({
+            path: this.localePath('/my-profile')
+          })
+        }
+
+        if (!data.profe_is_active){
+          return this.$router.push(this.localePath('/thanks-for-applying'))
+        }
+
+        console.log('Has PIN', data.has_pin)
+        if (!data.profe_pin_set){
+          console.log('Does not have a PIN')
+          this.$store.commit('pin/setPIN', 'reset1')
+          this.$store.commit('pin/setValid', true)
+          console.log(this.$store.state.pin.pin)
+          this.$router.push(this.localePath('/change-my-pin'))
+        }
+
       }else{
         this.$router.push(this.localePath('/become-a-provider'))
       }

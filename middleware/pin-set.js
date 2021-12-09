@@ -2,7 +2,6 @@ export default function ({ $auth, store, redirect, localePath, route }) {
   if ($auth.user){
     const u = $auth.user
     if (u && u.role === 'MODERATOR') {
-      console.log(store)
       if (store){
         const pinState = store.state.pin
         if (!pinState || !pinState.valid) {

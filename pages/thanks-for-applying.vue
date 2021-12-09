@@ -7,7 +7,8 @@
           Thank you for your interest in being a Provider at Mednoor Medical Center. Mednoor credentialing department
           will contact you as soon as possible
         </p>
-        <a-alert message='Please complete your profile information before you get approved.' type='warning'
+        <a-alert v-if='isComplete' message='Your profile information is complete and will be reviewed very soon.' :show-icon='true' type='info' :banner='true' class='mb-1'></a-alert>
+        <a-alert v-else message='Please complete your profile information before you get approved.' type='warning'
                  :show-icon='true' class='mb-1'></a-alert>
         <a-button type='success' @click='$router.push(localePath("/my-profile"))'>Complete Information.</a-button>
       </a-col>
@@ -18,6 +19,18 @@
 <script>
 export default {
   name: 'ThanksForApplying',
-  middleware: ['authenticated', 'not-blocked', 'not-deleted']
+  middleware: ['authenticated', 'not-blocked', 'not-deleted'],
+  data: ()=>({
+    isComplete: false,
+  }),
+  mounted() {
+    console.log('[thanks-for-applying]: Mounted.')
+    this.$api.get('/professional/my-record').then(({ data }) => {
+      if (data && data.profe_uuid) {
+        this.has_record = true
+        this.isComplete = data.profe_specialty && data.profe_practice_name && data.profe_medical_license && data.profe_license_state && data.profe_credentials
+      }
+    })
+  }
 }
 </script>

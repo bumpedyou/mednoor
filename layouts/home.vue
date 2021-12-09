@@ -14,18 +14,23 @@
           <flags-picker></flags-picker>
         </div>
         -->
-        <div class="main-text">
-          <div v-if="main_text" class="middle-text">
-          <pre>
-            {{ main_text }}
-          </pre>
-          </div>
+        <div class='main-text'>
+
         </div>
       </a-col>
     </a-row>
     <a-row>
       <a-col>
         <BubbleChat></BubbleChat>
+      </a-col>
+    </a-row>
+    <a-row>
+      <a-col :xs='{span: 12}' class='pa-1'>
+        <div v-if='main_text' class='middle-text flex-center text-center'>
+          <pre>
+            {{ main_text }}
+          </pre>
+        </div>
       </a-col>
     </a-row>
     <MFooter></MFooter>
@@ -36,9 +41,9 @@
 import breakpoints from '~/mixins/breakpoints'
 // import FlagsPicker from '~/components/FlagsPicker'
 import Navbar from '~/components/Navbar'
-import BackgroundItem from "~/components/BackgroundItem"
-import MFooter from "~/components/MFooter"
-import BubbleChat from "~/components/BubbleChat"
+import BackgroundItem from '~/components/BackgroundItem'
+import MFooter from '~/components/MFooter'
+import BubbleChat from '~/components/BubbleChat'
 
 export default {
   components: {
@@ -53,7 +58,7 @@ export default {
     return {
       mounted: false,
       loadingMainTxt: true,
-      main_text: '',
+      main_text: ''
     }
   },
   computed: {
@@ -66,7 +71,7 @@ export default {
     this.mounted = true
   },
   created() {
-    this.$api.get('/main-text').then(({data}) => {
+    this.$api.get('/main-text').then(({ data }) => {
       this.loadingMainTxt = false
       if (data && data.mate_text) {
         this.main_text = data.mate_text
@@ -91,4 +96,11 @@ export default {
   justify-content: center
   align-items: center
   text-align: center
+
+.middle-text
+  pre
+    display: flex
+    height: 100%
+    justify-content: center
+    align-items: center
 </style>

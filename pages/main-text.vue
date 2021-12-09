@@ -16,7 +16,7 @@
           Main Text
         </p>
         <p>
-          Text that is shown in the middle of the image of the sign in / sign up pages.
+          Text that is shown above the footer.
         </p>
         <a-skeleton v-if="loading"></a-skeleton>
         <a-form v-else :form="form" @submit="handleSubmit">

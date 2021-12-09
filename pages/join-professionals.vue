@@ -135,8 +135,9 @@ export default {
             npi: values.npi,
             category: this.category,
           }).then(() => {
-            this.$toast.success('Thank you for your interest in being a Provider at Mednoor Medical Center. Mednoor credentialing department will contact you as soon as possible')
             this.$router.push(this.localePath('/thanks-for-applying'))
+            console.log('Thanks for applying.')
+            // this.$toast.success('Thank you for your interest in being a Provider at Mednoor Medical Center. Mednoor credentialing department will contact you as soon as possible')
           }).catch((err) => {
             this.$refs.rmodal.$emit('error', err)
           }).finally(() => {

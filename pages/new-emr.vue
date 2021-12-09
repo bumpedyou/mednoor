@@ -464,6 +464,8 @@ export default {
             this.$toast.error(this.$t('please_select_user').toString())
             return
           }
+
+
           this.$api.put('/medical-record/' + this.recordId, nv).then(() => {
             this.form.resetFields()
             this.$toast.success(this.$t('record_hb_updated').toString())
