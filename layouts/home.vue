@@ -25,18 +25,18 @@
       </a-col>
     </a-row>
     <a-row>
-      <a-col :xs='{span: 12}' class='pa-1'>
-        <div v-if='main_text' class='middle-text flex-center text-center'>
-          <pre>
-            {{ main_text }}
-          </pre>
+      <a-col :md='{span: 12}' class='pa-1'>
+        <div v-if='main_text' class='middle-text'>
+          <!-- eslint-disable vue/no-v-html -->
+          <pre v-html='main_text'></pre>
+          <!--eslint-enable-->
         </div>
       </a-col>
-      <a-col :xs='{span: 12}' class='pa-1'>
-        <div v-if='main_text_b' class='middle-text flex-center text-center'>
-          <pre>
-            {{ main_text_b }}
-          </pre>
+      <a-col :md='{span: 12}' class='pa-1'>
+        <div v-if='main_text_b' class='middle-text'>
+          <!-- eslint-disable vue/no-v-html -->
+          <pre v-html='main_text_b'></pre>
+          <!--eslint-enable-->
         </div>
       </a-col>
     </a-row>
@@ -106,10 +106,4 @@ export default {
   align-items: center
   text-align: center
 
-.middle-text
-  pre
-    display: flex
-    height: 100%
-    justify-content: center
-    align-items: center
 </style>
