@@ -54,7 +54,9 @@
             </a-input>
           </a-form-item>
           <a-form-item>
-            <t-editor ref='editor' v-model='txt' :enable-h1='false'></t-editor>
+            <client-only>
+              <VueEditor v-model='txt'/>
+            </client-only>
           </a-form-item>
           <a-form-item class='mt-3'>
             <a-button type='primary' html-type='submit'>
@@ -75,13 +77,11 @@
   </div>
 </template>
 <script>
-import TEditor from '~/components/TEditor.vue'
 import SpinOrText from '~/components/SpinOrText'
 import RequestModal from '~/components/RequestModal'
 
 export default {
   components: {
-    TEditor,
     SpinOrText,
     RequestModal
   },
@@ -113,7 +113,8 @@ export default {
               slug: data.page_slug,
               keywords: data.page_keywords
             })
-            this.$refs.editor.editor.commands.setContent(data.page_content)
+            this.txt = data.page_content
+            // this.$refs.editor.editor.commands.setContent(data.page_content)
           })
         } else {
           this.uuid = null

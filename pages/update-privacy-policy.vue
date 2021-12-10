@@ -18,7 +18,9 @@
         <a-skeleton v-if='loading'></a-skeleton>
         <div v-else>
           <client-only>
-            <t-editor ref='editor' v-model='txt'></t-editor>
+            <client-only>
+              <VueEditor v-model='txt' placeholder='Left side text.' />
+            </client-only>
           </client-only>
           <a-button class='mt-1' type='primary' @click='update'>
             <spin-or-text v-model='loadingBtn'>
@@ -32,12 +34,10 @@
 </template>
 <script>
 import SpinOrText from '~/components/SpinOrText.vue'
-import TEditor from '~/components/TEditor'
 import vmodelMixin from '~/mixins/vmodelMixin'
 
 export default {
   components: {
-    TEditor,
     SpinOrText
   },
   mixins: [vmodelMixin],
@@ -59,8 +59,7 @@ export default {
       this.loading = false
       this.$nextTick(() => {
         if (data && data.prpo_text) {
-          const t = data.prpo_text
-          this.$refs.editor.editor.commands.setContent(t)
+          this.txt = data.prpo_text
         }
       })
     }).finally(() => {
