@@ -20,17 +20,18 @@
         </p>
         <a-skeleton v-if="loading"></a-skeleton>
         <a-form v-else :form="form" @submit="handleSubmit">
-          <a-form-item>
-            <a-textarea v-decorator="[
-                'text',
-                {
-                  rules: [
-                    { required: true, message: 'This field is required' },
-                    {max: 500, message: $t('v.max_500')}
-                  ]
-                },
-              ]" placeholder="Enter the text here."></a-textarea>
-          </a-form-item>
+          <a-row :gutter="6">
+            <a-col :md='12'>
+              <client-only>
+                <VueEditor v-model='text' placeholder='Left side text.' />
+              </client-only>
+            </a-col>
+            <a-col :md='12'>
+              <client-only>
+                <VueEditor v-model='text_b' placeholder='Right side text' />
+              </client-only>
+            </a-col>
+          </a-row>
           <a-form-item>
             <a-button type="primary" html-type="submit">
               <SpinOrText v-model="saving">Save</SpinOrText>
@@ -46,11 +47,12 @@
 <script>
 import SpinOrText from '~/components/SpinOrText'
 import RequestModal from '~/components/RequestModal'
+
 export default {
   name: "MainText",
   components: {
     SpinOrText,
-    RequestModal
+    RequestModal,
   },
   layout: 'dashboard',
   middleware: ['authenticated', 'verified', 'not-blocked', 'not-deleted', 'admin-or-super'],
@@ -59,18 +61,17 @@ export default {
       saving: false,
       form: this.$form.createForm(this),
       loading: true,
+      text: '',
+      text_b: '',
     }
   },
   mounted() {
     this.$api.get('/main-text').then(({data})=>{
       this.loading = false
-      this.$nextTick(()=>{
-        if (data && data.mate_text){
-          this.form.setFieldsValue({
-            text: data.mate_text
-          })
-        }
-      })
+      if (data){
+        this.text = data.mate_text
+        this.text_b = data.mate_text_b
+      }
     }).finally(() => {
       this.loading = false
     })
@@ -78,19 +79,18 @@ export default {
   methods: {
     handleSubmit(e) {
       e.preventDefault()
-      this.form.validateFields((err, values) => {
-        console.log(values)
-        if (err) {
-          return console.log(err)
-        }
-        this.saving = true
-        this.$api.post('/main-text', values).then(()=>{
-          this.$toast.success('Main text has been updated successfully')
-        }).catch((err)=>{
-          this.$refs.rmodal.$emit('error', err)
-        }).finally(() => {
-          this.saving = false
-        })
+      this.saving = true
+      const values = {
+        text: this.text,
+        text_b: this.text_b
+      }
+
+      this.$api.post('/main-text', values).then(()=>{
+        this.$toast.success('Main text has been updated successfully')
+      }).catch((err)=>{
+        this.$refs.rmodal.$emit('error', err)
+      }).finally(() => {
+        this.saving = false
       })
     }
   }

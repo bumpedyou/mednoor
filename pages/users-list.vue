@@ -19,7 +19,7 @@
           </a-button>
         </div>
 
-        <a-input-search v-model='search' placeholder='Filter by name/last name' class='mb-1'></a-input-search>
+        <a-input-search v-model='search' placeholder='Filter by name/last name/email' class='mb-1'></a-input-search>
 
         <a-skeleton v-if='loading' />
         <a-table v-else :columns='columns' :data-source='filteredUsers'>
@@ -170,13 +170,14 @@ export default {
     filteredUsers() {
       if (this.search) {
         return this.users.filter((r) => {
-          console.log(r)
           const fn = r.user_first_name.toLowerCase()
           const ln = r.user_last_name.toLowerCase()
           const fullName = [fn, ln].join(' ')
+          const inv = [ln, fn].join(' ')
           const email = r.user_email.toLowerCase()
           const search = this.search.toLowerCase()
-          return fn.includes(search) || ln.includes(search) || email.includes(search) || fullName.includes(search)
+
+          return fn.includes(search) || ln.includes(search) || email.includes(search) || fullName.includes(search) || inv.includes(search)
         })
       } else {
         return this.users

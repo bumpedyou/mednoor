@@ -32,6 +32,13 @@
           </pre>
         </div>
       </a-col>
+      <a-col :xs='{span: 12}' class='pa-1'>
+        <div v-if='main_text_b' class='middle-text flex-center text-center'>
+          <pre>
+            {{ main_text_b }}
+          </pre>
+        </div>
+      </a-col>
     </a-row>
     <MFooter></MFooter>
   </div>
@@ -58,7 +65,8 @@ export default {
     return {
       mounted: false,
       loadingMainTxt: true,
-      main_text: ''
+      main_text: '',
+      main_text_b: '',
     }
   },
   computed: {
@@ -75,6 +83,7 @@ export default {
       this.loadingMainTxt = false
       if (data && data.mate_text) {
         this.main_text = data.mate_text
+        this.main_text_b = data.mate_text_b
       }
     })
   }

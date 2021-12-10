@@ -74,6 +74,7 @@ export default {
     'nuxt-socket-io',
     '@nuxtjs/toast',
     'cookie-universal-nuxt',
+    'vue2-editor/nuxt'
   ],
 
   toast: {

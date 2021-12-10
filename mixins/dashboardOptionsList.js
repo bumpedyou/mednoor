@@ -55,7 +55,7 @@ export default {
           cardTitle: 'Chat requests',
           to: '/chat-requests',
           btnText: 'Chat requests',
-          icon: 'chat',
+          icon: 'wechat',
           type: 'raisin-black',
         })
       }
@@ -111,7 +111,7 @@ export default {
             cardTitle: 'Professional Requests',
             to: '/professional-requests',
             btnText: 'List of requests',
-            icon: 'list',
+            icon: 'contacts',
             type: 'old-rose',
           }
         )
