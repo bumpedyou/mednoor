@@ -113,6 +113,18 @@ export default {
             btnText: 'List of requests',
             icon: 'contacts',
             type: 'old-rose',
+          },
+          {
+            shortTitle: 'Archived users',
+            cardTitle: 'Archived users',
+            to: {
+              path: '/users-list',
+              query: {
+                view: 'archived',
+              },
+            },            btnText: 'Archived users',
+            icon: 'usergroup-delete',
+            type: 'primary',
           }
         )
       }

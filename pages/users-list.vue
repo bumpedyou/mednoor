@@ -12,9 +12,20 @@
     </a-row>
     <a-row class='pa-1'>
       <a-col>
-        <p class='h4 mb-1 text-capitalize'>{{ view }} {{ $t('list') }}</p>
+        <p class='h4 mb-1 text-capitalize'>
+
+          <span v-if='view === "archived"'>
+            Archived users
+          </span>
+          <span v-else-if='view === "professional"'>
+            Professional's list.
+          </span>
+          <span v-else>
+            List of users.
+          </span>
+        </p>
         <div class='mb-1'>
-          <a-button type='aero-blue' @click='addUser'>{{ $t('add_urs') }}
+          <a-button v-if='view !== "archived"' type='aero-blue' @click='addUser'>{{ $t('add_urs') }}
             <a-icon type='user-add'></a-icon>
           </a-button>
         </div>
@@ -40,37 +51,35 @@
               +{{ record.user_country_code }} {{ record.user_phone_no }}
             </span>
           </div>
-
           <div slot='action' slot-scope='text, record'>
-            <div v-if='isAdmin || isSuper'>
-              <a v-if='record.user_blocked' @click='unblock(record.user_uuid)'>
-                {{ $t('unblock') }}
+            <div v-if='view === "archived"'>
+              <a v-if='record.user_deleted' @click.prevent='askUnarchive(record.user_uuid)'>
+                Remove from archived users.
               </a>
-              <a v-else @click='block(record.user_uuid)'>
-                {{ $t('block') }}
-              </a>
-              <a-divider type='vertical' />
-              <a v-if='(Boolean(record.user_deleted)) === false' @click='deleteUser(record.user_uuid)'>{{ $t('delete')
-                }}</a>
+            </div>
+            <div v-else>
+              <div v-if='isAdmin || isSuper'>
+                <a v-if='record.user_blocked' @click='unblock(record.user_uuid)'>
+                  {{ $t('unblock') }}
+                </a>
+                <a v-else @click='block(record.user_uuid)'>
+                  {{ $t('block') }}
+                </a>
+                <a-divider type='vertical' />
+                <a v-if='(Boolean(record.user_deleted)) === false' @click='deleteUser(record.user_uuid)'>
+                  Archive
+                </a>
 
+              </div>
             </div>
-            <!--
-            <div v-else-if=''>
-              <a v-if='record.user_blocked' @click='unblock(record.user_uuid)'>
-                {{ $t('unblock') }}
-              </a>
-              <a v-else @click='block(record.user_uuid)'>
-                {{ $t('block') }}
-              </a>
-              <a-divider type='vertical' />
-              <a v-if='(Boolean(record.user_deleted)) === false' @click='deleteUser(record.user_uuid)'>{{ $t('delete')
-                }}</a>
-            </div>
-            <div></div>
-            -->
           </div>
           <div slot='checkbox' slot-scope='text, record'>
-            <a-checkbox :checked='record.usro_key === "MODERATOR"' @change='changePro(record)'>PRO</a-checkbox>
+            <div v-if='view === "archived"'>
+              No action available.
+            </div>
+            <div v-else>
+              <a-checkbox :checked='record.usro_key === "MODERATOR"' @change='changePro(record)'>PRO</a-checkbox>
+            </div>
           </div>
         </a-table>
       </a-col>
@@ -80,10 +89,17 @@
              :cancel-text="$t('cancel')"
              @ok='confirmAction'>
       <p v-if="action === 'delete'">
-        {{ $t('del_el') }}
+        Archive
       </p>
       <p v-else>
         {{ $t('conf_act') }}
+      </p>
+    </a-modal>
+    <a-modal v-model='unarchiveModal' title="Remove from archived." ok-text='Ok' :confirm-loading='loadingUnarchive'
+             :cancel-text="$t('cancel')"
+             @ok='archive'>
+      <p>
+        This user will be active again.
       </p>
     </a-modal>
   </div>
@@ -104,6 +120,8 @@ export default {
   middleware: ['authenticated', 'moderator-or-higher', 'not-blocked', 'not-deleted'],
   data() {
     return {
+      loadingUnarchive: false,
+      unarchiveModal: false,
       users: [],
       columns: [
         {
@@ -196,7 +214,7 @@ export default {
   mounted() {
     this.setView()
     this.loadItems()
-    if (this.isAdmin || this.isSuper) {
+    if (this.isAdmin || this.isSuper && this.view !== 'unarchive') {
       this.columns.push({
         title: 'PRO',
         key: 'checkbox',
@@ -205,6 +223,25 @@ export default {
     }
   },
   methods: {
+    archive(){
+      this.loadingUnarchive = true
+      this.$api.post('/user/unarchive/' + this.uuid).then(() =>{
+        this.users = this.users.filter((us)=>{
+          return us.user_uuid !== this.uuid
+        })
+        this.uuid = null
+        this.$toast.success('The user is active again.')
+      }).catch((err)=>{
+        this.$refs.rmodal.$emit('error', err)
+      }).finally(() => {
+        this.loadingUnarchive = false
+        this.unarchiveModal = false
+      })
+    },
+    askUnarchive(uuid){
+      this.unarchiveModal = true
+      this.uuid = uuid
+    },
     changePro(r) {
       console.log('Update to pro. (?)', r)
       const key = r.usro_key
@@ -235,7 +272,7 @@ export default {
     setView() {
       if (this.$route.query) {
         const q = this.$route.query
-        if (q.view && ['users', 'professionals'].includes(q.view.toLowerCase())) {
+        if (q.view && ['users', 'professionals', 'archived'].includes(q.view.toLowerCase())) {
           this.view = q.view.toLowerCase()
         } else {
           this.view = 'users'

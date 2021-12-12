@@ -17,7 +17,10 @@
       <div>
 
         <a-tabs v-if='showTabs' :default-active-key="tab.toString()">
-          <a-tab-pane key="1" tab="Personal Information">
+          <a-tab-pane key='1' tab='Profile Picture'>
+            <ProfilePicture :full-name='name'></ProfilePicture>
+          </a-tab-pane>
+          <a-tab-pane key="2" tab="Personal Information">
             <a-form layout='vertical'  :form="form" size="small" @submit="handleSubmit">
               <a-form-item
                 v-model="first_name"
@@ -114,7 +117,7 @@
               </a-form-item>
             </a-form>
           </a-tab-pane>
-          <a-tab-pane key="2" tab="Security" force-render>
+          <a-tab-pane key="3" tab="Security" force-render>
             <a-form-item>
               <p class="h4">
                 {{$t('pwd_reset')}}
@@ -137,7 +140,7 @@
               </div>
             </a-form-item>
           </a-tab-pane>
-          <a-tab-pane v-if="isProfessional" key="3" tab="Professional Information" force-render>
+          <a-tab-pane v-if="isProfessional" key="4" tab="Professional Information" force-render>
             {{isComplete}}
             <div v-if='!isComplete'>
               <a-alert message='Please complete your profile information' :show-icon='true' type='warning' :banner='true'></a-alert>
@@ -246,10 +249,12 @@ import SpinOrText from '~/components/SpinOrText.vue'
 import inputMixin from '~/mixins/inputMixin'
 import authMixin from '~/mixins/authMixin'
 import RequestModal from '~/components/RequestModal'
+import ProfilePicture from '~/components/ProfilePicture'
 
 export default {
   name: "MyProfile",
   components: {
+    ProfilePicture,
     SpinOrText,
     RequestModal,
   },
@@ -359,14 +364,12 @@ export default {
           this.$nextTick(()=>{
 
             this.category = data.profe_cate_id.toString()
-            console.log(data)
 
             this.isComplete = data.profe_specialty && data.profe_practice_name && data.profe_medical_license && data.profe_license_state && data.profe_credentials
 
             if (!this.isComplete) {
               this.showTabs = false
-              this.tab = 3
-              console.log('Show tabs --> F')
+              this.tab = 4
               setTimeout(() =>{
                 this.$nextTick(()=>{
                   this.showTabs = true

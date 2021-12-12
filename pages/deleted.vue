@@ -1,5 +1,5 @@
 <template>
-  <a-row>
+  <a-row class='mh-100v'>
     <a-col>
       <p class='h1 text-center'>{{$t('usr_del')}}</p>
     </a-col>
