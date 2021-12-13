@@ -24,7 +24,7 @@
             {{ user.usro_role }}
           </a-button>
         </p>
-        <div class='mb-1 heart-actions'>
+        <div v-if='isLoggedIn' class='mb-1 heart-actions'>
           <a-button :type='owned ? "danger" : "old-rose"' @click='toggleOwned'>
             <SpinOrText v-model='loadingHeart' dark>
               <span v-if='owned'>
