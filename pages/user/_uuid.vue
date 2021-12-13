@@ -182,6 +182,4 @@ export default {
 
 <style scoped lang='sass'>
 
-.heart-actions
-
 </style>
