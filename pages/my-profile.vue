@@ -295,7 +295,7 @@ export default {
     RequestModal,
   },
   mixins: [userRoleMixin, inputMixin, authMixin, uploadMixin],
-  middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified'],
+  middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified', 'view-set'],
   data (){
     return {
       picture: '',
@@ -325,6 +325,7 @@ export default {
     }
   },
   computed: {
+
     user() {
       return this.$auth.user
     },
@@ -472,7 +473,8 @@ export default {
         this.loadingPage = false
         if (data){
           this.profForm = this.$form.createForm(this)
-          this.isProfessional = true
+          console.log('isModerator --->', this.isModerator)
+          this.isProfessional = this.isModerator
 
           this.$nextTick(()=>{
 

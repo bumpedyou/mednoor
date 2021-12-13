@@ -44,14 +44,16 @@ import {mapMutations} from 'vuex'
 import inputMixin from '~/mixins/inputMixin'
 import SpinOrText from '~/components/SpinOrText'
 import RequestModal from '~/components/RequestModal'
+import redirectionMixin from '~/mixins/redirectionMixin'
+
 export default {
   name: 'Pin',
   components: {
     SpinOrText,
     RequestModal,
   },
-  mixins: [inputMixin],
-  middleware: ['authenticated', 'not-blocked', 'not-deleted'],
+  mixins: [inputMixin, redirectionMixin],
+  middleware: ['authenticated', 'not-blocked', 'not-deleted', 'view-set'],
   data(){
     return {
       pin: '',
@@ -123,13 +125,7 @@ export default {
             // Store the PIN
             this.$store.commit('pin/setPIN', this.pin)
             this.$store.commit('pin/setValid', true)
-            const q = this.$route.query
-            console.log('The query is', q)
-            if (q && q.callback){
-              this.$router.push(decodeURIComponent(q.callback))
-            }else{
-              this.$router.push(this.localePath('/dashboard'))
-            }
+            this.checkRedirect()
           }else{
             this.$toast.error('Incorrect pin')
           }

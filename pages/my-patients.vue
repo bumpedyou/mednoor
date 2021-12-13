@@ -27,7 +27,7 @@
 export default {
   name: 'MyPatients',
   layout: 'default',
-  middleware: ['authenticated'],
+  middleware: ['authenticated', 'pin-set', 'view-set'],
   data() {
     return {
       columns: [

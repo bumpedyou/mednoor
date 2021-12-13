@@ -11,7 +11,7 @@
       </div>
       <div class='mb-1'>
         <a-row>
-          <a-col>
+          <a-col :xs='24' :md='{span: 12, offset: 6}'>
             <a-form-item>
               <a-input-search v-model='term' size='large' placeholder='Search by Professional Name' enter-button
                               @search='search'>
@@ -79,7 +79,7 @@ export default {
     RequestModal
   },
   mixins: [authMixin],
-  middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified'],
+  middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified', 'view-set'],
   data() {
     return {
       term: '',
@@ -200,5 +200,4 @@ export default {
 
   .doctor
     display: flex
-    flex: 1
 </style>

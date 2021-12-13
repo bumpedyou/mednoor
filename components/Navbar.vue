@@ -1,12 +1,12 @@
 <template>
-  <div class="nv-top">
+  <div class='nv-top'>
     <div class='menu-top-bar'>
       <div class='chat-icon'>
-        <nuxt-link v-if="isLoggedIn" :to="localePath('/')">
-          <img :src='require("~/static/logo.jpg")' height="40px" />
+        <nuxt-link v-if='isLoggedIn' :to="localePath('/')">
+          <img :src='require("~/static/logo.jpg")' height='40px' />
         </nuxt-link>
         <nuxt-link v-else :to="localePath('/sign-in')">
-          <img :src='require("~/static/logo.jpg")' height="40px" />
+          <img :src='require("~/static/logo.jpg")' height='40px' />
         </nuxt-link>
       </div>
       <div v-if='!isSmall' class='mednoor-logo'>
@@ -18,12 +18,15 @@
       </div>
       <div class='menu-icon'>
         <div class='mr-1'>
-          <div class='lang-selector'  @click='showLocales = !showLocales'>
+          <div class='lang-selector' @click='showLocales = !showLocales'>
             <div class='current'>
-              {{selectedLocale.toUpperCase()}} <a-icon type="caret-down" />
+              {{ selectedLocale.toUpperCase() }}
+              <a-icon type='caret-down' />
             </div>
             <ul v-if='showLocales' class='options'>
-              <li v-for='(l, i) in $i18n.localeCodes' :key='i' :class='l === selectedLocale ? "active" : ""' @click='$i18n.setLocale(l)'>{{l.toUpperCase()}}</li>
+              <li v-for='(l, i) in $i18n.localeCodes' :key='i' :class='l === selectedLocale ? "active" : ""'
+                  @click='$i18n.setLocale(l)'>{{ l.toUpperCase() }}
+              </li>
             </ul>
           </div>
         </div>
@@ -82,7 +85,7 @@ import ChatItems from '~/components/ChatItems'
 import chatMixin from '~/mixins/chatMixin'
 import listenMixin from '~/mixins/listenMixin'
 import utilsMixin from '~/mixins/utilsMixin'
-import userUpdatedMixin from "~/mixins/userUpdatedMixin";
+import userUpdatedMixin from '~/mixins/userUpdatedMixin'
 
 export default {
   name: 'Navbar',
@@ -99,79 +102,79 @@ export default {
     showLocales: false,
   }),
   computed: {
+    compView() {
+      return this.$store.state.view.view
+    },
     myId() {
       return this.$auth.user.uuid
     },
     menuItems() {
       const items = []
       if (this.isLoggedIn) {
-        if (this.isAdmin || this.isSuper || this.isModerator) {
+        if (this.compView) {
+          if (this.isAdmin || this.isSuper || this.isModerator) {
+            items.push({
+              text: this.$t('dashboard'),
+              icon: 'dashboard',
+              to: '/dashboard'
+            })
+          }
           items.push({
-            text: this.$t('dashboard'),
-            icon: 'dashboard',
-            to: '/dashboard'
-          })
-        }
-        items.push({
-          text: this.$t('my_profile'),
-          icon: 'user',
-          to: '/my-profile'
-        })
-        if (this.isAdmin || this.isSuper) {
-          items.push({
-            text: this.$t('usrs_list'),
-            icon: 'users',
-            to: '/users-list'
-          })
-        }
-        if (this.isAdmin || this.isSuper) {
-          items.push({
-            text: this.$t('professionals_list'),
-            icon: 'tie',
-            to: {
-              path: '/users-list',
-              query: {
-                view: 'professionals'
-              }
-            }
-          })
-        }
-
-        if (this.isModerator) {
-          items.push({
-            text: this.$t('chat_requests'),
-            icon: 'message-square-plus',
-            to: '/chat-requests'
-          })
-          items.push({
-            text: this.$t('my_patients'),
+            text: this.$t('my_profile'),
             icon: 'user',
-            to: '/my-patients'
+            to: '/my-profile'
           })
+          if (this.isAdmin || this.isSuper) {
+            items.push({
+              text: this.$t('usrs_list'),
+              icon: 'users',
+              to: '/users-list'
+            })
+          }
+          if (this.isAdmin || this.isSuper) {
+            items.push({
+              text: this.$t('professionals_list'),
+              icon: 'tie',
+              to: {
+                path: '/users-list',
+                query: {
+                  view: 'professionals'
+                }
+              }
+            })
+          }
+          if (this.isModerator) {
+            items.push({
+              text: this.$t('chat_requests'),
+              icon: 'message-square-plus',
+              to: '/chat-requests'
+            })
+            items.push({
+              text: this.$t('my_patients'),
+              icon: 'user',
+              to: '/my-patients'
+            })
+          }
+          if (this.isUser) {
+            items.push({
+              text: 'My Doctors',
+              icon: 'tie',
+              to: '/professionals'
+            })
+          }
+          if (this.isLoggedIn) {
+            items.push({
+              text: this.$t('prev_c_pdf'),
+              icon: 'file',
+              to: '/my-chats'
+            })
+            items.push({
+              text: this.$t('chats'),
+              icon: 'chat',
+              to: '/'
+            })
+          }
         }
-
-
-        if (this.isUser) {
-          items.push({
-            text: 'Professionals.',
-            icon: 'tie',
-            to: '/professionals'
-          })
-        }
-
-        if (this.isLoggedIn) {
-          items.push({
-            text: this.$t('prev_c_pdf'),
-            icon: 'file',
-            to: '/my-chats'
-          })
-          items.push({
-            text: this.$t('chats'),
-            icon: 'chat',
-            to: '/'
-          })
-        }
-
         items.push({
           text: this.$t('sign_out'),
           icon: 'sign-out',
@@ -200,10 +203,10 @@ export default {
     query() {
       return this.$route.query
     },
-    selectedLocale(){
-      if (this.$i18n){
+    selectedLocale() {
+      if (this.$i18n) {
         return this.$i18n.localeProperties.code
-      }else{
+      } else {
         return ''
       }
     }
@@ -240,7 +243,7 @@ export default {
         this.getChats(true)
       })
       console.log('Listening to fetch user', this.myId)
-      this.socket.on('fetch-user', async ()=>{
+      this.socket.on('fetch-user', async () => {
         console.log('Fetching user')
         await this.$auth.fetchUser()
         this.user_was_updated()
@@ -332,15 +335,20 @@ export default {
     align-items: center
     margin-left: auto
     position: relative
+
     &:hover
       cursor: pointer
+
     .lang-selector
       position: relative
+
       .current
         width: 100%
         height: 100%
+
         &:hover
           cursor: pointer
+
       .options
         position: absolute
         top: 38px
@@ -349,9 +357,11 @@ export default {
         margin: 0
         padding: 0
         border: 1px solid #eee
+
         li
           list-style: none
           padding: 0.5rem
+
         .active
           background: #ccc
 

@@ -58,15 +58,18 @@ export default {
       const full = this.$props.fullName
 
       if (fn && ln){
+        console.log(fn, ln)
         return [fn,ln].join(' ')
       }else if (full){
+        console.log(full)
         return full
       }else if (this.$props.user){
         const u = this.$props.user
+
         if (u.user_first_name && u.user_last_name){
           return [u.user_first_name, u.user_last_name].join(' ')
-        }else if (u.full_name){
-          return u.full_name
+        }else if (u.full_sname){
+          return u.full_sname
         }
       }
       return ''
@@ -76,6 +79,9 @@ export default {
       const fn = this.$props.firstName
       const ln = this.$props.lastName
       const full = this.$props.fullName
+
+      console.log('Full name is', full)
+
       i += this.getInitial(fn)
       i += this.getInitial(ln)
       if (full && full.length) {
@@ -87,10 +93,17 @@ export default {
         }
       }
       const u = this.$props.user
-      if (u && (u.user_first_name || u.user_last_name || u.full_name)) {
+      if (u && (u.user_first_name || u.user_last_name || u.full_sname)) {
         i+= this.getInitial(u.user_first_name)
         i+= this.getInitial(u.user_last_name)
-        i+= this.getInitial(u.full_name)
+        const f = u.full_sname
+        if (typeof f === 'string'){
+          const ff = f.split(' ')
+          if (ff && ff.length > 1){
+            i+= this.getInitial(ff[0])
+            i+= this.getInitial(ff[1])
+          }
+        }
       }
       return i
     }

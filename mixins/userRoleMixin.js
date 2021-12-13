@@ -3,6 +3,9 @@ import authMixin from '~/mixins/authMixin'
 export default {
   mixins: [authMixin],
   computed: {
+    view(){
+      return this.$store.state.view.view
+    },
     userRoleTxt() {
       if (this.isLoggedIn) {
         return this.$auth.user.roleTxt
@@ -35,13 +38,14 @@ export default {
     },
     isModerator() {
       // This is the same as Professional. (The keyword is moderator)
-      return this.userRole === 'moderator'
+      console.log('The role is', this.userRole, 'The view is --->', this.view)
+      return this.userRole === 'moderator' && this.view === 'professional' || (this.userRole === 'user' && this.view === 'professional')
     },
     isModeratorOrHigher() {
-      return this.isModerator || this.isAdmin || this.isSuper
+      return (this.isModerator) || this.isAdmin || this.isSuper
     },
     isUser() {
-      return this.userRole === 'user'
+      return this.userRole === 'user' || this.view === 'user'
     },
   },
 }

@@ -139,7 +139,7 @@ export default {
   profs: 'Professionals',
   chat_acc: 'Your request has been accepted.',
   chat_sent: 'Chat Request Sent',
-  send_chat: 'Send Chat Request',
+  send_chat: 'Make appointment',
   no_data_av: 'No data available at the moment.',
   conf_action: 'Confirm action',
   conf_send_ch: 'Do you want to send a chat request to this user?',

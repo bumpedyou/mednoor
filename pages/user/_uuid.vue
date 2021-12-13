@@ -25,7 +25,7 @@
           </a-button>
         </p>
         <div class='mb-1 heart-actions'>
-          <a-button @click='toggleOwned'>
+          <a-button :type='owned ? "danger" : "old-rose"' @click='toggleOwned'>
             <SpinOrText v-model='loadingHeart' dark>
               <span v-if='owned'>
                 Remove from my doctors <a-icon type='heart' theme='filled' />
