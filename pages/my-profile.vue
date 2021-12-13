@@ -15,10 +15,45 @@
       </span></p>
       </div>
       <div>
-
         <a-tabs v-if='showTabs' :default-active-key="tab.toString()">
           <a-tab-pane key='1' tab='Profile Picture'>
-            <ProfilePicture :full-name='name'></ProfilePicture>
+            <div class='profile-upload'>
+              <div v-if='showUploadPicture' class='upload-box'>
+                <a-upload
+                  name="avatar"
+                  list-type="picture-card"
+                  class="avatar-uploader"
+                  :show-upload-list="false"
+                  :before-upload="beforeUpload"
+                  @change="handleChange"
+                >
+                  <img v-if="src && !loadingUpload" :src="src" alt="avatar" />
+                  <div v-else>
+                    <a-icon :type="loadingUpload ? 'loading' : 'plus'" />
+                    <div class="ant-upload-text">
+                      Upload
+                    </div>
+                  </div>
+                </a-upload>
+                <div class='buttons'>
+                  <a-button v-if='src && src.length' block type='primary' @click='uploadPicture'>
+                    <SpinOrText v-model='loadingUpload'>
+                      Save
+                    </SpinOrText>
+                  </a-button>
+                  <a-button block type='danger' @click='cancelUpload' >Cancel</a-button>
+                </div>
+              </div>
+              <div v-else >
+                <div>
+                  <ProfilePicture :full-name='name' :picture='picture'>
+                    <div class='profile-overlay' @click='showUploadPicture = true'>
+                      <a-icon type='upload'></a-icon>
+                    </div>
+                  </ProfilePicture>
+                </div>
+              </div>
+            </div>
           </a-tab-pane>
           <a-tab-pane key="2" tab="Personal Information">
             <a-form layout='vertical'  :form="form" size="small" @submit="handleSubmit">
@@ -250,6 +285,7 @@ import inputMixin from '~/mixins/inputMixin'
 import authMixin from '~/mixins/authMixin'
 import RequestModal from '~/components/RequestModal'
 import ProfilePicture from '~/components/ProfilePicture'
+import uploadMixin from '~/mixins/uploadMixin'
 
 export default {
   name: "MyProfile",
@@ -258,10 +294,12 @@ export default {
     SpinOrText,
     RequestModal,
   },
-  mixins: [userRoleMixin, inputMixin, authMixin],
+  mixins: [userRoleMixin, inputMixin, authMixin, uploadMixin],
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified'],
   data (){
     return {
+      picture: '',
+      file: null,
       showTabs: true,
       isComplete: false,
       tab: 1,
@@ -276,6 +314,9 @@ export default {
       loadingSaveP: false,
       loadingPage: true,
       isProfessional: false,
+      loadingUpload: false,
+      imageUrl: '',
+      showUploadPicture: false,
     }
   },
   head() {
@@ -335,6 +376,8 @@ export default {
         if (data && data.user_uuid){
           this.phone_no = data.user_phone_no
           this.country_code = '+' + data.user_country_code
+          this.picture = data.user_picture
+          console.log(data)
         }
       })
     }
@@ -354,6 +397,76 @@ export default {
 
   },
   methods: {
+    uploadPicture(){
+      this.loadingUpload = true
+      const data = new FormData()
+
+      data.append('file', this.file)
+
+      this.$api.post('/user/picture', data).then(({data})=>{
+        this.$toast.success('Your profile picture has been updated.')
+        this.src = ''
+        this.showUploadPicture = false
+        this.$auth.fetchUser()
+
+        this.picture = data.file
+
+      }).catch((err)=>{
+        this.$refs.rmodal.$emit('error',err)
+      }).finally(() => {
+        this.loadingUpload = false
+      })
+
+    },
+    cancelUpload(){
+      if (!this.loadingUpload){
+        this.src = ''
+        this.showUploadPicture = false
+      }
+    },
+    handleChange(info) {
+      if (info && info.file){
+        this.getSrcInfo(info)
+        this.file = info.file.originFileObj
+      }
+    },
+    handleUpload() {
+      const { fileList } = this
+      const formData = new FormData()
+      fileList.forEach(file => {
+        formData.append('file', file)
+      })
+      formData.append('type', this.type)
+      this.loadingUpload = true
+      this.$api.post(this.computedAction, formData, {
+        onUploadProgress: (evt) => {
+          this.onProgress(evt)
+        }
+      }).then(() => {
+        this.fileList = []
+        this.$message.success(this.$t('upl_succ').toString())
+        setTimeout(() => {
+          this.handleRemove()
+          this.umUploadProgress = 0
+        }, 1000)
+
+      }).catch(() => {
+        this.$message.error(this.$t('upl_fail').toString())
+      }).finally(() => {
+        this.loadingUpload = false
+      })
+    },
+    beforeUpload(file) {
+      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+      if (!isJpgOrPng) {
+        this.$message.error('You can only upload JPG file!');
+      }
+      const isLt2M = file.size / 1024 / 1024 < 6;
+      if (!isLt2M) {
+        this.$message.error('Image must smaller than 6MB!');
+      }
+      return isJpgOrPng && isLt2M;
+    },
     getMyRecord(){
       this.$api.get('/professional/my-record').then(({data})=>{
         this.loadingPage = false
@@ -364,7 +477,6 @@ export default {
           this.$nextTick(()=>{
 
             this.category = data.profe_cate_id.toString()
-
             this.isComplete = data.profe_specialty && data.profe_practice_name && data.profe_medical_license && data.profe_license_state && data.profe_credentials
 
             if (!this.isComplete) {
@@ -430,15 +542,12 @@ export default {
       e.preventDefault()
       this.profForm.validateFields((err, values) => {
         if (err) {
-          console.log(err)
           return false
         }
-
         if (!this.category){
           this.$toast.error('Please select a category.')
           return false
         }
-
         this.loadingSaveP = true
         values.category = this.category
         this.$api.put('/professional', values).then(()=>{
@@ -454,6 +563,7 @@ export default {
   }
 }
 </script>
+
 <style scoped lang="sass">
   .user-role
     background-color: #444
@@ -464,4 +574,44 @@ export default {
     display: inline-block
     text-transform: capitalize
     font-size: 15px !important
+  .profile-upload
+    display: flex
+    flex-direction: row
+    flex-wrap: wrap
+    > div
+      display: flex
+      align-items: center
+      justify-content: center
+      padding: 0.9rem
+    .upload-box
+      display: flex
+      justify-content: center
+      align-items: center
+      flex-direction: column
+      .buttons
+        display: flex
+        width: 100%
+
+  .profile-overlay
+    opacity: 0
+    color: #fff
+    position: absolute
+    left: 0
+    top: 0
+    bottom: 0
+    width: 100%
+    height: 100%
+    display: flex
+    justify-content: center
+    align-items: center
+    font-weight: bold
+    font-size: 3rem
+    &:hover
+      cursor: pointer
+      background: rgba(0,0,0,0.9)
+      opacity: 1
+
+  .avatar-uploader.ant-upload-picture-card-wrapper
+    img
+      max-width: 120px !important
 </style>

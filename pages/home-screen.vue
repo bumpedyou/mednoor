@@ -90,7 +90,6 @@ export default {
       },
       fileList: [],
       uploading: false,
-      src: '',
       type: 'sign-up',
     }
   },
@@ -128,13 +127,7 @@ export default {
     },
     beforeUpload(file) {
       this.fileList = [...this.fileList, file]
-      if (process.browser) {
-        const reader = new FileReader()
-        reader.onload = (e) => {
-          this.src = e.target.result
-        }
-        reader.readAsDataURL(file)
-      }
+      this.getSrc(file)
       return false
     },
     handleUpload() {

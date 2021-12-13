@@ -3,6 +3,7 @@ export default {
     umUploadProgress: 0,
     umPictures: [],
     umUploaded: [],
+    src: '',
   }),
   mounted() {},
   watch: {
@@ -68,6 +69,27 @@ export default {
           this.$refs.uploadBox.$emit('progress-change', data)
         }
       }
+    },
+    getSrc(file){
+      if (process.browser) {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          this.src = e.target.result
+        }
+        reader.readAsDataURL(file)
+      }
+    },
+    getSrcInfo(info){
+      if (info && info.file && info.file.originFileObj){
+        this.getBase64(info.file.originFileObj, imageUrl => {
+          this.src = imageUrl;
+        });
+      }
+    },
+    getBase64(img, callback) {
+      const reader = new FileReader();
+      reader.addEventListener('load', () => callback(reader.result));
+      reader.readAsDataURL(img);
     },
   },
 }

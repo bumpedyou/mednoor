@@ -144,7 +144,8 @@ b.b-white
 
 .d-flex
   display: flex !important
-
+.d-inline-flex
+  display: inline-flex !important
 
 .text-center
   text-align: center !important
@@ -261,6 +262,7 @@ hr
   color: tomato !important
 
 .clickable
+  color: $mdn-primary
   &:hover
     cursor: pointer
 
@@ -330,6 +332,13 @@ pre
 .ant-form-item-label > label.ant-form-item-required:before
   content: unset
 
+.ant-upload.ant-upload-select-picture-card
+  margin-right: 0 !important
+
+.ant-btn
+  .anticon
+    svg
+      width: 12px !important
 
 @media screen and (min-width: $md)
   .d-md-only

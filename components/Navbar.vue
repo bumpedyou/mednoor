@@ -153,7 +153,7 @@ export default {
 
         if (this.isUser) {
           items.push({
-            text: this.$t('av_prof'),
+            text: 'Professionals.',
             icon: 'tie',
             to: '/professionals'
           })
