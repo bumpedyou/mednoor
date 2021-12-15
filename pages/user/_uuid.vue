@@ -58,9 +58,9 @@
               {{ user.user_email }}
             </span>
             </p>
-            <p>
+            <div v-if="isLoggedIn" class='mt-1'>
               <MakeAppointment :user="user"></MakeAppointment>
-            </p>
+            </div>
           </a-col>
 
         </a-row>
