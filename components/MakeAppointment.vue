@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <span class='clickable' @click='confirmAppointment'>Make Appointment</span>
+  <div v-if="!isModeratorOrHigher">
+    <small :class='makeClasses' @click='confirmAppointment'>Make Appointment</small>
     <a-modal
       :title="$t('conf_action')"
       :visible='appointmentVisible'
@@ -13,12 +13,19 @@
   </div>
 </template>
 <script>
+import userRoleMixin from "~/mixins/userRoleMixin";
+
 export default {
   name: "MakeAppointment",
+  mixins: [userRoleMixin],
   props: {
     user: {
       type: Object,
-      default: ()=>({})
+      default: () => ({})
+    },
+    superSmall: {
+      type: Boolean,
+      default: true,
     }
   },
   data() {
@@ -28,13 +35,20 @@ export default {
     }
   },
   computed: {
-    professional(){
+    makeClasses(){
+      const c = ['clickable']
+      if (this.$props.superSmall){
+        c.push('super-small')
+      }
+      return c.join(' ')
+    },
+    professional() {
       const u = this.$props.user
-      if (u){
-        if (u.user_uuid){
+      if (u) {
+        if (u.user_uuid) {
           return u.user_uuid
         }
-        if (u.uuid){
+        if (u.uuid) {
           return u.uuid
         }
       }

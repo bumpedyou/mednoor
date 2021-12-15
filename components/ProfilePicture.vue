@@ -5,7 +5,7 @@
     <div v-else class='text-pic'>
       {{ initials }}
     </div>
-    <div class='name'>
+    <div class='name super-small'>
       <small v-if="credentials">{{[name, credentials].join(', ')}}</small>
       <small v-else>{{name}}</small>
     </div>

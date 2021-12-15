@@ -284,7 +284,8 @@ export default {
   },
   computed: {
     isDisabled() {
-      return !!this.recordId && this.type === 'record' || this.recordId && !this.isTemplate
+      // return !!this.recordId && this.type === 'record' || this.recordId && !this.isTemplate
+      return false // Enable edit temporarily
     },
     type() {
       let type = 'new'

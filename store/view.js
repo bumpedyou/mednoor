@@ -4,9 +4,9 @@ export const state = () => ({
 
 export const mutations = {
   setView(state, view) {
-    if (typeof view === 'string'){
+    if (typeof view === 'string') {
       view = view.toLowerCase()
-      if (view === 'professional' || view === 'user'){
+      if (view === 'professional' || view === 'user' || view === 'admin') {
         state.view = view
       }
     }

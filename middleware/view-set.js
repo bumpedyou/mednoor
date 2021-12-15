@@ -1,10 +1,16 @@
 export default function ({ $auth, store, redirect, localePath, route }) {
-  if (store){
+  if (store) {
     const view = store.state.view.view
     console.log('--->', view)
-    if (!view || view !== 'professional' && view !== 'user') {
+    if (
+      !view ||
+      (view !== 'professional' && view !== 'user' && view !== 'admin')
+    ) {
       console.log('We are at', route.path)
-      return redirect({path: localePath('/view-mode'), query: {callback: encodeURIComponent(route.path)}})
+      return redirect({
+        path: localePath('/view-mode'),
+        query: { callback: encodeURIComponent(route.path) },
+      })
     }
   }
 }

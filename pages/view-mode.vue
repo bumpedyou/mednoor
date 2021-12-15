@@ -43,15 +43,23 @@
 <script>
 import { mapMutations } from 'vuex'
 import redirectionMixin from '~/mixins/redirectionMixin'
+import userRoleMixin from "~/mixins/userRoleMixin";
 
 export default {
   name: "ViewMode",
-  mixins: [redirectionMixin],
+  mixins: [redirectionMixin, userRoleMixin],
   middleware: ['authenticated', 'verified', 'not-blocked', 'not-deleted'],
   computed: {
     ...mapMutations({
       setView: 'view/setView'
     }),
+  },
+  mounted(){
+    console.log('user Role --->', this.userRole)
+    if (this.isAdmin || this.isSuper){
+      this.$store.commit('view/setView', 'admin')
+      this.$router.push(this.localePath('/dashboard'))
+    }
   },
   methods: {
     setTheView(view){

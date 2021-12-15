@@ -60,7 +60,7 @@
                 </p>
               </div>
               <div>
-                <MakeAppointment :user="r"></MakeAppointment>
+                <MakeAppointment :user="r" :super-small="false"></MakeAppointment>
               </div>
             </div>
           </section>
@@ -93,12 +93,14 @@
 import RequestModal from '~/components/RequestModal'
 import authMixin from '~/mixins/authMixin'
 import ProfessionalThumb from '~/components/ProfessionalThumb'
+import MakeAppointment from '~/components/MakeAppointment'
 
 export default {
   name: 'Professionals',
   components: {
     ProfessionalThumb,
-    RequestModal
+    RequestModal,
+    MakeAppointment
   },
   mixins: [authMixin],
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified', 'view-set'],
