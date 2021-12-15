@@ -25,6 +25,7 @@
       </div>
       <div>
         <a-skeleton v-if='loadingResults' />
+        <!--
         <a-table v-else-if='results.length > 0' :columns='columns' :data-source='results'>
           <div slot='full_name' slot-scope='text, record'>
             <nuxt-link :to="localePath('/user/' + record.uuid)">
@@ -43,8 +44,29 @@
             <a v-else @click='save(record.uuid)'>{{ $t('send_chat') }}</a>
           </div>
         </a-table>
+        -->
+        <div v-else-if="results.length > 0">
+          <section v-for="(r, i) in results" :key="i" class="professional-bar">
+            <div>
+              <professional-thumb :user="r" :show-make-appointment="false"></professional-thumb>
+            </div>
+            <div class="info">
+              <div class="w-100">
+                <h3>{{r.user_last_name}}, {{r.user_first_name}} {{r.profe_credentials}}</h3>
+              </div>
+              <div v-if="r.addr_line1" class="w-100 mb-1">
+                <p>
+                  {{r.addr_line1}}, {{r.addr_city}}, {{r.addr_state}}, {{r.addr_zip}}
+                </p>
+              </div>
+              <div>
+                <MakeAppointment :user="r"></MakeAppointment>
+              </div>
+            </div>
+          </section>
+        </div>
         <div v-else>
-          <p>
+          <p class="text-center">
             {{ $t('no_data_av') }}
           </p>
         </div>
@@ -182,7 +204,6 @@ export default {
       this.uuid = uuid
       this.action = 'remove'
       this.visible = true
-
     }
   }
 }
@@ -200,4 +221,22 @@ export default {
 
   .doctor
     display: flex
+
+.professional-bar
+  background: #fff
+  border: 1px solid #ccc
+  margin: 1rem
+  display: flex
+  flex-direction: column
+  > div
+    text-align: center
+  > div:not(:first-child)
+    padding: 1rem
+
+@media screen and (min-width: $md)
+  .professional-bar
+    flex-direction: row
+    > div
+      text-align: left
+
 </style>

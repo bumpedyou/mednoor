@@ -58,6 +58,9 @@
               {{ user.user_email }}
             </span>
             </p>
+            <p>
+              <MakeAppointment :user="user"></MakeAppointment>
+            </p>
           </a-col>
 
         </a-row>
@@ -84,10 +87,12 @@ import authMixin from '~/mixins/authMixin'
 import dateMixin from '~/mixins/dateMixin'
 import ProfilePicture from '~/components/ProfilePicture'
 import SpinOrText from '~/components/SpinOrText'
+import MakeAppointment from "~/components/MakeAppointment";
 
 export default {
   name: 'Uuid',
   components: {
+    MakeAppointment,
     SpinOrText,
     ProfilePicture,
     RequestModal

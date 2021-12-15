@@ -6,7 +6,8 @@
       {{ initials }}
     </div>
     <div class='name'>
-      <small>{{name}}</small>
+      <small v-if="credentials">{{[name, credentials].join(', ')}}</small>
+      <small v-else>{{name}}</small>
     </div>
     <div>
       <slot></slot>
@@ -40,6 +41,14 @@ export default {
     }
   },
   computed: {
+    credentials(){
+      const u = this.$props.user
+      let credentials = null
+      if (u && u.profe_credentials){
+        credentials = u.profe_credentials
+      }
+      return credentials
+    },
     computedSrc(){
       return 'background-image: url(' + process.env.API_URL + '/profile/' + this.src + ')'
     },
@@ -58,16 +67,14 @@ export default {
       const full = this.$props.fullName
 
       if (fn && ln){
-        console.log(fn, ln)
         return [fn,ln].join(' ')
       }else if (full){
         console.log(full)
         return full
       }else if (this.$props.user){
         const u = this.$props.user
-
         if (u.user_first_name && u.user_last_name){
-          return [u.user_first_name, u.user_last_name].join(' ')
+          return [u.user_last_name, u.user_first_name].join(' ')
         }else if (u.full_sname){
           return u.full_sname
         }
@@ -76,33 +83,11 @@ export default {
     },
     initials() {
       let i = ''
-      const fn = this.$props.firstName
-      const ln = this.$props.lastName
-      const full = this.$props.fullName
-
-      console.log('Full name is', full)
-
-      i += this.getInitial(fn)
-      i += this.getInitial(ln)
-      if (full && full.length) {
-        const p = full.split(' ')
-        if (p.length) {
-          const a = this.getInitial(p[0])
-          const b = p.length > 1 ? this.getInitial(p[1]) : ''
-          i = a + b
-        }
-      }
-      const u = this.$props.user
-      if (u && (u.user_first_name || u.user_last_name || u.full_sname)) {
-        i+= this.getInitial(u.user_first_name)
-        i+= this.getInitial(u.user_last_name)
-        const f = u.full_sname
-        if (typeof f === 'string'){
-          const ff = f.split(' ')
-          if (ff && ff.length > 1){
-            i+= this.getInitial(ff[0])
-            i+= this.getInitial(ff[1])
-          }
+      if (typeof this.name === 'string' && this.name.length){
+        const n = this.name.split(' ')
+        if (n.length >= 2){
+          i+= this.getInitial(n[0])
+          i+= this.getInitial(n[1])
         }
       }
       return i
@@ -122,13 +107,15 @@ export default {
 
 <style scoped lang='sass'>
 .profile-picture
-  width: 100px
-  height: 100px
+  width: 130px
+  height: 130px
   background: $mdn-primary
   display: flex
   justify-content: center
   align-items: center
   position: relative
+  box-shadow: 0 3px 6px #eee
+  border: 1px solid #ccc
   .text-pic
     font-size: 3rem
     color: $mdn-white
@@ -138,8 +125,8 @@ export default {
     bottom: 0
     right: 0
     left: 0
-    background: rgba(0,0,0,0.8)
-    color: $mdn-white
+    background: $mdn-white
+    color: $mdn-primary
     display: block
     text-align: center
 
@@ -151,8 +138,8 @@ export default {
 
 @media screen and (min-width: $md)
   .profile-picture
-    width: 120px
-    height: 120px
+    width: 133px
+    height: 133px
 
 @media screen and (min-width: $lg)
   .profile-picture

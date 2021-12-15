@@ -122,7 +122,8 @@ export default {
               query: {
                 view: 'archived',
               },
-            },            btnText: 'Archived users',
+            },
+            btnText: 'Archived users',
             icon: 'usergroup-delete',
             type: 'primary',
           }

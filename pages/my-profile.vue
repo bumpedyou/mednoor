@@ -261,6 +261,58 @@
                   </a-form-item>
                 </a-col>
               </a-row>
+              <hr class="mb-1">
+              <p class="mb-1 h4">
+                Practice Address
+              </p>
+              <a-row>
+                <a-col>
+                  <a-form-item label="Line 1">
+                    <a-input v-decorator="['line1', {
+                  rules: [
+                    {required: true, message: 'This field is required.'},
+                    {min: 10, message: $t('v.min_10')},
+                    {max: 60, message: $t('v.max_60')},
+                  ]
+                }]"  placeholder="Eg: Mr. Smith James Flat 7"></a-input>
+                  </a-form-item>
+                </a-col>
+              </a-row>
+              <a-row>
+                <a-col :md="8">
+                  <a-form-item label="City">
+                    <a-input v-decorator="['city', {
+                  rules: [
+                    {required: true, message: 'The City is required'},
+                    {min: 2, message: $t('v.min_2')},
+                    {max: 60, message: $t('v.max_60')},
+                  ]
+                }]"  placeholder="City"></a-input>
+                  </a-form-item>
+                </a-col>
+                <a-col :md="8">
+                  <a-form-item label="State">
+                    <a-input v-decorator="['state', {
+                  rules: [
+                    {required: true, message: 'The State is required'},
+                    {min: 2, message: $t('v.min_2')},
+                    {max:60, message: $t('v.max_60')},
+                  ]
+                }]"  placeholder="State"></a-input>
+                  </a-form-item>
+                </a-col>
+                <a-col :md="8">
+                  <a-form-item label="ZIP">
+                    <a-input v-decorator="['zip', {
+                  rules: [
+                    {required: true, message: 'The ZIP is required'},
+                    {min: 2, message: $t('v.min_2')},
+                    {max: 12, message: $t('v.max_12')},
+                  ]
+                }]"  placeholder="ZIP"></a-input>
+                  </a-form-item>
+                </a-col>
+              </a-row>
               <a-form-item>
                 <a-button type="primary" html-type='submit'>
                   <SpinOrText v-model='loadingSaveP'>
@@ -317,6 +369,10 @@ export default {
       loadingUpload: false,
       imageUrl: '',
       showUploadPicture: false,
+      line1: '',
+      city: '',
+      state: '',
+      zip: '',
     }
   },
   head() {
@@ -343,15 +399,17 @@ export default {
     }
   },
   watch: {
+    zip(v){
+      if (v){
+        this.zip = this.numbersOnly(v)
+      }
+    },
     country_code(v){
       let str = ''
-
       if (v && v.length){
-
         if (v.length === 1){
           v = this.prependCharacter(v, '+')
         }
-
         for(let i = 0; i<v.length; i++){
           const char = v.charAt(i)
           if (this.allowed.includes(char) || char === '+' && i === 0){
@@ -378,7 +436,14 @@ export default {
           this.phone_no = data.user_phone_no
           this.country_code = '+' + data.user_country_code
           this.picture = data.user_picture
-          console.log(data)
+
+          this.$nextTick(()=>{
+            console.log(this.profForm)
+            this.line1 = data.addr_line1
+            this.city = data.addr_city
+            this.state = data.addr_state
+            this.zip = data.addr_zip
+          })
         }
       })
     }
@@ -395,7 +460,6 @@ export default {
     }).catch(()=>{
       this.$toast.error('Failed to load categories.')
     })
-
   },
   methods: {
     uploadPicture(){
@@ -478,6 +542,9 @@ export default {
 
           this.$nextTick(()=>{
 
+
+
+
             this.category = data.profe_cate_id.toString()
             this.isComplete = data.profe_specialty && data.profe_practice_name && data.profe_medical_license && data.profe_license_state && data.profe_credentials
 
@@ -500,6 +567,12 @@ export default {
                   medical_license: data.profe_medical_license,
                   license_state: data.profe_license_state,
                   credentials: data.profe_credentials
+                })
+                this.profForm.setFieldsValue({
+                  line1: this.line1,
+                  city: this.city,
+                  state: this.state,
+                  zip: this.zip,
                 })
               })
             }, 200)
@@ -525,6 +598,7 @@ export default {
             this.$toast.error('The phone number must have 10 digits.')
             return false
           }
+
           this.$api
             .put('/user', values)
             .then(async () => {
@@ -550,8 +624,10 @@ export default {
           this.$toast.error('Please select a category.')
           return false
         }
+
         this.loadingSaveP = true
         values.category = this.category
+
         this.$api.put('/professional', values).then(()=>{
           this.getMyRecord()
           this.$toast.success(this.$t('updated_suc').toString());

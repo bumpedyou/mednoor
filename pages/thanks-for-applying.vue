@@ -8,9 +8,11 @@
           will contact you as soon as possible
         </p>
         <a-alert v-if='isComplete' message='Your profile information is complete and will be reviewed very soon.' :show-icon='true' type='info' :banner='true' class='mb-1'></a-alert>
-        <a-alert v-else message='Please complete your profile information before you get approved.' type='warning'
+        <div v-else>
+          <a-alert message='Please complete your profile information before you get approved.' type='warning'
                  :show-icon='true' class='mb-1'></a-alert>
-        <a-button type='success' @click='$router.push(localePath("/my-profile"))'>Complete Information.</a-button>
+          <a-button type='success' @click='$router.push(localePath("/my-profile"))'>Complete Information.</a-button>
+        </div>
       </a-col>
     </a-row>
   </div>

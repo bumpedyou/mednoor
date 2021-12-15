@@ -39,7 +39,10 @@
               </a-button>
             </div>
             <div v-else>
-              {{ $auth.user.user_first_name }} {{ $auth.user.last_name }}
+              {{ $auth.user.last_name }}, {{ $auth.user.user_first_name }}
+              <span v-if="$auth.user.credentials && view === 'professional'">
+                {{$auth.user.credentials}}
+              </span>
               <a-icon type='caret-down' />
             </div>
           </div>
@@ -65,7 +68,8 @@
                 <span>
                  {{ item.text }}
                 </span>
-                <img v-if='item.icon' :src="require('~/static/icon/' + item.icon +'.svg')" :alt="item.icon + ' icon'">
+                <!--<img v-if='item.icon' :src="require('~/static/icon/' + item.icon +'.svg')" :alt="item.icon + ' icon'">-->
+                <a-icon v-if="item.icon" :type="item.icon"></a-icon>
               </nuxt-link>
             </li>
           </ul>
@@ -102,6 +106,9 @@ export default {
     showLocales: false,
   }),
   computed: {
+    view(){
+      return this.$store.state.view.view
+    },
     compView() {
       return this.$store.state.view.view
     },
@@ -111,6 +118,11 @@ export default {
     menuItems() {
       const items = []
       if (this.isLoggedIn) {
+        items.push({
+          text: 'Home',
+          icon: 'home',
+          to: '/view-mode'
+        })
         if (this.compView) {
           if (this.isAdmin || this.isSuper || this.isModerator) {
             items.push({
@@ -146,7 +158,7 @@ export default {
           if (this.isModerator) {
             items.push({
               text: this.$t('chat_requests'),
-              icon: 'message-square-plus',
+              icon: 'message',
               to: '/chat-requests'
             })
             items.push({
@@ -158,7 +170,7 @@ export default {
           if (this.isUser) {
             items.push({
               text: 'My Doctors',
-              icon: 'tie',
+              icon: 'contacts',
               to: '/professionals'
             })
           }
@@ -170,25 +182,25 @@ export default {
             })
             items.push({
               text: this.$t('chats'),
-              icon: 'chat',
+              icon: 'wechat',
               to: '/'
             })
           }
         }
         items.push({
           text: this.$t('sign_out'),
-          icon: 'sign-out',
+          icon: 'logout',
           to: '/sign-out'
         })
       } else {
         items.push({
             text: this.$t('sign_in'),
-            icon: 'sign-in',
+            icon: 'login',
             to: '/sign-in'
           },
           {
             text: this.$t('sign_up'),
-            icon: 'user-plus',
+            icon: 'user-add',
             to: '/sign-up'
           })
         this.pages.forEach((page) => {

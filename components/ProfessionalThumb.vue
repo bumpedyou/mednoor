@@ -4,23 +4,27 @@
       <div class='pp clickable' @click='getPath'>
         <ProfilePicture :user='$props.user'></ProfilePicture>
       </div>
-      <div class='ac d-none'>
-        <span class='clickable' @click='getPath'>Appointment call</span>
+      <div v-if="$props.showMakeAppointment" class='ac'>
+        <MakeAppointment :user="$props.user"></MakeAppointment>
       </div>
     </div>
   </div>
 </template>
-
 <script>
 import ProfilePicture from '~/components/ProfilePicture'
+import MakeAppointment from "~/components/MakeAppointment";
 
 export default {
   name: 'ProfessionalThumb',
-  components: { ProfilePicture },
+  components: {MakeAppointment, ProfilePicture },
   props: {
     user: {
       type: Object,
       default: () => ({})
+    },
+    showMakeAppointment: {
+      type: Boolean,
+      default: true,
     }
   },
   methods: {
