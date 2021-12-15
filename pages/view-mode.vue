@@ -1,7 +1,7 @@
 <template>
   <div class="pa-1 mh-100v">
     <div class='pa-1 mt-1'>
-      <a-row class='mt-1'>
+      <a-row class='mt-1' :gutter="3">
         <a-col>
           <div class="flex-center">
             <img alt='Mednoor Logo' :src='require("~/static/logo.jpg")'>
@@ -55,7 +55,6 @@ export default {
     }),
   },
   mounted(){
-    console.log('user Role --->', this.userRole)
     if (this.isAdmin || this.isSuper){
       this.$store.commit('view/setView', 'admin')
       this.$router.push(this.localePath('/dashboard'))
@@ -64,11 +63,8 @@ export default {
   methods: {
     setTheView(view){
 
-      console.log('Set view', view)
       this.$store.commit('view/setView', view)
       // this.checkRedirect()
-
-      console.log(this.$store.state.view.view)
 
       if (view === 'professional'){
         this.$router.push(this.localePath('/pin'))
