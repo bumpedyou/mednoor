@@ -5,7 +5,7 @@
     <div v-else class='text-pic'>
       {{ initials }}
     </div>
-    <div v-if="!$props.small" class='name super-small'>
+    <div v-if="!$props.small && !$props.xSmall" class='name super-small'>
       <small v-if="credentials">{{[name, credentials].join(', ')}}</small>
       <small v-else>{{name}}</small>
     </div>
@@ -39,6 +39,10 @@ export default {
       type: String,
       default: null,
     },
+    xSmall: {
+      type: Boolean,
+      default: false,
+    },
     small: {
       type: Boolean,
       default: false,
@@ -47,9 +51,13 @@ export default {
   computed: {
     computedClass(){
       const c = ['profile-picture']
-      if (this.$props.small) {
+
+      if (this.$props.xSmall){
+        c.push('x-small')
+      }else if (this.$props.small) {
         c.push('small')
       }
+
       return c.join(' ')
     },
     credentials(){
@@ -150,6 +158,10 @@ export default {
 .profile-picture.small
   width: 60px
   height: 60px
+
+.profile-picture.x-small
+  width: 30px !important
+  height: 30px !important
 
 @media screen and (min-width: $md)
   .profile-picture

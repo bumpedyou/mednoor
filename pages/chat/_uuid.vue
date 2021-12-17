@@ -17,10 +17,22 @@
           <div ref='chatContent' class='chat-content'>
             <div class='chat-content-top-bar'>
               <div style='margin-right: auto' class='ml-1'>
-                {{ userName }}
+                <div class="flex-center">
+                  <profile-picture :user="selectedUserObj" :x-small="true"></profile-picture>
+                  <span style="margin-left: 3px">
+                    {{ userName }}
+                  </span>
+                </div>
+              </div>
+              <div class='mx-auto'>
+                <p class="text-center date-center">
+                  {{dateString(new Date())}}
+                  <br>
+                  {{ hour(new Date()) }}
+                </p>
               </div>
               <div class='mr-1'>
-                {{$t('professional')}}: {{ professionalName }}
+                {{ professionalName }}
               </div>
               <img :src="require('~/static/icon/video.svg')" alt='video icon' @click='showVideo'>
               <a-icon type="left" class="control-icon" @click='leaveChat'></a-icon>
@@ -100,12 +112,14 @@ import authMixin from "~/mixins/authMixin";
 import breakpoints from "~/mixins/breakpoints";
 import RequestModal from "~/components/RequestModal";
 import VideoCall from "~/components/VideoCall";
+import ProfilePicture from "~/components/ProfilePicture";
+import dateMixin from "~/mixins/dateMixin";
 
 
 export default {
   name: "Uuid",
-  components: {ChatMessages, SpinOrText, TypingIndicator, RequestModal, VideoCall},
-  mixins: [listenMixin, userRoleMixin, userUpdatedMixin, uploadMixin, chatMixin, authMixin, breakpoints],
+  components: {ChatMessages, SpinOrText, TypingIndicator, RequestModal, VideoCall, ProfilePicture},
+  mixins: [listenMixin, userRoleMixin, userUpdatedMixin, uploadMixin, chatMixin, authMixin, breakpoints, chatMixin, dateMixin],
   layout: 'new-chat',
   middleware: ['authenticated', 'verified', 'pin-set', 'view-set'],
   data(){
@@ -147,7 +161,7 @@ export default {
       return this.$auth.user
     },
     myName() {
-      return this.user.user_first_name + ' ' + this.user.last_name
+      return this.user.last_name + ', ' + this.user.user_first_name + ' ' + this.user.credentials
     },
     professionalName() {
       if (this.isModerator) {
@@ -166,13 +180,24 @@ export default {
     myID() {
       return this.user.uuid
     },
+    selectedUserObj(){
+      let u = {}
+      if (this.to) {
+        this.moderators.forEach((m) => {
+          if (m.user_uuid === this.to) {
+            u = m
+          }
+        })
+      }
+      return u
+    },
     selectedUser() {
       let u = ''
       if (this.to) {
         this.moderators.forEach((m) => {
           if (m.user_uuid === this.to) {
             this.allowed = m.mypr_allowed
-            u = m.user_first_name + ' ' + m.user_last_name
+            u = m.user_last_name + ' ' + m.user_first_name
           }
         })
       }
@@ -204,9 +229,7 @@ export default {
     }
   },
   mounted() {
-    this.$api.get('/user/' + this.to).then(({data})=>{
-      console.log('Retrieved information from the other user:', data)
-    })
+    this.getChats()
     this.run_once(this.listen)
     this.setChatFromRoute()
   },
@@ -214,7 +237,6 @@ export default {
     setChatFromRoute() {
       // const c = this.$route.query
       const p = this.$route.params
-      console.log('Params -->', p)
       if (p && p.uuid) {
         this.openChat(p.uuid)
       }
@@ -574,6 +596,10 @@ export default {
   bottom: 10px
   margin-left: 20px
   z-index: 250
+
+.date-center
+  line-height: 1em
+  font-size: 12px
 
 @media screen and (min-width: $md)
   .emoji-picker

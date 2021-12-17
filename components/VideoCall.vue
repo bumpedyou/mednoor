@@ -2,15 +2,9 @@
   <div class="video-call">
     <div class="flex-center">
       <!--Video container #1-->
-      <p >
-        Container A
-      </p>
     </div>
     <div class="flex-center">
       <!--Video container #2-->
-      <p>
-        Container B
-      </p>
     </div>
   </div>
 </template>
