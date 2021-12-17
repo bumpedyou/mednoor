@@ -28,7 +28,7 @@
                 <p class="text-center date-center">
                   {{dateString(new Date())}}
                   <br>
-                  {{ hour(new Date()) }}
+                  {{hour(timestamp)}}
                 </p>
               </div>
               <div class='mr-1'>
@@ -100,6 +100,7 @@
 
 <script>
 import domtoimage from "dom-to-image";
+import { VEmojiPicker } from 'v-emoji-picker';
 import ChatMessages from "~/components/ChatMessages";
 import SpinOrText from "~/components/SpinOrText";
 import TypingIndicator from "~/components/TypingIndicator";
@@ -118,7 +119,7 @@ import dateMixin from "~/mixins/dateMixin";
 
 export default {
   name: "Uuid",
-  components: {ChatMessages, SpinOrText, TypingIndicator, RequestModal, VideoCall, ProfilePicture},
+  components: {ChatMessages, SpinOrText, TypingIndicator, RequestModal, VideoCall, ProfilePicture, VEmojiPicker},
   mixins: [listenMixin, userRoleMixin, userUpdatedMixin, uploadMixin, chatMixin, authMixin, breakpoints, chatMixin, dateMixin],
   layout: 'new-chat',
   middleware: ['authenticated', 'verified', 'pin-set', 'view-set'],
@@ -140,6 +141,7 @@ export default {
       sentTypingEvt: false,
       typing: null, // other user who is typing
       show_video: false,
+      timestamp: ""
     }
   },
   computed: {
@@ -233,7 +235,17 @@ export default {
     this.run_once(this.listen)
     this.setChatFromRoute()
   },
+  created() {
+    setInterval(this.getNow, 1000);
+  },
   methods: {
+    getNow() {
+      const today = new Date();
+      const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+      const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+      const dateTime = date +' '+ time;
+      this.timestamp = dateTime;
+    },
     setChatFromRoute() {
       // const c = this.$route.query
       const p = this.$route.params
