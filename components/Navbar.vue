@@ -9,7 +9,7 @@
           <img :src='require("~/static/logo.jpg")' height='40px' />
         </nuxt-link>
       </div>
-      <div v-if='!isSmall' class='mednoor-logo'>
+      <div v-if='!isSmall && !$props.hideMiddle' class='mednoor-logo'>
         <nuxt-link v-for='(page, i) in pages' :key='i'
                    :to='localePath({path: "/page/" + page.page_uuid + "/" + slugify(page.page_slug)})'
                    style='margin-left: 0.3rem; margin-right: 0.3rem'>{{ page.page_title }}
@@ -98,6 +98,12 @@ export default {
     SidebarMobileTitle
   },
   mixins: [toggleDirectiveMixin, authMixin, userRoleMixin, breakpoints, chatMixin, listenMixin, utilsMixin, userUpdatedMixin],
+  props: {
+    hideMiddle: {
+      type: Boolean,
+      default: false,
+    }
+  },
   data: () => ({
     showChatNav: false,
     showMenuNav: false,
@@ -106,6 +112,7 @@ export default {
     showLocales: false,
   }),
   computed: {
+
     view(){
       return this.$store.state.view.view
     },

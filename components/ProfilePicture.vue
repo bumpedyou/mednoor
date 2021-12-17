@@ -1,11 +1,11 @@
 <template>
-  <div class='profile-picture'>
+  <div :class='computedClass'>
     <div v-if='src' :style='computedSrc' class='picture-bg'>
     </div>
     <div v-else class='text-pic'>
       {{ initials }}
     </div>
-    <div class='name super-small'>
+    <div v-if="!$props.small" class='name super-small'>
       <small v-if="credentials">{{[name, credentials].join(', ')}}</small>
       <small v-else>{{name}}</small>
     </div>
@@ -38,9 +38,20 @@ export default {
     picture: {
       type: String,
       default: null,
+    },
+    small: {
+      type: Boolean,
+      default: false,
     }
   },
   computed: {
+    computedClass(){
+      const c = ['profile-picture']
+      if (this.$props.small) {
+        c.push('small')
+      }
+      return c.join(' ')
+    },
     credentials(){
       const u = this.$props.user
       let credentials = null
@@ -135,6 +146,10 @@ export default {
     height: 100%
     background-position: center
     background-size: cover
+
+.profile-picture.small
+  width: 60px
+  height: 60px
 
 @media screen and (min-width: $md)
   .profile-picture

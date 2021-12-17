@@ -1,108 +1,62 @@
 <template>
-  <div>
-    <navbar></navbar>
-    <div id='app-content'>
-      <div :class='chatsLayoutClass'>
-        <div v-if='savingPdf' class='chats-overlay'>
-          <div class='flex-center'>
-            <SpinOrText v-model='savingPdf'></SpinOrText>
-          </div>
-        </div>
-        <div class='chats-list'>
-          <div class='moderators'>
-            <div class='chat-item-title'>
-              <b class='h3'>
-                {{$t('chats')}}
-              </b>
+  <div :class='chatsLayoutClass'>
+    <div v-if='savingPdf' class='chats-overlay'>
+      <div class='flex-center'>
+        <SpinOrText v-model='savingPdf'></SpinOrText>
+      </div>
+    </div>
+    <div :class='leftClasses'>
+      <div v-if="show_video" class="video-control" @click="show_video = false">
+        <a-icon type="close"></a-icon>
+      </div>
+      <video-call></video-call>
+    </div>
+    <div ref='chatView' class='chat-view'>
+      <div ref='chatBox' class='chat-box-wrapper'>
+        <div ref='pdfArea'> <!--:class='pdfAreaClass'-->
+          <div ref='chatContent' class='chat-content'>
+            <div class='chat-content-top-bar'>
+              <div style='margin-right: auto' class='ml-1'>
+                {{ userName }}
+              </div>
+              <div class='mr-1'>
+                {{$t('professional')}}: {{ professionalName }}
+              </div>
+              <img :src="require('~/static/icon/video.svg')" alt='video icon' @click='showVideo'>
+              <a-icon type="left" class="control-icon" @click='leaveChat'></a-icon>
             </div>
-            <a-skeleton v-if='loadingItems' class='pa-1'></a-skeleton>
-            <div v-else>
-              <div v-if='moderators && moderators.length > 0' :key="'force-update-' + updateIdx">
-                <ChatItems :data='moderators' :selected-chat='to' @open-chat='openChat'></ChatItems>
-              </div>
-              <div v-else class='pa-1'>
-                <div v-if='isUser'>
-                  {{$t('dont_h_chats')}}
-                  <nuxt-link :to="localePath('/professionals')"> <a-divider type='vertical'/>{{ $t('av_prof') }}</nuxt-link>
-                </div>
-                <div v-else-if='isModerator'>
-                  {{ $t('dont_h_users') }}
-                </div>
-              </div>
+            <div id='messages' ref='messages' :key='messages.length' class='message-container-100'>
+              <chat-messages :messages='messages'></chat-messages>
             </div>
           </div>
         </div>
-        <div v-if='to' ref='chatView' class='chat-view'>
-          <div ref='chatBox' class='chat-box-wrapper'>
-            <div ref='pdfArea'> <!--:class='pdfAreaClass'-->
-              <div ref='chatContent' class='chat-content'>
-                <div class='chat-content-top-bar'>
-                  <div style='margin-right: auto' class='ml-1'>
-                    {{ userName }}
-                  </div>
-                  <div class='mr-1'>
-                    {{$t('professional')}}: {{ professionalName }}
-                  </div>
-                  <img :src="require('~/static/icon/video.svg')" alt='video icon' @click='showVideo'>
-                  <img :src="require('~/static/icon/close.svg')" alt='close icon' @click='leaveChat'>
-                </div>
-                <div id='messages' ref='messages' :key='messages.length' class='message-container-100'>
-                  <div v-if='!allowed && to && !isAdmin' class='messages-overlay'>
-                    <div v-if='isModerator'>
-                      <p class='h3 text-center'>
-                        {{$t('th_uina')}}
-                      </p>
-                      <div class='flex-center'>
-                        <a-button type='primary' @click='allowChat'>{{$t('allow')}}</a-button>
-                      </div>
-                    </div>
-                    <div v-else-if='isUser'>
-                      <p class='h3 text-center'>
-                        {{$t('you_htw_acc')}}
-                      </p>
-                    </div>
-                  </div>
-                  <chat-messages :messages='messages'></chat-messages>
-                </div>
-              </div>
-            </div>
-            <typing-indicator :value='toIsTyping'></typing-indicator>
-            <div v-if='fileName' class='upload-container'>
-              <small class='mr-1 text-muted'>{{ fileName }}</small>
-              <a-progress :percent='umUploadProgress'></a-progress>
-              <a-button type='danger' @click='cancelUpload'>
-                <a-icon type='close' />
-                Cancel
-              </a-button>
-              <a-button type='primary' @click='uploadFile'>
-                <a-icon type='upload' />
-                {{$t('upload')}}
-              </a-button>
-            </div>
-            <VEmojiPicker v-if='showEmojiPicker' class="emoji-picker" @select="selectEmoji" />
-            <div class='chat-controls'>
-              <div>
-                <img :src="require('~/static/icon/happy-face.svg')" alt='happy face' @click='showEmojiPicker = !showEmojiPicker'>
-              </div>
-              <a-input v-model='message' placeholder='Type a message' @keyup="imTyping" @keyup.enter='sendMessage(null)'></a-input>
-              <div class='chat-multiple-controls'>
-                <img v-if='!isUser' :src="require('~/static/icon/save.svg')" alt='save icon' @click='askSavePDF'>
-                <input id='file' ref='fileInput' type='file' style='opacity: 0; display: none' @change='fileChange' />
-                <label for='file'>
-                  <img :src="require('~/static/icon/attachment.svg')" alt='attachment icon'>
-                </label>
-                <img :src="require('~/static/icon/send.svg')" alt='send icon' @click='sendMessage(null)'>
-              </div>
-            </div>
-          </div>
+        <typing-indicator :value='toIsTyping'></typing-indicator>
+        <div v-if='fileName' class='upload-container'>
+          <small class='mr-1 text-muted'>{{ fileName }}</small>
+          <a-progress :percent='umUploadProgress'></a-progress>
+          <a-button type='danger' @click='cancelUpload'>
+            <a-icon type='close' />
+            Cancel
+          </a-button>
+          <a-button type='primary' @click='uploadFile'>
+            <a-icon type='upload' />
+            {{$t('upload')}}
+          </a-button>
         </div>
-        <div v-else-if='isSmall'>
-          <div v-if="moderators.length <= 0">
-            <p class="text-center pa-1">
-              {{$t('dont_h_urs_rn')}}
-            </p>
+        <VEmojiPicker v-if='showEmojiPicker' class="emoji-picker" @select="selectEmoji" />
+        <div class='chat-controls'>
+          <div>
+            <img :src="require('~/static/icon/happy-face.svg')" alt='happy face' @click='showEmojiPicker = !showEmojiPicker'>
           </div>
-          <ChatItems :data='moderators' :selected-chat='to' @open-chat='openChat'></ChatItems>
+          <a-input v-model='message' placeholder='Type a message' @keyup="imTyping" @keyup.enter='sendMessage(null)'></a-input>
+          <div class='chat-multiple-controls'>
+            <img v-if='!isUser' :src="require('~/static/icon/save.svg')" alt='save icon' @click='askSavePDF'>
+            <input id='file' ref='fileInput' type='file' style='opacity: 0; display: none' @change='fileChange' />
+            <label for='file'>
+              <img :src="require('~/static/icon/attachment.svg')" alt='attachment icon'>
+            </label>
+            <img :src="require('~/static/icon/send.svg')" alt='send icon' @click='sendMessage(null)'>
+          </div>
         </div>
       </div>
     </div>
@@ -129,79 +83,142 @@
     </div>
     <a ref='downloadUrlRef' :href='downloadUrl' :download='downloadUrl' target='_blank' class='d-none'></a>
   </div>
+
 </template>
 
 <script>
+import domtoimage from "dom-to-image";
+import ChatMessages from "~/components/ChatMessages";
+import SpinOrText from "~/components/SpinOrText";
+import TypingIndicator from "~/components/TypingIndicator";
+import listenMixin from "~/mixins/listenMixin";
+import userRoleMixin from "~/mixins/userRoleMixin";
+import userUpdatedMixin from "~/mixins/userUpdatedMixin";
+import uploadMixin from "~/mixins/uploadMixin";
+import chatMixin from "~/mixins/chatMixin";
+import authMixin from "~/mixins/authMixin";
+import breakpoints from "~/mixins/breakpoints";
+import RequestModal from "~/components/RequestModal";
+import VideoCall from "~/components/VideoCall";
 
-import domtoimage from 'dom-to-image'
-import { VEmojiPicker } from 'v-emoji-picker';
-import Navbar from '~/components/Navbar'
-import RequestModal from '~/components/RequestModal'
-import listenMixin from '~/mixins/listenMixin'
-import userRoleMixin from '~/mixins/userRoleMixin'
-import userUpdatedMixin from '~/mixins/userUpdatedMixin'
-import uploadMixin from '~/mixins/uploadMixin'
-import ChatItems from '~/components/ChatItems'
-import chatMixin from '~/mixins/chatMixin'
-import SpinOrText from '~/components/SpinOrText'
-import authMixin from '~/mixins/authMixin'
-import breakpoints from '~/mixins/breakpoints'
-import ChatMessages from '~/components/ChatMessages'
-import TypingIndicator from '~/components/TypingIndicator'
 
 export default {
-  name: 'Chat',
-  components: {
-    TypingIndicator,
-    ChatMessages,
-    ChatItems,
-    Navbar,
-    RequestModal,
-    SpinOrText,
-    VEmojiPicker
-  },
+  name: "Uuid",
+  components: {ChatMessages, SpinOrText, TypingIndicator, RequestModal, VideoCall},
   mixins: [listenMixin, userRoleMixin, userUpdatedMixin, uploadMixin, chatMixin, authMixin, breakpoints],
-  middleware: ['authenticated', 'not-blocked', 'not-deleted', 'pin-set','view-set'],
-  data: () => ({
-    showEmojiPicker: false,
-    visible: false,
-    confirmLoading: false,
-    savingPdf: false,
-    messages: [],
-    file: null,
-    fileName: '',
-    allowed: false,
-    messagesScrollHeight: 0,
-    updateIdx: 0,
-    socket: null,
-    visiblePDF: false,
-    pdfName: '',
-    sentTypingEvt: false,
-    typing: null, // other user who is typing
-  }),
-    head() {
+  layout: 'new-chat',
+  middleware: ['authenticated', 'verified', 'pin-set', 'view-set'],
+  data(){
     return {
-      title: 'Mednoor',
-      meta: [
-        {
-          hid: 'description',
-          name: 'description',
-          content: this.$t('seo.chat')
-        }
-      ]
+      showEmojiPicker: false,
+      visible: false,
+      confirmLoading: false,
+      savingPdf: false,
+      messages: [],
+      file: null,
+      fileName: '',
+      allowed: false,
+      messagesScrollHeight: 0,
+      updateIdx: 0,
+      socket: null,
+      visiblePDF: false,
+      pdfName: '',
+      sentTypingEvt: false,
+      typing: null, // other user who is typing
+      show_video: false,
     }
   },
-  watch: {
+  computed: {
+    leftClasses(){
+      const c = ['chats-list']
+      if (this.show_video){
+        c.push('show-video')
+      }
+      console.log(c)
+      return c.join(' ')
+    },
+    toIsTyping(){
+      return this.to === this.typing
+    },
+    downloadUrl(){
+      return process.env.API_URL + '/generated/' + this.pdfName
+    },
+    user() {
+      return this.$auth.user
+    },
+    myName() {
+      return this.user.user_first_name + ' ' + this.user.last_name
+    },
+    professionalName() {
+      if (this.isModerator) {
+        return this.myName
+      } else {
+        return this.selectedUser
+      }
+    },
+    userName() {
+      if (this.isModerator) {
+        return this.selectedUser
+      } else {
+        return this.myName
+      }
+    },
+    myID() {
+      return this.user.uuid
+    },
+    selectedUser() {
+      let u = ''
+      if (this.to) {
+        this.moderators.forEach((m) => {
+          if (m.user_uuid === this.to) {
+            this.allowed = m.mypr_allowed
+            u = m.user_first_name + ' ' + m.user_last_name
+          }
+        })
+      }
+      return u
+    },
+    chatsLayoutClass() {
+      const c = ['chats-layout']
+      if (this.savingPdf) {
+        c.push('saving-pdf')
+      }
+      return c.join(' ')
+    },
+    chatViewClass() {
+      const c = ['chat-view']
+      if (this.savingPdf) {
+        c.push('saving-pdf')
+      }
+      return c.join(' ')
+    },
+    pdfAreaClass() {
+      const c = []
+      if (this.savingPdf) {
+        c.push('saving-pdf')
+      }
+      return c.join(' ')
+    },
     query() {
-      this.setChatFromRoute()
+      return this.$route.query
     }
   },
   mounted() {
-    this.setChatFromRoute()
-    this.getChats()
+    this.$api.get('/user/' + this.to).then(({data})=>{
+      console.log('Retrieved information from the other user:', data)
+    })
     this.run_once(this.listen)
+    this.setChatFromRoute()
   },
   methods: {
+    setChatFromRoute() {
+      // const c = this.$route.query
+      const p = this.$route.params
+      console.log('Params -->', p)
+      if (p && p.uuid) {
+        this.openChat(p.uuid)
+      }
+    },
     selectEmoji(e){
       this.message += e.data
       this.showEmojiPicker = false
@@ -221,6 +238,7 @@ export default {
     leaveChat() {
       this.to = null
       this.chats = []
+      this.$router.push(this.localePath('/'))
     },
     handleOk() {
       this.confirmLoading = true
@@ -244,12 +262,6 @@ export default {
     },
     allowChat() {
       this.visible = true
-    },
-    setChatFromRoute() {
-      const c = this.$route.query
-      if (c && c.chat && c.chat !== this.to) {
-        this.openChat(c.chat)
-      }
     },
     uploadFile() {
       const file = this.$refs.fileInput.files
@@ -293,6 +305,7 @@ export default {
       }
     },
     showVideo() {
+      this.show_video = true
       const h = this.$createElement
       this.$info({
         title: 'Info',
@@ -333,12 +346,12 @@ export default {
             this.$refs.rmodal.$emit('error', 'The PDF was empty')
           }
         }).finally(() => {
-          this.visiblePDF = false
-          this.confirmLoading = false
-          setTimeout(() => {
-            this.savingPdf = false
-          }, 1500)
-        })
+        this.visiblePDF = false
+        this.confirmLoading = false
+        setTimeout(() => {
+          this.savingPdf = false
+        }, 1500)
+      })
     },
     sendMessage(opts) {
       if (!this.to) {
@@ -351,7 +364,7 @@ export default {
           onOk() {
           }
         })
-      } else if (this.allowed || this.isAdmin) {
+      } else if (this.allowed || this.isAdmin || this.isModerator) {
         if (opts) {
           this.socket.emit('send-message', {
             from: this.myID,
@@ -390,31 +403,48 @@ export default {
     openChat(uuid) {
       this.to = uuid
       this.messages = []
-      this.$api.get('/conversation/id/' + this.myID + '/' + uuid).then(({data}) => {
-        if (data.conversationId) {
-          this.$api.get('/conversation/messages/' + data.conversationId).then(({data}) => {
-            this.messages = data
-            this.$nextTick(() => {
-              this.scrollMessagesSection()
-              setTimeout(() => {
+      console.log('MyID --->', this.myID)
+      console.log('UUID --->', uuid)
+      if (this.myID && uuid){
+        this.$api.get('/conversation/id/' + this.myID + '/' + uuid).then(({data}) => {
+          if (data.conversationId) {
+            this.$api.get('/conversation/messages/' + data.conversationId).then(({data}) => {
+              this.messages = data
+              this.$nextTick(() => {
                 this.scrollMessagesSection()
-              }, 600)
+                setTimeout(() => {
+                  this.scrollMessagesSection()
+                }, 600)
+              })
             })
-          })
-        }
-      })
+          }
+        })
+      }
     }
   }
 }
 </script>
 
-<style lang='sass' scoped>
+<style scoped lang="sass">
 
 #app-content
   margin-top: 50px
 
 .chats-list
   display: none
+
+.chats-list.show-video
+  position: fixed !important
+  left: 0
+  right: 0
+  width: 100% !important
+  height: 100%
+  overflow-y: auto !important
+  bottom: 0
+  top: 50px
+  background: #fff
+  z-index: 120
+  display: block !important
 
 .chat-content-top-bar
   background-color: #fff
@@ -549,15 +579,14 @@ export default {
   .emoji-picker
     bottom: 110px
     margin-left: 30px
-    margin-left: 30px
     z-index: 250
   .typing-indicator
-    left: 30% !important
+    left: 50% !important
   .chats-layout
     width: 100%
     .chats-list
       position: fixed
-      width: 30%
+      width: 50%
       display: flex
       left: 0
       top: 50px
@@ -570,51 +599,56 @@ export default {
         top: 50px
         overflow-y: auto
         left: 0
-        width: 30%
+        width: 50%
 
       .chats
         position: fixed
         top: calc(50px + 50vh)
         left: 0
         right: 0
-        width: 30%
+        width: 50%
         overflow-y: auto
 
     .chat-view
-      width: 70%
+      width: 50%
       display: flex
       position: fixed
-      left: 30%
+      left: 50%
       height: 100%
       overflow-y: auto
 
   .chat-box-wrapper
     .chat-content
       .chat-content-top-bar
-        left: 30%
+        left: 50%
 
       .chat-message
         width: 350px
 
     .upload-container
-      left: 30%
+      left: 50%
 
     .chat-controls
       padding: 1rem
       height: 60px
-      left: 30%
+      left: 50%
 
       img
         margin-right: 0.6rem
         margin-left: 0.6rem
   .message-container-100
     position: fixed
-    left: 30%
+    left: 50%
     right: 0
     bottom: 60px
     top: 100px
     overflow-y: scroll
     z-index: 201
+
+  .chats-list.show-video
+    width: 50% !important
+    .video-control
+      display: none !important
 
 
 .saving-pdf
@@ -652,4 +686,17 @@ export default {
 
   .chats-list
     display: none !important
+
+.video-control
+  width: 100%
+  margin-left: auto !important
+  display: flex
+  align-items: center
+  justify-content: flex-end
+  padding: 1rem
+  i
+    font-weight: bold
+    color: red
+    font-size: 1.9rem
+
 </style>

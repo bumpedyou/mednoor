@@ -101,7 +101,7 @@ export default {
       this.$api.post('/my-professional/allow/' + this.selectedId).then(()=>{
         this.items = this.items.filter((item)=>{
           if (item.mypr_id === this.selectedId){
-            this.$router.push({ path: this.localePath('/'), query: { chat: item.user_uuid } })
+            this.$router.push({ path: this.localePath('/chat/' + item.user_uuid) })
           }
           return item.mypr_id !== this.selectedId
         })
