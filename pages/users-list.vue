@@ -192,7 +192,7 @@ export default {
           const ln = r.user_last_name.toLowerCase()
           const fullName = [fn, ln].join(' ')
           const inv = [ln, fn].join(' ')
-          const email = r.user_email.toLowerCase()
+          const email = r.user_email ? r.user_email.toLowerCase() : ''
           const search = this.search.toLowerCase()
           return fn.includes(search) || ln.includes(search) || email.includes(search) || fullName.includes(search) || inv.includes(search)
         })
