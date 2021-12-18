@@ -549,7 +549,6 @@ export default {
   .emoji-picker
     bottom: 110px
     margin-left: 30px
-    margin-left: 30px
     z-index: 250
   .typing-indicator
     left: 30% !important

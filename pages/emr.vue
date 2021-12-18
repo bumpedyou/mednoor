@@ -52,7 +52,21 @@
               {{ record.user_first_name }} {{ record.user_last_name }}
             </nuxt-link>
           </div>
+          <div slot="mere_is_draft" slot-scope="text, record">
+            <span v-if="record.mere_is_draft" class="text-muted">
+              [Draft]
+            </span>
+          </div>
           <div slot='actions' slot-scope='text, record'>
+            <nuxt-link :to="{
+                            path: localePath('/new-emr'),
+                            query: {
+                                mere: record.mere_uuid,
+                                mode: 'view',
+                            }
+                        }">View
+            </nuxt-link>
+            <a-divider type='vertical' />
             <nuxt-link :to="{
                             path: localePath('/new-emr'),
                             query: {
@@ -183,6 +197,15 @@ export default {
       this.setColumns()
     },
     setColumns() {
+
+      const draftCol =    {
+          title: '',
+          dataIndex: 'mere_is_draft',
+          key: 'mere_is_draft',
+          slots: { title: '' },
+          scopedSlots: { customRender: 'mere_is_draft' }
+        }
+
       if (this.type === 'record') {
         this.columns = [
           {
@@ -208,6 +231,7 @@ export default {
             slots: { title: this.$t('created_at') },
             scopedSlots: { customRender: 'mere_date' }
           },
+          draftCol,
           {
             title: this.$t('actions'),
             dataIndex: 'actions',
@@ -215,7 +239,6 @@ export default {
             slots: { title: this.$t('actions') },
             scopedSlots: { customRender: 'actions' }
           })
-
       } else {
         this.columns = [
           {
@@ -224,7 +247,7 @@ export default {
             key: 'mere_name',
             slots: { title: this.$t('template_name') },
             scopedSlots: { customRender: 'mere_name' }
-          }
+          },
         ]
 
         if (this.isAdmin || this.isSuper) {
@@ -239,6 +262,7 @@ export default {
         }
 
         this.columns.push(
+          draftCol,
           {
             title: this.$t('created_at'),
             dataIndex: 'mere_date',
@@ -261,6 +285,8 @@ export default {
         }
       }).then(({ data }) => {
         this.items = data
+        console.log('--->',data, '<---')
+
       }).finally(() => {
         this.loadingData = false
       })
