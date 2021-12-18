@@ -14,10 +14,10 @@
       <a-col>
         <p class='h4 mb-1 text-capitalize'>
 
-          <span v-if='view === "archived"'>
+          <span v-if='mode === "archived"'>
             Archived users
           </span>
-          <span v-else-if='view === "professional"'>
+          <span v-else-if='mode === "professional"'>
             Professional's list.
           </span>
           <span v-else>
@@ -25,7 +25,7 @@
           </span>
         </p>
         <div class='mb-1'>
-          <a-button v-if='view !== "archived"' type='aero-blue' @click='addUser'>{{ $t('add_urs') }}
+          <a-button v-if='mode !== "archived"' type='aero-blue' @click='addUser'>{{ $t('add_urs') }}
             <a-icon type='user-add'></a-icon>
           </a-button>
         </div>
@@ -52,7 +52,7 @@
             </span>
           </div>
           <div slot='action' slot-scope='text, record'>
-            <div v-if='view === "archived"'>
+            <div v-if='mode === "archived"'>
               <a v-if='record.user_deleted' @click.prevent='askUnarchive(record.user_uuid)'>
                 Remove from archived users.
               </a>
@@ -74,7 +74,7 @@
             </div>
           </div>
           <div slot='checkbox' slot-scope='text, record'>
-            <div v-if='view === "archived"'>
+            <div v-if='mode === "archived"'>
               No action available.
             </div>
             <div v-else>
@@ -175,7 +175,7 @@ export default {
       loading: true,
       loadingModal: false,
       uuid: null,
-      view: 'users',
+      mode: 'users',
       search: ''
     }
   },
@@ -194,7 +194,6 @@ export default {
           const inv = [ln, fn].join(' ')
           const email = r.user_email.toLowerCase()
           const search = this.search.toLowerCase()
-
           return fn.includes(search) || ln.includes(search) || email.includes(search) || fullName.includes(search) || inv.includes(search)
         })
       } else {
@@ -214,7 +213,7 @@ export default {
   mounted() {
     this.setView()
     this.loadItems()
-    if (this.isAdmin || this.isSuper && this.view !== 'unarchive') {
+    if (this.isAdmin || this.isSuper && this.mode !== 'unarchive') {
       this.columns.push({
         title: 'PRO',
         key: 'checkbox',
@@ -243,7 +242,6 @@ export default {
       this.uuid = uuid
     },
     changePro(r) {
-      console.log('Update to pro. (?)', r)
       const key = r.usro_key
       if (key === 'MODERATOR') {
         this.action = 'update-to-user'
@@ -259,7 +257,7 @@ export default {
       this.loading = true
       this.$api.get('/user', {
         params: {
-          view: this.view
+          view: this.mode
         }
       }).then(({ data }) => {
         this.users = data
@@ -273,12 +271,12 @@ export default {
       if (this.$route.query) {
         const q = this.$route.query
         if (q.view && ['users', 'professionals', 'archived'].includes(q.view.toLowerCase())) {
-          this.view = q.view.toLowerCase()
+          this.mode = q.mode.toLowerCase()
         } else {
-          this.view = 'users'
+          this.mode = 'users'
         }
       } else {
-        this.view = 'users'
+        this.mode = 'users'
       }
     },
     askConfirmation(uuid) {
