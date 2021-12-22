@@ -7,6 +7,14 @@
         </p>
         <div class='mb-1 my-doctors'>
           <ProfessionalThumb v-for='(p, i) in doctors' :key='i' class='doctor' :user='p'></ProfessionalThumb>
+          <!--
+          <div>
+            <div class='view-more-box'>
+              View All
+            </div>
+            <div style="height: 27px"></div>
+          </div>
+          -->
         </div>
       </div>
       <div class='mb-1'>
@@ -192,6 +200,19 @@ export default {
 </script>
 
 <style scoped lang='sass'>
+
+.view-more-box
+  display: flex
+  width: 130px
+  height: 130px
+  justify-content: center
+  align-items: center
+  border: 1px solid #ccc
+  padding: 1rem
+  color: $mdn-primary
+  &:hover
+    cursor: pointer
+
 .my-doctors
   display: flex
   flex-wrap: wrap
@@ -220,5 +241,13 @@ export default {
     flex-direction: row
     > div
       text-align: left
+  .view-more-box
+    width: 133px
+    height: 133px
 
+
+@media screen and (min-width: $lg)
+  .view-more-box
+    width: 150px
+    height: 150px
 </style>

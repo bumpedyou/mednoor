@@ -4,7 +4,8 @@ export default {
   mixins: [authMixin],
   computed: {
     view() {
-      return this.$store.state.view.view
+      console.log(this.$cookies.get('view'))
+      return this.$cookies.get('view')
     },
     userRoleTxt() {
       if (this.isLoggedIn) {
@@ -47,7 +48,10 @@ export default {
       return this.isModerator || this.isAdmin || this.isSuper
     },
     isUser() {
-      return this.userRole === 'user' || this.view === 'user'
+      return (
+        (this.userRole === 'user' || this.view === 'user') &&
+        this.view !== 'professional'
+      )
     },
   },
 }

@@ -63,15 +63,17 @@ export default {
       return this.$router.push(this.localePath(decodeURIComponent(this.callback)))
     }
     if (this.isAdmin || this.isSuper){
-      this.$store.commit('view/setView', 'admin')
+      // this.$store.commit('view/setView', 'admin')
+      this.$cookies.set('view', 'admin')
       this.$router.push(this.localePath('/dashboard'))
     }
   },
   methods: {
     setTheView(view){
 
-      this.$store.commit('view/setView', view)
+      // this.$store.commit('view/setView', view)
       // this.checkRedirect()
+      this.$cookies.set('view', view)
 
       if (view === 'professional'){
         this.$router.push(this.localePath('/pin'))

@@ -117,12 +117,11 @@ export default {
     interval: null,
   }),
   computed: {
-
     view(){
-      return this.$store.state.view.view
+      return this.$cookies.get('view')
     },
     compView() {
-      return this.$store.state.view.view
+      return this.$cookies.get('view')
     },
     myId() {
       return this.$auth.user.uuid
@@ -181,7 +180,7 @@ export default {
           }
           if (this.isUser) {
             items.push({
-              text: 'My Doctors',
+              text: 'My appointments',
               icon: 'contacts',
               to: '/professionals'
             })
@@ -239,12 +238,20 @@ export default {
     isLoggedIn(v) {
       if (v) {
         this.run_once(this.listen)
+
         this.$auth.refreshTokens()
         setInterval(()=>{
           this.$auth.refreshTokens()
         }, 1000 * 60 * 5)
+
+        this.$api.get('/my-professional/ids').then(({data})=>{
+          this.$cookies.set('appointments', data)
+        })
+
       }else if (this.interval){
         clearInterval(this.interval)
+        this.$cookies.set('view', null)
+        this.$cookies.set('appointments', null)
       }
     },
     query() {

@@ -121,6 +121,11 @@ export default {
             method: 'post',
             propertyName: 'data.token',
           },
+          logout: {
+            url: process.env.API_URL + '/user/logout',
+            method: 'post',
+            propertyName: 'data.refresh_token',
+          },
           autoLogout: false,
         },
       },

@@ -1,6 +1,7 @@
 <template>
   <div class='professional-thumb'>
     <div>
+      <slot></slot>
       <div class='pp clickable' @click='getPath'>
         <ProfilePicture :user='$props.user'></ProfilePicture>
       </div>

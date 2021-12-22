@@ -60,6 +60,7 @@ export default {
           this.loading = false
         })
       }else{
+        console.log(this.$t('ent_ver_code'))
         this.$refs.rmodal.$emit('error', this.$t('ent_ver_code'))
       }
     },

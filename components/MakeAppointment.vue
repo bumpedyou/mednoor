@@ -1,6 +1,11 @@
 <template>
-  <div v-if="!isModeratorOrHigher">
-    <small v-if="isLoggedIn" :class='makeClasses' @click='confirmAppointment'>Make Appointment</small>
+  <div v-if="!isModeratorOrHigher" :key="count">
+    <small v-if="isMade" class="success--text">
+      Appointment Queued <a-icon type="check-circle"></a-icon>
+    </small>
+    <small v-else-if="isLoggedIn" :class='makeClasses' @click='confirmAppointment'>
+      Make Appointment
+    </small>
     <a-modal
       :title="$t('conf_action')"
       :visible='appointmentVisible'
@@ -33,9 +38,21 @@ export default {
     return {
       loadingMakeAppointment: false,
       appointmentVisible: false,
+      count: 0,
     }
   },
   computed: {
+    isMade(){
+      const a = this.$cookies.get('appointments')
+      let includes = false
+      a.forEach((item)=>{
+        console.log('item --->', item)
+        if (item.professional === this.professional){
+          includes = true
+        }
+      })
+      return includes || this.count > 0
+    },
     makeClasses(){
       const c = ['clickable']
       if (this.$props.superSmall){
@@ -73,6 +90,13 @@ export default {
         })
         .then(() => {
           this.$toast.success('Your request has been sent successfully.')
+          const ids = this.$cookies.get('appointments')
+          console.log('ids are currently', ids)
+          ids.push({professional: this.professional})
+          console.log('Push --->', this.professional)
+          this.$cookies.set('appointments', ids)
+          console.log('ids are now --->', this.$cookies.get('appointments'))
+          this.count++
         })
         .catch((err) => {
           this.$toast.error(err)

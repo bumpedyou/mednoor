@@ -1,6 +1,6 @@
-export default function ({ store, redirect, localePath, route }) {
+export default function ({ store, redirect, localePath, route, $cookies }) {
   if (store) {
-    const view = store.state.view.view
+    const view = $cookies.get('view')
     if (
       !view ||
       (view !== 'professional' && view !== 'user' && view !== 'admin')

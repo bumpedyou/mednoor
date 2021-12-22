@@ -12,7 +12,7 @@ export default {
   components: {ChatItems},
   mixins: [chatMixin],
   layout: 'new-chat',
-  middleware: ['authenticated', 'verified', 'pin-set'],
+  middleware: ['authenticated', 'verified', 'view-set', 'pin-set'],
   head() {
     return {
       title: this.$t('home'),
