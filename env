@@ -1,0 +1,4 @@
+# EXAMPLE ENV FILE
+API_URL = http://localhost:5001
+BASE_URL = http://localhost:3000
+MEDIA_URL =
