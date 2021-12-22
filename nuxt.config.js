@@ -142,6 +142,7 @@ export default {
   env: {
     BASE_URL: process.env.BASE_URL,
     API_URL: process.env.API_URL,
+    MEDIA_URL: process.env.MEDIA_URL
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -156,6 +157,10 @@ export default {
         url: process.env.API_URL,
         default: true,
       },
+      {
+        name: 'media',
+        url: process.env.MEDIA_URL,
+      }
     ],
   },
 
