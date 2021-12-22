@@ -6,10 +6,10 @@
       </div>
     </div>
     <div :class='leftClasses'>
-      <div v-if="show_video" class="video-control" @click="show_video = false">
+      <div v-if="show_video" class="video-control" @click="stopVideo">
         <a-icon type="close"></a-icon>
       </div>
-      <video-call></video-call>
+      <video-call ref="videoRef" :close="stopVideo"></video-call>
     </div>
     <div ref='chatView' class='chat-view'>
       <div ref='chatBox' class='chat-box-wrapper'>
@@ -34,7 +34,7 @@
               <div class='mr-1'>
                 {{ professionalName }}
               </div>
-              <img :src="require('~/static/icon/video.svg')" alt='video icon' @click='showVideo'>
+              <img v-if="view === 'professional'" :src="require('~/static/icon/video.svg')" alt='video icon' @click='showVideo'>
               <a-icon type="left" class="control-icon" @click='leaveChat'></a-icon>
             </div>
             <div id='messages' ref='messages' :key='messages.length' class='message-container-100'>
@@ -141,6 +141,7 @@ export default {
       sentTypingEvt: false,
       typing: null, // other user who is typing
       show_video: false,
+      videoRoomId: null,
       timestamp: ""
     }
   },
@@ -234,6 +235,18 @@ export default {
     this.getChats()
     this.run_once(this.listen)
     this.setChatFromRoute()
+    this.socket.on('start-video', ({ from, roomId }) => {
+      console.log('start-video', this.to)
+      if (from === this.to && roomId) {
+        this.joinVideo(roomId)
+      }
+    })
+    this.socket.on('stop-video', ({ from, roomId }) => {
+      console.log('stop-video', roomId)
+      if (from === this.to && roomId) {
+        this.stopVideoByPro(roomId)
+      }
+    })
   },
   created() {
     setInterval(this.getNow, 1000);
@@ -339,16 +352,56 @@ export default {
       }
     },
     showVideo() {
+      if (this.show_video) return
       this.show_video = true
-      const h = this.$createElement
-      this.$info({
-        title: 'Info',
-        content: h('div', {}, [
-          h('p', 'Video app is inactive at this time')
-        ]),
-        onOk() {
+      const roomId = 'videoRoom_' + Math.round(Math.random() * 1000);
+      this.startVideo(roomId)
+    },
+    startVideo(roomId) {
+      if (this.view === 'professional') {
+        this.socket.emit('start-video', {
+          from: this.myID,
+          to: this.to,
+          roomId
+        })
+        this.$refs.videoRef.start(roomId)
+        this.videoRoomId = roomId
+      }
+    },
+    joinVideo(roomId) {
+      this.show_video = true
+      this.videoRoomId = roomId
+      console.log('join room', roomId)
+      if (this.$refs.videoRef)
+        this.$refs.videoRef.join(roomId)
+    },
+    stopVideo() {
+      this.show_video = false
+      if (this.view === 'professional') {
+        console.log(this.videoRoomId)
+        this.socket.emit('stop-video', {
+          from: this.myID,
+          to: this.to,
+          roomId: this.videoRoomId
+        })
+      }
+      this.videoRoomId = null
+      if (this.$refs.videoRef)
+        this.$refs.videoRef.stop()
+    },
+    stopVideoByPro(roomId) {
+      if (roomId === this.videoRoomId) {
+        this.show_video = false
+        if (this.view === 'professional') {
+          this.socket.emit('stop-video', {
+            from: this.myID,
+            to: this.to,
+            roomId: this.videoRoomId
+          })
         }
-      })
+        this.videoRoomId = null
+        this.$refs.videoRef.stop()
+      }
     },
     saveChatAsPdf() {
       this.confirmLoading = true
@@ -631,7 +684,8 @@ export default {
       overflow-y: auto
       height: 100%
       bottom: 0
-      border: 1px solid $mdn-super-light-grey
+      border-right: 1px solid $mdn-super-light-grey
+      height: calc(100% - 50px)
       .moderators
         position: fixed
         top: 50px
@@ -686,7 +740,7 @@ export default {
   .chats-list.show-video
     width: 50% !important
     .video-control
-      display: none !important
+      // display: none !important
 
 
 .saving-pdf
@@ -732,6 +786,8 @@ export default {
   align-items: center
   justify-content: flex-end
   padding: 1rem
+  box-shadow: 0 3px 6px #c9c6c6
+  height: 50px
   i
     font-weight: bold
     color: red
