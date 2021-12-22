@@ -86,6 +86,7 @@ export default {
     RequestModal
   },
   layout: 'dashboard',
+  middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified'],
   data() {
     return {
       form: this.$form.createForm(this, { name: 'coordinated' }),

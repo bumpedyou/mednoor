@@ -9,7 +9,7 @@
 <script>
 export default {
   name: 'Blocked',
-  middleware: ['authenticated', 'deleted-only'],
+  middleware: ['authenticated', 'deleted-only', 'verified'],
   head() {
     return {
       title: this.$t('acc_del'),

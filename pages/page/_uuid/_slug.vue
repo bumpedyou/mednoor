@@ -52,6 +52,7 @@ import dateMixin from '~/mixins/dateMixin'
 
 export default {
   mixins: [dateMixin],
+  middleware: ['verified'],
   data() {
     return {
       title: '',

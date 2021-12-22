@@ -18,6 +18,7 @@
 <script>
 export default {
   name: 'ChatEnded',
+  middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified'],
   head() {
     return {
       title: this.$t('chat_ended'),

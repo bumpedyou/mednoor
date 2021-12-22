@@ -29,7 +29,7 @@ import dashboardOptionsList from '~/mixins/dashboardOptionsList'
 export default {
   mixins: [dashboardOptionsList],
   layout: "dashboard",
-  middleware: ['authenticated', 'not-blocked', 'not-deleted', 'pin-set', 'view-set'],
+  middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified', 'pin-set', 'view-set'],
   head (){
     return {
       title: this.$t('dashboard')

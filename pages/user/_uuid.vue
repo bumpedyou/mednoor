@@ -11,7 +11,7 @@
         <p>
           We could not find the user that you were looking for.
         </p>
-        <a-button @click="$router.push(localePath('/directory'))">
+        <a-button @click="$router.push(localePath('/professionals'))">
           Search other users
         </a-button>
       </a-col>
@@ -67,7 +67,12 @@
         <a-row v-if='isUserModerator' class='mt-1'>
           <p v-if='isLoggedIn'>
           </p>
-          <a-button v-else type='primary' class='mt-1' @click="$router.push(localePath('/sign-in'))">
+          <a-button v-else type='primary' class='mt-1' @click="$router.push({
+            path: localePath('/sign-in'),
+            query: {
+              callback: encodeURIComponent('/user/' + uuid)
+            }
+          })">
             Sign in to chat with {{ user.user_first_name }}
           </a-button>
         </a-row>
@@ -154,9 +159,9 @@ export default {
         } else {
           this.not_found = false
         }
-      }).catch((err) => {
+      }).catch(() => {
         this.not_found = true
-        this.$refs.rmodal.$emit('error', err)
+        // this.$refs.rmodal.$emit('error', err)
       }).finally(() => {
         this.loading = false
       })

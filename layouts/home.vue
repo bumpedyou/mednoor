@@ -9,13 +9,7 @@
         <div class='content'>
           <nuxt></nuxt>
         </div>
-        <!--
-        <div class='lang-container'>
-          <flags-picker></flags-picker>
-        </div>
-        -->
         <div class='main-text'>
-
         </div>
       </a-col>
     </a-row>

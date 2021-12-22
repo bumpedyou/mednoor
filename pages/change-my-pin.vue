@@ -37,7 +37,7 @@ import RequestModal from '~/components/RequestModal'
 export default {
   name: 'ChangeMyPin',
   components: { RequestModal, SpinOrText },
-  middleware: ['authenticated', 'not-blocked', 'not-deleted', 'pin-set', 'view-set'],
+  middleware: ['authenticated', 'not-blocked', 'verified', 'not-deleted', 'pin-set', 'view-set'],
   data: ()=>({
     current_pin: '',
     new_pin: '',

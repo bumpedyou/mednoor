@@ -5,22 +5,39 @@
 <script>
 export default {
   name: 'Welcome',
-  middleware({ $auth, store, redirect, localePath}) {
+  middleware({ $auth, redirect, localePath, route}) {
+    const q = route.query || {}
+    const callback = q.callback || null
+
     if (!$auth.loggedIn) {
-      return redirect(localePath('/'))
+      return redirect({
+        path: localePath('/'),
+        query: {callback},
+      })
     }else{
+
       const role = $auth.user.role.toLowerCase()
       if (role === 'admin' || role === 'super'){
-        return redirect(localePath('/dashboard'))
+        return redirect({
+          path: localePath('/dashboard'),
+          query: {callback},
+        })
       }else if (role === 'moderator'){
-        console.log('Redirect to view-mode')
-        return redirect(localePath('/view-mode'))
+        return redirect({
+          path: localePath('/view-mode'),
+          query: {callback},
+        })
         // return redirect(localePath('/dashboard')) // We have to give time to enter the pin
       }else if (role === 'user'){
-        console.log('Redirect to view-mode')
-        return redirect(localePath('/view-mode'))
+        return redirect({
+          path: localePath('/view-mode'),
+          query: {callback},
+        })
       }else{
-        return redirect(localePath('/'))
+        return redirect({
+          path: localePath('/'),
+          query: {callback},
+        })
       }
     }
   },

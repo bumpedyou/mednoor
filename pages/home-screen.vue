@@ -82,7 +82,7 @@ export default {
   },
   mixins: [breakpoints, uploadMixin],
   layout: 'dashboard',
-  middleware: ['authenticated', 'not-blocked', 'not-deleted'],
+  middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified'],
   data() {
     return {
       headers: {

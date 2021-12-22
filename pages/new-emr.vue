@@ -265,7 +265,7 @@ export default {
   },
   mixins: [formMixin],
   layout: 'dashboard',
-  middleware: ['authenticated', 'not-blocked', 'not-deleted', 'pin-set'],
+  middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified', 'pin-set'],
   data() {
     return {
       locked: false,

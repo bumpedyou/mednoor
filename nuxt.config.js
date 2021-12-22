@@ -25,7 +25,12 @@ export default {
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ['@/plugins/antd-ui', '~/plugins/directives', '~/plugins/api', { src: '~/plugins/pincode', mode: 'client' }],
+  plugins: [
+    '@/plugins/antd-ui',
+    '~/plugins/directives',
+    '~/plugins/api',
+    { src: '~/plugins/pincode', mode: 'client' },
+  ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -74,7 +79,7 @@ export default {
     'nuxt-socket-io',
     '@nuxtjs/toast',
     'cookie-universal-nuxt',
-    'vue2-editor/nuxt'
+    'vue2-editor/nuxt',
   ],
 
   toast: {
@@ -86,11 +91,19 @@ export default {
   auth: {
     strategies: {
       local: {
+        scheme: 'refresh',
         token: {
           property: 'token',
           global: true,
+          maxAge: 1800,
           // required: true,
           // type: 'Bearer'
+        },
+        refreshToken: {
+          property: 'refresh_token',
+          data: 'refresh_token',
+          maxAge: 60 * 60 * 24 * 30,
+          // maxAge: 0,
         },
         endpoints: {
           login: {
@@ -103,7 +116,12 @@ export default {
             method: 'get',
             propertyName: 'data.user',
           },
-          logout: true,
+          refresh: {
+            url: process.env.API_URL + '/user/refresh',
+            method: 'post',
+            propertyName: 'data.token',
+          },
+          autoLogout: false,
         },
       },
     },

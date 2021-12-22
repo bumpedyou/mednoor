@@ -1,6 +1,6 @@
 <template>
   <div v-if="!isModeratorOrHigher">
-    <small :class='makeClasses' @click='confirmAppointment'>Make Appointment</small>
+    <small v-if="isLoggedIn" :class='makeClasses' @click='confirmAppointment'>Make Appointment</small>
     <a-modal
       :title="$t('conf_action')"
       :visible='appointmentVisible'
@@ -14,10 +14,11 @@
 </template>
 <script>
 import userRoleMixin from "~/mixins/userRoleMixin";
+import authMixin from "~/mixins/authMixin";
 
 export default {
   name: "MakeAppointment",
-  mixins: [userRoleMixin],
+  mixins: [userRoleMixin, authMixin],
   props: {
     user: {
       type: Object,

@@ -20,31 +20,8 @@
           </a-col>
         </a-row>
       </div>
-      <div class='my-doctors'>
-        <ProfessionalThumb v-for='(p, i) in results.slice(0,5)' :key='i' class='doctor' :user='p'></ProfessionalThumb>
-      </div>
       <div>
         <a-skeleton v-if='loadingResults' />
-        <!--
-        <a-table v-else-if='results.length > 0' :columns='columns' :data-source='results'>
-          <div slot='full_name' slot-scope='text, record'>
-            <nuxt-link :to="localePath('/user/' + record.uuid)">
-              {{ record.full_sname }}
-            </nuxt-link>
-          </div>
-          <div slot='action' slot-scope='text, record'>
-          <span v-if='record.mypr_id'>
-            <span v-if='record.mypr_allowed'>
-              {{ $t('chat_acc') }}
-            </span>
-            <span v-else>
-              {{ $t('chat_sent') }}
-            </span>
-          </span>
-            <a v-else @click='save(record.uuid)'>{{ $t('send_chat') }}</a>
-          </div>
-        </a-table>
-        -->
         <div v-else-if="results.length > 0">
           <section v-for="(r, i) in results" :key="i" class="professional-bar">
             <div>
@@ -103,7 +80,7 @@ export default {
     MakeAppointment
   },
   mixins: [authMixin],
-  middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified', 'view-set'],
+  middleware: ['verified'],
   data() {
     return {
       term: '',
@@ -146,13 +123,16 @@ export default {
     this.socket.on('chat-allowed', () => {
       this.getModerators()
     })
-    this.$api.get('/my-doctor', {
-      params: {
-        five: true
-      }
-    }).then(({ data }) => {
-      this.doctors = data
-    })
+
+    if (this.isLoggedIn){
+      this.$api.get('/my-doctor', {
+        params: {
+          five: true
+        }
+      }).then(({ data }) => {
+        this.doctors = data
+      })
+    }
   },
   methods: {
     search() {

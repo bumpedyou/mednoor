@@ -141,6 +141,15 @@
                   </a-form-item>
                 </a-col>
               </a-row>
+              <a-row v-if="isUser">
+                <a-col>
+                  <hr>
+                  <p class="h4">
+                    Address
+                  </p>
+                  <UserAddress :form="form"></UserAddress>
+                </a-col>
+              </a-row>
               <a-form-item>
                 <div class="pull-child-left">
                   <a-button type="primary" html-type="submit">
@@ -265,54 +274,7 @@
               <p class="mb-1 h4">
                 Practice Address
               </p>
-              <a-row>
-                <a-col>
-                  <a-form-item label="Line 1">
-                    <a-input v-decorator="['line1', {
-                  rules: [
-                    {required: true, message: 'This field is required.'},
-                    {min: 10, message: $t('v.min_10')},
-                    {max: 60, message: $t('v.max_60')},
-                  ]
-                }]"  placeholder="Eg: Mr. Smith James Flat 7"></a-input>
-                  </a-form-item>
-                </a-col>
-              </a-row>
-              <a-row>
-                <a-col :md="8">
-                  <a-form-item label="City">
-                    <a-input v-decorator="['city', {
-                  rules: [
-                    {required: true, message: 'The City is required'},
-                    {min: 2, message: $t('v.min_2')},
-                    {max: 60, message: $t('v.max_60')},
-                  ]
-                }]"  placeholder="City"></a-input>
-                  </a-form-item>
-                </a-col>
-                <a-col :md="8">
-                  <a-form-item label="State">
-                    <a-input v-decorator="['state', {
-                  rules: [
-                    {required: true, message: 'The State is required'},
-                    {min: 2, message: $t('v.min_2')},
-                    {max:60, message: $t('v.max_60')},
-                  ]
-                }]"  placeholder="State"></a-input>
-                  </a-form-item>
-                </a-col>
-                <a-col :md="8">
-                  <a-form-item label="ZIP">
-                    <a-input v-decorator="['zip', {
-                  rules: [
-                    {required: true, message: 'The ZIP is required'},
-                    {min: 2, message: $t('v.min_2')},
-                    {max: 12, message: $t('v.max_12')},
-                  ]
-                }]"  placeholder="ZIP"></a-input>
-                  </a-form-item>
-                </a-col>
-              </a-row>
+              <UserAddress ref="profAddr" :form="profForm"></UserAddress>
               <a-form-item>
                 <a-button type="primary" html-type='submit'>
                   <SpinOrText v-model='loadingSaveP'>
@@ -338,10 +300,12 @@ import authMixin from '~/mixins/authMixin'
 import RequestModal from '~/components/RequestModal'
 import ProfilePicture from '~/components/ProfilePicture'
 import uploadMixin from '~/mixins/uploadMixin'
+import UserAddress from "~/components/UserAddress";
 
 export default {
   name: "MyProfile",
   components: {
+    UserAddress,
     ProfilePicture,
     SpinOrText,
     RequestModal,
@@ -355,7 +319,7 @@ export default {
       showTabs: true,
       isComplete: false,
       tab: 1,
-      form: this.$form.createForm(this, { name: 'coordinated' }),
+      form: this.$form.createForm(this, { name: 'user-data-form' }),
       profForm: null,
       loading: false,
       category: null,
@@ -369,10 +333,6 @@ export default {
       loadingUpload: false,
       imageUrl: '',
       showUploadPicture: false,
-      line1: '',
-      city: '',
-      state: '',
-      zip: '',
     }
   },
   head() {
@@ -430,20 +390,13 @@ export default {
     }
   },
   mounted() {
+    console.log('[MyProfile] Mounted')
     if (this.myUserId){
       this.$api.get('/user/'+ this.myUserId).then(({data})=>{
         if (data && data.user_uuid){
           this.phone_no = data.user_phone_no
           this.country_code = '+' + data.user_country_code
           this.picture = data.user_picture
-
-          this.$nextTick(()=>{
-            console.log(this.profForm)
-            this.line1 = data.addr_line1
-            this.city = data.addr_city
-            this.state = data.addr_state
-            this.zip = data.addr_zip
-          })
         }
       })
     }
@@ -535,15 +488,12 @@ export default {
     getMyRecord(){
       this.$api.get('/professional/my-record').then(({data})=>{
         this.loadingPage = false
+        console.log('[MyProfile] loadingPage set to false')
         if (data){
           this.profForm = this.$form.createForm(this)
-          console.log('isModerator --->', this.isModerator)
           this.isProfessional = this.isModerator
 
           this.$nextTick(()=>{
-
-
-
 
             this.category = data.profe_cate_id.toString()
             this.isComplete = data.profe_specialty && data.profe_practice_name && data.profe_medical_license && data.profe_license_state && data.profe_credentials
@@ -560,20 +510,19 @@ export default {
 
             setTimeout(() => {
               this.$nextTick(()=>{
-                this.profForm.setFieldsValue({
-                  npi: data.profe_npi,
-                  specialty: data.profe_specialty,
-                  practice_name: data.profe_practice_name,
-                  medical_license: data.profe_medical_license,
-                  license_state: data.profe_license_state,
-                  credentials: data.profe_credentials
-                })
-                this.profForm.setFieldsValue({
-                  line1: this.line1,
-                  city: this.city,
-                  state: this.state,
-                  zip: this.zip,
-                })
+                if (this.isModerator){
+                  this.profForm.setFieldsValue({
+                    npi: data.profe_npi,
+                    specialty: data.profe_specialty,
+                    practice_name: data.profe_practice_name,
+                    medical_license: data.profe_medical_license,
+                    license_state: data.profe_license_state,
+                    credentials: data.profe_credentials
+                  })
+                }
+                if (this.$refs.profAddr){
+                  this.$refs.profAddr.$emit('refresh')
+                }
               })
             }, 200)
 
@@ -598,6 +547,8 @@ export default {
             this.$toast.error('The phone number must have 10 digits.')
             return false
           }
+
+          values.is_patient = this.isUser
 
           this.$api
             .put('/user', values)

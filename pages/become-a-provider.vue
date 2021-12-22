@@ -18,7 +18,7 @@
 <script>
 export default {
   name: 'BecomeAProvider',
-  middleware: ['authenticated','not-blocked', 'not-deleted'],
+  middleware: ['authenticated','not-blocked', 'not-deleted', 'verified'],
   mounted (){
     this.$api.get('/professional/my-record').then(({data}) =>{
       if (data && data.profe_uuid){

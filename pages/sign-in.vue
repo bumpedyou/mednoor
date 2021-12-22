@@ -116,8 +116,19 @@ export default {
                   }
                 })
                 .then(() => {
-                  this.$router.push(this.localePath('/welcome'))
-                  console.log('Success')
+                  console.log('[sign-in.vue]', this.$route.query)
+                  const q = this.$route.query
+                  const path = this.localePath('/welcome')
+
+                  if (q.callback){
+                    console.log('Redirect with callback')
+                    this.$router.push({path, query: {
+                        callback: q.callback
+                      }})
+                  }else{
+                    console.log('Redirect without callback')
+                    this.$router.push(path)
+                  }
                 })
                 .catch((e) => {
                   this.$refs.rmodal.$emit('error', e)

@@ -18,8 +18,16 @@ export default {
     }
   },
   mounted(){
-    this.$auth.logout()
-    this.$router.push(this.localePath('/sign-in'))
+    const refreshToken = this.$auth.strategy.refreshToken.get()
+
+    this.$api.post('/user/sign-out',{
+      refresh_token: refreshToken
+    }).then(()=>{
+      this.$auth.logout()
+      this.$router.push(this.localePath('/sign-in'))
+    }).catch(()=>{
+      this.$toast.error('Failed to log out. Try again later')
+    })
   },
 }
 </script>

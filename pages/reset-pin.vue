@@ -44,7 +44,7 @@ export default {
   name: 'ResetPin',
   components: { RequestModal, SpinOrText },
   mixins: [inputMixin],
-  middleware: ['authenticated', 'not-blocked', 'not-deleted'],
+  middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified'],
   data () {
     return {
       verification_code: '',

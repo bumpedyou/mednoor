@@ -74,7 +74,7 @@ export default {
     RequestModal,
     SpinOrText
   },
-  middleware: ['authenticated'],
+  middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified'],
   data() {
     return {
       formLayout: 'horizontal',

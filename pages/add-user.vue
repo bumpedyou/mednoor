@@ -133,7 +133,7 @@ export default {
   },
   mixins: [formMixin],
   layout: 'dashboard',
-  middleware: ['authenticated', 'not-blocked', 'not-deleted'],
+  middleware: ['authenticated', 'verified', 'not-blocked', 'not-deleted'],
   data() {
     return {
       loading: false

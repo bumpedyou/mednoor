@@ -29,7 +29,7 @@ export default {
   components: {
     RequestModal
   },
-  middleware: ['authenticated'],
+  middleware: ['authenticated', 'verified'],
   data () {
     return {
       items: [],

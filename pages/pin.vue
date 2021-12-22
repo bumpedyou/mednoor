@@ -53,7 +53,7 @@ export default {
     RequestModal,
   },
   mixins: [inputMixin, redirectionMixin],
-  middleware: ['authenticated', 'not-blocked', 'not-deleted', 'view-set'],
+  middleware: ['authenticated', 'verified', 'not-blocked', 'not-deleted', 'view-set'],
   data(){
     return {
       pin: '',

@@ -45,7 +45,7 @@ import RequestModal from '~/components/RequestModal'
 export default {
   name: 'SetNewPin',
   components: { RequestModal, SpinOrText },
-  middleware: ['authenticated', 'not-blocked', 'not-deleted'],
+  middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified'],
   data: () =>({
     new_pin: '',
     verify_new_pin: '',

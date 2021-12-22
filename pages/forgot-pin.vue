@@ -47,7 +47,7 @@ import RequestModal from '~/components/RequestModal'
 export default {
   name: 'ForgotPin',
   components: { RequestModal, SpinOrText },
-  middleware: ['authenticated', 'not-blocked', 'not-deleted'],
+  middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified'],
   data () {
     return {
       loading: false,

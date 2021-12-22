@@ -9,7 +9,7 @@
 <script>
 export default {
   name: 'Blocked',
-  middleware: ['authenticated', 'blocked-only'],
+  middleware: ['authenticated', 'blocked-only' , 'verified'],
   head() {
     return {
       title: this.$t('acc_blocked'),

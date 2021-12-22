@@ -117,7 +117,7 @@ export default {
   },
   mixins: [userRoleMixin, dateMixin],
   layout: 'dashboard',
-  middleware: ['authenticated', 'moderator-or-higher', 'not-blocked', 'not-deleted'],
+  middleware: ['authenticated', 'moderator-or-higher', 'not-blocked', 'not-deleted', 'verified'],
   data() {
     return {
       loadingUnarchive: false,

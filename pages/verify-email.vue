@@ -43,6 +43,7 @@ export default {
       title: this.$t('verify_email'),
     }
   },
+
   methods: {
     verify(){
       if(this.code && this.code.length === 9){
@@ -53,6 +54,7 @@ export default {
           await this.$auth.fetchUser()
           await this.$router.push(this.localePath('/view-mode'))
         }).catch((e)=>{
+          console.log('Catch --->', e)
           this.$refs.rmodal.$emit('error', e)
         }).finally(()=>{
           this.loading = false

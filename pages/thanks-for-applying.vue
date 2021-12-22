@@ -26,7 +26,7 @@
 <script>
 export default {
   name: 'ThanksForApplying',
-  middleware: ['authenticated', 'not-blocked', 'not-deleted'],
+  middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified'],
   data: ()=>({
     isComplete: false,
   }),

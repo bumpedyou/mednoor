@@ -14,7 +14,7 @@
                    :to='localePath({path: "/page/" + page.page_uuid + "/" + slugify(page.page_slug)})'
                    style='margin-left: 0.3rem; margin-right: 0.3rem'>{{ page.page_title }}
         </nuxt-link>
-        <nuxt-link :to="localePath('/directory')">Directory</nuxt-link>
+        <nuxt-link :to="localePath('/professionals')">Directory</nuxt-link>
       </div>
       <div class='menu-icon'>
         <div class='mr-1'>
@@ -39,7 +39,11 @@
               </a-button>
             </div>
             <div v-else>
-              {{ $auth.user.last_name }}, {{ $auth.user.user_first_name }}
+              <span v-if="$auth.user.last_name">
+                {{ $auth.user.last_name }}, {{ $auth.user.user_first_name }}
+              </span>
+              <a-icon v-else type="user"></a-icon>
+
               <span v-if="$auth.user.credentials && view === 'professional'">
                 {{$auth.user.credentials}}
               </span>
@@ -110,6 +114,7 @@ export default {
     to: '',
     pages: [],
     showLocales: false,
+    interval: null,
   }),
   computed: {
 
@@ -234,6 +239,12 @@ export default {
     isLoggedIn(v) {
       if (v) {
         this.run_once(this.listen)
+        this.$auth.refreshTokens()
+        setInterval(()=>{
+          this.$auth.refreshTokens()
+        }, 1000 * 60 * 5)
+      }else if (this.interval){
+        clearInterval(this.interval)
       }
     },
     query() {

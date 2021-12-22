@@ -48,7 +48,7 @@ export default {
   name: "ProfessionalRequests",
   mixins: [listenMixin],
   layout: 'dashboard',
-  middleware: ['authenticated', 'not-deleted', 'not-blocked', 'admin-or-super'],
+  middleware: ['authenticated' , 'verified', 'not-deleted', 'not-blocked', 'admin-or-super'],
   data (){
     return {
       confirmLoading: false,

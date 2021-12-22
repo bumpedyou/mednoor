@@ -6,7 +6,8 @@
     <div v-if='chatOpened' class='chat-box'>
       <div class='chat-box-header'>
         <div class='content'>
-          {{ adminName }}
+          <!--{{ adminName }}>-->
+          Mednoor
         </div>
         <div class='close' @click='chatOpened = false'>
           <a-icon type='close'></a-icon>
