@@ -17,6 +17,9 @@
         <nuxt-link :to="localePath('/professionals')">Directory</nuxt-link>
       </div>
       <div class='menu-icon'>
+        <div v-if="isLoggedIn" class='mr-1'>
+          <img :src="require('~/static/pay.png')" alt="pay">
+        </div>
         <div class='mr-1'>
           <div class='lang-selector' @click='showLocales = !showLocales'>
             <div class='current'>
