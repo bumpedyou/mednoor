@@ -14,6 +14,11 @@
                 </small>
                 </div>
               </div>
+              <div>
+                <p class="d-block text-center">
+                  1-251-633-0801
+                </p>
+              </div>
               <a-form :form='form' size='small' @submit='handleSubmit'>
                 <a-form-item>
                   <a-input
@@ -55,8 +60,8 @@
                   <small class='text-center d-block mb-0'>
                     {{$t('dont_h_acc')}}
                   </small>
-                  <small class='text-center d-block'>
-                    <nuxt-link :to="localePath('/sign-up')">{{$t('sign_up')}}</nuxt-link>
+                  <small class='text-center d-block mt-1'>
+                    <a-button type="primary"  @click="$router.push(localePath('/sign-up'))">{{$t('sign_up')}}</a-button>
                   </small>
                 </div>
               </a-form>

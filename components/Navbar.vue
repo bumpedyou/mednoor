@@ -18,7 +18,9 @@
       </div>
       <div class='menu-icon'>
         <div v-if="isLoggedIn" class='mr-1'>
+          <a href="https://pay.mednoor.com/submit" target="_blank">
           <img :src="require('~/static/pay.png')" alt="pay">
+          </a>
         </div>
         <div class='mr-1'>
           <div class='lang-selector' @click='showLocales = !showLocales'>

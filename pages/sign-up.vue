@@ -170,8 +170,8 @@
               <small class="text-center d-block mb-0">
                 {{$t('alr_h_acc')}}
               </small>
-              <small class="text-center d-block">
-                <nuxt-link :to="localePath('/sign-in')">{{$t('sign_in')}}</nuxt-link>
+              <small class="text-center d-block mt-1">
+                <a-button type="primary" @click="$router.push(localePath('/sign-in'))">{{$t('sign_in')}}</a-button>
               </small>
             </div>
           </a-form>
