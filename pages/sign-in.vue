@@ -9,15 +9,10 @@
                 <p class='h3 text-center'>
                   {{$t('med_med_cen')}}
                 </p>
-                <small class="h5 fw-b text-center d-block">
-                  {{$t('alw_open')}}
+                <small class="h5 text-center d-block">
+                  +1-251-633-0801
                 </small>
                 </div>
-              </div>
-              <div>
-                <p class="d-block text-center">
-                  1-251-633-0801
-                </p>
               </div>
               <a-form :form='form' size='small' @submit='handleSubmit'>
                 <a-form-item>
