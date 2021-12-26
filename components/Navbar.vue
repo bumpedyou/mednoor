@@ -17,7 +17,7 @@
         <nuxt-link :to="localePath('/professionals')">Directory</nuxt-link>
       </div>
       <div class='menu-icon'>
-        <div v-if="isLoggedIn" class='mr-1'>
+        <div class='mr-1 pay-icon'>
           <a href="https://pay.mednoor.com/submit" target="_blank">
           <img :src="require('~/static/pay.png')" alt="pay">
           </a>
@@ -455,6 +455,16 @@ export default {
 
 .md-only
   display: none
+
+
+.pay-icon
+  display: flex
+  justify-content: center
+  align-items: center
+  img
+    height: 40px !important
+    margin-bottom: 6px
+
 
 @media screen and (min-width: $md)
   .side-bars
