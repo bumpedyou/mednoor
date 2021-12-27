@@ -59,7 +59,6 @@ export default {
   },
   mounted(){
     if (this.callback){
-      console.log('Callback --->', this.callback)
       return this.$router.push(this.localePath(decodeURIComponent(this.callback)))
     }
     if (this.isAdmin || this.isSuper){

@@ -18,7 +18,7 @@ export default {
     }
   },
   mounted(){
-    this.$auth.logout('test')
+    this.$auth.logout()
     this.$router.push(this.localePath('/sign-in'))
   },
 }
