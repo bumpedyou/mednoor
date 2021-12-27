@@ -45,7 +45,6 @@
                 </p>
               </div>
               <div>
-                USER UUID: {{r.uuid}}
                 <add-my-doctors :uuid="r.uuid"></add-my-doctors>
               </div>
               <div>
