@@ -23,7 +23,7 @@
       </div>
     </div>
     <div class='video-controls'>
-      <div @click="saveVideo">
+      <div @click="saveVideo" style="cursor: pointer">
         <img :src="require('~/static/icon/save.svg')" alt='save icon'>
       </div>
     </div>
@@ -91,7 +91,6 @@ export default {
       this.init(roomId)
     },
     stop() {
-      console.log('stop call')
       if (this.mediaClient && this.mediaClient._isOpen) {
         this.mediaClient.exit()
         this.mediaClient = null
@@ -152,7 +151,6 @@ export default {
         this.removeLocalPeer('video')
       })
       this.mediaClient.on(MediaClient.EVENTS.exitRoom, () => {
-        console.log('exit room');
         this.removeAllPeers();
         this.mediaClient = null
         this.close()
@@ -338,19 +336,18 @@ export default {
       const canvas = document.createElement('canvas'); // declare a canvas element in your html
       const ctx = canvas.getContext('2d');
       const videos = document.querySelectorAll('video')
-      let w, h
       for (let i = 0, len = videos.length; i < len; i++) {
           const v = videos[i]
           // if (!v.src) continue // no video here
           try {
-              w = v.videoWidth
-              h = v.videoHeight
+              const w = v.videoWidth
+              const h = v.videoHeight
               canvas.width = w
               canvas.height = h
               ctx.fillRect(0, 0, w, h)
               ctx.drawImage(v, 0, 0, w, h)
               v.style.backgroundImage = `url(${canvas.toDataURL()})` // here is the magic
-              v.style.backgroundSize = 'cover'
+              v.style.backgroundSize = '100% 100%'
               ctx.clearRect(0, 0, w, h); // clean the canvas
           } catch (e) {
               continue
@@ -366,8 +363,6 @@ export default {
 
         canvas.width = width
         canvas.height = height
-
-        console.log(width, height)
 
         croppedCanvasContext.drawImage(bodyCanvas, 0, 0, width, height);
 
