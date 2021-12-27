@@ -90,7 +90,7 @@ export default {
   },
   head() {
     return {
-      title: this.$t('sign_in'),
+      title: this.$t('seo.sign_in_title'),
       meta: [
         {
           hid: 'description',
