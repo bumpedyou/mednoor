@@ -107,6 +107,14 @@ export default {
             type: 'success',
           },
           {
+            shortTitle: 'Specialties',
+            cardTitle: 'Specialties',
+            to: '/specialties',
+            btnText: 'Specialties',
+            icon: 'border-outer',
+            type: 'success',
+          },
+          {
             shortTitle: 'Professional Requests',
             cardTitle: 'Professional Requests',
             to: '/professional-requests',

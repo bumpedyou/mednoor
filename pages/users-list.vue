@@ -271,7 +271,10 @@ export default {
       if (this.$route.query) {
         const q = this.$route.query
         if (q.view && ['users', 'professionals', 'archived'].includes(q.view.toLowerCase())) {
-          this.mode = q.mode.toLowerCase()
+          const mode = q.mode
+          if (typeof mode === 'string'){
+            this.mode = q.mode.toLowerCase()
+          }
         } else {
           this.mode = 'users'
         }

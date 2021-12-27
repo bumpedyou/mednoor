@@ -58,14 +58,21 @@ export default {
     }
   },
   mounted(){
-    if (this.callback){
-      return this.$router.push(this.localePath(decodeURIComponent(this.callback)))
-    }
+    console.log('[mounted]')
+    console.log('[view-mode.vue]', this.isAdmin, this.isSuper)
+
     if (this.isAdmin || this.isSuper){
+      console.log('isAdmin || isSuper', this.isAdmin, this.isSuper)
+      console.log('[view-mode.vue] ---> isAdmin')
       // this.$store.commit('view/setView', 'admin')
       this.$cookies.set('view', 'admin')
       this.$router.push(this.localePath('/dashboard'))
     }
+
+    if (this.callback){
+      return this.$router.push(this.localePath(decodeURIComponent(this.callback)))
+    }
+
   },
   methods: {
     setTheView(view){
