@@ -45,12 +45,13 @@ export default {
     isMade(){
       const a = this.$cookies.get('appointments')
       let includes = false
-      a.forEach((item)=>{
-        console.log('item --->', item)
-        if (item.professional === this.professional){
-          includes = true
-        }
-      })
+      if (a){
+        a.forEach((item)=>{
+          if (item.professional === this.professional){
+            includes = true
+          }
+        })
+      }
       return includes || this.count > 0
     },
     makeClasses(){

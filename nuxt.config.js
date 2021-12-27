@@ -1,6 +1,6 @@
 export default {
   head: {
-    titleTemplate: '%s - Online Medical Center',
+    titleTemplate: '%s - Medical Center',
     title: 'Mednoor',
     htmlAttrs: {
       lang: 'en',
@@ -142,7 +142,7 @@ export default {
   env: {
     BASE_URL: process.env.BASE_URL,
     API_URL: process.env.API_URL,
-    MEDIA_URL: process.env.MEDIA_URL
+    MEDIA_URL: process.env.MEDIA_URL,
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -160,7 +160,7 @@ export default {
       {
         name: 'media',
         url: process.env.MEDIA_URL,
-      }
+      },
     ],
   },
 

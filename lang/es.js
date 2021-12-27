@@ -252,10 +252,11 @@ export default {
     ycbl_than: 'El año no puede ser superior a ',
   },
   seo: {
+    sign_in_title: 'Telemedicina',
     add_user: 'Agregar usuario a Mednoor',
     index:
       'Mednoor es un centro médico online dónde la gente puede chatear en tiempo real con Doctores',
-    sign_in: 'Ingrear a mi cuenta de Mednoor',
+    sign_in: 'Ingresar a mi cuenta de Mednoor',
     sign_up: 'Registrarse en el contro Médico Mednoor',
     chat: 'Chatear con un profesional en el centro médico Mednoor.',
     keywords: {

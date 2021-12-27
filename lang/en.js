@@ -153,7 +153,7 @@ export default {
   ent_ver_code: 'Enter a verification code of 9 digits',
   med_med_cen: 'Mednoor Medical Center',
   alw_open: 'Always Open',
-  sign_in: 'Sign in',
+  sign_in: 'Sign In',
   sign_up: 'Sign Up',
   dont_h_acc: "Don't have an account?",
   signing_out: 'Signing out',
@@ -251,6 +251,7 @@ export default {
     ycbl_than: 'The year cannot be later than',
   },
   seo: {
+    sign_in_title: 'Telemedicine',
     add_user: 'Add a user to mednoor',
     index:
       'Mednoor is an Online Medical Center where people can chat in real time with Doctors.',

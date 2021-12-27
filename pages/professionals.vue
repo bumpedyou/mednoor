@@ -45,6 +45,10 @@
                 </p>
               </div>
               <div>
+                USER UUID: {{r.uuid}}
+                <add-my-doctors :uuid="r.uuid"></add-my-doctors>
+              </div>
+              <div>
                 <MakeAppointment :user="r" :super-small="false"></MakeAppointment>
               </div>
             </div>
@@ -79,13 +83,15 @@ import RequestModal from '~/components/RequestModal'
 import authMixin from '~/mixins/authMixin'
 import ProfessionalThumb from '~/components/ProfessionalThumb'
 import MakeAppointment from '~/components/MakeAppointment'
+import AddMyDoctors from "~/components/AddMyDoctors";
 
 export default {
   name: 'Professionals',
   components: {
     ProfessionalThumb,
     RequestModal,
-    MakeAppointment
+    MakeAppointment,
+    AddMyDoctors
   },
   mixins: [authMixin],
   middleware: ['verified'],

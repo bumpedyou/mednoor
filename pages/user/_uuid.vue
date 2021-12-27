@@ -24,18 +24,7 @@
             {{ user.usro_role }}
           </a-button>
         </p>
-        <div v-if='isLoggedIn' class='mb-1 heart-actions'>
-          <a-button :type='owned ? "danger" : "old-rose"' @click='toggleOwned'>
-            <SpinOrText v-model='loadingHeart' dark>
-              <span v-if='owned'>
-                Remove from my doctors <a-icon type='heart' theme='filled' />
-              </span>
-              <span v-else>
-                Add to my doctors. <a-icon type='heart' />
-              </span>
-            </SpinOrText>
-          </a-button>
-        </div>
+        <add-my-doctors :uuid="user.user_uuid"></add-my-doctors>
       </a-col>
       <a-col :xs='24' :md='12'>
         <div>
@@ -91,21 +80,19 @@ import RequestModal from '~/components/RequestModal'
 import authMixin from '~/mixins/authMixin'
 import dateMixin from '~/mixins/dateMixin'
 import ProfilePicture from '~/components/ProfilePicture'
-import SpinOrText from '~/components/SpinOrText'
 import MakeAppointment from "~/components/MakeAppointment";
+import AddMyDoctors from "~/components/AddMyDoctors";
 
 export default {
   name: 'Uuid',
   components: {
+    AddMyDoctors,
     MakeAppointment,
-    SpinOrText,
     ProfilePicture,
     RequestModal
   },
   mixins: [authMixin, dateMixin],
   data: () => ({
-    loadingHeart: false,
-    owned: false,
     loading: true,
     not_found: false,
     user: {},
@@ -165,27 +152,10 @@ export default {
       }).finally(() => {
         this.loading = false
       })
-      if (this.isLoggedIn) {
-        this.$api.get('/my-doctor/' + q.uuid).then(({ data }) => {
-          this.owned = data.owned
-        })
-      }
     }
   },
   methods: {
-    toggleOwned(){
-      console.log('Toggle owned')
-      this.loadingHeart = true
-      if (this.uuid){
-        this.$api.post('/my-doctor/toggle/' + this.uuid).then(()=>{
-          this.owned = !this.owned
-        }).catch((err) => {
-          this.$refs.rmodal.$emit('error', err)
-        }).finally(() => {
-          this.loadingHeart = false
-        })
-      }
-    },
+
   }
 }
 </script>
