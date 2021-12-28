@@ -14,14 +14,15 @@ export default {
             btnText: this.$t('home_screen'),
             icon: 'home',
             type: 'primary',
+            dark: false,
           },
           {
             shortTitle: 'Main Text',
             cardTitle: 'Main Text',
             to: '/main-text',
             btnText: 'Main Text',
-            icon: 'file-text',
-            type: 'raisin-black',
+            icon: 'card-text',
+            dark: true,
           }
         )
       }
@@ -39,24 +40,26 @@ export default {
           cardTitle: this.$t('list_usrs'),
           to: '/users-list',
           btnText: this.$t('list_usrs'),
-          icon: 'user',
-          type: 'old-rose',
+          icon: 'account-group',
+          type: 'pink',
+          dark: true,
         })
         i.push({
           shortTitle: this.$t('emr'),
           cardTitle: this.$t('emr_lng'),
           to: '/emr',
           btnText: this.$t('go_emr'),
-          icon: 'medicine-box',
-          type: 'aero-blue',
+          icon: 'medical-bag',
+          type: 'purple',
+          dark: true,
         })
         i.push({
-          shortTitle: 'Chat requests',
-          cardTitle: 'Chat requests',
+          shortTitle: 'Chat Queue',
+          cardTitle: 'Chat Queue',
           to: '/chat-requests',
-          btnText: 'Chat requests',
-          icon: 'wechat',
-          type: 'raisin-black',
+          btnText: 'Chat Queue',
+          icon: 'forum',
+          dark: true,
         })
       }
       if (this.isAdminOrSuper) {
@@ -66,16 +69,18 @@ export default {
             cardTitle: this.$t('terms_cond'),
             to: '/update-terms-and-conditions',
             btnText: this.$t('update'),
-            icon: 'audit',
-            type: 'salmon',
+            icon: 'file-sign',
+            type: '#fa8072',
+            dark: true,
           },
           {
             shortTitle: this.$t('privacy_p'),
             cardTitle: this.$t('privacy_p'),
             to: '/update-privacy-policy',
             btnText: this.$t('update'),
-            icon: 'file-protect',
+            icon: 'shield-lock',
             type: 'purple',
+            dark: true,
           },
           {
             shortTitle: this.$t('pages'),
@@ -95,23 +100,24 @@ export default {
               },
             },
             btnText: this.$t('professionals_list'),
-            icon: 'team',
-            type: 'raisin-black',
+            icon: 'account-tie',
+            type: 'black',
+            dark: true,
           },
           {
             shortTitle: 'Categories',
             cardTitle: 'Categories',
             to: '/categories',
             btnText: 'Categories',
-            icon: 'table',
-            type: 'success',
+            icon: 'shape',
+            type: 'primary',
           },
           {
             shortTitle: 'Specialties',
             cardTitle: 'Specialties',
             to: '/specialties',
             btnText: 'Specialties',
-            icon: 'border-outer',
+            icon: 'box-cutter',
             type: 'success',
           },
           {
@@ -119,8 +125,9 @@ export default {
             cardTitle: 'Professional Requests',
             to: '/professional-requests',
             btnText: 'List of requests',
-            icon: 'contacts',
-            type: 'old-rose',
+            icon: 'account-key',
+            type: 'pink',
+            dark: true,
           },
           {
             shortTitle: 'Archived users',
@@ -132,7 +139,7 @@ export default {
               },
             },
             btnText: 'Archived users',
-            icon: 'usergroup-delete',
+            icon: 'folder-account',
             type: 'primary',
           }
         )

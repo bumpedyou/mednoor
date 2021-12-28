@@ -1,5 +1,5 @@
 <template>
-  <div class='pa-1 mh-100v bg-eee'>
+  <div class='pa-6 mh-100v bg-eee'>
     <a-row>
       <a-col :xs='24' :md='{span: 16, offset: 4}' class="content">
         <a-skeleton v-if='loading' />

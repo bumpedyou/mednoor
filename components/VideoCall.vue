@@ -23,7 +23,7 @@
       </div>
     </div>
     <div class='video-controls'>
-      <div @click="saveVideo" style="cursor: pointer">
+      <div style="cursor: pointer" @click="saveVideo">
         <img :src="require('~/static/icon/save.svg')" alt='save icon'>
       </div>
     </div>
@@ -43,7 +43,10 @@ export default {
     PeerView
   },
   props: {
-    close: Function
+    close: {
+      type: Function,
+      default: null,
+    }
   },
   data () {
     return {

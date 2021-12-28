@@ -41,6 +41,7 @@ export default {
     '@nuxtjs/eslint-module',
     '@nuxtjs/style-resources',
     '@nuxtjs/google-fonts',
+    '@nuxtjs/vuetify',
   ],
 
   i18n: {

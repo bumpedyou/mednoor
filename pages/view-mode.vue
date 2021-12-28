@@ -1,5 +1,5 @@
 <template>
-  <div class="pa-1 mh-100v">
+  <div class="pa-6 mh-100v">
     <div class='pa-1 mt-1'>
       <a-row class='mt-1' :gutter="3">
         <a-col>

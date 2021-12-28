@@ -1,5 +1,5 @@
 <template>
-  <div ref="container" class="pa-1 mh-100v">
+  <div ref="container" class="pa-6 mh-100v">
     <a-row class='mb-1'>
       <a-col>
         <a-breadcrumb>
@@ -146,8 +146,8 @@ export default {
       this.form.setFieldsValue({
         category: record.cate_category
       })
-      if (process.browser){
-        window.scrollTo(0,0)
+      if (process.client){
+        document.body.scrollTop = 0
       }
     },
     handleSubmit(){

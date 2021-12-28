@@ -1,27 +1,21 @@
 <template>
   <div v-if='isLoggedIn' class='mb-1 heart-actions'>
-    <a-button :type='owned ? "danger" : "old-rose"' @click='toggleOwned'>
-      <SpinOrText v-model='loadingHeart' dark>
-                <span v-if='owned'>
-                  Remove from my doctors <a-icon type='heart' theme='filled' />
-                </span>
-        <span v-else>
-                  Add to my doctors. <a-icon type='heart' />
-                </span>
-      </SpinOrText>
-    </a-button>
+    <v-btn :color='owned ? "error" : "info"' small tile :loading="loadingHeart" @click='toggleOwned'>
+      <span v-if='owned'>
+        Remove from my doctors <a-icon type='heart' theme='filled'/>
+      </span>
+      <span v-else>
+        Add to my doctors. <a-icon type='heart'/>
+      </span>
+    </v-btn>
   </div>
 </template>
 
 <script>
-import SpinOrText from "~/components/SpinOrText";
 import authMixin from "~/mixins/authMixin";
 
 export default {
   name: "AddMyDoctors",
-  components: {
-    SpinOrText,
-  },
   mixins: [authMixin],
   props: {
     uuid: {
@@ -29,27 +23,27 @@ export default {
       default: null,
     }
   },
-  data: ()=>({
+  data: () => ({
     owned: false,
     loadingHeart: false,
   }),
   computed: {
-    id (){
+    id() {
       return this.$props.uuid
     }
   },
-  mounted (){
+  mounted() {
     if (this.isLoggedIn) {
-      this.$api.get('/my-doctor/' + this.id).then(({ data }) => {
+      this.$api.get('/my-doctor/' + this.id).then(({data}) => {
         this.owned = data.owned
       })
     }
   },
   methods: {
-    toggleOwned(){
+    toggleOwned() {
       this.loadingHeart = true
-      if (this.uuid){
-        this.$api.post('/my-doctor/toggle/' + this.id).then(()=>{
+      if (this.uuid) {
+        this.$api.post('/my-doctor/toggle/' + this.id).then(() => {
           this.owned = !this.owned
         }).catch((err) => {
           this.$refs.rmodal.$emit('error', err)

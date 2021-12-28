@@ -22,11 +22,22 @@
           <img :src="require('~/static/pay.png')" alt="pay">
           </a>
         </div>
+        <div class='mx-1'>
+          <v-tab>
+            <v-badge
+              overlap
+              color="primary"
+              content="0"
+            >
+              <v-icon>mdi-bell</v-icon>
+            </v-badge>
+          </v-tab>
+        </div>
         <div class='mr-1'>
           <div class='lang-selector' @click='showLocales = !showLocales'>
             <div class='current'>
               {{ selectedLocale.toUpperCase() }}
-              <a-icon type='caret-down' />
+              <v-icon class="d-md-only">mdi-menu-down</v-icon>
             </div>
             <ul v-if='showLocales' class='options'>
               <li v-for='(l, i) in $i18n.localeCodes' :key='i' :class='l === selectedLocale ? "active" : ""'
@@ -38,25 +49,27 @@
         <div v-click-outside='toggleMenuNavigation' @click='toggleMenuNavigation(true)'>
           <div v-if='isLoggedIn'>
             <div v-if='isAdmin'>
-              <a-button type='raisin-black'>
+              <v-btn dark tile small>
                 {{ $t('admin') }}
-                <a-icon type='caret-down' />
-              </a-button>
+                <v-icon>mdi-menu-down</v-icon>
+              </v-btn>
             </div>
             <div v-else>
-              <span v-if="$auth.user.last_name">
+              <span v-if="isSmall">
+                <v-icon>mdi-menu</v-icon>
+              </span>
+              <span v-else-if="$auth.user.last_name">
                 {{ $auth.user.last_name }}, {{ $auth.user.user_first_name }}
               </span>
-              <a-icon v-else type="user"></a-icon>
-
+              <v-icon v-else>mdi-account-circle</v-icon>
               <span v-if="$auth.user.credentials && view === 'professional'">
-                {{$auth.user.credentials}}
+                {{$auth.user.credentials}} <v-icon color="purple">mdi-check-decagram</v-icon>
               </span>
-              <a-icon type='caret-down' />
+              <v-icon class="d-md-only">mdi-menu-down</v-icon>
             </div>
           </div>
           <div v-else>
-            <img :src="require('~/static/icon/menu.svg')" alt='Chat icon'>
+            <v-icon>mdi-menu</v-icon>
           </div>
         </div>
       </div>
@@ -77,8 +90,7 @@
                 <span>
                  {{ item.text }}
                 </span>
-                <!--<img v-if='item.icon' :src="require('~/static/icon/' + item.icon +'.svg')" :alt="item.icon + ' icon'">-->
-                <a-icon v-if="item.icon" :type="item.icon"></a-icon>
+                <v-icon v-if="item.icon">mdi-{{item.icon}}</v-icon>
               </nuxt-link>
             </li>
           </ul>
@@ -134,35 +146,38 @@ export default {
     menuItems() {
       const items = []
       if (this.isLoggedIn) {
-        items.push({
-          text: 'Home',
-          icon: 'home',
-          to: '/view-mode'
-        })
+        if (!this.isAdminOrSuper){
+          items.push({
+            text: 'Home',
+            icon: 'home',
+            to: '/view-mode'
+          })
+        }
+
         if (this.compView) {
           if (this.isAdmin || this.isSuper || this.isModerator) {
             items.push({
               text: this.$t('dashboard'),
-              icon: 'dashboard',
+              icon: 'view-dashboard',
               to: '/dashboard'
             })
           }
           items.push({
             text: this.$t('my_profile'),
-            icon: 'user',
+            icon: 'account-circle',
             to: '/my-profile'
           })
           if (this.isAdmin || this.isSuper) {
             items.push({
               text: this.$t('usrs_list'),
-              icon: 'users',
+              icon: 'account-group',
               to: '/users-list'
             })
           }
           if (this.isAdmin || this.isSuper) {
             items.push({
               text: this.$t('professionals_list'),
-              icon: 'tie',
+              icon: 'account-tie',
               to: {
                 path: '/users-list',
                 query: {
@@ -179,7 +194,7 @@ export default {
             })
             items.push({
               text: this.$t('my_patients'),
-              icon: 'user',
+              icon: 'emoticon-sick',
               to: '/my-patients'
             })
           }
@@ -198,7 +213,7 @@ export default {
             })
             items.push({
               text: this.$t('chats'),
-              icon: 'wechat',
+              icon: 'forum',
               to: '/'
             })
           }
@@ -216,7 +231,7 @@ export default {
           },
           {
             text: this.$t('sign_up'),
-            icon: 'user-add',
+            icon: 'clipboard-arrow-left',
             to: '/sign-up'
           })
         this.pages.forEach((page) => {
@@ -387,7 +402,8 @@ export default {
       .current
         width: 100%
         height: 100%
-
+        min-width: 40px
+        background: #fff
         &:hover
           cursor: pointer
 
@@ -403,6 +419,7 @@ export default {
         li
           list-style: none
           padding: 0.5rem
+          background: #ffffff
 
         .active
           background: #ccc

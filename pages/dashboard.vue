@@ -1,6 +1,6 @@
 <template>
-<div class="mh-100v pa-1">
-    <a-row class="mb-1">
+<div class="mh-100v pa-6">
+    <a-row class="mb-3">
         <a-col>
               <a-breadcrumb>
                 <a-breadcrumb-item>{{$t('dashboard')}}</a-breadcrumb-item>
@@ -8,14 +8,16 @@
         </a-col>
     </a-row>
     <a-row>
-        <a-col  :xs="24" :sm="24" >
+        <a-col :xs="24" :sm="24" >
           <div class="card-deck">
-            <a-card v-for="(o, i) in dashboardItems" :key="'dashboard-' + i"   style="height: 100%; flex: 1;" :class="'card-' + o.type + ' mb-2'" @click="$router.push(localePath(o.to))">
-              <a-button :type="o.type">
-                <a-icon :type="o.icon"></a-icon>
-                {{o.cardTitle}}
-              </a-button>
-            </a-card>
+            <div v-for="(o, i) in dashboardItems" :key="'dashboard-' + i"   class="pa-3" @click="$router.push(localePath(o.to))">
+              <v-card-text>
+                <v-btn :color="o.type" small tile :dark="o.dark">
+                  <v-icon class="mr-1">mdi-{{o.icon}}</v-icon>
+                  {{o.cardTitle}}
+                </v-btn>
+              </v-card-text>
+            </div>
           </div>
         </a-col>
     </a-row>

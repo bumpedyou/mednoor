@@ -1,5 +1,5 @@
 <template>
-<div class="pa-1 mh-100v">
+<div class="pa-6 mh-100v">
   <a-row>
     <a-col>
       <p class="h1">

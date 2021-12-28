@@ -1,12 +1,12 @@
 <template>
-  <div class='pa-1 mh-100v'>
-    <a-row v-if='loading'>
-      <a-col>
-        <a-skeleton></a-skeleton>
-      </a-col>
-    </a-row>
-    <a-row v-else-if='not_found'>
-      <a-col>
+  <div class='pa-6 mh-100v'>
+    <v-row v-if='loading'>
+      <v-col>
+        <v-skeleton-loader></v-skeleton-loader>
+      </v-col>
+    </v-row>
+    <v-row v-else-if='not_found'>
+      <v-col>
         <p class='h1'>Not Found</p>
         <p>
           We could not find the user that you were looking for.
@@ -14,24 +14,29 @@
         <a-button @click="$router.push(localePath('/professionals'))">
           Search other users
         </a-button>
-      </a-col>
-    </a-row>
-    <a-row v-else>
-      <a-col :xs='24'>
-        <p class='h1' style='display: flex; align-items: center'>
+      </v-col>
+    </v-row>
+    <v-row v-else>
+      <v-col md="12">
+        <p class='h1 flex-line align-f-md'>
           {{ user.user_first_name }} {{ user.user_last_name }}
-          <a-button v-if='user && user.usro_key' type='raisin-black' class='ml-1'>
+          <v-btn v-if='user && user.usro_key' color="purple" dark small class='ml-1' rounded>
             {{ user.usro_role }}
-          </a-button>
+            <v-icon class="ml-1">mdi-check-decagram</v-icon>
+          </v-btn>
         </p>
-        <add-my-doctors :uuid="user.user_uuid"></add-my-doctors>
-      </a-col>
-      <a-col :xs='24' :md='12'>
+      </v-col>
+      <v-col md='12'>
         <div>
-          <ProfilePicture :user='user'></ProfilePicture>
+          <ProfilePicture :user='user' class="mb-1"></ProfilePicture>
+          <div class="flex-line">
+            <add-my-doctors :uuid="user.user_uuid" class="mr-1"></add-my-doctors>
+            <MakeAppointment :user="user" button></MakeAppointment>
+          </div>
+          <v-divider class="mb-1"></v-divider>
         </div>
-        <a-row class='mt-1 mb-1'>
-          <a-col :xs='24' :md='12'>
+        <v-row class='mt-1 mb-1'>
+          <v-col md="6">
             <p class='mb-0'>
               <b>Phone Number:</b>
               <span v-if='user && user.user_country_code'>
@@ -41,19 +46,32 @@
               No phone number was provided.
             </span>
             </p>
-            <p>
+            <p class="mb-0">
               <b>Email:</b>
               <span v-if='user && user.user_email'>
               {{ user.user_email }}
             </span>
             </p>
-            <div v-if="isLoggedIn" class='mt-1'>
-              <MakeAppointment :user="user"></MakeAppointment>
+            <p>
+              <b>Practice Address: </b> {{display_address(address)}}
+            </p>
+            <div>
+              <v-chip
+                v-if="user.cate_category"
+                color="primary"
+              >
+                {{user.cate_category}}
+              </v-chip>
+              <v-chip
+                v-if="user.spec_specialty"
+                color="success"
+              >
+                {{user.spec_specialty}}
+              </v-chip>
             </div>
-          </a-col>
-
-        </a-row>
-        <a-row v-if='isUserModerator' class='mt-1'>
+          </v-col>
+        </v-row>
+        <v-row v-if='isUserModerator' class='mt-1'>
           <p v-if='isLoggedIn'>
           </p>
           <a-button v-else type='primary' class='mt-1' @click="$router.push({
@@ -64,13 +82,9 @@
           })">
             Sign in to chat with {{ user.user_first_name }}
           </a-button>
-        </a-row>
-      </a-col>
-      <a-col v-if='isUserModerator' :xs='24' :md='12'>
-        <a-table ref='table' :pagination='false' :columns='columns' :data-source='data'>
-        </a-table>
-      </a-col>
-    </a-row>
+        </v-row>
+      </v-col>
+    </v-row>
     <RequestModal ref='rmodal'></RequestModal>
   </div>
 </template>
@@ -82,6 +96,7 @@ import dateMixin from '~/mixins/dateMixin'
 import ProfilePicture from '~/components/ProfilePicture'
 import MakeAppointment from "~/components/MakeAppointment";
 import AddMyDoctors from "~/components/AddMyDoctors";
+import addressDisplayMixin from "~/mixins/addressDisplayMixin";
 
 export default {
   name: 'Uuid',
@@ -91,7 +106,7 @@ export default {
     ProfilePicture,
     RequestModal
   },
-  mixins: [authMixin, dateMixin],
+  mixins: [authMixin, dateMixin, addressDisplayMixin],
   data: () => ({
     loading: true,
     not_found: false,
@@ -104,15 +119,16 @@ export default {
         slots: { title: 'Category' }
       },
       {
-        title: 'NPI',
-        dataIndex: 'npi',
-        key: 'npi',
-        slots: { title: 'NPI' },
-        scopedSlots: { customRender: 'npi' }
-      }
+        title: 'Specialty',
+        dataIndex: 'spec_specialty',
+        key: 'spec_specialty',
+        slots: { title: 'Specialty' },
+        scopedSlots: { customRender: 'spec_specialty' }
+      },
     ],
     data: [],
     uuid: null,
+    address: {},
   }),
   computed: {
     exists() {
@@ -133,22 +149,20 @@ export default {
     const q = this.$route.params
     if (q && q.uuid) {
       this.uuid = q.uuid
+
+      this.$api.get('/user/practice-address/' + q.uuid).then(({data})=>{
+        this.address = data
+      })
+
       this.$api.get('/user/' + q.uuid).then(({ data }) => {
         this.loading = false
         if (data && data.user_uuid) {
           this.user = data
-          this.data = [
-            {
-              category: data.cate_category || '',
-              npi: data.profe_npi || ''
-            }
-          ]
         } else {
           this.not_found = false
         }
       }).catch(() => {
         this.not_found = true
-        // this.$refs.rmodal.$emit('error', err)
       }).finally(() => {
         this.loading = false
       })

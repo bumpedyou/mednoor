@@ -34,8 +34,8 @@
               <div class='mr-1'>
                 {{ professionalName }}
               </div>
-              <img v-if="view === 'professional'" :src="require('~/static/icon/video.svg')" alt='video icon' @click='showVideo'>
-              <a-icon type="left" class="control-icon" @click='leaveChat'></a-icon>
+              <v-icon v-if="view === 'professional'" class="mx-1" @click='showVideo'>mdi-video</v-icon>
+              <v-icon class="mx-1" @click='leaveChat'>mdi-chevron-left</v-icon>
             </div>
             <div id='messages' ref='messages' :key='messages.length' class='message-container-100'>
               <chat-messages :messages='messages'></chat-messages>
@@ -57,17 +57,17 @@
         </div>
         <VEmojiPicker v-if='showEmojiPicker' class="emoji-picker" @select="selectEmoji" />
         <div class='chat-controls'>
-          <div>
-            <img :src="require('~/static/icon/happy-face.svg')" alt='happy face' @click='showEmojiPicker = !showEmojiPicker'>
+          <div class="mr-1">
+            <v-icon @click='showEmojiPicker = !showEmojiPicker'>mdi-emoticon-outline</v-icon>
           </div>
           <a-input v-model='message' placeholder='Type a message' @keyup="imTyping" @keyup.enter='sendMessage(null)'></a-input>
           <div class='chat-multiple-controls'>
-            <img v-if='!isUser' :src="require('~/static/icon/save.svg')" alt='save icon' @click='askSavePDF'>
+            <v-icon v-if='!isUser' class="mx-1" @click='askSavePDF'>mdi-content-save</v-icon>
             <input id='file' ref='fileInput' type='file' style='opacity: 0; display: none' @change='fileChange' />
-            <label for='file'>
-              <img :src="require('~/static/icon/attachment.svg')" alt='attachment icon'>
+            <label for='file' class="clickable">
+              <v-icon class="mx-1">mdi-attachment</v-icon>
             </label>
-            <img :src="require('~/static/icon/send.svg')" alt='send icon' @click='sendMessage(null)'>
+            <v-icon class="mx-1 clickable" @click='sendMessage(null)'>mdi-send</v-icon>
           </div>
         </div>
       </div>

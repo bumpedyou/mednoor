@@ -1,21 +1,21 @@
 <template>
-    <div>
+    <v-app>
         <Navbar></Navbar>
         <div :class="sidebarClassess">
             <div class="sidebar">
                 <div class="indicators">
-                    <a-icon type="left" class="close" @click="close"></a-icon>
-                    <a-icon type="right" class="open" @click="open"></a-icon>
+                    <v-icon class="close" color="white" @click="close">mdi-chevron-left</v-icon>
+                    <v-icon  class="open" color="white" @click="open">mdi-chevron-right</v-icon>
                 </div>
                 <ul>
-                    <li v-for="(o, i) in dashboardItems" :key="'it-' + i"><nuxt-link :to="localePath(o.to)"><span>{{o.shortTitle}}</span> <a-icon :type="o.icon"></a-icon></nuxt-link></li>
+                    <li v-for="(o, i) in dashboardItems" :key="'it-' + i"><nuxt-link :to="localePath(o.to)"><span>{{o.shortTitle}}</span> <v-icon>mdi-{{o.icon}}</v-icon></nuxt-link></li>
                 </ul>
             </div>
             <div class="content">
                 <nuxt/>
             </div>
         </div>
-    </div>
+    </v-app>
 </template>
 <script>
 
@@ -35,7 +35,7 @@ export default {
     },
     computed: {
         sidebarClassess(){
-            const c = []
+            const c = ['sidebar-options']
             if (this.opened){
                 c.push('opened')
             }
@@ -76,11 +76,14 @@ export default {
                 padding: 0
                 margin: 0
                 list-style: none
+                color: #ffffff
+                i
+                  color: #ffffff
                 a
                     color: #fff
                     padding: 0.7rem 0.5rem
                     display: flex
-                    border-bottom: 1px solid $mdn-sun
+                    border-bottom: 1px solid $mdn-light-grey
                     &:hover
                         background: #333
                         cursor: pointer
@@ -101,7 +104,8 @@ export default {
             width: 200px
             ul
                 li
-                    a
+
+                  a
                         span
                             display: flex
             .indicators

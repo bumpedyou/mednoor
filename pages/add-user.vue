@@ -1,5 +1,5 @@
 <template>
-  <div class='pa-1'>
+  <div class='pa-6'>
     <a-row class='mb-1'>
       <a-col>
         <a-breadcrumb>
@@ -13,7 +13,7 @@
         </a-breadcrumb>
       </a-col>
     </a-row>
-    <a-row class='pa-1 mh-100v'>
+    <a-row class='pa-6 mh-100v'>
       <a-col :xs='{ span: 20, offset: 2 }'
              :md='{ span: 12, offset: 6 }'
              :lg='{ span: 10, offset: 7 }'

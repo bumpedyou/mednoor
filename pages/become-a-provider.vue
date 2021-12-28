@@ -1,5 +1,5 @@
 <template>
-  <div class="pa-1 mh-100v">
+  <div class="pa-6 mh-100v">
     <a-row class="mb-1">
       <a-col>
         <a-button @click='$router.push(localePath("/view-mode"))'><a-icon type='arrow-left'></a-icon>Go back</a-button>

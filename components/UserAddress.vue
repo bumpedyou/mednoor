@@ -1,77 +1,55 @@
 <template>
   <div v-if="loading">
-    <a-skeleton></a-skeleton>
+    <v-skeleton-loader type="card"></v-skeleton-loader>
   </div>
   <div v-else>
     <a-row>
       <a-col>
-        <a-form-item label="Line 1">
-          <a-input v-decorator="['line1', {
-                  rules: [
-                    {required: true, message: 'This field is required.'},
-                    {min: 10, message: $t('v.min_10')},
-                    {max: 60, message: $t('v.max_60')},
-                  ]
-                }]"  placeholder="Eg: Mr. Smith James Flat 7"></a-input>
-        </a-form-item>
+        <v-text-field v-model="line1" label="Line 1" placeholder="Eg: Mr. Smith James Flat 7" :rules="[
+          v => !!v || 'This field is required',
+          v => !! v && v.length >= 10 || $t('v.min_10'),
+          v => !! v && v.length <= 60 || $t('v.max_60'),
+        ]"></v-text-field>
       </a-col>
     </a-row>
-    <a-row>
-      <a-col :md="8">
-        <a-form-item label="City">
-          <a-input v-decorator="['city', {
-                  rules: [
-                    {required: true, message: 'The City is required'},
-                    {min: 2, message: $t('v.min_2')},
-                    {max: 60, message: $t('v.max_60')},
-                  ]
-                }]"  placeholder="City"></a-input>
-        </a-form-item>
-      </a-col>
-      <a-col :md="8">
-        <a-form-item label="State">
-          <a-input v-decorator="['state', {
-                  rules: [
-                    {required: true, message: 'The State is required'},
-                    {min: 2, message: $t('v.min_2')},
-                    {max:60, message: $t('v.max_60')},
-                  ]
-                }]"  placeholder="State"></a-input>
-        </a-form-item>
-      </a-col>
-      <a-col :md="8">
-        <a-form-item label="ZIP">
-          <a-input v-decorator="['zip', {
-                  rules: [
-                    {required: true, message: 'The ZIP is required'},
-                    {min: 2, message: $t('v.min_2')},
-                    {max: 12, message: $t('v.max_12')},
-                  ]
-                }]"  placeholder="ZIP"></a-input>
-        </a-form-item>
-      </a-col>
-    </a-row>
+    <v-row>
+      <v-col md="4">
+        <v-text-field v-model="city" label="City" placeholder="City" :rules="[
+          v => !!v || 'The city is required',
+          v => !!v && v.length > 1 || $t('v.min_2'),
+          v => !!v && v.length <= 60 || $t('v.max_60'),
+        ]"></v-text-field>
+      </v-col>
+      <v-col md="4">
+        <v-text-field v-model="state" label="State" placeholder="State" :rules="[
+          v => !!v || 'The state is required',
+          v => !!v && v.length > 1 || $t('v.min_2'),
+          v => !!v && v.length <= 60 || $t('v.max_60'),
+        ]"></v-text-field>
+      </v-col>
+      <v-col md="4">
+        <v-text-field v-model="zip" label="ZIP" placeholder="ZIP" :rules="[
+          v => !!v || 'The ZIP is required',
+          v => !!v && v.length > 1 || $t('v.min_2'),
+          v => !!v && v.length <= 12 || $t('v.max_60'),
+        ]"></v-text-field>
+      </v-col>
+    </v-row>
     <RequestModal ref="rmodal"></RequestModal>
   </div>
 </template>
 
 <script>
-
 import userRoleMixin from "~/mixins/userRoleMixin";
 import RequestModal from "~/components/RequestModal";
+import addressMixin from "~/mixins/addressMixin";
 
 export default {
   name: "UserAddress",
   components: {
     RequestModal
   },
-  mixins: [userRoleMixin],
-  props: {
-    form: {
-      type: Object,
-      default: ()=>({})
-    }
-  },
+  mixins: [userRoleMixin, addressMixin],
   data (){
     return {
       loading: true,
@@ -91,14 +69,10 @@ export default {
       }).then(({data})=>{
         this.loading = false
         if (data){
-          this.$nextTick(()=>{
-            this.$props.form.setFieldsValue({
-              line1: data.addr_line1,
-              city: data.addr_city,
-              state: data.addr_state,
-              zip: data.addr_zip,
-            })
-          })
+          this.$store.commit('address/setLine1', data.addr_line1)
+          this.$store.commit('address/setCity', data.addr_city)
+          this.$store.commit('address/setState', data.addr_state)
+          this.$store.commit('address/setZip', data.addr_zip)
         }
       }).catch((err)=>{
         this.$refs.rmodal.$emit('error', err)

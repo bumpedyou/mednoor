@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <v-app>
     <navbar></navbar>
     <div id="app-content">
       <Nuxt></Nuxt>
     </div>
     <MFooter></MFooter>
-  </div>
+  </v-app>
 </template>
 
 <script>
@@ -55,5 +55,5 @@ export default {
 body
   overflow-y: auto
 #app-content
-  margin-top: 50px
+  margin-top: 50px !important
 </style>

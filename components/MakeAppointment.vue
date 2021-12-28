@@ -1,11 +1,22 @@
 <template>
-  <div v-if="!isModeratorOrHigher" :key="count">
-    <small v-if="isMade" class="success--text">
-      Appointment Queued <a-icon type="check-circle"></a-icon>
-    </small>
-    <small v-else-if="isLoggedIn" :class='makeClasses' @click='confirmAppointment'>
-      Make Appointment
-    </small>
+  <div :key="count">
+    <div v-if="$props.button">
+      <v-btn v-if="isMade" small tile color="success">
+        Appointment Queued <a-icon type="check-circle"></a-icon>
+      </v-btn>
+      <v-btn v-else-if="isLoggedIn" small tile color="info" @click='confirmAppointment'>
+        Make Appointment
+      </v-btn>
+    </div>
+    <div v-else class="mt-3">
+      <small v-if="isMade" class="success--text">
+        Appointment Queued <a-icon type="check-circle"></a-icon>
+      </small>
+      <small v-else-if="isLoggedIn" :class='makeClasses' @click='confirmAppointment'>
+        Make Appointment
+      </small>
+    </div>
+
     <a-modal
       :title="$t('conf_action')"
       :visible='appointmentVisible'
@@ -32,6 +43,10 @@ export default {
     superSmall: {
       type: Boolean,
       default: true,
+    },
+    button: {
+      type: Boolean,
+      default: false,
     }
   },
   data() {

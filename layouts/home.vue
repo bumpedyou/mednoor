@@ -1,41 +1,44 @@
 <template>
-  <div>
+  <v-app>
     <navbar></navbar>
-    <a-row>
-      <a-col v-if='!mounted || !isSmall' :xs='24' :sm='24' :md='12'>
-        <BackgroundItem :file='file' source='api' height='100vh'></BackgroundItem>
-      </a-col>
-      <a-col :xs='24' :sm='24' :md='12' class='right-side'>
-        <div class='content'>
-          <nuxt></nuxt>
-        </div>
-        <div class='main-text'>
-        </div>
-      </a-col>
-    </a-row>
-    <a-row>
-      <a-col>
-        <BubbleChat></BubbleChat>
-      </a-col>
-    </a-row>
-    <a-row>
-      <a-col :md='{span: 12}' class='pa-1'>
-        <div v-if='main_text' class='middle-text'>
-          <!-- eslint-disable vue/no-v-html -->
-          <pre v-html='main_text'></pre>
-          <!--eslint-enable-->
-        </div>
-      </a-col>
-      <a-col :md='{span: 12}' class='pa-1'>
-        <div v-if='main_text_b' class='middle-text'>
-          <!-- eslint-disable vue/no-v-html -->
-          <pre v-html='main_text_b'></pre>
-          <!--eslint-enable-->
-        </div>
-      </a-col>
-    </a-row>
+    <div id="app-content">
+      <a-row>
+        <a-col v-if='!mounted || !isSmall' :xs='24' :sm='24' :md='12'>
+          <BackgroundItem :file='file' source='api' height='100vh'></BackgroundItem>
+        </a-col>
+        <a-col :xs='24' :sm='24' :md='12' class='right-side'>
+          <div class='content'>
+            <nuxt></nuxt>
+          </div>
+          <div class='main-text'>
+          </div>
+        </a-col>
+      </a-row>
+      <a-row>
+        <a-col>
+          <BubbleChat></BubbleChat>
+        </a-col>
+      </a-row>
+      <a-row>
+        <a-col :md='{span: 12}' class='pa-1'>
+          <div v-if='main_text' class='middle-text'>
+            <!-- eslint-disable vue/no-v-html -->
+            <pre v-html='main_text'></pre>
+            <!--eslint-enable-->
+          </div>
+        </a-col>
+        <a-col :md='{span: 12}' class='pa-1'>
+          <div v-if='main_text_b' class='middle-text'>
+            <!-- eslint-disable vue/no-v-html -->
+            <pre v-html='main_text_b'></pre>
+            <!--eslint-enable-->
+          </div>
+        </a-col>
+      </a-row>
+    </div>
     <MFooter></MFooter>
-  </div>
+  </v-app>
+
 </template>
 
 <script>
@@ -99,5 +102,8 @@ export default {
   justify-content: center
   align-items: center
   text-align: center
+
+#app-content
+  margin-top: 50px !important
 
 </style>

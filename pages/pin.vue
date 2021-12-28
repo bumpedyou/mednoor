@@ -1,5 +1,5 @@
 <template>
-<div class='pa-1 mh-100v'>
+<div class='pa-6 mh-100v'>
   <a-row class='mb-1'>
     <a-col>
       <a-breadcrumb>
@@ -28,11 +28,9 @@
       <small class="d-flex mb-1">
         <nuxt-link :to='localePath("/forgot-pin")'>Forgot My PIN</nuxt-link>
       </small>
-      <a-button type='primary' @click='enter'>
-        <SpinOrText v-model='loading'>
-          Enter
-        </SpinOrText>
-      </a-button>
+      <v-btn tile small color="primary" :loading="loading" @click="enter">
+        Enter
+      </v-btn>
     </a-col>
   </a-row>
   <RequestModal ref='rmodal'></RequestModal>
@@ -42,14 +40,12 @@
 <script>
 import {mapMutations} from 'vuex'
 import inputMixin from '~/mixins/inputMixin'
-import SpinOrText from '~/components/SpinOrText'
 import RequestModal from '~/components/RequestModal'
 import redirectionMixin from '~/mixins/redirectionMixin'
 
 export default {
   name: 'Pin',
   components: {
-    SpinOrText,
     RequestModal,
   },
   mixins: [inputMixin, redirectionMixin],

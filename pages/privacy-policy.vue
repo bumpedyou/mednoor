@@ -1,5 +1,5 @@
 <template>
-  <div class='pa-1 mh-100v'>
+  <div class='pa-6 mh-100v'>
     <!-- eslint-disable vue/no-v-html -->
     <pre v-html='content'></pre>
     <!--eslint-enable-->

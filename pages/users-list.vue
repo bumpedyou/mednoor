@@ -1,5 +1,5 @@
 <template>
-  <div class='pa-1'>
+  <div class='pa-6'>
     <a-row class='mb-1'>
       <a-col>
         <a-breadcrumb>
@@ -13,7 +13,6 @@
     <a-row class='pa-1'>
       <a-col>
         <p class='h4 mb-1 text-capitalize'>
-
           <span v-if='mode === "archived"'>
             Archived users
           </span>
@@ -24,10 +23,11 @@
             List of users.
           </span>
         </p>
-        <div class='mb-1'>
-          <a-button v-if='mode !== "archived"' type='aero-blue' @click='addUser'>{{ $t('add_urs') }}
+        <div class='mb-3'>
+          <v-btn v-if='mode !== "archived"' color="primary" tile small @click='addUser'>
+            {{ $t('add_urs') }}
             <a-icon type='user-add'></a-icon>
-          </a-button>
+          </v-btn>
         </div>
 
         <a-input-search v-model='search' placeholder='Filter by name/last name/email' class='mb-1'></a-input-search>

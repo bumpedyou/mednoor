@@ -36,7 +36,7 @@ export default {
 .chat-item
   width: 100%
   background: #fff
-  padding: 1rem
+  padding: 0.3rem
   display: flex
   align-items: center
   border: 1px solid $mdn-super-light-grey

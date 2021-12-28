@@ -1,5 +1,5 @@
 <template>
-<div class="mh-100v">
+<div class="mh-100v pa-6">
     <ChatItems :data='moderators' :selected-chat='to' @open-chat='openChat'></ChatItems>
 </div>
 </template>

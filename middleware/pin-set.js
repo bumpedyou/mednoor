@@ -1,7 +1,18 @@
-export default function ({ $auth, store, redirect, localePath, route }) {
+export default function ({
+  $auth,
+  store,
+  redirect,
+  localePath,
+  route,
+  $cookies,
+}) {
   if ($auth.user) {
     const u = $auth.user
-    if (u && u.role === 'MODERATOR') {
+    let view = $cookies.get('view')
+    if (typeof view === 'string') {
+      view = view.toLowerCase()
+    }
+    if (u && u.role === 'MODERATOR' && view === 'professional') {
       if (store) {
         const pinState = store.state.pin
         if (!pinState || !pinState.valid) {

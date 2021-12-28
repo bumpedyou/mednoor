@@ -123,8 +123,6 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6
   margin-left: auto
 .pa-05
   padding: 5px
-.pa-1
-  padding: 1rem
 .mx-auto
   margin-left: auto
   margin-right: auto
@@ -142,7 +140,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6
   border-radius: 0 !important
 
 .ant-btn.ant-btn-primary
-  background: $mdn-primary
+  background: $mdn-primary !important
+  color: $mdn-white !important
 
 .mr-auto
   margin-right: auto
@@ -159,6 +158,10 @@ b.b-white
   display: flex !important
 .d-inline-flex
   display: inline-flex !important
+
+.flex-line
+  display: flex
+  flex-direction: column !important
 
 .text-center
   text-align: center !important
@@ -243,33 +246,37 @@ hr
     color: $mdn-white
 
 
+.ant-btn.ant-btn-danger
+  color: #ffffff !important
+
 .ant-btn.ant-btn-old-rose
   background: $mdn-old-rose
-  color: #ffffff
+  color: #ffffff !important
 
 .ant-btn.ant-btn-aero-blue
   background: $mdn-aero-blue
-  color: #ffffff
+  color: #ffffff !important
 
 .ant-btn.ant-btn-success
   background: $mdn-green
-  color: #ffffff
+  color: #ffffff !important
 
 .ant-btn.ant-btn-raisin-black
   background: $mdn-raisin-black
-  color: #ffffff
+  color: #ffffff !important
 
 .ant-btn.ant-btn-purple
   background: $mdn-purple
-  color: #ffffff
+  color: #ffffff !important
 
 .ant-btn.ant-btn-salmon
   background: $mdn-salmon
-  color: #ffffff
+  color: #ffffff !important
 
 
 .success--text
   color: $mdn-green
+
 
 .primary--text
   color: $mdn-primary
@@ -343,6 +350,8 @@ pre
 .card-deck
   display: flex
   flex-wrap: wrap
+  column-gap: 0.3rem
+  row-gap: 0.3rem
   .ant-card
     margin-right: 0.3rem
     margin-left: 0.3rem
@@ -380,6 +389,12 @@ pre
     font-size: $mdn-md-h6
   body, p
     font-size: $mdn-md-p
+  .flex-line
+    flex-direction: row !important
+  .align-f-md
+    align-items: center !important
+
+
 .h-100
   height: 100% !important
 .flex-col

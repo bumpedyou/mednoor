@@ -9,7 +9,7 @@
       <ChatItem v-for='(m,i) in moderators' :key='"chat-" + i' :class="chatItemClass(m)" :active='to === m.user_uuid' @click="$emit('open-chat', m.user_uuid)">
         <div class="profile-wrapper">
           <div class="wrapper-indicator">
-            <a-icon type="right"></a-icon>
+            <v-icon>mdi-chevron-right</v-icon>
           </div>
           <div>
             <ProfilePicture :user="m" :small="true"></ProfilePicture>
@@ -36,7 +36,11 @@
       </ChatItem>
     </div>
     <div v-else class="pa-1">
-      <a-alert type="warning" :show-icon='true' message="You do not have chats."></a-alert>
+      <v-alert
+        type="info"
+      >
+        You do not have chats.
+      </v-alert>
       <div v-if="isModerator" class="mb-1 mt-1">
         Check your <nuxt-link :to="localePath('/chat-requests')">queue</nuxt-link> of appointments
       </div>

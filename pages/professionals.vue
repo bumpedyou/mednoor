@@ -1,55 +1,66 @@
 <template>
-  <a-row class='pa-1 mh-100v'>
+  <a-row class='pa-6 mh-100v'>
     <a-col>
       <div v-if='doctors && doctors.length' class='mb-1'>
-        <p class='h2 text-center'>
+        <p class='h3 text-center'>
           My Doctors
         </p>
         <div class='mb-1 my-doctors'>
           <ProfessionalThumb v-for='(p, i) in doctors' :key='i' class='doctor' :user='p'></ProfessionalThumb>
-          <!--
-          <div>
-            <div class='view-more-box'>
-              View All
-            </div>
-            <div style="height: 27px"></div>
-          </div>
-          -->
         </div>
       </div>
       <div class='mb-1'>
-        <a-row>
-          <a-col :xs='24' :md='{span: 12, offset: 6}'>
+        <v-row>
+          <v-col>
+            <p class='h2 text-center'>Find Doctors</p>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col  md="6" offset-md="3">
             <a-form-item>
               <a-input-search v-model='term' size='large' placeholder='Search by Professional Name' enter-button
                               @search='search'>
               </a-input-search>
             </a-form-item>
-          </a-col>
-        </a-row>
+          </v-col>
+        </v-row>
       </div>
       <div>
-        <a-skeleton v-if='loadingResults' />
+        <a-skeleton v-if='loadingResults'/>
         <div v-else-if="results.length > 0">
           <section v-for="(r, i) in results" :key="i" class="professional-bar">
             <div>
               <professional-thumb :user="r" :show-make-appointment="false"></professional-thumb>
             </div>
-            <div class="info">
+            <div>
               <div class="w-100">
-                <h3>{{r.user_last_name}}, {{r.user_first_name}} {{r.profe_credentials}}</h3>
+                <h3>{{ r.user_last_name }}, {{ r.user_first_name }} {{ r.profe_credentials }}</h3>
               </div>
               <div v-if="r.addr_line1" class="w-100 mb-1">
                 <p>
-                  {{r.addr_line1}}, {{r.addr_city}}, {{r.addr_state}}, {{r.addr_zip}}
+                  {{display_address(r)}}
+                </p>
+                <p>
+                  <v-chip
+                    v-if="r.category"
+                    color="primary"
+                  >
+                    {{ r.category }}
+                  </v-chip>
+                  <v-chip
+                    v-if="r.specialty"
+                    color="success"
+                  >
+                    {{ r.specialty }}
+                  </v-chip>
+                  <v-divider vertical></v-divider>
                 </p>
               </div>
-              <div>
-                <add-my-doctors :uuid="r.uuid"></add-my-doctors>
+              <div class="flex-line">
+                <add-my-doctors :uuid="r.uuid" class="mr-1"></add-my-doctors>
+                <MakeAppointment :user="r" :super-small="false" button></MakeAppointment>
               </div>
-              <div>
-                <MakeAppointment :user="r" :super-small="false"></MakeAppointment>
-              </div>
+
             </div>
           </section>
         </div>
@@ -83,6 +94,8 @@ import authMixin from '~/mixins/authMixin'
 import ProfessionalThumb from '~/components/ProfessionalThumb'
 import MakeAppointment from '~/components/MakeAppointment'
 import AddMyDoctors from "~/components/AddMyDoctors";
+import addressDisplayMixin from "~/mixins/addressDisplayMixin";
+
 
 export default {
   name: 'Professionals',
@@ -92,7 +105,7 @@ export default {
     MakeAppointment,
     AddMyDoctors
   },
-  mixins: [authMixin],
+  mixins: [authMixin, addressDisplayMixin],
   middleware: ['verified'],
   data() {
     return {
@@ -103,13 +116,13 @@ export default {
           title: this.$t('full_name'),
           dataIndex: 'user_first_name',
           key: 'user_first_name',
-          slots: { title: this.$t('full_name') },
-          scopedSlots: { customRender: 'full_name' }
+          slots: {title: this.$t('full_name')},
+          scopedSlots: {customRender: 'full_name'}
         },
         {
           title: this.$t('action'),
           key: 'action',
-          scopedSlots: { customRender: 'action' }
+          scopedSlots: {customRender: 'action'}
         }
       ],
       users: [],
@@ -137,12 +150,14 @@ export default {
       this.getModerators()
     })
 
-    if (this.isLoggedIn){
+
+
+    if (this.isLoggedIn) {
       this.$api.get('/my-doctor', {
         params: {
           five: true
         }
-      }).then(({ data }) => {
+      }).then(({data}) => {
         this.doctors = data
       })
     }
@@ -156,7 +171,7 @@ export default {
           type: 'MODERATOR',
           categories: this.selectedCategories
         }
-      }).then(({ data }) => {
+      }).then(({data}) => {
         if (data) {
           this.results = data
         }
@@ -215,6 +230,7 @@ export default {
   border: 1px solid #ccc
   padding: 1rem
   color: $mdn-primary
+
   &:hover
     cursor: pointer
 
@@ -236,14 +252,17 @@ export default {
   margin: 1rem
   display: flex
   flex-direction: column
+
   > div
     text-align: center
+
   > div:not(:first-child)
     padding: 1rem
 
 @media screen and (min-width: $md)
   .professional-bar
     flex-direction: row
+
     > div
       text-align: left
   .view-more-box

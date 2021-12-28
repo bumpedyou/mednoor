@@ -1,6 +1,7 @@
 <template>
   <div class='sidebar-mobile-title'>
-    <span class='h3'><slot></slot></span> <img :src="require('~/static/icon/chevron-left.svg')" alt='chevron-left icon' @click="$emit('click', $event)">
+    <span class='h3 mr-auto'><slot></slot></span>
+    <v-icon class='mx-1 xx d-flex' @click="$emit('click', $event)">mdi-chevron-left</v-icon>
   </div>
 </template>
 
@@ -15,10 +16,10 @@ export default {
   background: #fff
   padding: 1rem
   display: flex
-  justify-content: center
   align-items: center
+  width: 100%
   border-bottom: 1px solid $mdn-super-light-grey
-  img
+  .xx
     margin-left: auto
     &:hover
       cursor: pointer

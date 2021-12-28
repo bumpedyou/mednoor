@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-app>
     <navbar></navbar>
     <div id='app-content'>
       <div :class='chatsLayoutClass'>
@@ -128,7 +128,7 @@
       </a-modal>
     </div>
     <a ref='downloadUrlRef' :href='downloadUrl' :download='downloadUrl' target='_blank' class='d-none'></a>
-  </div>
+  </v-app>
 </template>
 
 <script>
