@@ -75,17 +75,12 @@ export default {
   },
   methods: {
     setTheView(view){
-
-      // this.$store.commit('view/setView', view)
-      // this.checkRedirect()
       this.$cookies.set('view', view)
-
       if (view === 'professional'){
         this.$router.push(this.localePath('/pin'))
       }else{
         this.$router.push(this.localePath('/professionals'))
       }
-
     }
   }
 }

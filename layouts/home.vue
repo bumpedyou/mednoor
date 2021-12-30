@@ -15,26 +15,28 @@
         </v-col>
       </v-row>
       <v-row>
-        <a-col>
+        <v-col>
           <BubbleChat></BubbleChat>
-        </a-col>
-      </v-row>
-      <v-row>
-        <v-col md="6" class='pa-1'>
-          <div v-if='main_text' class='middle-text'>
-            <!-- eslint-disable vue/no-v-html -->
-            <pre v-html='main_text'></pre>
-            <!--eslint-enable-->
-          </div>
-        </v-col>
-        <v-col md="6" class='pa-1'>
-          <div v-if='main_text_b' class='middle-text'>
-            <!-- eslint-disable vue/no-v-html -->
-            <pre v-html='main_text_b'></pre>
-            <!--eslint-enable-->
-          </div>
         </v-col>
       </v-row>
+      <v-container>
+        <v-row>
+          <v-col md="6">
+            <div v-if='main_text' class='middle-text'>
+              <!-- eslint-disable vue/no-v-html -->
+              <pre v-html='main_text'></pre>
+              <!--eslint-enable-->
+            </div>
+          </v-col>
+          <v-col md="6">
+            <div v-if='main_text_b' class='middle-text'>
+              <!-- eslint-disable vue/no-v-html -->
+              <pre v-html='main_text_b'></pre>
+              <!--eslint-enable-->
+            </div>
+          </v-col>
+        </v-row>
+      </v-container>
     </div>
     <MFooter></MFooter>
   </v-app>

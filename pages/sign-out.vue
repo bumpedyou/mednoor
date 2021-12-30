@@ -18,9 +18,10 @@ export default {
     }
   },
   mounted(){
-    this.$auth.logout()
     this.$cookies.set('view', null)
-    this.$router.push(this.localePath('/sign-in'))
+    this.$auth.logout().then(()=>{
+      this.$router.push(this.localePath('/sign-in'))
+    })
   },
 }
 </script>
