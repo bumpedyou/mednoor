@@ -44,10 +44,12 @@
 import { mapMutations } from 'vuex'
 import redirectionMixin from '~/mixins/redirectionMixin'
 import userRoleMixin from "~/mixins/userRoleMixin";
+import authMixin from "~/mixins/authMixin";
+
 
 export default {
   name: "ViewMode",
-  mixins: [redirectionMixin, userRoleMixin],
+  mixins: [redirectionMixin, userRoleMixin, authMixin],
   middleware: ['authenticated', 'verified', 'not-blocked', 'not-deleted'],
   computed: {
     ...mapMutations({
@@ -58,18 +60,15 @@ export default {
     }
   },
   mounted(){
-    console.log('[mounted]')
-    console.log('[view-mode.vue]', this.isAdmin, this.isSuper)
 
     if (this.isAdmin || this.isSuper){
       console.log('isAdmin || isSuper', this.isAdmin, this.isSuper)
       console.log('[view-mode.vue] ---> isAdmin')
-      // this.$store.commit('view/setView', 'admin')
       this.$cookies.set('view', 'admin')
       this.$router.push(this.localePath('/dashboard'))
     }
 
-    if (this.callback){
+    if (this.callback && this.isLoggedIn){
       return this.$router.push(this.localePath(decodeURIComponent(this.callback)))
     }
 

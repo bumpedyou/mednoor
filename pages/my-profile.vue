@@ -56,110 +56,45 @@
             </div>
           </a-tab-pane>
           <a-tab-pane key="2" tab="Personal Information">
-            <a-form layout='vertical'  :form="form" size="small" @submit="handleSubmit">
-              <a-form-item
-                v-model="first_name"
-                :label="$t('fn')"
-                rules="required"
-              >
-                <a-input
-                  v-decorator="[
-                      'first_name',
-                      {
-                        initialValue: first_name,
-                        rules: [
-                          {
-                            required: true,
-                            message: $t('v.fn_req')
-                          },
-                          { min: 3, message: $t('v.min_3') },
-                          {
-                            max: 30,
-                            message: $t('v.max_30')
-                          }
-                        ]
-                      }
-                    ]"
-                  :placeholder="$t('fn')"
-                >
-                  <a-icon
-                    slot="prefix"
-                    type="user"
-                    style="color: rgba(0, 0, 0, 0.25)"
-                  />
-                </a-input>
-              </a-form-item>
-              <a-form-item
-                v-model="last_name"
-                :label="$t('ln')"
-              >
-                <a-input
-                  v-decorator="[
-                      'last_name',
-                      {
-                        initialValue: last_name,
-                        rules: [
-                          {
-                            required: true,
-                            message: $t('v.ln_req')
-                          },
-                          { min: 3, message: $t('v.min_3') },
-                          {
-                            max: 30,
-                            message: $t('v.max_30')
-                          }
-                        ],
-                      }
-                    ]"
-                  :placeholder="$t('ln')"
-                >
-                  <a-icon
-                    slot="prefix"
-                    type="user"
-                    style="color: rgba(0, 0, 0, 0.25)"
-                  />
-                </a-input>
-              </a-form-item>
-              <a-form-item
-                :label="$t('email')"
-              >
-                <a-input v-model="email" disabled :placeholder="$t('email')"  />
-              </a-form-item>
-              <a-row>
-                <a-col :xs="24" :sm="24" :md="3" :lg="4">
-                  <a-form-item
-                    label="Country code"
-                  >
-                    <a-input v-model="country_code" placeholder="Country code" />
-                  </a-form-item>
-                </a-col>
-                <a-col :xs="24" :sm="24" :md="21" :lg="20">
-                  <a-form-item
-                    label="Phone Number"
-                  >
-                    <a-input v-model="phone_no"  placeholder="Phone Number." />
-                  </a-form-item>
-                </a-col>
-              </a-row>
-              <a-row v-if="isUser">
-                <a-col>
+            <v-form ref="personalForm" v-model="validPersonalForm"  @submit.prevent="handleSubmit">
+              <v-row>
+                <v-col md="6">
+                  <v-text-field v-model="first_name" :placeholder="$t('fn')" :label="$t('fn')" :rules="[v => !!v ||  $t('v.fn_req'), v => !!v && v.length > 2 || $t('v.min_3', v => !!v && v.length <= 30 || $t('v.max_30'))]"></v-text-field>
+                </v-col>
+                <v-col md="6">
+                  <v-text-field v-model="last_name" :placeholder="$t('ln')" :label="$t('ln')" :rules="[v => !!v ||  $t('v.fn_req'), v => !!v && v.length > 2 || $t('v.min_3', v => !!v && v.length <= 30 || $t('v.max_30'))]"></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <v-text-field v-model="email" disabled label="Email" :rules="[v => !!v || $t('v.email_req'), v => !!v && v.length <= 150 || $t('v.max_email_150')]" prepend-inner-icon="mdi-email"></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col sm="4" md="2">
+                  <v-text-field v-model="country_code" placeholder="Country code" label="Country code"></v-text-field>
+                </v-col>
+                <v-col sm="8" md="10">
+                  <v-text-field v-model="phone_no" placeholder="Phone number" label="Phone number" maxlength="10"></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row v-if="isUser">
+                <v-col>
                   <hr>
                   <p class="h4">
                     Address
                   </p>
-                  <UserAddress :form="form"></UserAddress>
-                </a-col>
-              </a-row>
-              <a-form-item>
-                <div class="pull-child-left">
-                  <a-button type="primary" html-type="submit">
-                    <SpinOrText v-model="loading">
-                      {{$t('save_changes')}}
-                    </SpinOrText>
-                  </a-button>
-                </div>
-              </a-form-item>
-            </a-form>
+                  <UserAddress></UserAddress>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <v-btn color="primary" tile small type="submit" :loading="loading">
+                    {{$t('save_changes')}}
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-form>
           </a-tab-pane>
           <a-tab-pane key="3" tab="Security" force-render>
             <a-form-item>
@@ -263,6 +198,7 @@ export default {
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified', 'view-set'],
   data (){
     return {
+      validPersonalForm: false,
       validProfForm: false,
       picture: '',
       file: null,
@@ -492,40 +428,38 @@ export default {
         this.loadingPage = false
       })
     },
-    handleSubmit(e){
-      e.preventDefault()
-      this.form.validateFields((err, values) => {
-        if (!err) {
-          this.loading = true
+    handleSubmit(){
 
-          values.country_code = this.country_code
-          values.phone_no = this.phone_no
-
-          if (this.country_code.length < 1){
-            this.$toast.error('The country code is not valid')
-            return false
-          }
-          if (this.phone_no.length <10){
-            this.$toast.error('The phone number must have 10 digits.')
-            return false
-          }
-
-          values.is_patient = this.isUser
-
-          this.$api
-            .put('/user', values)
-            .then(async () => {
+      this.$refs.personalForm.validate()
+      if (this.validPersonalForm){
+        this.loading = true
+        this.$api
+          .put('/user', {
+            country_code: this.country_code,
+            phone_no: this.phone_no,
+            is_patient: this.isUser,
+            line1: this.line1,
+            city: this.city,
+            state: this.state,
+            zip: this.zip,
+            first_name: this.first_name,
+            last_name: this.last_name,
+          })
+          .then(() => {
+            setTimeout(async () => {
               await this.$auth.fetchUser()
               this.$toast.success(this.$t('updated_suc').toString());
-            })
-            .catch((e) => {
-              this.$refs.rmodal.$emit('error', e)
-            })
-            .finally(() => {
+            }, 100)
+          })
+          .catch((e) => {
+            this.$refs.rmodal.$emit('error', e)
+          })
+          .finally(() => {
+            setTimeout(() => {
               this.loading = false
-            })
-        }
-      })
+            }, 100)
+          })
+      }
     },
     saveProfessional(){
       this.$refs.profForm.validate()

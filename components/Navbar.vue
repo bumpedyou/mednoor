@@ -22,7 +22,7 @@
           <img :src="require('~/static/pay.png')" alt="pay">
           </a>
         </div>
-        <div class='mx-1'>
+        <div v-if="isLoggedIn" class='mx-1'>
           <v-tab>
             <v-badge
               overlap
@@ -296,6 +296,11 @@ export default {
         this.$toast.success('A user has asked to become a professional')
         this.playNotification()
       })
+
+      this.socket.on('chat-request', ()=>{
+        this.$toast.success("A new user has been added to your chat's queue")
+      })
+
       this.socket.on('user-reload', () => {
         this.getChats(true)
       })

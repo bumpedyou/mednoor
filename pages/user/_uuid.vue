@@ -22,14 +22,14 @@
           {{ user.user_first_name }} {{ user.user_last_name }}
           <v-btn v-if='user && user.usro_key' color="purple" dark small class='ml-1' rounded>
             {{ user.usro_role }}
-            <v-icon class="ml-1">mdi-check-decagram</v-icon>
+            <v-icon v-if="isThisAModerator" class="ml-1">mdi-check-decagram</v-icon>
           </v-btn>
         </p>
       </v-col>
       <v-col md='12'>
         <div>
           <ProfilePicture :user='user' class="mb-1"></ProfilePicture>
-          <div class="flex-line">
+          <div v-if="isThisAModerator" class="flex-line">
             <add-my-doctors :uuid="user.user_uuid" class="mr-1"></add-my-doctors>
             <MakeAppointment :user="user" button></MakeAppointment>
           </div>
@@ -52,7 +52,7 @@
               {{ user.user_email }}
             </span>
             </p>
-            <p>
+            <p v-if="isThisAModerator">
               <b>Practice Address: </b> {{display_address(address)}}
             </p>
             <div>
@@ -131,6 +131,9 @@ export default {
     address: {},
   }),
   computed: {
+    isThisAModerator(){
+      return this.user && this.user.usro_role === 'MODERATOR'
+    },
     exists() {
       return this.user && this.user.usro_key
     },

@@ -158,10 +158,14 @@ export default {
 .profile-picture.small
   width: 60px
   height: 60px
+  .text-pic
+    font-size: 0.6rem !important
 
 .profile-picture.x-small
   width: 30px !important
   height: 30px !important
+  .text-pic
+    font-size: 0.6rem !important
 
 @media screen and (min-width: $md)
   .profile-picture

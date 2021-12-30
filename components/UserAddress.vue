@@ -67,6 +67,7 @@ export default {
           is_patient: this.isUser
         }
       }).then(({data})=>{
+        console.log('Address in db is --->', data)
         this.loading = false
         if (data){
           this.$store.commit('address/setLine1', data.addr_line1)

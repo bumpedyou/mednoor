@@ -40,12 +40,6 @@ export default {
           this.$cookies.get('temporalUser').user_uuid
         )
       }
-      this.socket.on('chat-request', () => {
-        this.openNotification({
-          title: this.$t('new_chreq'),
-          description: this.$t('new_chreq'),
-        })
-      })
 
       this.socket.on('user-reload', () => {
         if (this.isLoggedIn) {
@@ -55,7 +49,7 @@ export default {
             this.getChats(false)
           }
         }
-        this.openNotification()
+        this.$toast.success(this.$t('ch_lis_upd').toString())
       })
 
       this.socket.on('new-message', (data) => {

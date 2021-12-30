@@ -1,202 +1,93 @@
 <template>
   <div>
-      <a-row>
-          <a-col class="pa-1 mt-3" :xs="24" :sm="24" :md="{span: 20, offset: 2}" :lg="{span: 16, offset: 4}">
-        <a-card>
+      <v-row>
+        <v-col md="6" offset-md="3">
+        <v-card class="mt-6">
+          <v-card-text>
           <h1 class="h1 text-center">{{$t('sign_up')}}</h1>
-          <a-form :form="form" size="small" @submit="handleSubmit">
-            <a-form-item>
-              <a-input
-                v-decorator="[
-                  'email',
-                  {
-                    rules: [
-                      { required: true, message: $t('v.email_req') },
-                      { max: 150, message: $t('v.max_email_150') },
-                      { type: 'email', message: $t('v.inv_email') }
-                    ]
-                  }
-                ]"
-                :placeholder="$t('email')"
-              />
-            </a-form-item>
-            <a-row>
-              <a-col :xs="{ span: 24 }" :md="{ span: 11 }">
-                <a-form-item>
-                  <a-input
-                    v-decorator="[
-                      'first_name',
-                      {
-                        rules: [
-                          {
-                            required: true,
-                            message: $t('v.fn_req')
-                          },
-                          { min: 3, message: $t('v.min_3') },
-                          {
-                            max: 30,
-                            message: $t('v.max_30')
-                          }
-                        ]
-                      }
-                    ]"
-                    :placeholder="$t('fn')"
-                  >
-                    <a-icon
-                      slot="prefix"
-                      type="user"
-                      style="color: rgba(0, 0, 0, 0.25)"
-                    />
-                  </a-input>
-                </a-form-item>
-              </a-col>
-              <a-col :xs="{ span: 24 }" :md="{ span: 11, offset: 2 }">
-                <a-form-item>
-                  <a-input
-                    v-decorator="[
-                      'last_name',
-                      {
-                        rules: [
-                          { required: true, message: $t('v.ln_req') },
-                          { min: 3, message: $t('v.min_3') },
-                          {
-                            max: 30,
-                            message: $t('v.max_30')
-                          }
-                        ]
-                      }
-                    ]"
-                    :placeholder="$t('ln')"
-                  >
-                    <a-icon
-                      slot="prefix"
-                      type="user"
-                      style="color: rgba(0, 0, 0, 0.25)"
-                    />
-                  </a-input>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-form-item>
-              <a-input v-model="date" placeholder="MM-DD-YYYY">
-                <a-icon
-                  slot="prefix"
-                  type="calendar"
-                  style="color: rgba(0, 0, 0, 0.25)"
-                />
-              </a-input>
-            </a-form-item>
-            <a-row>
-              <a-col :xs="{ span: 24 }" :md="{ span: 11 }">
-                <a-form-item>
-                  <a-input
-                    v-decorator="[
-                      'password',
-                      {
-                        rules: [
-                          { required: true, message: $t('v.pwd_req') },
-                          { min: 6, message: $t('v.min_6') }
-                        ]
-                      }
-                    ]"
-                    :placeholder="$t('pwd')"
-                    type="password"
-                  >
-                    <a-icon
-                      slot="prefix"
-                      type="lock"
-                      style="color: rgba(0, 0, 0, 0.25)"
-                    />
-                  </a-input>
-                </a-form-item>
-              </a-col>
-              <a-col :xs="{ span: 24 }" :md="{ span: 11, offset: 2 }">
-                <a-form-item>
-                  <a-input
-                    v-decorator="[
-                      'confirm_password',
-                      {
-                        rules: [
-                          {
-                            required: true,
-                            message: $t('v.cpwd_req')
-                          },
-                          { min: 6, message: $t('v.min_6') }
-                        ]
-                      }
-                    ]"
-                    :placeholder="$t('cpwd')"
-                    type="password"
-                  >
-                    <a-icon
-                      slot="prefix"
-                      type="lock"
-                      style="color: rgba(0, 0, 0, 0.25)"
-                    />
-                  </a-input>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-form-item>
-                  <a-checkbox v-decorator="[
-                      'terms_conditions',
-                      {
-                        rules: [
-
-                          {
-                            required: true,
-                            message: $t('v.ym_agree')
-                          },
-                        ]
-                      }
-                    ]">
-                      <small>{{$t('i_agree')}}</small>
-                    </a-checkbox>
-                  <small>
+            <v-form ref="form" v-model="validForm" @submit.prevent="handleSubmit">
+              <v-row>
+                <v-col>
+                  <v-text-field v-model="email" label="Email" :rules="[v => !!v || $t('v.email_req'), v => !!v && v.length <= 150 || $t('v.max_email_150')]" prepend-inner-icon="mdi-email"></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col md="6">
+                   <v-text-field v-model="first_name" :placeholder="$t('fn')" :label="$t('fn')" :rules="[v => !!v ||  $t('v.fn_req'), v => !!v && v.length > 2 || $t('v.min_3', v => !!v && v.length <= 30 || $t('v.max_30'))]"></v-text-field>
+                </v-col>
+                <v-col md="6">
+                  <v-text-field v-model="last_name" :placeholder="$t('ln')" :label="$t('ln')" :rules="[v => !!v ||  $t('v.fn_req'), v => !!v && v.length > 2 || $t('v.min_3', v => !!v && v.length <= 30 || $t('v.max_30'))]"></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <v-text-field v-model="date" label="Date of birth" placeholder="MM-DD-YYYY"></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row class="mb-0">
+                <v-col>
+                  <v-text-field v-model="password" label="Password" prepend-inner-icon="mdi-lock" type="password" :rules="[v => !!v || $t('v.pwd_req'), v => !!v && v.length > 5 || $t('v.min_6')]"></v-text-field>
+                </v-col>
+                <v-col>
+                  <v-text-field v-model="confirm_password" label="Confirm Password" prepend-inner-icon="mdi-lock" type="password" :rules="[v => !!v || $t('v.pwd_req'), v => !!v && v.length > 5 || $t('v.min_6')]"></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row class="mt-0">
+                <v-col class="mt-0">
+                  <div class="d-flex" style="align-items: center !important">
+                    <v-checkbox v-model="agree" :true-value="true" :false-value="false" :label="$t('i_agree')" :rules="[v => !!v || 'You must agree.']" class="mr-1">
+                    </v-checkbox>
                     <a :href="localePath('/terms-and-conditions')" target="_blank">{{$t('terms_cond')}}</a>
-                    &
+                    <span class="mx-1">&</span>
                     <a :href="localePath('/privacy-policy')" target="_blank">{{$t('privacy')}}</a>
-                  </small>
-              </a-form-item>
-            </a-row>
-            <a-form-item>
-              <a-button type="primary" html-type="submit" block>
-                <SpinOrText v-model="loading">{{$t('sign_up')}}</SpinOrText>
-              </a-button>
-            </a-form-item>
-            <div>
-              <hr />
-              <small class="text-center d-block mb-0">
-                {{$t('alr_h_acc')}}
-              </small>
-              <small class="text-center d-block mt-1">
-                <a-button type="primary" @click="$router.push(localePath('/sign-in'))">{{$t('sign_in')}}</a-button>
-              </small>
-            </div>
-          </a-form>
-        </a-card>
-      </a-col>
-    </a-row>
+                  </div>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <v-btn color="primary" type="submit" tile small block :loading="loading">
+                    {{$t('sign_up')}}
+                  </v-btn>
+                </v-col>
+              </v-row>
+              <div>
+                <hr />
+                <small class="text-center d-block mb-0 mt-3">
+                  {{$t('alr_h_acc')}}
+                </small>
+                <small class='text-center d-block mt-3'>
+                  <v-btn color="primary" tile small :to="localePath('/sign-in')">{{$t('sign_in')}}</v-btn>
+                </small>
+              </div>
+            </v-form>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
     <RequestModal ref="rmodal"></RequestModal>
   </div>
 </template>
 
 <script>
 import RequestModal from '~/components/RequestModal'
-import SpinOrText from '~/components/SpinOrText'
 import formMixin from '~/mixins/formMixin'
 export default {
   components: {
     RequestModal,
-    SpinOrText
   },
   mixins: [formMixin],
   layout: 'home',
   middleware: ['unauthenticated'],
   data() {
     return {
-      loading: false
+      loading: false,
+      validForm: false,
+      email: '',
+      password: '',
+      confirm_password: '',
+      first_name: '',
+      last_name: '',
+      agree: false,
     }
   },
   head() {
@@ -212,41 +103,45 @@ export default {
     }
   },
   methods: {
-    handleSubmit(e) {
-      e.preventDefault()
-      this.form.validateFields((err, values) => {
-        if (!err) {
-          this.loading = true
-          values.dob = [this.year, this.month, this.day].join('-')
-          this.$api
-            .post('/user', values)
-            .then(async ({ data }) => {
-              try {
-                await this.$auth
-                  .loginWith('local', {
-                    data: {
-                      email: values.email,
-                      password: values.password
-                    }
-                  })
-                  .then(() => {
-                    // redirect
-                  })
-                  .catch((e) => {
-                    this.$refs.rmodal.$emit('error', e)
-                  })
-              } catch (e) {
-                this.$refs.rmodal.$emit('error', e)
-              }
-            })
-            .catch((e) => {
+    handleSubmit() {
+      this.$refs.form.validate()
+      if (this.validForm){
+        this.loading = true
+        this.$api
+          .post('/user', {
+            first_name: this.first_name,
+            last_name: this.last_name,
+            email: this.email,
+            password: this.password,
+            confirm_password: this.confirm_password,
+            dob: [this.year, this.month, this.day].join('-')
+          })
+          .then(async () => {
+            try {
+              await this.$auth
+                .loginWith('local', {
+                  data: {
+                    email: this.email,
+                    password: this.password
+                  }
+                })
+                .then(() => {
+                  // redirect
+                })
+                .catch((e) => {
+                  this.$refs.rmodal.$emit('error', e)
+                })
+            } catch (e) {
               this.$refs.rmodal.$emit('error', e)
-            })
-            .finally(() => {
-              this.loading = false
-            })
-        }
-      })
+            }
+          })
+          .catch((e) => {
+            this.$refs.rmodal.$emit('error', e)
+          })
+          .finally(() => {
+            this.loading = false
+          })
+      }
     }
   }
 }

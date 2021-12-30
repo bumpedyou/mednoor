@@ -23,8 +23,8 @@
       </div>
     </div>
     <div class='video-controls'>
-      <div style="cursor: pointer" @click="saveVideo">
-        <img :src="require('~/static/icon/save.svg')" alt='save icon'>
+      <div class="clickable" @click="saveVideo">
+        <v-icon >mdi-content-save</v-icon>
       </div>
     </div>
   </div>
