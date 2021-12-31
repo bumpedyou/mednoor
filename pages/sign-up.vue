@@ -4,27 +4,35 @@
         <v-col md="8" offset-md="2">
         <v-card class="mt-6">
           <v-card-text>
-          <h1 class="h1 text-center">{{$t('sign_up')}}</h1>
+          <h1 class="h1 text-center mb-6">{{$t('sign_up')}}</h1>
             <v-form ref="form" v-model="validForm" @submit.prevent="handleSubmit">
-              <v-row class="mb-0 mb-0">
-                <v-col md="12" class="mb-0 mb-0 pb-0">
+              <v-row class="mb-0 mb-0 pb-0">
+                <v-col md="12" class="my-0 py-0">
                   <v-text-field v-model="email" label="Email" :rules="[v => !!v || $t('v.email_req'), v => !!v && v.length <= 150 || $t('v.max_email_150')]" prepend-inner-icon="mdi-email"></v-text-field>
                 </v-col>
-                <v-col md="6" class="my-0 py-0">
+              </v-row>
+              <v-row class="my-0 py-0">
+                <v-col xs="12" md="6" class="my-0 py-0">
                   <v-text-field v-model="first_name" :placeholder="$t('fn')" :label="$t('fn')" :rules="[v => !!v ||  $t('v.fn_req'), v => !!v && v.length > 2 || $t('v.min_3', v => !!v && v.length <= 30 || $t('v.max_30'))]"></v-text-field>
                 </v-col>
-                <v-col md="6" class="my-0 py-0">
+                <v-col xs="12" md="6" class="my-0 py-0">
                   <v-text-field v-model="last_name" :placeholder="$t('ln')" :label="$t('ln')" :rules="[v => !!v ||  $t('v.fn_req'), v => !!v && v.length > 2 || $t('v.min_3', v => !!v && v.length <= 30 || $t('v.max_30'))]"></v-text-field>
                 </v-col>
+              </v-row>
+              <v-row class="my-0 py-0">
                 <v-col md="12" class="my-0 py-0">
                   <v-text-field v-model="date" label="Date of birth" placeholder="MM-DD-YYYY"></v-text-field>
                 </v-col>
+              </v-row>
+              <v-row class="my-0 py-0">
                 <v-col md="6" class="my-0 py-0">
                   <v-text-field v-model="password" label="Password" prepend-inner-icon="mdi-lock" type="password" :rules="[v => !!v || $t('v.pwd_req'), v => !!v && v.length > 5 || $t('v.min_6')]"></v-text-field>
                 </v-col>
                 <v-col md="6" class="my-0 py-0">
                   <v-text-field v-model="confirm_password" label="Confirm Password" prepend-inner-icon="mdi-lock" type="password" :rules="[v => !!v || $t('v.pwd_req'), v => !!v && v.length > 5 || $t('v.min_6')]"></v-text-field>
                 </v-col>
+              </v-row>
+              <v-row>
                 <v-col class="my-0 py-0">
                   <div class="d-flex" style="align-items: center !important">
                     <v-checkbox v-model="agree" :true-value="true" :false-value="false" :label="$t('i_agree')" :rules="[v => !!v || 'You must agree.']" class="mr-1">
@@ -39,6 +47,9 @@
                     {{$t('sign_up')}}
                   </v-btn>
                 </v-col>
+              </v-row>
+              <v-row>
+
               </v-row>
               <div>
                 <hr />
