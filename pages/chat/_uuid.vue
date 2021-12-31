@@ -151,7 +151,6 @@ export default {
       if (this.show_video){
         c.push('show-video')
       }
-      console.log(c)
       return c.join(' ')
     },
     toIsTyping(){
@@ -490,8 +489,6 @@ export default {
     openChat(uuid) {
       this.to = uuid
       this.messages = []
-      console.log('MyID --->', this.myID)
-      console.log('UUID --->', uuid)
       if (this.myID && uuid){
         this.$api.get('/conversation/id/' + this.myID + '/' + uuid).then(({data}) => {
           if (data.conversationId) {

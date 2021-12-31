@@ -100,27 +100,35 @@ export default {
       this.appointmentVisible = true
     },
     makeAppointment() {
-      this.$api
-        .post('/my-professional', {
-          professional: this.professional,
-        })
-        .then(() => {
-          this.$toast.success('Your request has been sent successfully.')
-          const ids = this.$cookies.get('appointments')
-          console.log('ids are currently', ids)
-          ids.push({professional: this.professional})
-          console.log('Push --->', this.professional)
-          this.$cookies.set('appointments', ids)
-          console.log('ids are now --->', this.$cookies.get('appointments'))
-          this.count++
-        })
-        .catch((err) => {
-          this.$toast.error(err)
-        })
-        .finally(() => {
-          this.loadingMakeAppointment = false
-          this.appointmentVisible = false
-        })
+      if (this.$auth.user.has_phone){
+        this.$api
+          .post('/my-professional', {
+            professional: this.professional,
+          })
+          .then(() => {
+            this.$toast.success('Your request has been sent successfully.')
+            const ids = this.$cookies.get('appointments')
+            console.log('ids are currently', ids)
+            ids.push({professional: this.professional})
+            console.log('Push --->', this.professional)
+            this.$cookies.set('appointments', ids)
+            console.log('ids are now --->', this.$cookies.get('appointments'))
+            this.count++
+          })
+          .catch((err) => {
+            this.$toast.error(err)
+          })
+          .finally(() => {
+            this.loadingMakeAppointment = false
+            this.appointmentVisible = false
+          })
+      }else{
+        this.appointmentVisible = false
+        this.$toast.error('Please add your phone number to your account to make an appointment.')
+        setTimeout(() => {
+          this.$router.push(this.localePath('/my-profile'))
+        }, 1000)
+      }
     },
   },
 }

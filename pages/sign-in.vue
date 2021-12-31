@@ -1,13 +1,13 @@
 <template>
-  <div>
+  <div class="mt-9">
       <v-row>
-          <v-col md="6" offset-md="3">
+          <v-col md="8" offset-md="2">
             <v-card class="mt-6">
               <v-card-text>
                 <div class="mednoor-heading-svg">
                   <img :src='require("~/static/logo.jpg")' height="40px" alt="mednoor logo" />
                   <div>
-                    <p class='h3 text-center'>
+                    <p class='h4 text-center'>
                       {{$t('med_med_cen')}}
                     </p>
                     <small class="h5 text-center d-block">
@@ -30,7 +30,7 @@
                       {{$t('dont_h_acc')}}
                     </small>
                     <small class='text-center d-block mt-3'>
-                      <v-btn :to="localePath('/sign-up')" color="primary" tile small>{{$t('sign_up')}}</v-btn>
+                      <v-btn :to="localePath('/sign-up')" color="info" tile small>{{$t('sign_up')}}</v-btn>
                     </small>
                   </div>
                 </v-form>

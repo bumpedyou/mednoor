@@ -88,7 +88,6 @@ export default {
       if (fn && ln){
         return [fn,ln].join(' ')
       }else if (full){
-        console.log(full)
         return full
       }else if (this.$props.user){
         const u = this.$props.user
@@ -104,9 +103,13 @@ export default {
       let i = ''
       if (typeof this.name === 'string' && this.name.length){
         const n = this.name.split(' ')
+        console.log('n --->', this.name, this.name.split(' '))
         if (n.length >= 2){
           i+= this.getInitial(n[0])
           i+= this.getInitial(n[1])
+          if (n.length > 2){
+            i+= this.getInitial(n[2])
+          }
         }
       }
       return i

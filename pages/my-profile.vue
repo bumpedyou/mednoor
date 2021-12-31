@@ -56,6 +56,11 @@
             </div>
           </a-tab-pane>
           <a-tab-pane key="2" tab="Personal Information">
+            <v-row v-if="!$auth.user.has_phone">
+              <v-col>
+                <v-alert type="warning">Please add your phone number</v-alert>
+              </v-col>
+            </v-row>
             <v-form ref="personalForm" v-model="validPersonalForm"  @submit.prevent="handleSubmit">
               <v-row>
                 <v-col md="6">
@@ -309,6 +314,17 @@ export default {
           this.phone_no = data.user_phone_no
           this.country_code = '+' + data.user_country_code
           this.picture = data.user_picture
+
+          if (!this.$auth.user.has_phone){
+            console.log('Dont have a phone no')
+            this.showTabs = false
+            this.tab = '2'
+            setTimeout(() =>{
+              this.$nextTick(()=>{
+                this.showTabs = true
+              })
+            }, 200)
+          }
         }
       })
     }
@@ -409,6 +425,7 @@ export default {
               })
             }, 100)
           }
+
 
           if (this.isModerator){
             this.npi = data.profe_npi

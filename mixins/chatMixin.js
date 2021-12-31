@@ -20,17 +20,14 @@ export default {
   },
   methods: {
     scrollMessagesSection() {
-      console.log('Scroll')
       this.$nextTick(() => {
         const c = this.$refs.messages
-        console.log(c)
         if (c) {
           c.scrollTop = c.scrollHeight
         }
       })
     },
     listen() {
-      console.log('listening')
       this.socket = this.$nuxtSocket({ persist: 'chatSocket' })
       if (this.isLoggedIn) {
         this.socket.emit('join-room', this.myID)
@@ -53,7 +50,6 @@ export default {
       })
 
       this.socket.on('new-message', (data) => {
-        console.log('new message received', data)
         this.playNotification()
         if (data.from !== this.to) {
           this.moderators = this.moderators.map((eme) => {
@@ -84,12 +80,22 @@ export default {
           this.typing = null
           if (data.opts) {
             data.opts.owner = false
+            data.opts.mess_read = true
             this.messages.push(data.opts)
           } else {
             this.messages.push({
               owner: false,
               message: data.message,
               mess_date: data.mess_date,
+              mess_read: true,
+            })
+            console.log('Mark as read.', {
+              from: data.from,
+              to: this.myUserId,
+            })
+            this.socket.emit('message-read', {
+              from: data.from,
+              to: this.myUserId,
             })
           }
           this.scrollMessagesSection()
@@ -111,6 +117,14 @@ export default {
             this.typing = null
           }, 1600)
         }
+      })
+      this.socket.on('your-message-read', (data) => {
+        this.messages = this.messages.filter((message) => {
+          if (message.from === this.myUserId) {
+            message.mess_read = true
+          }
+          return message
+        })
       })
     },
     mergeWithConversations(addMessages) {
@@ -138,8 +152,6 @@ export default {
                 u.user_last_name = item.u2_ln
               }
               u.mypr_allowed = true
-
-              console.log('Add messages', addMessages)
 
               if (addMessages) {
                 u.messages = 1

@@ -63,7 +63,7 @@
               </span>
               <v-icon v-else>mdi-account-circle</v-icon>
               <span v-if="$auth.user.credentials && view === 'professional'">
-                {{$auth.user.credentials}} <v-icon color="purple">mdi-check-decagram</v-icon>
+                {{$auth.user.credentials}}
               </span>
               <v-icon class="d-md-only">mdi-menu-down</v-icon>
             </div>
@@ -299,6 +299,7 @@ export default {
 
       this.socket.on('chat-request', ()=>{
         this.$toast.success("A new user has been added to your chat's queue")
+        this.playNotification()
       })
 
       this.socket.on('user-reload', () => {

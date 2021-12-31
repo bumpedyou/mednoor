@@ -25,6 +25,10 @@
       </span>
       <div class='chat-time'>
         {{ hour(msg.mess_date) }}
+        <div v-if="msg.mess_sender === myUserId || msg.from === myUserId" class>
+          <v-icon v-if="msg && msg.mess_read" x-small color="primary">mdi-check-all</v-icon>
+          <v-icon v-else x-small>mdi-check</v-icon>
+        </div>
       </div>
     </div>
   </div>
@@ -32,10 +36,11 @@
 
 <script>
 import chatMixin from '~/mixins/chatMixin'
+import authMixin from "~/mixins/authMixin";
 
 export default {
   name: 'ChatMessages',
-  mixins: [chatMixin],
+  mixins: [chatMixin, authMixin],
   props: {
     messages: {
       type: Array,
