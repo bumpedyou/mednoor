@@ -25,10 +25,10 @@
                 </v-col>
               </v-row>
               <v-row class="my-0 py-0">
-                <v-col md="6" class="my-0 py-0">
+                <v-col xs="12" sm="12" md="6" class="my-0 py-0">
                   <v-text-field v-model="password" label="Password" prepend-inner-icon="mdi-lock" type="password" :rules="[v => !!v || $t('v.pwd_req'), v => !!v && v.length > 5 || $t('v.min_6')]"></v-text-field>
                 </v-col>
-                <v-col md="6" class="my-0 py-0">
+                <v-col xs="12" sm="12" md="6" class="my-0 py-0">
                   <v-text-field v-model="confirm_password" label="Confirm Password" prepend-inner-icon="mdi-lock" type="password" :rules="[v => !!v || $t('v.pwd_req'), v => !!v && v.length > 5 || $t('v.min_6')]"></v-text-field>
                 </v-col>
               </v-row>
