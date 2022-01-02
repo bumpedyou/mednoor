@@ -349,8 +349,6 @@ export default {
         this.$toast.success('Your profile picture has been updated.')
         this.src = ''
         this.showUploadPicture = false
-        this.$auth.fetchUser()
-
         this.picture = data.file
 
       }).catch((err)=>{
@@ -465,6 +463,7 @@ export default {
           .then(() => {
             setTimeout(async () => {
               await this.$auth.fetchUser()
+              console.log('Fetched user --->', this.$auth.user)
               this.$toast.success(this.$t('updated_suc').toString());
             }, 100)
           })
