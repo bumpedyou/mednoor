@@ -2,13 +2,21 @@
   <div class="mt-9">
       <v-row>
         <v-col md="8" offset-md="2">
-        <v-card class="mt-6">
+        <v-card class="mt-6" color="#002c58" dark elevation="22" outlined :loading="loading">
           <v-card-text>
-          <h1 class="h1 text-center mb-6">{{$t('sign_up')}}</h1>
+          <h1 class="h4 text-center mb-6 dark">{{$t('sign_up')}}</h1>
             <v-form ref="form" v-model="validForm" @submit.prevent="handleSubmit">
               <v-row class="mb-0 mb-0 pb-0">
                 <v-col md="12" class="my-0 py-0">
-                  <v-text-field v-model="email" label="Email" :rules="[v => !!v || $t('v.email_req'), v => !!v && v.length <= 150 || $t('v.max_email_150')]" prepend-inner-icon="mdi-email"></v-text-field>
+                  <v-text-field v-model="email" type="search" :autocomplete="false" label="Email" :rules="[v => !!v || $t('v.email_req'), v => !!v && v.length <= 150 || $t('v.max_email_150')]" prepend-inner-icon="mdi-email"></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col sm="4" md="3">
+                  <v-text-field v-model="country_code" placeholder="Country code" label="Country code" maxlength="4"></v-text-field>
+                </v-col>
+                <v-col sm="8" md="9">
+                  <v-text-field v-model="phone_no" placeholder="Phone number" label="Phone number" maxlength="10"></v-text-field>
                 </v-col>
               </v-row>
               <v-row class="my-0 py-0">
@@ -19,17 +27,19 @@
                   <v-text-field v-model="last_name" :placeholder="$t('ln')" :label="$t('ln')" :rules="[v => !!v ||  $t('v.fn_req'), v => !!v && v.length > 2 || $t('v.min_3', v => !!v && v.length <= 30 || $t('v.max_30'))]"></v-text-field>
                 </v-col>
               </v-row>
+              <!--
               <v-row class="my-0 py-0">
                 <v-col md="12" class="my-0 py-0">
                   <v-text-field v-model="date" label="Date of birth" placeholder="MM-DD-YYYY"></v-text-field>
                 </v-col>
               </v-row>
+              -->
               <v-row class="my-0 py-0">
                 <v-col xs="12" sm="12" md="6" class="my-0 py-0">
-                  <v-text-field v-model="password" label="Password" prepend-inner-icon="mdi-lock" type="password" :rules="[v => !!v || $t('v.pwd_req'), v => !!v && v.length > 5 || $t('v.min_6')]"></v-text-field>
+                  <v-text-field v-model="password" :autocomplete="false" label="Password" prepend-inner-icon="mdi-lock" type="password" :rules="[v => !!v || $t('v.pwd_req'), v => !!v && v.length > 5 || $t('v.min_6')]"></v-text-field>
                 </v-col>
                 <v-col xs="12" sm="12" md="6" class="my-0 py-0">
-                  <v-text-field v-model="confirm_password" label="Confirm Password" prepend-inner-icon="mdi-lock" type="password" :rules="[v => !!v || $t('v.pwd_req'), v => !!v && v.length > 5 || $t('v.min_6')]"></v-text-field>
+                  <v-text-field v-model="confirm_password" :autocomplete="false" label="Confirm Password" prepend-inner-icon="mdi-lock" type="password" :rules="[v => !!v || $t('v.pwd_req'), v => !!v && v.length > 5 || $t('v.min_6')]"></v-text-field>
                 </v-col>
               </v-row>
               <v-row>
@@ -37,9 +47,9 @@
                   <div class="d-flex" style="align-items: center !important">
                     <v-checkbox v-model="agree" :true-value="true" :false-value="false" :label="$t('i_agree')" :rules="[v => !!v || 'You must agree.']" class="mr-1">
                     </v-checkbox>
-                    <a :href="localePath('/terms-and-conditions')" target="_blank">{{$t('terms_cond')}}</a>
+                    <a :href="localePath('/terms-and-conditions')" target="_blank" class="dark-link">{{$t('terms_cond')}}</a>
                     <span class="mx-1">&</span>
-                    <a :href="localePath('/privacy-policy')" target="_blank">{{$t('privacy')}}</a>
+                    <a :href="localePath('/privacy-policy')" target="_blank" class="dark-link">{{$t('privacy')}}</a>
                   </div>
                 </v-col>
                 <v-col md="12" class="py-0">
@@ -72,11 +82,12 @@
 <script>
 import RequestModal from '~/components/RequestModal'
 import formMixin from '~/mixins/formMixin'
+import inputMixin from "~/mixins/inputMixin";
 export default {
   components: {
     RequestModal,
   },
-  mixins: [formMixin],
+  mixins: [formMixin, inputMixin],
   layout: 'home',
   middleware: ['unauthenticated'],
   data() {
@@ -115,7 +126,9 @@ export default {
             email: this.email,
             password: this.password,
             confirm_password: this.confirm_password,
-            dob: [this.year, this.month, this.day].join('-')
+            phone_no: this.phone_no,
+            country_code: this.country_code,
+            // dob: [this.year, this.month, this.day].join('-')
           })
           .then(async () => {
             try {

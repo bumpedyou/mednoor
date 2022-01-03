@@ -282,30 +282,7 @@ export default {
         this.zip = this.numbersOnly(v)
       }
     },
-    country_code(v){
-      let str = ''
-      if (v && v.length){
-        if (v.length === 1){
-          v = this.prependCharacter(v, '+')
-        }
-        for(let i = 0; i<v.length; i++){
-          const char = v.charAt(i)
-          if (this.allowed.includes(char) || char === '+' && i === 0){
-            str+= char.toString()
-          }
-        }
-        if (str.length > 4){
-          str = str.substr(0,4)
-        }
-        this.country_code = str
-      }
-    },
-    phone_no (v){
-      if (v){
-        v = v.substr(0,10)
-        this.phone_no = this.numbersOnly(v)
-      }
-    }
+
   },
   mounted() {
     if (this.myUserId){

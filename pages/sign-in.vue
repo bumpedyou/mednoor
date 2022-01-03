@@ -2,15 +2,15 @@
   <div class="mt-9">
       <v-row>
           <v-col md="8" offset-md="2">
-            <v-card class="mt-6">
+            <v-card class="mt-6" color="#002c58" dark elevation="22" outlined :loading="loading">
               <v-card-text>
                 <div class="mednoor-heading-svg">
                   <img :src='require("~/static/logo.jpg")' height="40px" alt="mednoor logo" />
                   <div>
-                    <p class='h4 text-center'>
+                    <p class='h4 text-center dark'>
                       {{$t('med_med_cen')}}
                     </p>
-                    <small class="h5 text-center d-block">
+                    <small class="h5 text-center d-block dark">
                       +1-251-633-0801
                     </small>
                   </div>
@@ -122,7 +122,6 @@ export default {
     display: flex
     justify-content: center
     align-items: center
-    background: #fff
     margin-bottom: 9px
     img
       margin-right: 6px
