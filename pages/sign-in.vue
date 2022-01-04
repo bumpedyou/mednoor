@@ -5,12 +5,12 @@
             <v-card class="mt-6 gradient-tw" dark elevation="22" outlined :loading="loading">
               <v-card-text>
                 <div class="mednoor-heading-svg">
-                  <img :src='require("~/static/logo.jpg")' height="40px" alt="mednoor logo" />
+                  <img :src='require("~/static/logo-white.png")' height="60px" alt="mednoor logo" />
                   <div>
                     <p class='h4 text-center dark'>
                       {{$t('med_med_cen')}}
                     </p>
-                    <small class="h5 text-center d-block dark">
+                    <small class="h5 text-center d-block dark mt-1">
                       +1-251-633-0801
                     </small>
                   </div>
@@ -120,9 +120,14 @@ export default {
 <style scoped lang="sass">
   .mednoor-heading-svg
     display: flex
+    flex-direction: column
     justify-content: center
     align-items: center
     margin-bottom: 9px
     img
       margin-right: 6px
+
+  @media screen and (min-width: $md)
+    .mednoor-heading-svg
+      flex-direction: row
 </style>

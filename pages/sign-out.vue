@@ -19,6 +19,7 @@ export default {
   },
   mounted(){
     this.$cookies.set('view', null)
+    this.$cookies.set('appointments', null)
     this.$auth.logout().then(()=>{
       this.$router.push(this.localePath('/sign-in'))
     })
