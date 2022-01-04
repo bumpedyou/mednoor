@@ -79,7 +79,7 @@
     >
       <v-card>
         <v-card-title class="text-h5">
-          <v-icon>mdi-video</v-icon>{{callerName}} is calling you...
+          {{callerName}} is calling you...
         </v-card-title>
         <v-card-text>
           <v-btn
@@ -265,7 +265,6 @@ export default {
     this.setChatFromRoute()
     this.socket.on('start-video', ({ from, roomId, name }) => {
 
-      console.log('Someone is calling you...', name)
       this.callerName = name
       this.ringing = true
 
@@ -280,17 +279,21 @@ export default {
       this.callingRoomId = roomId
     })
     this.socket.on('stop-video', ({ from, roomId }) => {
-      console.log('stop-video', roomId)
       if (from === this.to && roomId) {
         this.stopVideoByPro(roomId)
       }
     })
     this.socket.on('call-accepted', ({roomId})=>{
-      console.log('[this.socket] Call accepted --->', roomId)
       this.stopAudio()
       this.$refs.videoRef.start(roomId)
       this.videoRoomId = roomId
     })
+
+    this.socket.on('stop-ringing', ({roomId})=>{
+      this.stopAudio()
+      this.ringing = false
+    })
+
   },
   created() {
     setInterval(this.getNow, 1000);
@@ -309,6 +312,7 @@ export default {
       this.socket.emit('call-accepted', {
         roomId: this.callingRoomId,
         to: this.to,
+        from: this.myUserId
       })
     },
     ring(){
@@ -422,7 +426,6 @@ export default {
     },
     // Start the call
     startVideo(roomId) {
-      console.log('startVideo', this.$auth.user)
       if (this.view === 'professional') {
         this.socket.emit('start-video', {
           from: this.myID,

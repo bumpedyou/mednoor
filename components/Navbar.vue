@@ -25,6 +25,7 @@
         <div v-if="isLoggedIn" class='mx-1'>
           <v-tab>
             <v-badge
+              class="mr-1"
               overlap
               color="primary"
               content="0"
