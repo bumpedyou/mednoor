@@ -70,6 +70,11 @@ export default {
           hid: 'description',
           name: 'description',
           content: this.$t('seo.sign_in')
+        },
+        {
+          hid: 'og:image',
+          name: 'og:image',
+          content: process.env.BASE_URL + '/logo.png'
         }
       ]
     }

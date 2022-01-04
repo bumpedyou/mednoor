@@ -31,6 +31,11 @@ export default {
           hid: 'keywords',
           name: 'keywords',
           content: this.$t('seo.keywords.index')
+        },
+        {
+          hid: 'og:image',
+          name: 'og:image',
+          content: process.env.BASE_URL + '/logo.png'
         }
       ]
     }

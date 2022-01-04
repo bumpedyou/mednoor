@@ -3,10 +3,10 @@
     <div class='menu-top-bar'>
       <div class='chat-icon'>
         <nuxt-link v-if='isLoggedIn' :to="localePath('/')">
-          <img :src='require("~/static/logo.jpg")' height='40px' />
+          <img :src='require("~/static/logo.png")' height='40px' />
         </nuxt-link>
         <nuxt-link v-else :to="localePath('/sign-in')">
-          <img :src='require("~/static/logo.jpg")' height='40px' />
+          <img :src='require("~/static/logo.png")' height='40px' />
         </nuxt-link>
       </div>
       <div v-if='!isSmall && !$props.hideMiddle' class='mednoor-logo'>
@@ -385,7 +385,7 @@ export default {
   border-bottom: 1px solid #87bfac
 
   img
-    height: 20px !important
+    height: 35px !important
 
     &:hover
       cursor: pointer
