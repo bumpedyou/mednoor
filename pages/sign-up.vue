@@ -2,7 +2,7 @@
   <div class="mt-9">
       <v-row>
         <v-col md="8" offset-md="2">
-        <v-card class="mt-6" color="#002c58" dark elevation="22" outlined :loading="loading">
+        <v-card class="mt-6 gradient-tw" dark elevation="22" outlined :loading="loading">
           <v-card-text>
           <h1 class="h4 text-center mb-6 dark">{{$t('sign_up')}}</h1>
             <v-form ref="form" v-model="validForm" @submit.prevent="handleSubmit">

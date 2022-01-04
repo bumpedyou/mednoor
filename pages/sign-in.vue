@@ -2,7 +2,7 @@
   <div class="mt-9">
       <v-row>
           <v-col md="8" offset-md="2">
-            <v-card class="mt-6" color="#002c58" dark elevation="22" outlined :loading="loading">
+            <v-card class="mt-6 gradient-tw" dark elevation="22" outlined :loading="loading">
               <v-card-text>
                 <div class="mednoor-heading-svg">
                   <img :src='require("~/static/logo.jpg")' height="40px" alt="mednoor logo" />
@@ -18,12 +18,12 @@
                 <v-form ref="form" v-model="validForm" class="mt-6" @submit.prevent='handleSubmit'>
                   <v-text-field v-model="email" label="Email" :rules="[v => !!v || $t('v.email_req'), v => !!v && v.length <= 150 || $t('v.max_email_150')]" prepend-inner-icon="mdi-email"></v-text-field>
                   <v-text-field v-model="password" label="Password" placeholder="Password" prepend-inner-icon="mdi-lock" type="password" :rules="[v => !!v || $t('v.pwd_req'), v => !!v && v.length > 5 || $t('v.min_6')]"></v-text-field>
-                  <v-btn color="primary" block tile small :loading="loading" type="submit">
+                  <v-btn color="white" dark block tile small :loading="loading" type="submit">
                     {{$t('sign_in')}}
                   </v-btn>
                   <div>
                     <small class="text-center d-block mb-0 mt-3">
-                      <nuxt-link :to="localePath('/forgot-password')">{{$t('forgot_pwd')}}</nuxt-link>
+                      <nuxt-link class="dark-link" :to="localePath('/forgot-password')">{{$t('forgot_pwd')}}</nuxt-link>
                     </small>
                     <hr class="my-3">
                     <small class="text-center d-block mb-0 mt-3">

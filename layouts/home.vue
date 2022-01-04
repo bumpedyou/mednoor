@@ -6,7 +6,7 @@
         <v-col v-if='!mounted || !isSmall' md="6">
           <BackgroundItem :file='file' source='api' height='100vh'></BackgroundItem>
         </v-col>
-        <v-col md="6" class='right-side'>
+        <v-col md="6" class='right-side' >
           <div class='content'>
             <nuxt></nuxt>
           </div>
