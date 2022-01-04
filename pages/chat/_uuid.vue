@@ -72,6 +72,29 @@
         </div>
       </div>
     </div>
+    <div v-if="ringing" class="ringing">
+      <v-card>
+        <v-card-title>
+          <p class="h3">
+            {{callerName}} is calling you...
+          </p>
+        </v-card-title>
+        <v-card-text class="mt-3">
+          <v-btn
+            class="mx-2"
+            fab
+            dark
+            small
+            color="success"
+            @click="acceptCall"
+          >
+            <v-icon dark>
+              mdi-phone
+            </v-icon>
+          </v-btn>
+        </v-card-text>
+      </v-card>
+    </div>
     <RequestModal ref='rmodal'></RequestModal>
     <div>
       <a-modal
@@ -116,7 +139,6 @@ import VideoCall from "~/components/VideoCall";
 import ProfilePicture from "~/components/ProfilePicture";
 import dateMixin from "~/mixins/dateMixin";
 
-
 export default {
   name: "Uuid",
   components: {ChatMessages, SpinOrText, TypingIndicator, RequestModal, VideoCall, ProfilePicture, VEmojiPicker},
@@ -142,7 +164,12 @@ export default {
       typing: null, // other user who is typing
       show_video: false,
       videoRoomId: null,
-      timestamp: ""
+      timestamp: "",
+      ringing: false,
+      calling: false,
+      callerName: '',
+      callingRoomId: null,
+      audio: null
     }
   },
   computed: {
@@ -163,7 +190,7 @@ export default {
       return this.$auth.user
     },
     myName() {
-      return this.user.last_name + ', ' + this.user.user_first_name + ' ' + this.user.credentials
+      return this.user.last_name + ', ' + this.user.user_first_name + ' ' + (this.user.credentials ? this.user.credentials : '')
     },
     professionalName() {
       if (this.isModerator) {
@@ -234,11 +261,21 @@ export default {
     this.getChats()
     this.run_once(this.listen)
     this.setChatFromRoute()
-    this.socket.on('start-video', ({ from, roomId }) => {
-      console.log('start-video', this.to)
+    this.socket.on('start-video', ({ from, roomId, name }) => {
+
+      console.log('Someone is calling you...', name)
+      this.callerName = name
+      this.ringing = true
+
+      this.ring().then(()=>{
+      }).catch(()=>{
+      })
+      /*
       if (from === this.to && roomId) {
         this.joinVideo(roomId)
-      }
+      } */
+
+      this.callingRoomId = roomId
     })
     this.socket.on('stop-video', ({ from, roomId }) => {
       console.log('stop-video', roomId)
@@ -246,11 +283,32 @@ export default {
         this.stopVideoByPro(roomId)
       }
     })
+    this.socket.on('call-accepted', ({roomId})=>{
+      console.log('[this.socket] Call accepted --->', roomId)
+      this.$refs.videoRef.start(roomId)
+      this.videoRoomId = roomId
+    })
   },
   created() {
     setInterval(this.getNow, 1000);
   },
   methods: {
+    acceptCall(){
+      this.joinVideo(this.callingRoomId)
+      if (this.audio){
+        this.audio.pause()
+      }
+      this.ringing = false
+      this.socket.emit('call-accepted', {
+        roomId: this.callingRoomId,
+        to: this.to,
+      })
+    },
+    ring(){
+      const audioPath = process.env.BASE_URL + '/phone-ringing.mp3'
+      this.audio = new Audio(audioPath)
+      return this.audio.play()
+    },
     getNow() {
       const today = new Date();
       const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
@@ -356,18 +414,21 @@ export default {
       const roomId = 'videoRoom_' + Math.round(Math.random() * 1000);
       this.startVideo(roomId)
     },
+    // Start the call
     startVideo(roomId) {
+      console.log('startVideo', this.$auth.user)
       if (this.view === 'professional') {
         this.socket.emit('start-video', {
           from: this.myID,
           to: this.to,
+          name: this.myName,
           roomId
         })
-        this.$refs.videoRef.start(roomId)
-        this.videoRoomId = roomId
+        this.callingRoomId = roomId
       }
     },
     joinVideo(roomId) {
+      console.log('join video')
       this.show_video = true
       this.videoRoomId = roomId
       console.log('join room', roomId)
@@ -663,6 +724,16 @@ export default {
   line-height: 1em
   font-size: 12px
 
+.ringing
+  background-color: #fff
+  position: absolute
+  z-index: 250
+  left: 0
+  right: 0
+  bottom: 0
+  top: 0
+  width: 100%
+  height: 100%
 @media screen and (min-width: $md)
   .emoji-picker
     bottom: 110px
