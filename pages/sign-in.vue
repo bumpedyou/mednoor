@@ -18,7 +18,7 @@
                 <v-form ref="form" v-model="validForm" class="mt-6" @submit.prevent='handleSubmit'>
                   <v-text-field v-model="email" label="Email" :rules="[v => !!v || $t('v.email_req'), v => !!v && v.length <= 150 || $t('v.max_email_150')]" prepend-inner-icon="mdi-email"></v-text-field>
                   <v-text-field v-model="password" label="Password" placeholder="Password" prepend-inner-icon="mdi-lock" type="password" :rules="[v => !!v || $t('v.pwd_req'), v => !!v && v.length > 5 || $t('v.min_6')]"></v-text-field>
-                  <v-btn color="white" dark block tile small :loading="loading" type="submit">
+                  <v-btn color="primary" dark block tile small :loading="loading" type="submit">
                     {{$t('sign_in')}}
                   </v-btn>
                   <div>
