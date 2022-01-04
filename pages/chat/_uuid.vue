@@ -25,11 +25,11 @@
                 </div>
               </div>
               <div class='mx-auto'>
-                <p class="text-center date-center">
+                <small class="d-block text-center date-center">
                   {{dateString(new Date())}}
                   <br>
                   {{hour(timestamp)}}
-                </p>
+                </small>
               </div>
               <div class='mr-1'>
                 {{ professionalName }}
@@ -72,14 +72,16 @@
         </div>
       </div>
     </div>
-    <div v-if="ringing" class="ringing">
+    <v-dialog
+      v-model="ringing"
+      persistent
+      max-width="290"
+    >
       <v-card>
-        <v-card-title>
-          <p class="h3">
-            {{callerName}} is calling you...
-          </p>
+        <v-card-title class="text-h5">
+          <v-icon>mdi-video</v-icon>{{callerName}} is calling you...
         </v-card-title>
-        <v-card-text class="mt-3">
+        <v-card-text>
           <v-btn
             class="mx-2"
             fab
@@ -94,7 +96,7 @@
           </v-btn>
         </v-card-text>
       </v-card>
-    </div>
+    </v-dialog>
     <RequestModal ref='rmodal'></RequestModal>
     <div>
       <a-modal
@@ -285,6 +287,7 @@ export default {
     })
     this.socket.on('call-accepted', ({roomId})=>{
       console.log('[this.socket] Call accepted --->', roomId)
+      this.stopAudio()
       this.$refs.videoRef.start(roomId)
       this.videoRoomId = roomId
     })
@@ -293,11 +296,15 @@ export default {
     setInterval(this.getNow, 1000);
   },
   methods: {
-    acceptCall(){
-      this.joinVideo(this.callingRoomId)
+    stopAudio() {
       if (this.audio){
+        this.audio.currentTime = 0
         this.audio.pause()
       }
+    },
+    acceptCall(){
+      this.joinVideo(this.callingRoomId)
+      this.stopAudio()
       this.ringing = false
       this.socket.emit('call-accepted', {
         roomId: this.callingRoomId,
@@ -305,8 +312,7 @@ export default {
       })
     },
     ring(){
-      const audioPath = process.env.BASE_URL + '/phone-ringing.mp3'
-      this.audio = new Audio(audioPath)
+      this.audio = this.getSound('phone-ringing.mp3')
       return this.audio.play()
     },
     getNow() {
@@ -424,6 +430,8 @@ export default {
           name: this.myName,
           roomId
         })
+        this.audio = this.getSound('ringing-internal.mp3')
+        this.audio.play()
         this.callingRoomId = roomId
       }
     },

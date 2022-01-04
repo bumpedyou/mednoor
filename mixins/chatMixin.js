@@ -215,12 +215,16 @@ export default {
       })
       this.playNotification()
     },
+    getSound(soundName) {
+      const audioPath = process.env.BASE_URL + '/' + soundName
+      return new Audio(audioPath)
+    },
     playNotification() {
-      const audioPath = process.env.BASE_URL + '/notification.mp3'
-      const audio = new Audio(audioPath)
-      audio.play().catch(() => {
-        console.log('Sound not played')
-      })
+      this.getSound('notification.mp3')
+        .play()
+        .catch(() => {
+          console.log('Sound not played')
+        })
     },
     messageClass(msg) {
       const c = ['chat-message']
