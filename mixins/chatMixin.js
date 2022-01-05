@@ -178,6 +178,7 @@ export default {
             .get('/my-professional/my-users/')
             .then(({ data }) => {
               this.moderators = data
+              console.log('The moderators are --->', this.moderators)
             })
             .catch((e) => {
               this.$refs.rmodal.$emit('error', e)
@@ -190,6 +191,7 @@ export default {
             .get('/my-professional')
             .then(({ data }) => {
               this.moderators = data
+              console.log('The moderators are --->', this.moderators)
             })
             .catch((e) => {
               this.$refs.rmodal.$emit('error', e)

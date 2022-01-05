@@ -41,6 +41,9 @@ export default {
     }
   },
   mounted() {
+    this.$api.get('/previous-chats/grouped').then(({data})=>{
+      console.log('[index.vue] The grouped chats are --->', data)
+    })
     this.getChats()
   },
   methods: {

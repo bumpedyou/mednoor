@@ -18,14 +18,15 @@
             <div class='chat-content-top-bar'>
               <div style='margin-right: auto' class='ml-1'>
                 <div class="flex-center">
-                  <profile-picture :user="selectedUserObj" :x-small="true"></profile-picture>
-                  <span style="margin-left: 3px">
-                    {{ userName }}
+                  <profile-picture v-if="isModerator" :user="selectedUserObj" :x-small="true"></profile-picture>
+                  <profile-picture v-else :user="$auth.user" :x-small="true"></profile-picture>
+                  <span class="ml-3">
+                    {{userName}}
                   </span>
                 </div>
               </div>
               <div class='mx-auto'>
-                <small class="d-block text-center date-center">
+                <small class="d-block text-center date-center mr-3">
                   {{dateString(new Date())}}
                   <br>
                   {{hour(timestamp)}}
@@ -222,13 +223,14 @@ export default {
       }
       return u
     },
+
     selectedUser() {
       let u = ''
       if (this.to) {
         this.moderators.forEach((m) => {
           if (m.user_uuid === this.to) {
             this.allowed = m.mypr_allowed
-            u = m.user_last_name + ' ' + m.user_first_name
+            u = m.user_last_name + ', ' + m.user_first_name + ' ' +  (m.profe_credentials ?  m.profe_credentials : '')
           }
         })
       }

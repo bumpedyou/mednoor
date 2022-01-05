@@ -255,7 +255,7 @@ export default {
     add_user: 'Add a user to mednoor',
     index:
       'Mednoor is an Online Medical Center where people can chat in real time with Doctors.',
-    sign_in: 'Sign in to you Mednoor account.',
+    sign_in: 'Sign in to your Mednoor account.',
     sign_up: 'Sign up to our Online Medical Center',
     chat: 'Chat with professionals in the online medical center.',
     keywords: {

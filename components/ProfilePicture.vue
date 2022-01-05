@@ -78,6 +78,9 @@ export default {
       if (this.$props.user && this.$props.user.user_picture){
         return this.$props.user.user_picture
       }
+      if (this.$props.user && this.$props.user.picture){
+        return this.$props.user.picture
+      }
       return null
     },
     name(){

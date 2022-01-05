@@ -189,7 +189,7 @@ export default {
           }
           if (this.isModerator) {
             items.push({
-              text: this.$t('chat_requests'),
+              text: 'Chats queue',
               icon: 'message',
               to: '/chat-requests'
             })
@@ -216,6 +216,16 @@ export default {
               text: this.$t('chats'),
               icon: 'forum',
               to: '/'
+            })
+            items.push({
+              text: 'Messenger',
+              icon: 'message-flash',
+              to: {
+                path: '/',
+                query: {
+                  type: 'messenger'
+                },
+              },
             })
           }
         }
