@@ -11,6 +11,7 @@ export default {
     socket: null,
     message: '',
     to: '',
+    moderatorsSet: false,
   }),
   mixins: [userRoleMixin, authMixin],
   watch: {
@@ -74,6 +75,7 @@ export default {
             }
             return eme
           })
+          this.moderatorsSet = true
         }
 
         if (this.to && data.from === this.to) {
@@ -178,6 +180,7 @@ export default {
             .get('/my-professional/my-users/')
             .then(({ data }) => {
               this.moderators = data
+              this.moderatorsSet = true
               console.log('The moderators are --->', this.moderators)
             })
             .catch((e) => {
@@ -191,6 +194,7 @@ export default {
             .get('/my-professional')
             .then(({ data }) => {
               this.moderators = data
+              this.moderatorsSet = true
               console.log('The moderators are --->', this.moderators)
             })
             .catch((e) => {
@@ -202,6 +206,7 @@ export default {
         }
       } else {
         this.moderators = []
+        this.moderatorsSet = true
         this.loadingItems = false
       }
     },

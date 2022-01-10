@@ -227,9 +227,14 @@ export default {
     selectedUser() {
       let u = ''
       if (this.to) {
+
         this.moderators.forEach((m) => {
+          console.log('Evaluating allowed --->', m)
           if (m.user_uuid === this.to) {
             this.allowed = m.mypr_allowed
+            if (!this.allowed){
+              this.$router.push(this.localePath('/'))
+            }
             u = m.user_last_name + ', ' + m.user_first_name + ' ' +  (m.profe_credentials ?  m.profe_credentials : '')
           }
         })
@@ -547,16 +552,6 @@ export default {
           })
           this.message = ''
         }
-      } else {
-        const h = this.$createElement
-        this.$info({
-          title: this.$t('not_allw'),
-          content: h('div', {}, [
-            h('p', this.$t('yh_tw'))
-          ]),
-          onOk() {
-          }
-        })
       }
       this.scrollMessagesSection()
     },

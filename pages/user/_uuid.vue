@@ -132,7 +132,7 @@ export default {
   }),
   computed: {
     isThisAModerator(){
-      return this.user && this.user.usro_role === 'MODERATOR'
+      return this.user && (this.user.usro_role === 'MODERATOR' || this.user.usro_key === 'MODERATOR')
     },
     exists() {
       return this.user && this.user.usro_key
