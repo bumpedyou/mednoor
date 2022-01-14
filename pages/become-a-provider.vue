@@ -1,17 +1,17 @@
 <template>
   <div class="pa-6 mh-100v">
-    <a-row class="mb-1">
-      <a-col>
-        <a-button @click='$router.push(localePath("/view-mode"))'><a-icon type='arrow-left'></a-icon>Go back</a-button>
-      </a-col>
-    </a-row>
-    <a-row>
-      <a-col>
-        <p class="h1 mb-1">Do you want to be a provider?</p>
-        <a-button type='success' @click='$router.push(localePath("/join-professionals"))'>Yes <a-icon type='check-circle'></a-icon></a-button>
-        <a-button type='danger' @click='$router.push(localePath("/view-mode"))'>No Thanks</a-button>
-      </a-col>
-    </a-row>
+    <v-row class="mb-1">
+      <v-col>
+        <v-btn small tile color="success" @click='$router.push(localePath("/view-mode"))'><v-icon>mdi-arrow-left</v-icon>Go back</v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <p class="h1 mb-3">Do you want to be a provider?</p>
+        <v-btn color='error' small tile @click='$router.push(localePath("/view-mode"))'>No Thanks</v-btn>
+        <v-btn color='primary' small tile @click='$router.push(localePath("/join-professionals"))'>Yes <v-btn>mdi-check-circle</v-btn></v-btn>
+      </v-col>
+    </v-row>
   </div>
 </template>
 

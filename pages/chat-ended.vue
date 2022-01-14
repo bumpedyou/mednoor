@@ -1,18 +1,23 @@
 <template>
-  <a-row class='pa-6 mh-100v'>
-    <a-col>
-      <p class="h1">
-        {{$t('chat_ended')}}
-      </p>
-      <p>
-        {{$t('chat_p1')}} <nuxt-link :to="localePath('/my-chats')">{{$t('chat_p2')}}</nuxt-link>
-        {{ $t('chat_p3') }}
-      </p>
-      <p>
-        {{$t('chat_a1')}} <nuxt-link :to="localePath('/')">{{$t('chats_list')}}</nuxt-link>
-      </p>
-    </a-col>
-  </a-row>
+  <div class="mh-100v">
+    <v-row>
+      <v-col>
+        <p class="h1">
+          {{$t('chat_ended')}}
+        </p>
+        <p>
+          <v-alert dark color="success">
+            <v-icon class="mr-1">mdi-check-circle</v-icon>
+            {{$t('chat_p1')}} <nuxt-link class="dark-link fw-b text-underlined" :to="localePath('/my-chats')">{{$t('chat_p2')}}</nuxt-link>
+            {{ $t('chat_p3') }}
+          </v-alert>
+        </p>
+        <p>
+          {{$t('chat_a1')}} <nuxt-link :to="localePath('/')">{{$t('chats_list')}}</nuxt-link>
+        </p>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script>

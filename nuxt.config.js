@@ -18,15 +18,10 @@ export default {
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
   },
 
-  css: [
-    'ant-design-vue/dist/antd.css',
-    './assets/_variables.sass',
-    './assets/global.sass',
-  ],
+  css: ['./assets/_variables.sass', './assets/global.sass'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    '@/plugins/antd-ui',
     '~/plugins/directives',
     '~/plugins/api',
     { src: '~/plugins/pincode', mode: 'client' },

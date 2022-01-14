@@ -1,24 +1,26 @@
 <template>
-  <div>
+  <div class="mh-100v">
     <div>
-      <a-row>
-        <a-col class='mt-1' :xs='{span: 20, offset: 2}' :md='{span: 12, offset: 6}' :lg='{span: 10, offset: 7}' :xl='{span: 8, offset: 8}'>
-          <a-card>
-            <h1 class='text-center'>{{$t('reset_y_pwd')}}</h1>
-            <p class='text-center'>
-              {{$t('ver_code_sent')}}  <b>{{email}}</b>
-            </p>
-            <a-form-item :label="$t('ver_code')">
-              <a-input v-model='code' :placeholder="$t('enter_ver_code')" :max-length='9'></a-input>
-            </a-form-item>
-            <a-button block type='primary' @click='verify'>
-              <SpinOrText v-model='loading'>
+      <v-row>
+        <v-col class='mt-1' md="6" offset-md="3">
+          <v-card>
+            <v-card-title>
+              <h1 class='text-center w-100'>{{$t('reset_y_pwd')}}</h1>
+            </v-card-title>
+            <v-card-text>
+              <p class='text-center'>
+                {{$t('ver_code_sent')}}  <b>{{email}}</b>
+              </p>
+              <div>
+                <v-text-field v-model='code' :placeholder="$t('enter_ver_code')" :max-length='9'></v-text-field>
+              </div>
+              <v-btn block small tile color='primary' :loading="loading" @click='verify'>
                 {{$t('conf_code')}}
-              </SpinOrText>
-            </a-button>
-          </a-card>
-        </a-col>
-      </a-row>
+              </v-btn>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
     </div>
     <RequestModal ref='rmodal'></RequestModal>
   </div>
@@ -26,12 +28,10 @@
 
 <script>
 import RequestModal from '~/components/RequestModal'
-import SpinOrText from '~/components/SpinOrText'
 export default {
   name: 'VerifyEmail',
   components: {
     RequestModal,
-    SpinOrText
   },
   data: ()=>({
     loading: false,

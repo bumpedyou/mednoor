@@ -1,134 +1,79 @@
 <template>
-  <div class='pa-6'>
-    <a-row class='mb-1'>
-      <a-col>
-        <a-breadcrumb>
-          <a-breadcrumb-item>
-            <nuxt-link :to="localePath('/dashboard')">{{ $t('dashboard') }}</nuxt-link>
-          </a-breadcrumb-item>
-          <a-breadcrumb-item>
-            <nuxt-link :to="localePath('/users-list')">{{ $t('list_usrs') }}</nuxt-link>
-          </a-breadcrumb-item>
-          <a-breadcrumb-item>{{ $t('add_urs') }}</a-breadcrumb-item>
-        </a-breadcrumb>
-      </a-col>
-    </a-row>
-    <a-row class='pa-6 mh-100v'>
-      <a-col :xs='{ span: 20, offset: 2 }'
-             :md='{ span: 12, offset: 6 }'
-             :lg='{ span: 10, offset: 7 }'
-             :xl='{ span: 8, offset: 8 }'>
+  <div class="mh-100v">
+    <v-row class='mb-1'>
+      <v-col>
+        <v-breadcrumbs :items="[
+          {
+            text: $t('dashboard'),
+            disabled: true
+          },
+          {
+            text: $t('list_usrs'),
+            disabled: false,
+            to: localePath('/dashboard'),
+          },
+          {
+            text: $t('list_usrs'),
+            disabled: true,
+          }
+
+        ]"></v-breadcrumbs>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col md="6" offset-md="3">
         <p class='h4 mb-1 text-center'>{{ $t('add_urs') }}</p>
-        <a-form :form='form' size='small' @submit='handleSubmit'>
-          <a-form-item>
-            <a-input
-              v-decorator="[
-              'email',
-              {
-                rules: [
-                  { required: true, message: $t('v.email_req') },
-                  {max: 150, message: $t('v.max_email_150')},
-                  {type: 'email', message: $t('v.inv_email')}
-                ],
-              },
-            ]"
-              :placeholder="$t('email')"
-            />
-          </a-form-item>
-          <a-row>
-            <a-col :xs='{span: 24}' :md='{span: 11}'>
-              <a-form-item>
-                <a-input v-decorator="
-                [
-                  'first_name',
-                  {
-                  rules: [{required: true, message: $t('v.fn_req')},
-                  {min: 3, message: $t('v.min_3')},
-                  {max: 30, message: $t('v.max_30')}],
-                  }
-                ]" :placeholder="$t('fn')">
-                  <a-icon slot='prefix' type='user' style='color:rgba(0,0,0,.25)' />
-                </a-input>
-              </a-form-item>
-            </a-col>
-            <a-col :xs='{span: 24}' :md='{span: 11, offset: 2}'>
-              <a-form-item>
-                <a-input v-decorator="
-                [
-                  'last_name',
-                  {
-                  rules: [
-                    {required: true, message: $t('v.ln_req')},
-                    {min: 3, message: $t('v.min_3')},
-                    {max: 30, message: $t('v.max_30')}
-                    ]
-                  }
-                ]" :placeholder="$t('ln')">
-                  <a-icon slot='prefix' type='user' style='color:rgba(0,0,0,.25)' />
-                </a-input>
-              </a-form-item>
-            </a-col>
-          </a-row>
-          <a-form-item>
-            <a-input v-model='date' placeholder='MM-DD-YYYY'>
-              <a-icon slot='prefix' type='calendar' style='color:rgba(0,0,0,.25)' />
-            </a-input>
-          </a-form-item>
-          <a-row>
-            <a-col :xs='{span: 24}' :md='{span: 11}'>
-              <a-form-item>
-                <a-input v-decorator="
-                [
-                  'password',
-                  {
-                  rules: [
-                    {required: true, message: $t('v.pw_req')},
-                    {min: 6, message: $t('v.min_6')}
-                  ]
-                  }
-                ]" :placeholder="$t('pwd')" type='password'>
-                  <a-icon slot='prefix' type='lock' style='color:rgba(0,0,0,.25)' />
-                </a-input>
-              </a-form-item>
-            </a-col>
-            <a-col :xs='{span: 24}' :md='{span: 11, offset: 2}'>
-              <a-form-item>
-                <a-input v-decorator="
-                [
-                  'confirm_password',
-                  {
-                  rules: [
-                    {required: true, message: $t('v.cpwd_req')},
-                    {min: 6, message: $t('v.min_6')}
-                    ]
-                  }
-                ]" :placeholder="$t('cpwd')" type='password'>
-                  <a-icon slot='prefix' type='lock' style='color:rgba(0,0,0,.25)' />
-                </a-input>
-              </a-form-item>
-            </a-col>
-          </a-row>
-          <a-form-item>
-            <a-button type='primary' html-type='submit' block>
-              <SpinOrText v-model='loading'>{{$t('add_urs')}}</SpinOrText>
-            </a-button>
-          </a-form-item>
-        </a-form>
-      </a-col>
+        <v-form ref='form' v-model="valid" @submit.prevent='handleSubmit'>
+          <div>
+            <v-text-field v-model="email" type="search" :autocomplete="false" label="Email" :rules="[v => !!v || $t('v.email_req'), v => !!v && v.length <= 150 || $t('v.max_email_150')]" prepend-inner-icon="mdi-email"></v-text-field>
+          </div>
+          <v-row>
+            <v-col>
+              <div>
+                <v-text-field v-model="first_name" :placeholder="$t('fn')" :label="$t('fn')" :rules="[v => !!v ||  $t('v.fn_req'), v => !!v && v.length > 2 || $t('v.min_3', v => !!v && v.length <= 30 || $t('v.max_30'))]"></v-text-field>
+              </div>
+            </v-col>
+            <v-col>
+              <div>
+                <v-text-field v-model="last_name" :placeholder="$t('ln')" :label="$t('ln')" :rules="[v => !!v ||  $t('v.fn_req'), v => !!v && v.length > 2 || $t('v.min_3', v => !!v && v.length <= 30 || $t('v.max_30'))]"></v-text-field>
+              </div>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col sm="4" md="3">
+              <v-text-field v-model="country_code" placeholder="Country code" label="Country code" maxlength="4"></v-text-field>
+            </v-col>
+            <v-col sm="8" md="9">
+              <v-text-field v-model="phone_no" placeholder="Phone number" label="Phone number" maxlength="10"></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field v-model="password" :autocomplete="false" label="Password" prepend-inner-icon="mdi-lock" type="password" :rules="[v => !!v || $t('v.pwd_req'), v => !!v && v.length > 5 || $t('v.min_6')]"></v-text-field>
+            </v-col>
+            <v-col>
+              <v-text-field v-model="confirm_password" :autocomplete="false" label="Confirm Password" prepend-inner-icon="mdi-lock" type="password" :rules="[v => !!v || $t('v.pwd_req'), v => !!v && v.length > 5 || $t('v.min_6')]"></v-text-field>
+            </v-col>
+          </v-row>
+          <div class="mt-3">
+            <v-btn small tile color='primary' type='submit' block :loading="loading">
+              {{$t('add_urs')}}
+            </v-btn>
+          </div>
+        </v-form>
+      </v-col>
       <RequestModal ref='rmodal'></RequestModal>
-    </a-row>
+    </v-row>
   </div>
 </template>
 
 <script>
-import SpinOrText from '~/components/SpinOrText'
 import formMixin from '~/mixins/formMixin'
 import RequestModal from '~/components/RequestModal'
 
 export default {
   name: 'AddUser',
   components: {
-    SpinOrText,
     RequestModal
   },
   mixins: [formMixin],
@@ -136,7 +81,15 @@ export default {
   middleware: ['authenticated', 'verified', 'not-blocked', 'not-deleted'],
   data() {
     return {
-      loading: false
+      loading: false,
+      email: '',
+      first_name: '',
+      last_name: '',
+      password: '',
+      confirm_password: '',
+      valid: false,
+      country_code: '',
+      phone_no: null,
     }
   },
   head() {
@@ -155,23 +108,31 @@ export default {
   methods: {
     handleSubmit(e) {
       e.preventDefault()
-      this.form.validateFields((err, values) => {
-        if (!err) {
-          this.loading = true
-          values.dob = [this.year, this.month, this.day].join('-')
-          this.$api
-            .post('/user', values)
-            .then(() => {
-              this.$router.push(this.localePath('/users-list'))
-            })
-            .catch((e) => {
-              this.$refs.rmodal.$emit('error', e)
-            })
-            .finally(() => {
-              this.loading = false
-            })
+      this.$refs.form.validate()
+      if (this.valid) {
+        this.loading = true
+        const values = {
+          first_name: this.first_name,
+          last_name: this.last_name,
+          email: this.email,
+          password: this.password,
+          confirm_password: this.confirm_password,
+          phone_no: this.phone_no,
+          country_code: this.country_code,
         }
-      })
+        // values.dob = [this.year, this.month, this.day].join('-')
+        this.$api
+          .post('/user', values)
+          .then(() => {
+            this.$router.push(this.localePath('/users-list'))
+          })
+          .catch((e) => {
+            this.$refs.rmodal.$emit('error', e)
+          })
+          .finally(() => {
+            this.loading = false
+          })
+      }
     }
   },
 }

@@ -1,48 +1,46 @@
 <template>
 <div class='pa-6 mh-100v'>
-  <a-row class='mb-1'>
-    <a-col>
-      <a-breadcrumb>
-        <a-breadcrumb-item>
-          <nuxt-link :to="localePath('/forgot-pin')">Forgot MY PIN</nuxt-link>
-        </a-breadcrumb-item>
-        <a-breadcrumb-item>
-          Verification code
-        </a-breadcrumb-item>
-      </a-breadcrumb>
-    </a-col>
-  </a-row>
-  <a-row>
-    <a-col :xs='24' :sm='24' :md='12' :lg='8'>
+  <v-row>
+    <v-col>
+      <v-breadcrumbs :items="[
+        {
+          text: 'Forgot MY PIN',
+          to: localePath('/forgot-pin'),
+          disabled: false,
+        },
+             {
+          text: 'Verification code',
+          disabled: true,
+        }
+      ]"></v-breadcrumbs>
+    </v-col>
+  </v-row>
+  <v-row>
+    <v-col>
       <p class='h1'>
         Reset PIN - Verification code.
       </p>
       <p>
         Enter the verification code that we sent you to you email.
       </p>
-      <a-form-item>
-        <a-input v-model='verification_code' placeholder='Verification code' :max-length='9'></a-input>
-      </a-form-item>
-      <a-button type='primary' @click='verify'>
-        <SpinOrText v-model='loading'>
+      <v-text-field v-model='verification_code' placeholder='Verification code' :maxlength='9'></v-text-field>
+      <v-btn color='primary' small tile :loading="loading" @click='verify'>
           Verify
-        </SpinOrText>
-      </a-button>
-    </a-col>
-  </a-row>
+      </v-btn>
+    </v-col>
+  </v-row>
   <RequestModal ref='rmodal'></RequestModal>
 </div>
 </template>
 
 <script>
 import { mapMutations } from 'vuex'
-import SpinOrText from '~/components/SpinOrText'
 import inputMixin from '~/mixins/inputMixin'
 import RequestModal from '~/components/RequestModal'
 
 export default {
   name: 'ResetPin',
-  components: { RequestModal, SpinOrText },
+  components: { RequestModal },
   mixins: [inputMixin],
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified'],
   data () {

@@ -1,6 +1,6 @@
 <template>
   <span v-if='localValue'>
-    <a-spin :class='spinClassess'></a-spin>
+    <v-progress-circular :color="color"></v-progress-circular>
   </span>
   <span v-else>
     <slot></slot>
@@ -19,15 +19,12 @@ export default {
     }
   },
   computed: {
-    spinClassess(){
-      const c = []
+    color () {
       if (this.$props.dark){
-        c.push('dark-spin')
-      }else{
-        c.push('white-spin')
+        return 'black'
       }
-      return c.join(" ")
-    }
+      return 'white'
+    },
   }
 }
 </script>

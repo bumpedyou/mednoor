@@ -1,13 +1,15 @@
 <template>
-<a-row>
-  <a-col>
-    <h1>{{$t('unauthorized')}}</h1>
-    <p>{{$t('yornt_auth')}}</p>
-    <nuxt-link :to="localePath('/')">
-      {{$t('home')}}
-    </nuxt-link>
-  </a-col>
-</a-row>
+  <div class="mh-100v">
+    <v-row>
+      <v-col>
+        <h1>{{$t('unauthorized')}}</h1>
+        <p>{{$t('yornt_auth')}}</p>
+        <nuxt-link :to="localePath('/')">
+          {{$t('home')}}
+        </nuxt-link>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script>

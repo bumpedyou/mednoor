@@ -11,9 +11,9 @@
         <p>
           We could not find the user that you were looking for.
         </p>
-        <a-button @click="$router.push(localePath('/professionals'))">
+        <v-btn small tile color="primary" @click="$router.push(localePath('/professionals'))">
           Search other users
-        </a-button>
+        </v-btn>
       </v-col>
     </v-row>
     <v-row v-else>
@@ -74,14 +74,14 @@
         <v-row v-if='isUserModerator' class='mt-1'>
           <p v-if='isLoggedIn'>
           </p>
-          <a-button v-else type='primary' class='mt-1' @click="$router.push({
+          <v-btn v-else small tile color='primary' class='mt-1' @click="$router.push({
             path: localePath('/sign-in'),
             query: {
               callback: encodeURIComponent('/user/' + uuid)
             }
           })">
             Sign in to chat with {{ user.user_first_name }}
-          </a-button>
+          </v-btn>
         </v-row>
       </v-col>
     </v-row>

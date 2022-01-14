@@ -3,15 +3,15 @@
     <v-skeleton-loader type="card"></v-skeleton-loader>
   </div>
   <div v-else>
-    <a-row>
-      <a-col>
+    <v-row>
+      <v-col>
         <v-text-field v-model="line1" label="Line 1" placeholder="Eg: Mr. Smith James Flat 7" :rules="[
           v => !!v || 'This field is required',
           v => !! v && v.length >= 10 || $t('v.min_10'),
           v => !! v && v.length <= 60 || $t('v.max_60'),
         ]"></v-text-field>
-      </a-col>
-    </a-row>
+      </v-col>
+    </v-row>
     <v-row>
       <v-col md="4">
         <v-text-field v-model="city" label="City" placeholder="City" :rules="[
@@ -67,7 +67,6 @@ export default {
           is_patient: this.isUser
         }
       }).then(({data})=>{
-        console.log('Address in db is --->', data)
         this.loading = false
         if (data){
           this.$store.commit('address/setLine1', data.addr_line1)

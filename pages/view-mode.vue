@@ -1,16 +1,18 @@
 <template>
   <div class="pa-6 mh-100v">
     <div class='pa-1 mt-1'>
-      <a-row class='mt-1' :gutter="3">
-        <a-col>
+      <v-row class='mt-1' :gutter="3">
+        <v-col>
           <div class="flex-center">
             <img alt='Mednoor Logo' :src='require("~/static/logo.jpg")'>
           </div>
           <p class='primary--text text-center'>
             Medical Center
           </p>
-        </a-col>
-        <a-col xs:="24" :sm='{span: 12}' :md='{span: 5, offset: 7}' :lg='{span: 3, offset: 9}'>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col md="2" offset-md="4" >
           <div class='flex-center w-100'>
             <div class="bg-gradient-sun clickable pa-05" style='width: 183px;max-width: 100% !important' @click="setTheView('user')">
               <div class='flex-center'>
@@ -21,21 +23,23 @@
               </div>
             </div>
           </div>
-        </a-col>
-        <a-col xs:="24" :sm='{span: 12}' :md='{span: 5}' :lg='{span: 3}'>
+        </v-col>
+        <v-col md="2">
           <div class='flex-center w-100'>
             <div class="bg-gradient-blue clickable pa-05" style='width: 183px;max-width: 100% !important' @click="setTheView('professional')">
               <div class='flex-center' >
                 <p class="h3 text-center">
-                <small class='text-muted-dark'>
-                  I am a
-                </small><br><span class='h4' style='font-weight: bold; color: #fff !important' >Professional</span>
+                  <small class='text-muted-dark'>
+                    I am a
+                  </small><br><span class='h4' style='font-weight: bold; color: #fff !important' >Professional</span>
                 </p>
               </div>
             </div>
           </div>
-        </a-col>
-      </a-row>
+        </v-col>
+      </v-row>
+      <v-row>
+      </v-row>
     </div>
   </div>
 </template>

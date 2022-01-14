@@ -1,13 +1,20 @@
 <template>
   <div>
-    <a-modal v-model="localValue" :title="title" on-ok="handleOk">
-      <template slot="footer">
-        <a-button key="submit" type="primary" @click="handleOk">
-          Ok
-        </a-button>
-      </template>
-      <p>{{description}}</p>
-    </a-modal>
+    <v-dialog v-model="localValue" persistent max-width="320px">
+      <v-card>
+        <v-card-title>
+          {{title}}}
+        </v-card-title>
+        <v-card-text>
+          <p>
+            {{description}}
+          </p>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn small tile color="primary" @click="handleOk">Ok</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 

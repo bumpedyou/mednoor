@@ -1,9 +1,9 @@
 <template>
   <v-app>
     <navbar></navbar>
-    <div id="app-content">
+    <v-container id="app-content">
       <Nuxt></Nuxt>
-    </div>
+    </v-container>
     <MFooter></MFooter>
   </v-app>
 </template>

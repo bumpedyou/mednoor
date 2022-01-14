@@ -1,51 +1,69 @@
 <template>
   <div class="pa-6 mh-100v">
-    <a-row class='mb-1'>
-      <a-col>
-        <a-breadcrumb>
-          <a-breadcrumb-item>
-            <nuxt-link :to="localePath('/dashboard')">{{ $t('dashboard') }}</nuxt-link>
-          </a-breadcrumb-item>
-          <a-breadcrumb-item>Professional Requests</a-breadcrumb-item>
-        </a-breadcrumb>
-      </a-col>
-    </a-row>
-    <a-row>
-      <a-col>
+    <v-row class='mb-1'>
+      <v-col>
+        <v-breadcrumbs :items="[
+          {
+            text: $t('dashboard'),
+            to: localePath('/dashboard'),
+            disabled: false,
+          },
+          {
+            text: 'Professional Requests',
+            disabled: true,
+          }
+        ]"></v-breadcrumbs>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col md="12">
         <p class="h4 mb-1">Professional Requests</p>
-      </a-col>
-      <a-col>
-        <a-skeleton v-if="loading"></a-skeleton>
-        <a-table v-else :columns="columns" :data-source="data">
-          <div slot='user_first_name' slot-scope='text, record'>
-            <nuxt-link :to="localePath('/user/' + record.user_uuid)">
-              {{record.user_first_name}} {{record.user_last_name}}
+      </v-col>
+      <v-col md="12">
+        <v-skeleton-loader v-if="loading"></v-skeleton-loader>
+        <v-data-table :items="data" :headers="[
+          {
+            text: 'Name',
+            value: 'user_first_name',
+            sortable: false,
+          },
+          {
+            text: 'NPI',
+            value: 'profe_npi',
+            sortable: false,
+          },
+          {
+            text: 'Category',
+            value: 'cate_category',
+            sortable: false,
+          },
+          {
+            text: 'Actions',
+            value: 'actions',
+            sortable: false,
+          },
+        ]">
+          <template #[`item.user_first_name`] = "{item}">
+            <nuxt-link :to="localePath('/user/' + item.user_uuid)">
+              {{item.user_first_name}} {{item.user_last_name}}
             </nuxt-link>
-          </div>
-          <div slot="actions" slot-scope='text, record'>
-            <span class="primary--text clickable" @click="askAllow(record.profe_uuid)">Allow</span>
-          </div>
-        </a-table>
-      </a-col>
-    </a-row>
-    <a-modal
-      title="Are you sure?"
-      :visible="visible"
-      :confirm-loading="confirmLoading"
-      @ok="handleOk"
-      @cancel="handleCancel"
-    >
-      <p>
-        The user will become a professional.
-      </p>
-    </a-modal>
+          </template>
+          <template #[`item.actions`] = "{item}" >
+            <span class="primary--text clickable" @click="askAllow(item.profe_uuid)">Allow</span>
+          </template>
+        </v-data-table>
+      </v-col>
+    </v-row>
+    <ConfirmDialog v-model="visible" description="The user will become a professional." :loading="confirmLoading" title="Are you sure?" @cancel="handleCancel" @accept="handleOk"></ConfirmDialog>
   </div>
 </template>
 <script>
 import listenMixin from "~/mixins/listenMixin";
+import ConfirmDialog from "~/components/ConfirmDialog";
 
 export default {
   name: "ProfessionalRequests",
+  components: {ConfirmDialog},
   mixins: [listenMixin],
   layout: 'dashboard',
   middleware: ['authenticated' , 'verified', 'not-deleted', 'not-blocked', 'admin-or-super'],
@@ -92,7 +110,6 @@ export default {
   mounted() {
     this.run_once(this.listen)
     this.loadData()
-    console.log('Mounted!!')
   },
   methods: {
     loadData(){
@@ -133,7 +150,6 @@ export default {
     askAllow(uuid){
       this.uuid = uuid
       this.visible = true
-      console.log('Ask allow')
     }
   }
 }

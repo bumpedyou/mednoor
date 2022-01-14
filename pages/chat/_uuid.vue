@@ -2,12 +2,12 @@
   <div :class='chatsLayoutClass'>
     <div v-if='savingPdf' class='chats-overlay'>
       <div class='flex-center'>
-        <SpinOrText v-model='savingPdf'></SpinOrText>
+        <v-progress-circular v-if="savingPdf" indeterminate></v-progress-circular>
       </div>
     </div>
     <div :class='leftClasses'>
       <div v-if="show_video" class="video-control" @click="stopVideo">
-        <a-icon type="close"></a-icon>
+        <v-icon>mdi-close</v-icon>
       </div>
       <video-call ref="videoRef" :close="stopVideo"></video-call>
     </div>
@@ -46,22 +46,22 @@
         <typing-indicator :value='toIsTyping'></typing-indicator>
         <div v-if='fileName' class='upload-container'>
           <small class='mr-1 text-muted'>{{ fileName }}</small>
-          <a-progress :percent='umUploadProgress'></a-progress>
-          <a-button type='danger' @click='cancelUpload'>
-            <a-icon type='close' />
+          <v-progress-linear :value='umUploadProgress'></v-progress-linear>
+          <v-btn color='error' small tile @click='cancelUpload'>
+            <v-icon>mdi-close</v-icon>
             Cancel
-          </a-button>
-          <a-button type='primary' @click='uploadFile'>
-            <a-icon type='upload' />
+          </v-btn>
+          <v-btn small tile type='primary' @click='uploadFile'>
+            <v-icon>mdi-upload</v-icon>
             {{$t('upload')}}
-          </a-button>
+          </v-btn>
         </div>
         <VEmojiPicker v-if='showEmojiPicker' class="emoji-picker" @select="selectEmoji" />
         <div class='chat-controls'>
           <div class="mr-1">
             <v-icon @click='showEmojiPicker = !showEmojiPicker'>mdi-emoticon-outline</v-icon>
           </div>
-          <a-input v-model='message' placeholder='Type a message' @keyup="imTyping" @keyup.enter='sendMessage(null)'></a-input>
+          <v-text-field v-model='message' placeholder='Type a message' @keyup="imTyping" @keyup.enter='sendMessage(null)'></v-text-field>
           <div class='chat-multiple-controls'>
             <v-icon v-if='!isUser' class="mx-1" @click='askSavePDF'>mdi-content-save</v-icon>
             <input id='file' ref='fileInput' type='file' style='opacity: 0; display: none' @change='fileChange' />
@@ -100,24 +100,8 @@
     </v-dialog>
     <RequestModal ref='rmodal'></RequestModal>
     <div>
-      <a-modal
-        title='Allow user'
-        :visible='visible'
-        :confirm-loading='confirmLoading'
-        @ok='handleOk'
-        @cancel='handleCancel'
-      >
-        <p>{{$t('do_y_wnt_all')}}</p>
-      </a-modal>
-      <a-modal
-        title='Save chat'
-        :visible='visiblePDF'
-        :confirm-loading='confirmLoading'
-        @ok='saveChatAsPdf'
-        @cancel='handleCancel'
-      >
-        <p>{{$t('ifys')}}</p>
-      </a-modal>
+      <ConfirmDialog v-model="visible" title="Allow user" :loading="confirmLoading" @accept="handleOk" @cancel="handleCancel"></ConfirmDialog>
+      <ConfirmDialog v-model="visiblePDF" title="Save Chat" :description="$t('ifys').toString()" :loading="confirmLoading" @accept="saveChatAsPdf" @cancel="handleCancel"></ConfirmDialog>
     </div>
     <a ref='downloadUrlRef' :href='downloadUrl' :download='downloadUrl' target='_blank' class='d-none'></a>
   </div>
@@ -128,7 +112,6 @@
 import domtoimage from "dom-to-image";
 import { VEmojiPicker } from 'v-emoji-picker';
 import ChatMessages from "~/components/ChatMessages";
-import SpinOrText from "~/components/SpinOrText";
 import TypingIndicator from "~/components/TypingIndicator";
 import listenMixin from "~/mixins/listenMixin";
 import userRoleMixin from "~/mixins/userRoleMixin";
@@ -141,10 +124,11 @@ import RequestModal from "~/components/RequestModal";
 import VideoCall from "~/components/VideoCall";
 import ProfilePicture from "~/components/ProfilePicture";
 import dateMixin from "~/mixins/dateMixin";
+import ConfirmDialog from "~/components/ConfirmDialog";
 
 export default {
   name: "Uuid",
-  components: {ChatMessages, SpinOrText, TypingIndicator, RequestModal, VideoCall, ProfilePicture, VEmojiPicker},
+  components: {ConfirmDialog, ChatMessages, TypingIndicator, RequestModal, VideoCall, ProfilePicture, VEmojiPicker},
   mixins: [listenMixin, userRoleMixin, userUpdatedMixin, uploadMixin, chatMixin, authMixin, breakpoints, chatMixin, dateMixin],
   layout: 'new-chat',
   middleware: ['authenticated', 'verified', 'pin-set', 'view-set'],

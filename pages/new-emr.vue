@@ -1,291 +1,310 @@
 <template>
   <div class='pa-6 mh-100v'>
-    <a-row class='mb-1'>
-      <a-col>
-        <a-breadcrumb>
-          <a-breadcrumb-item>
-            <nuxt-link :to="localePath('/dashboard')">{{$t('dashboard')}}</nuxt-link>
-          </a-breadcrumb-item>
-          <a-breadcrumb-item>
-            <nuxt-link :to="localePath('/emr')">{{$t('emr')}}</nuxt-link>
-          </a-breadcrumb-item>
-          <a-breadcrumb-item>
-                      <span v-if='isTemplate'>
-                          {{$t('emr_template')}}
-                      </span>
-            <span v-else>
-                          Encounter
-                      </span>
-          </a-breadcrumb-item>
-        </a-breadcrumb>
-      </a-col>
-    </a-row>
+    <v-row class='mb-1'>
+      <v-col>
+        <v-breadcrumbs :items="[
+          {
+            text: $t('dashboard'),
+            to: localePath('/dashboard'),
+            disabled: false,
+          },
+          {
+            text: $t('emr'),
+            to: localePath('/emr'),
+            disabled: false,
+          },
+          {
+            text: isTemplate ? $t('emr_template') : 'Encounter',
+            disabled: true,
+          }
+        ]"></v-breadcrumbs>
+      </v-col>
+    </v-row>
     <div v-if='loadingData'>
-      <a-skeleton />
+      <v-skeleton-loader/>
     </div>
-    <a-form v-else :form='form' @submit='handleSubmit'>
-      <a-row>
-        <a-col :xs='24'>
+    <v-form v-else ref="form" v-model="valid" @submit.prevent='handleSubmit'>
+      <v-row>
+        <v-col>
           <p class='h4 mb-1'>
                     <span v-if='isTemplate'>
-                        <span v-if='recordId'>{{$t('update_template')}}</span>
-                        <span v-else>{{$t('create_template')}}</span>
+                        <span v-if='recordId'>{{ $t('update_template') }}</span>
+                        <span v-else>{{ $t('create_template') }}</span>
                     </span>
             <span v-else>
-                        <span v-if='recordId'>{{$t('update_record')}}</span>
+                        <span v-if='recordId'>{{ $t('update_record') }}</span>
                         <span v-else>New Encounter</span>
                     </span>
           </p>
-        </a-col>
-      </a-row>
-      <a-row>
-        <a-col :xs='24' :sm='24'>
-          <a-form-item>
-            <a-input v-if='isTemplate'
-                     v-decorator="[
-                                'template_name',
-                                { rules: [
-                                    { required: true, message: $t('v.en_tmp_name') },
-                                    { min: 2, message: $t('v.min_2')}
-                                ] },
-                            ]"
-                     type='text'
-                     :placeholder="$t('template_name')"
-                     @input="inputReceived('template_name')">
-            </a-input>
-            <a-auto-complete v-else v-model='userSearch' :data-source='usersList' placeholder="Search patient"
-                             :disabled='!!recordId && !draft'>
-              <a-icon slot='suffix' type='search' style='color:rgba(0,0,0,.25)' />
-            </a-auto-complete>
-          </a-form-item>
-        </a-col>
-        <a-col :xs='24' :sm='24' :md='12'>
-          <a-form-item>
-            <a-date-picker v-model='date' :disabled="isDisabled" format='MM-DD-YYYY' @change="onChange"></a-date-picker>
-          </a-form-item>
-        </a-col>
-        <a-col v-if='!isTemplate' :xs='24' :sm='24' :md='12'>
-          <a-form-item>
-            <a-auto-complete :disabled="isDisabled" :data-source='templatesList' :placeholder="$t('template_name')" allow-clear
-                             @change='changeTemplate' />
-          </a-form-item>
-        </a-col>
-      </a-row>
-      <a-row>
-        <a-col :xs='24'>
-          <a-tabs default-active-key='1'>
-            <a-tab-pane key='1' :tab="$t('allergies')" force-render>
-              <a-form-item>
-                <a-textarea v-decorator="['allergies', { rules: [] }]" :placeholder="$t('allergies')" :rows='6' :disabled='isDisabled' @input="inputReceived('allergies')" />
-              </a-form-item>
-            </a-tab-pane>
-            <a-tab-pane key='2' :tab="$t('current_meds')" force-render>
-              <a-form-item>
-                <a-textarea v-decorator="['current_meds', { rules: [] }]" :placeholder="$t('current_meds')" :rows='6'  :disabled='isDisabled' @input="inputReceived('current_meds')" />
-              </a-form-item>
-            </a-tab-pane>
-            <a-tab-pane key='3' :tab="$t('med_htry')" force-render>
-              <a-form-item>
-                <a-textarea
-                  v-decorator="['medical_history', { rules: [] }]"
-                  :placeholder="$t('med_htry')" :rows='6' :disabled='isDisabled' @input="inputReceived('medical_history')" />
-              </a-form-item>
-            </a-tab-pane>
-            <a-tab-pane key='4' :tab="$t('soc_htry')" force-render @input="inputReceived">
-              <a-form-item>
-                <a-textarea
-                  v-decorator="['social_history', { rules: [] }]"
-                  :placeholder="$t('soc_htry')" :rows='6' :disabled='isDisabled' @input="inputReceived('social_history')" />
-              </a-form-item>
-            </a-tab-pane>
-            <a-tab-pane key='5' :tab="$t('fam_hry')" force-render>
-              <a-form-item>
-                <a-textarea
-                  v-decorator="['family_history', { rules: [] }]"
-                  :placeholder="$t('fam_hry')" :rows='6' :disabled='isDisabled' @input="inputReceived('family_history')" />
-              </a-form-item>
-            </a-tab-pane>
-          </a-tabs>
-        </a-col>
-      </a-row>
-      <a-row class='mt-1 mb-1'>
-        <a-col :xs='24'>
-          <div class='emr-inline-inputs'>
-            <a-form-item
-               :label="$t('bp')">
-              <a-input
-                v-model='bp'
-                :placeholder="$t('bp')" :disabled='isDisabled' />
-            </a-form-item>
-            <a-form-item
-              :label="$t('pulse')">
-              <a-input
-                v-decorator="['pulse', { rules: [{ max: 10, message: $t('v.max_10') }] }]"
-                :placeholder="$t('pulse')" :disabled='isDisabled' @input="inputReceived('pulse')" />
-            </a-form-item>
-            <a-form-item
-              :label="$t('resp_rate')">
-              <a-input
-                v-decorator="['resp_rate', { rules: [{ max: 10, message: $t('v.max_10') }] }]"
-                :placeholder="$t('resp_rate')" :disabled='isDisabled' @input="inputReceived('resp_rate')" />
-            </a-form-item>
-            <a-form-item
-              :label="$t('temp')">
-              <a-input
-                v-decorator="['temp', { rules: [{ max: 10, message: $t('v.max_10') }] }]"
-                :placeholder="$t('temp')" :disabled='isDisabled' @input="inputReceived('temp')" />
-            </a-form-item>
-            <a-form-item
-              :label="$t('height_in')">
-              <a-input v-decorator="['height', {}]" :placeholder="$t('height_in')" :disabled='isDisabled'
-                       @input='updateBMI("height")' />
-            </a-form-item>
-            <a-form-item
-              :label="$t('weight_lb')">
-              <a-input v-decorator="['weight', {}]" :placeholder="$t('weight_lb')" :disabled='isDisabled'
-                       @input='updateBMI("weight")' />
-            </a-form-item>
-            <a-form-item
-              :label="$t('bmi')">
-              <a-input v-model='bmi' :placeholder="$t('bmi')" disabled />
-            </a-form-item>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col md="12">
+          <div>
+            <v-text-field v-if='isTemplate' v-model="template_name" :rules="[
+
+              v => !!v ||  $t('v.en_tmp_name'),
+              v => !!v && v.length >= 2 || $t('v.min_2')
+
+            ]"
+                          type='text'
+                          :label="$t('template_name')"
+                          :placeholder="$t('template_name')"
+                          @input="inputReceived('template_name')">
+            </v-text-field>
+            <v-autocomplete v-else v-model="selectedUser" :search-input.sync="userSearch"
+                            :loading="loadingUsers" hide-no-data :items="usersList" placeholder="Search patient" :disabled="!!recordId && draft"></v-autocomplete>
           </div>
-        </a-col>
-      </a-row>
-      <a-row>
-        <a-col :xs='24'>
-          <a-tabs default-active-key='1'>
-            <a-tab-pane key='1' :tab="$t('chief_complaint')" force-render>
-              <a-form-item>
-                <a-textarea
-                  v-decorator="['chief_complaint', { rules: [] }]"
-                  :placeholder="$t('chief_complaint')" :rows='6' :disabled='isDisabled' @input="inputReceived('chief_complaint')" />
-              </a-form-item>
-            </a-tab-pane>
-            <a-tab-pane key='2' :tab="$t('hpi')" force-render>
-              <a-form-item>
-                <a-textarea
-                  v-decorator="['hip', { rules: [] }]"
-                  :placeholder="$t('hpi')" :rows='6' :disabled='isDisabled' @input="inputReceived('hip')" />
-              </a-form-item>
-            </a-tab-pane>
-            <a-tab-pane key='3' :tab="$t('subject')" force-render>
-              <a-form-item>
-                <a-textarea
-                  v-decorator="['subject', { rules: [] }]"
-                  :placeholder="$t('subject')" :rows='6' :disabled='isDisabled' @input="inputReceived('subject')" />
-              </a-form-item>
-            </a-tab-pane>
-            <a-tab-pane key='4' :tab="$t('objective')" force-render @input="inputReceived">
-              <a-form-item>
-                <a-textarea
-                  v-decorator="['objective', { rules: [] }]"
-                  :placeholder="$t('objective')" :rows='6' :disabled='isDisabled' @input="inputReceived('objective')" />
-              </a-form-item>
-            </a-tab-pane>
-            <a-tab-pane key='5' :tab="$t('assessment')" force-render>
-              <a-form-item>
-                <a-textarea
-                  v-decorator="['assessment', { rules: [] }]"
-                  :placeholder="$t('assessment')" :rows='6' :disabled='isDisabled' @input="inputReceived('assessment')" />
-              </a-form-item>
-            </a-tab-pane>
-            <a-tab-pane key='6' :tab="$t('plan')" force-render>
-              <a-form-item>
-                <a-textarea
-                  v-decorator="['plan', { rules: [] }]"
-                  :placeholder="$t('plan')" :rows='6' :disabled='isDisabled' @input="inputReceived('plan')" />
-              </a-form-item>
-            </a-tab-pane>
-            <a-tab-pane key='7' :tab="$t('sign')" force-render>
-              <a-form-item>
-                <a-textarea
-                  v-decorator="['sign', { rules: [] }]"
-                  :placeholder="$t('sign')" :rows='6' :disabled='isDisabled' @input="inputReceived('sign')" />
-              </a-form-item>
-            </a-tab-pane>
-            <a-tab-pane key='8' :tab="$t('addendum')" force-render>
-              <a-form-item>
-                <a-textarea
-                  v-decorator="['addendum', { rules: [] }]"
-                  :placeholder="$t('addendum')" :rows='6' :disabled="locked" @input="inputReceived('addendum')" />
-              </a-form-item>
-            </a-tab-pane>
-          </a-tabs>
-        </a-col>
-      </a-row>
-      <a-row v-if="!locked" class='mt-1'>
-        <a-col>
-          <a-button type='primary' html-type='submit'>
-            <SpinOrText v-model='loading'>
-                        <span v-if='isTemplate'>
-                            <span v-if='recordId'>{{$t('update_template')}}</span>
-                            <span v-else>{{$t('create_template')}}</span>
-                        </span>
-              <span v-else>
-                            <span v-if='recordId'>{{$t('update_record')}}</span>
-                            <span v-else>{{$t('chat_record')}}</span>
-                        </span>
-            </SpinOrText>
-          </a-button>
-          <a-button v-if='!isTemplate' type='old-rose' @click='printRecord'>
-            <SpinOrText v-model='loadingPdf'>
-              <a-icon type='file-pdf'></a-icon>
-              {{$t('print')}}
-            </SpinOrText>
-          </a-button>
-        </a-col>
-      </a-row>
-      <a-row v-else class="mt-1">
-        <a-col>
-          <a-button type='success' @click.prevent="$router.push(localePath('/emr'))">
-            Go Back <a-icon type="arrow-left"></a-icon>
-          </a-button>
-        </a-col>
-      </a-row>
-      <RequestModal ref='rmodal' />
+        </v-col>
+        <v-col v-if="!isTemplate" md="6">
+          <div>
+            <v-text-field v-model="picker" placeholder="Date" readonly @click="visiblePicker = true"></v-text-field>
+            <v-dialog v-model="visiblePicker" persistent max-width="320px">
+              <v-date-picker
+                v-model="picker"
+                year-icon="mdi-calendar-blank"
+                prev-icon="mdi-skip-previous"
+                next-icon="mdi-skip-next"
+                @change="visiblePicker = false"
+              ></v-date-picker>
+            </v-dialog>
+          </div>
+        </v-col>
+        <v-col v-if='!isTemplate' md="6">
+          <v-autocomplete :disabled="isDisabled" :items="templatesList" :label="$t('template_name')" :placeholder="$t('template_name')" clearable @change="changeTemplate"></v-autocomplete>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col md="12">
+          <v-tabs v-model="tab">
+            <v-tab>{{ $t('allergies') }}</v-tab>
+            <v-tab>{{ $t('current_meds') }}</v-tab>
+            <v-tab>{{ $t('med_htry') }}</v-tab>
+            <v-tab>{{ $t('soc_htry') }}</v-tab>
+            <v-tab>{{ $t('fam_hry') }}</v-tab>
+
+          </v-tabs>
+          <v-tabs-items v-model="tab">
+            <v-tab-item>
+              <v-textarea v-model="allergies" :label="$t('allergies')" :placeholder="$t('allergies')" :disabled='isDisabled' @input="inputReceived('allergies')"/>
+            </v-tab-item>
+            <v-tab-item>
+              <v-textarea v-model="current_meds" :label="$t('current_meds')" :placeholder="$t('current_meds')" :disabled='isDisabled' @input="inputReceived('current_meds')"/>
+            </v-tab-item>
+            <v-tab-item>
+              <v-textarea
+                v-model="medical_history"
+                :label="$t('med_htry')"
+                :placeholder="$t('med_htry')" :disabled='isDisabled' @input="inputReceived('medical_history')"/>
+            </v-tab-item>
+            <v-tab-item>
+              <v-textarea
+                v-model="social_history"
+                :label="$t('soc_htry')"
+                :placeholder="$t('soc_htry')" :disabled='isDisabled' @input="inputReceived('social_history')"/>
+            </v-tab-item>
+            <v-tab-item>
+              <v-textarea
+                v-model="family_history"
+                :label="$t('fam_hry')"
+                :placeholder="$t('fam_hry')" :disabled='isDisabled' @input="inputReceived('family_history')"/>
+            </v-tab-item>
+          </v-tabs-items>
+        </v-col>
+      </v-row>
+      <v-row class='mt-1 mb-1'>
+        <v-col>
+          <div class='emr-inline-inputs'>
+            <div>
+              <v-text-field
+                v-model='bp'
+                :label="$t('bp')"
+                :placeholder="$t('bp')" :disabled='isDisabled'/>
+            </div>
+            <div>
+              <v-text-field
+                :label="$t('pulse')"
+                :placeholder="$t('pulse')" :disabled='isDisabled' @input="inputReceived('pulse')"/>
+            </div>
+            <div>
+              <v-text-field
+                v-model="resp_rate"
+                :label="$t('resp_rate')"
+                :placeholder="$t('resp_rate')" :disabled='isDisabled' @input="inputReceived('resp_rate')"/>
+            </div>
+            <div>
+              <v-text-field v-model="temp"
+                            :placeholder="$t('temp')" :label="$t('temp')" :disabled='isDisabled' @input="inputReceived('temp')"/>
+            </div>
+            <div>
+              <v-text-field v-model="height" :label="$t('height_in')" :placeholder="$t('height_in')" :disabled='isDisabled'
+                            @input='updateBMI("height")'/>
+            </div>
+            <div>
+              <v-text-field v-model="weight" :label="$t('weight_lb')" :placeholder="$t('weight_lb')" :disabled='isDisabled'
+                            @input='updateBMI("weight")'/>
+            </div>
+            <div>
+              <v-text-field v-model='bmi' :label="$t('bmi')" :placeholder="$t('bmi')" disabled/>
+            </div>
+          </div>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-tabs v-model="tab2">
+            <v-tab>{{ $t('chief_complaint') }}</v-tab>
+            <v-tab>{{ $t('hpi') }}</v-tab>
+            <v-tab>{{ $t('subject') }}</v-tab>
+            <v-tab>{{ $t('objective') }}</v-tab>
+            <v-tab>{{ $t('assessment') }}</v-tab>
+            <v-tab>{{ $t('plan') }}</v-tab>
+            <v-tab>{{ $t('sign') }}</v-tab>
+            <v-tab>{{ $t('addendum') }}</v-tab>
+          </v-tabs>
+          <v-tabs-items v-model="tab2">
+            <v-tab-item>
+              <v-textarea
+                v-model="chief_complaint"
+                :label="$t('chief_complaint')"
+                :placeholder="$t('chief_complaint')" :disabled='isDisabled' @input="inputReceived('chief_complaint')"/>
+            </v-tab-item>
+            <v-tab-item>
+              <v-textarea
+                v-model="hip"
+                :label="$t('hpi')"
+                :placeholder="$t('hpi')" :disabled='isDisabled' @input="inputReceived('hip')"/>
+            </v-tab-item>
+            <v-tab-item>
+              <v-textarea
+                v-model="subject"
+                :label="$t('subject')"
+                :placeholder="$t('subject')" :disabled='isDisabled' @input="inputReceived('subject')"/>
+            </v-tab-item>
+            <v-tab-item>
+              <v-textarea
+                v-model="objective"
+                :label="$t('objective')"
+                :placeholder="$t('objective')" :disabled='isDisabled' @input="inputReceived('objective')"/>
+            </v-tab-item>
+            <v-tab-item>
+              <v-textarea
+                v-model="assessment"
+                :label="$t('assessment')"
+                :placeholder="$t('assessment')" :disabled='isDisabled' @input="inputReceived('assessment')"/>
+            </v-tab-item>
+            <v-tab-item>
+              <v-textarea
+                v-model="plan"
+                :label="$t('plan')"
+                :placeholder="$t('plan')" :disabled='isDisabled' @input="inputReceived('plan')"/>
+            </v-tab-item>
+            <v-tab-item>
+              <v-textarea
+                v-model="sign"
+                :label="$t('sign')"
+                :placeholder="$t('sign')" :disabled='isDisabled' @input="inputReceived('sign')"/>
+            </v-tab-item>
+            <v-tab-item>
+              <v-textarea
+                v-model="addendum"
+                :label="$t('addendum')"
+                :placeholder="$t('addendum')" :disabled="locked" @input="inputReceived('addendum')"/>
+            </v-tab-item>
+          </v-tabs-items>
+        </v-col>
+      </v-row>
+      <v-row v-if="!locked" class='mt-1'>
+        <v-col>
+          <v-btn color='primary' small tile type='submit' :loading="loading">
+            <span v-if='isTemplate'>
+              <span v-if='recordId'>{{ $t('update_template') }}</span>
+              <span v-else>{{ $t('create_template') }}</span>
+            </span>
+            <span v-else>
+              <span v-if='recordId'>{{ $t('update_record') }}</span>
+              <span v-else>{{ $t('chat_record') }}</span>
+            </span>
+          </v-btn>
+          <v-btn v-if='!isTemplate' small tile color='pink' dark :loading="loadingPdf" @click='printRecord'>
+            <v-icon>mdi-file</v-icon>
+            {{ $t('print') }}
+          </v-btn>
+        </v-col>
+      </v-row>
+      <v-row v-else class="mt-1">
+        <v-col>
+          <v-btn small tile color='success' @click.prevent="$router.push(localePath('/emr'))">
+            Go Back
+            <v-icon>mdi-arrow-left</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+      <RequestModal ref='rmodal'/>
       <a ref='pdfDownload' :href='pdfFile' :download='pdfFile' class='d-none' target='_blank'></a>
-    </a-form>
+    </v-form>
   </div>
 
 </template>
 <script>
 import RequestModal from '~/components/RequestModal.vue'
-import SpinOrText from '~/components/SpinOrText.vue'
 import formMixin from '~/mixins/formMixin'
+
 const debounce = require('lodash.debounce')
-const { validate } = require('uuid');
+const {validate} = require('uuid');
 
 
 export default {
   name: 'NewEmr',
   components: {
     RequestModal,
-    SpinOrText
   },
   mixins: [formMixin],
   layout: 'dashboard',
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified', 'pin-set'],
-  data() {
-    return {
-      locked: false,
-      loadingData: false,
-      loading: false,
-      templates: [], // Full data of the templates
-      templatesList: [], // key and value
-      usersList: [],
-      userSearch: '',
-      recordId: null,
-      bmi: 0,
-      isTemplateD: false,
-      loadingPdf: false,
-      pdfFile: '',
-      bp: '',
-      draft: null,
-      canSaveDraft: false,
-    }
-  },
-  head(){
+  data: () => ({
+    selectedUser: null,
+    loadingUsers: false,
+    tab: 0,
+    tab2: 0,
+    allergies: '',
+    current_meds: '',
+    medical_history: '',
+    social_history: '',
+    family_history: '',
+    chief_complaint: '',
+    hip: '',
+    subject: '',
+    objective: '',
+    assessment: '',
+    plan: '',
+    sign: '',
+    addendum: '',
+    resp_rate: '',
+    temp: '',
+    height: '',
+    weight: '',
+    locked: false,
+    loadingData: false,
+    loading: false,
+    templates: [], // Full data of the templates
+    templatesList: [], // key and value
+    usersList: [],
+    userSearch: '',
+    recordId: null,
+    bmi: 0,
+    isTemplateD: false,
+    loadingPdf: false,
+    pdfFile: '',
+    bp: '',
+    draft: null,
+    canSaveDraft: false,
+    valid: false,
+    template_name: '',
+    picker: new Date().toISOString().substr(0,10),
+    visiblePicker: false,
+  }),
+  head() {
     return {
       title: 'New Encounter'
     }
@@ -310,36 +329,41 @@ export default {
     }
   },
   watch: {
+    date(v) {
+      console.log('The date is now ', v)
+    },
     bp(v) {
       let nv = ''
-      if (v){
-        v.split('').forEach((k, i)=>{
-          if (this.allowed.includes(k) || (i === 3 && k === '/')){
+      if (v) {
+        v.split('').forEach((k, i) => {
+          if (this.allowed.includes(k) || (i === 3 && k === '/')) {
             nv += k
           }
         })
       }
       this.bp = nv
-      if (nv.length === 4){
+      if (nv.length === 4) {
         this.bp = this.addSlash(this.bp)
       }
-      if (this.bp.length > 7){
+      if (this.bp.length > 7) {
         this.bp = this.bp.substr(0, 7)
       }
       console.log(this.bp)
       this.saveDraft('bp')
     },
-    userSearch: debounce(function(v) {
-      if (validate(v)){
+    userSearch: debounce(function (v) {
+      console.log('Searching users...')
+      if (validate(v)) {
         // The professional selected a valid user.
         this.saveDraft('user')
       }
       if (v && v.length > 0) {
+        this.loadingUsers = true
         this.$api.get('/user/search', {
           params: {
             searchTerm: v
           }
-        }).then(({ data }) => {
+        }).then(({data}) => {
           if (data && data.length) {
             this.usersList = data.map((user) => {
               return {
@@ -350,6 +374,8 @@ export default {
           }
         }).catch(() => {
           this.$toast.error(this.$t('unable_search').toString())
+        }).finally(() => {
+          this.loadingUsers = false
         })
       } else {
         this.usersList = []
@@ -361,7 +387,8 @@ export default {
     if (c.mere) {
       this.recordId = c.mere
       this.loadingData = true
-      this.$api.get('/medical-record/' + this.recordId).then(({ data }) => {
+      this.$api.get('/medical-record/' + this.recordId).then(({data}) => {
+        this.selectedUser = data.user_uuid
         this.setData(data)
         if (data.mrus_user_uuid) {
           this.usersList = [
@@ -389,14 +416,14 @@ export default {
       }).finally(() => {
         this.loadingData = false
       })
-    }else{
+    } else {
       this.canSaveDraft = true
     }
     this.$api.get('/medical-record', {
       params: {
         type: 'template'
       }
-    }).then(({ data }) => {
+    }).then(({data}) => {
       this.templates = data
       this.templatesList = data.map((tmp) => {
         return {
@@ -405,24 +432,21 @@ export default {
         }
       })
     })
-    if (c.mode && c.mode ==='view'){
+    if (c.mode && c.mode === 'view') {
       this.locked = true
     }
   },
   methods: {
-    inputReceived: debounce ( function (arg) {
+    inputReceived: debounce(function (arg) {
       this.saveDraft(arg)
     }, 1000),
-    saveDraft(arg, valueOverride){
+    saveDraft(arg, valueOverride) {
       if (this.canSaveDraft) {
 
 
         console.log('Save draft. Update -->', arg)
-        const v = this.form.getFieldsValue()[arg] || this[arg]
-
+        const v = this[arg]
         console.log(`The new value of ${arg} is ${v}`)
-        console.log('Draft', this.draft)
-        console.log('RecordId', this.recordId)
         if (this.draft === null && !this.recordId) {
           // type ---> new || template
           this.$api.post('/medical-record/draft', {
@@ -438,37 +462,35 @@ export default {
           }).catch(() => {
             this.$toast.error('Failed to create a new draft. You can continue but your changes won\'t be saved automatically.')
           })
-        }else if (validate(this.recordId)){
+        } else if (validate(this.recordId)) {
           this.putData(arg, v || valueOverride)
         }
       }
     },
-    putData(name, value){
+    putData(name, value) {
 
-      const values = this.form.getFieldsValue()
+      console.log('Put', name, this[name])
+
+      const values = this[name]
       let v = value || values[name]
-      if (!v){
-        if (name === 'user'){
+      if (!v) {
+        if (name === 'user') {
           v = this.userSearch
         }
       }
       name = name.replace(/_/g, '-')
       this.$api.patch('/medical-record/' + name + '/' + this.recordId, {
         value: v
-      }).then(({ data }) => {
+      }).then(({data}) => {
         console.log(`Updated ${name} successfully`)
       }).catch(() => {
         this.$toast.error(`Failed to update ${name}`)
       })
     },
-    onChange(v){
-      console.log('The date has changed. ', v)
-      this.saveDraft('date', this.date.format('YYYY-MM-DD'))
-    },
     printRecord() {
       if (this.recordId) {
         this.loadingPdf = true
-        this.$api.get('/medical-record/pdf/' + this.recordId).then(({ data }) => {
+        this.$api.get('/medical-record/pdf/' + this.recordId).then(({data}) => {
           this.$toast.success(this.$t('pdf_gend').toString())
           this.pdfFile = process.env.API_URL + '/generated/record/' + data.file
           setTimeout(() => {
@@ -486,16 +508,16 @@ export default {
     isValidUser() {
       let r = false
       this.usersList.forEach((user) => {
-        if (user.value === this.userSearch) {
+        if (user.value === this.selectedUser) {
           r = true
         }
       })
       return r
     },
     updateBMI(arg) {
-      const d = this.form.getFieldsValue()
-      let w = d.weight
-      let h = d.height
+
+      let w = this.weight
+      let h = this.height
       let r = 0
       if (w && h) {
         // [weight (lb) / height (in) / height (in)] x 703
@@ -506,64 +528,81 @@ export default {
       this.bmi = r.toFixed(2)
       this.saveDraft(arg)
     },
-    handleSubmit(e) {
-      e.preventDefault()
-      this.form.validateFields((err, values) => {
-        if (err) {
-          return console.log(err)
-        }
-        const keys = Object.keys(values)
-        const nv = {}
-        keys.forEach((key) => {
-          nv[key] = values[key] || ''
-        })
-        nv.bp = this.bp
+    handleSubmit() {
+      console.log('Handle submit')
+      this.$refs.form.validate()
 
+      console.log('The date is --->', this.picker)
+
+      if (this.valid) {
+        const values = {
+          template_name: this.template_name,
+          patient: this.selectedUser,
+          allergies: this.allergies,
+          current_meds: this.current_meds,
+          medical_history: this.medical_history,
+          social_history: this.social_history,
+          family_history: this.family_history,
+          bp: this.bp,
+          pulse: this.pulse,
+          resp_rate: this.resp_rate,
+          temp: this.temp,
+          height: this.height,
+          weight: this.weight,
+          chief_complaint: this.chief_complaint,
+          hip: this.hpi,
+          subject: this.subject,
+          objective: this.objective,
+          assessment: this.assessment,
+          plan: this.plan,
+          sign: this.sign,
+          addendum: this.addendum,
+        }
+
+
+        /*
         if (!this.date || !this.date.isValid()){
           return this.$toast.error('Please enter a valid date')
         }
+         */
 
-        nv.date = this.date.format('YYYY-MM-DD')
+        // nv.date = this.date.format('YYYY-MM-DD')
+
+        values.date = this.picker
+        console.log('The values --->', values)
+        // 2022-01-14
 
         this.loading = true
 
         if (this.recordId) {
-          nv.patient = this.userSearch
+          values.patient = this.selectedUser
           if (!this.isTemplate && !this.isValidUser()) {
             this.loading = false
             this.$toast.error(this.$t('please_select_user').toString())
             return false
           }
 
-
-          this.$api.put('/medical-record/' + this.recordId, nv).then(() => {
-            this.form.resetFields()
+          this.$api.put('/medical-record/' + this.recordId, values).then(() => {
             this.$toast.success(this.$t('record_hb_updated').toString())
-            setTimeout(() => {
-              this.$router.push(this.localePath('/emr'))
-            }, 500)
+            this.$router.push(this.localePath('/emr'))
           }).catch((err) => {
             this.$refs.rmodal.$emit('error', err)
           }).finally(() => {
             this.loading = false
           })
         } else if (this.isTemplate) {
-          this.$api.post('/medical-record', nv).then(() => {
-            this.form.resetFields()
+          this.$api.post('/medical-record', values).then(() => {
+
             this.$toast.success(this.$t('template_hb_created').toString())
-            setTimeout(() => {
-              this.$router.push(this.localePath('/emr'))
-            }, 500)
+            this.$router.push(this.localePath('/emr'))
           }).catch((err) => {
             this.$refs.rmodal.$emit('error', err)
           }).finally(() => {
             this.loading = false
           })
-        } else {
-          nv.patient = this.userSearch
-          if (this.isValidUser()) {
-            this.$api.post('/medical-record/record', nv).then(() => {
-              this.form.resetFields()
+        } else if (this.isValidUser()) {
+            this.$api.post('/medical-record/record', values).then(() => {
+              this.$refs.form.reset()
               this.$toast.success(this.$t('record_hb_created').toString())
               setTimeout(() => {
                 this.$router.push(this.localePath('/emr'))
@@ -577,36 +616,30 @@ export default {
             this.loading = false
             this.$toast.error(this.$t('please_select_user').toString())
           }
-        }
-      })
+      }
     },
     setData(tm) {
-      this.$nextTick(() => {
-        setTimeout(() => {
-          this.form.setFieldsValue({
-            template_name: tm.mere_name,
-            allergies: tm.mere_allergies,
-            current_meds: tm.mere_current_meds,
-            medical_history: tm.mere_medical_history,
-            social_history: tm.mere_social_history,
-            family_history: tm.mere_family_history,
-            bp: tm.mere_bp,
-            pulse: tm.mere_pulse,
-            resp_rate: tm.mere_resp_rate,
-            temp: tm.mere_temp,
-            height: tm.mere_height,
-            weight: tm.mere_weight,
-            chief_complaint: tm.mere_chief_complaint,
-            hip: tm.mere_hpi,
-            subject: tm.mere_subject,
-            objective: tm.mere_objective,
-            assessment: tm.mere_assessment,
-            plan: tm.mere_plan,
-            sign: tm.mere_sign,
-            addendum: tm.mere_addendum
-          })
-        }, 600)
-      })
+      console.log('Setting data.',tm)
+      this.template_name = tm.mere_name
+      this.allergies = tm.mere_allergies
+      this.current_meds = tm.mere_allergies
+      this.medical_history = tm.mere_current_meds
+      this.social_history = tm.mere_social_history
+      this.family_history = tm.mere_family_history
+      this.bp = tm.mere_bp
+      this.pulse = tm.mere_pulse
+      this.resp_rate = tm.mere_resp_rate
+      this.temp = tm.mere_temp
+      this.height = tm.mere_height
+      this.weight = tm.mere_weight
+      this.chief_complaint = tm.mere_chief_complaint
+      this.hip = tm.mere_hpi
+      this.subject = tm.mere_subject
+      this.objective = tm.mere_objective
+      this.assessment = tm.mere_assessment
+      this.plan = tm.mere_plan
+      this.sign = tm.mere_sign
+      this.addendum = tm.mere_addendum
     },
     changeTemplate(t) {
       this.templates.forEach((tm) => {
@@ -628,6 +661,7 @@ export default {
 @media screen and (min-width: $md)
   .emr-inline-inputs
     display: flex
+
     .ant-row.ant-form-item
       width: 50% !important
 </style>

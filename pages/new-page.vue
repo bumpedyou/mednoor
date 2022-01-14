@@ -1,99 +1,93 @@
 <template>
   <div class='pa-6 mh-100v'>
-    <a-row class='mb-1'>
-      <a-col>
-        <a-breadcrumb>
-          <a-breadcrumb-item>
-            <nuxt-link :to="localePath('/dashboard')">{{ $t('dashboard') }}</nuxt-link>
-          </a-breadcrumb-item>
-          <a-breadcrumb-item>
-            <nuxt-link :to="localePath('/pages')">{{ $t('pages') }}</nuxt-link>
-          </a-breadcrumb-item>
-          <a-breadcrumb-item>{{ $t('new_page') }}</a-breadcrumb-item>
-        </a-breadcrumb>
-      </a-col>
-    </a-row>
-    <a-row>
-      <a-col>
+    <v-row class='mb-1'>
+      <v-col>
+        <v-breadcrumbs :items="[
+          {
+            text: $t('dashboard'),
+            to: localePath('/dashboard'),
+            disabled: false,
+          },
+          {
+            text: $t('pages'),
+            to: localePath('/pages'),
+            disabled: false,
+          },
+          {
+            text: $t('new_page'),
+            disabled: true,
+          }
+        ]"></v-breadcrumbs>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
         <p class='h1'>
           {{ $t('new_page') }}
         </p>
-        <a-skeleton v-if='loading'></a-skeleton>
-        <a-form v-else :form='form' size='small' @submit='handleSubmit'>
-          <a-form-item>
-            <a-input v-decorator="
-                            [
-                                'title',
-                                {
-                                    rules: [
-                                    {required: true, message: $t('v.title_req')},
-                                    {min: 3, message: $t('v.min_3')}
-                                    ]
-                                }
-                            ]" :placeholder="$t('title')">
-            </a-input>
-          </a-form-item>
-          <a-form-item>
-            <a-input v-decorator="
-                            [
-                                'slug',
-                                {
-                                    rules: [{max: 330, message: $t('v.max_330')}]
-                                }
-                            ]" :placeholder="$t('slug_p')">
-            </a-input>
-          </a-form-item>
-          <a-form-item>
-            <a-input v-decorator="
-                            [
-                                'keywords',
-                                {
-                                    rules: [{max: 330, message: $t('v.max_330')}]
-                                }
-                            ]" :placeholder="$t('keywords_p')">
-            </a-input>
-          </a-form-item>
-          <a-form-item>
+        <v-skeleton-loader v-if='loading'></v-skeleton-loader>
+        <v-form v-else ref='form' v-model="valid" @submit.prevent>
+          <div>
+            <v-text-field v-model="title" :rules="[
+              v => !!v || $t('v.title_req'),
+              v => !!v && v.length >= 3 || $t('v.min_3')
+            ]" :label="$t('title')" :placeholder="$t('title')">
+            </v-text-field>
+          </div>
+          <div>
+            <v-text-field v-model="slug" :rules="[
+              v => !!v || 'The slug is required',
+              v => !!v && v.length<= 330 || $t('v.max_330')
+            ]" :label="$t('slug_p')"  :placeholder="$t('slug_p')">
+            </v-text-field>
+          </div>
+          <div>
+            <v-text-field v-model="keywords" :rules="[
+              v => !!v || 'The keywords are required',
+              v => !!v && v.length <= 330 || $t('v.max_330'),
+            ]" :placeholder="$t('keywords_p')">
+            </v-text-field>
+          </div>
+          <div>
             <client-only>
               <VueEditor v-model='txt'/>
             </client-only>
-          </a-form-item>
-          <a-form-item class='mt-3'>
-            <a-button type='primary' html-type='submit'>
-              <SpinOrText v-model='loadingCreate'>
-                                <span v-if='uuid'>
-                                    {{ $t('update') }}
-                                </span>
-                <span v-else>
-                                    {{ $t('create_new_page') }}
-                                </span>
-              </SpinOrText>
-            </a-button>
-          </a-form-item>
-        </a-form>
-      </a-col>
-    </a-row>
+          </div>
+          <div class='mt-3'>
+            <v-btn small tile color='primary' :loading="loadingCreate" @click="handleSubmit">
+              <span v-if='uuid'>
+                {{ $t('update') }}
+              </span>
+              <span v-else>
+                {{ $t('create_new_page') }}
+              </span>
+            </v-btn>
+          </div>
+        </v-form>
+      </v-col>
+    </v-row>
     <RequestModal ref='rmodal' />
   </div>
 </template>
 <script>
-import SpinOrText from '~/components/SpinOrText'
 import RequestModal from '~/components/RequestModal'
 
 export default {
   components: {
-    SpinOrText,
     RequestModal
   },
   layout: 'dashboard',
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified'],
   data() {
     return {
-      form: this.$form.createForm(this, { name: 'coordinated' }),
       loadingCreate: false,
       txt: '',
       uuid: null,
-      loading: true
+      loading: true,
+      title: '',
+      slug: '',
+      keywords: '',
+      valid: false,
     }
   },
   head(){
@@ -108,15 +102,10 @@ export default {
       this.$api.get('/page/' + this.uuid).then(({ data }) => {
         this.loading = false
         if (data) {
-          this.$nextTick(() => {
-            this.form.setFieldsValue({
-              title: data.page_title,
-              slug: data.page_slug,
-              keywords: data.page_keywords
-            })
-            this.txt = data.page_content
-            // this.$refs.editor.editor.commands.setContent(data.page_content)
-          })
+          this.title = data.page_title
+          this.slug = data.page_slug
+          this.keywords = data.page_keywords
+          this.txt = data.page_content
         } else {
           this.uuid = null
         }
@@ -131,18 +120,22 @@ export default {
     }
   },
   methods: {
-    handleSubmit(e) {
-      e.preventDefault()
-      this.form.validateFields((err, values) => {
-        if (err) {
-          return false
-        }
+    handleSubmit() {
+      console.log('handleSubmit')
+      this.$refs.form.validate()
+      const values = {
+        title: this.title,
+        keywords: this.keywords,
+        slug: this.slug
+      }
+
+      if (this.valid) {
         this.loadingCreate = true
         values.txt = this.txt
         if (this.uuid) {
           this.$api.put('/page/' + this.uuid, values).then(() => {
             this.$toast.success(this.$t('page_hb_updated').toString())
-          }).catch(() => {
+          }).catch((err) => {
             this.$refs.rmodal.$emit('error', err)
           }).finally(() => {
             this.loadingCreate = false
@@ -157,7 +150,7 @@ export default {
             this.loadingCreate = false
           })
         }
-      })
+      }
     }
   }
 }

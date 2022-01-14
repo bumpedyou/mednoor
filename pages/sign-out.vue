@@ -1,12 +1,12 @@
 <template>
-<a-row class='pa-6 mh-100v'>
-  <a-col span='8' offset='8'>
+<v-row class='pa-6 mh-100v'>
+  <v-col md="8" offset-md="2">
     <h1 class="h1 text-center w-100 mb-1">{{$t('signing_out')}}</h1>
     <div class="f-center w-100">
-      <a-spin></a-spin>
+      <v-progress-circular indeterminate></v-progress-circular>
     </div>
-  </a-col>
-</a-row>
+  </v-col>
+</v-row>
 </template>
 
 <script>

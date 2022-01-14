@@ -19,7 +19,7 @@
           <BubbleChat></BubbleChat>
         </v-col>
       </v-row>
-      <v-container>
+      <div>
         <v-row>
           <v-col md="6">
             <div v-if='main_text' class='middle-text'>
@@ -36,7 +36,7 @@
             </div>
           </v-col>
         </v-row>
-      </v-container>
+      </div>
     </div>
     <MFooter></MFooter>
   </v-app>

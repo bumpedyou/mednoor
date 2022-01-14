@@ -1,20 +1,20 @@
 <template>
   <div class="m-footer">
-    <a-row>
-      <a-col>
+    <v-row>
+      <v-col>
         <p class="text-center">
           <nuxt-link :to="localePath('/privacy-policy')">{{$t('privacy_p')}}</nuxt-link>
           -
           <nuxt-link :to="localePath('/terms-and-conditions')">{{$t('terms_cond')}}</nuxt-link>
         </p>
         <p class="text-center">Mednoor © {{year}}</p>
-      </a-col>
-    </a-row>
-    <a-row>
-      <a-col class="mb-1">
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="mb-1">
         <flags-picker dark></flags-picker>
-      </a-col>
-    </a-row>
+      </v-col>
+    </v-row>
   </div>
 </template>
 

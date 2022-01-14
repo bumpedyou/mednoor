@@ -2,7 +2,7 @@
   <div :key="count">
     <div v-if="$props.button">
       <v-btn v-if="isMade" small tile color="success">
-        Appointment Queued <a-icon type="check-circle"></a-icon>
+        Appointment Queued <v-icon class="ml-1">mdi-check-circle</v-icon>
       </v-btn>
       <v-btn v-else-if="isLoggedIn" small tile color="info" @click='confirmAppointment'>
         Make Appointment
@@ -10,30 +10,23 @@
     </div>
     <div v-else class="mt-3">
       <small v-if="isMade" class="success--text">
-        Appointment Queued <a-icon type="check-circle"></a-icon>
+        Appointment Queued <v-icon class="ml-1">mdi-check-circle</v-icon>
       </small>
       <small v-else-if="isLoggedIn" :class='makeClasses' @click='confirmAppointment'>
         Make Appointment
       </small>
     </div>
-
-    <a-modal
-      :title="$t('conf_action')"
-      :visible='appointmentVisible'
-      :confirm-loading='loadingMakeAppointment'
-      @ok='makeAppointment'
-      @cancel='cancelMakeAppointment'
-    >
-      <p>{{ $t('conf_send_ch') }}</p>
-    </a-modal>
+    <ConfirmDialog v-model="appointmentVisible" :title="$t('conf_action').toString()" :description="$t('conf_send_ch').toString()" :loading="loadingMakeAppointment" @accept="makeAppointment" @cancel="cancelMakeAppointment"></ConfirmDialog>
   </div>
 </template>
 <script>
 import userRoleMixin from "~/mixins/userRoleMixin";
 import authMixin from "~/mixins/authMixin";
+import ConfirmDialog from "~/components/ConfirmDialog";
 
 export default {
   name: "MakeAppointment",
+  components: {ConfirmDialog},
   mixins: [userRoleMixin, authMixin],
   props: {
     user: {

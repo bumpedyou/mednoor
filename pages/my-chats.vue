@@ -1,26 +1,44 @@
 <template>
-<a-row class="pa-6 mh-100v">
-  <a-col :xs='24' :sm='24'>
-    <p class='h4 mb-1'>
-      {{ $t('prev_c_pdf') }}
-    </p>
-    <a-skeleton v-if="loading"/>
-    <a-table v-else :columns='columns' :data-source='items'>
-      <div slot="full_name" slot-scope="text, record">
-        <nuxt-link :to="localePath('/user/' + record.uuid)">
-          {{record.full_name}}
-        </nuxt-link>
-      </div>
-      <div slot='date' slot-scope='text, record'>
-        {{dateString(record.date)}}
-      </div>
-      <div slot="pdf" slot-scope="text, record">
-        <a :href='pdfPath(record.pdf)' :download='pdfPath(record.pdf)' target='_blank'>{{$t('download_pdf')}}</a>
-      </div>
-    </a-table>
-  </a-col>
-  <RequestModal ref='rmodal'></RequestModal>
-</a-row>
+  <div class="mh-100v">
+    <v-row>
+      <v-col>
+        <p class='h4 mb-1'>
+          {{ $t('prev_c_pdf') }}
+        </p>
+        <v-skeleton-loader v-if="loading"/>
+        <v-data-table v-else :items="items" :headers="[
+          {
+            text: 'Chat with',
+            value: 'full_name',
+            sortable: false,
+          },
+          {
+            text: 'Date',
+            value: 'date',
+            sortable: false,
+          },
+          {
+            text: 'PDF',
+            value: 'pdf',
+            sortable: false,
+          }
+        ]">
+          <template #[`item.full_name`]="{item}">
+            <nuxt-link :to="localePath('/user/' + item.uuid)">
+              {{item.full_name}}
+            </nuxt-link>
+          </template>
+          <template #[`item.date`] = "{value}">
+            {{dateString(value)}}
+          </template>
+          <template #[`item.pdf`] = "{item}">
+            <a :href='pdfPath(item.pdf)' :download='pdfPath(item.pdf)' target='_blank'>{{$t('download_pdf')}}</a>
+          </template>
+        </v-data-table>
+      </v-col>
+      <RequestModal ref='rmodal'></RequestModal>
+    </v-row>
+  </div>
 </template>
 
 <script>

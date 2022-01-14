@@ -10,7 +10,7 @@
           Mednoor
         </div>
         <div class='close' @click='chatOpened = false'>
-          <a-icon type='close'></a-icon>
+          <v-icon>mdi-close</v-icon>
         </div>
       </div>
       <div ref="messages" class='chat-box-body'>
@@ -21,22 +21,14 @@
       </div>
       <div class='chat-box-controls'>
         <div class="chat-input">
-          <a-input v-model="message" placeholder="Type a message here" type='text' @keyup.enter="sendMessage"/>
+          <v-text-field v-model="message" placeholder="Type a message here" type='text' @keyup.enter="sendMessage"/>
         </div>
         <div class="chat-controls">
           <img :src="require('~/static/icon/send.svg')" alt='send icon' @click='sendMessage'>
         </div>
       </div>
     </div>
-    <a-modal
-      title="What is your name?"
-      :visible="visible"
-      :confirm-loading="confirmLoading"
-      @ok="handleOk"
-      @cancel="handleCancel"
-    >
-      <a-input v-model="name" placeholder="Example: John Doe" :max-length="30"></a-input>
-    </a-modal>
+    <ConfirmDialog v-model="visible" title="What is your name?" :loading="confirmLoading" @accept="handleOk" @cancel="handleCancel"></ConfirmDialog>
     <request-modal ref='rmodal'></request-modal>
   </div>
 </template>
@@ -47,10 +39,12 @@ import ChatMessages from '~/components/ChatMessages'
 import chatMixin from "~/mixins/chatMixin";
 import RequestModal from "~/components/RequestModal";
 import listenMixin from "~/mixins/listenMixin";
+import ConfirmDialog from "~/components/ConfirmDialog";
 
 export default {
   name: "BubbleChat",
   components: {
+    ConfirmDialog,
     RequestModal,
     TypingIndicator,
     ChatMessages,

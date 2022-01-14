@@ -1,73 +1,61 @@
 <template>
-  <div class='pa-6 mh-100v'>
-    <a-row class='mb-1'>
-      <a-col>
-        <a-breadcrumb>
-          <a-breadcrumb-item>
-            <nuxt-link :to="localePath('/dashboard')">{{ $t('dashboard') }}</nuxt-link>
-          </a-breadcrumb-item>
-          <a-breadcrumb-item>{{ $t('home_screen') }}</a-breadcrumb-item>
-        </a-breadcrumb>
-      </a-col>
-    </a-row>
-    <a-row v-if='src === ""'>
-      <a-col :md='{span: 12, offset: 6}' :lg='{span: 8, offset: 8}'>
-        <p class='h4 text-center mb-1'>{{ $t('home_screen') }}</p>
-        <a-form-item label='What screen do you want to replace?'>
-          <a-select default-value='sign-up' style='width: 120px' class='mb-1' @change='setType'>
-            <a-select-option value='sign-up'>
-              {{$t('sign_up')}}
-            </a-select-option>
-            <a-select-option value='sign-in'>
-              {{$t('sign_in')}}
-            </a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-upload-dragger
-          name='file'
-          :multiple='false'
-          :action='computedAction'
-          :headers='headers'
-          list-type='picture'
-          accept='image/*'
-          :before-upload='beforeUpload'
-          :remove='handleRemove'
-          @change='handleChange'
-        >
-          <p class='ant-upload-drag-icon'>
-            <a-icon type='inbox' />
-          </p>
-          <p class='ant-upload-text'>
-            {{ $t('file_desc_drag') }}
-          </p>
-          <p class='ant-upload-hint'>
-            {{ $t('file_desc_sel') }}
-          </p>
-        </a-upload-dragger>
-      </a-col>
-    </a-row>
-    <a-card v-else class='mt-2'>
-      <a-row class='mt-1'>
-        <a-col :xs='{span: 24}' :sm='{span: 24}' :md='{span: 12}'>
+  <div class='mh-100v pa-6'>
+    <v-row>
+      <v-col md="12">
+        <v-breadcrumbs :items="[
+          {
+            text: 'Dashboard',
+            to: localePath('/dashboard'),
+            disabled: false,
+          },{
+            text: $t('home_screen'),
+            disabled: true,
+          }
+        ]"></v-breadcrumbs>
+      </v-col>
+    </v-row>
+    <v-row v-if='src === ""'>
+      <v-col md="12">
+        <p class='h4 mb-1'>{{ $t('home_screen') }}</p>
+        <div>
+          <label class="d-block mb-3">What screen do you want to replace?</label>
+          <v-select placeholder="Screen to replace" label="Screen to replace" :items="[
+            {
+              text: $t('sign_up'),
+              value: 'sign-up'
+            },
+                 {
+              text: $t('sign_in'),
+              value: 'sign-in'
+            }
+          ]" prepend-inner-icon="mdi-view-gallery" @change="setType">
+          </v-select>
+        </div>
+        <v-file-input id="upload_field" v-model="file" placeholder="Image" label="Image" prepend-inner-icon="mdi-paperclip" prepend-icon="" class=""></v-file-input>
+      </v-col>
+    </v-row>
+    <div v-else class='mt-2'>
+      <v-row class='mt-1'>
+        <v-col md="6">
           <background-item :file='src' source='empty' height='80vh'></background-item>
-        </a-col>
-        <a-col :xs='{span: 24}' :sm='{span: 24}' :md='{span: 12}' class='pa-1 pt-0'>
+        </v-col>
+        <v-col md="6">
           <p class='h3'>
             {{ $t('prev_ex') }}
           </p>
-          <a-skeleton />
-          <div>
-            <a-progress :percent='umUploadProgress'></a-progress>
+          <v-skeleton-loader />
+          <div class="my-3">
+            <v-progress-linear color="success" :value='umUploadProgress'></v-progress-linear>
           </div>
-          <a-button type='danger' @click='handleRemove'>
+          <v-btn color='error' small tile @click='handleRemove'>
             {{ $t('cancel') }}
-          </a-button>
-          <a-button type='primary' @click='handleUpload'>
+          </v-btn>
+          <v-btn color='primary' small tile @click='handleUpload'>
             {{ $t('upl_repl') }}
-          </a-button>
-        </a-col>
-      </a-row>
-    </a-card>
+          </v-btn>
+        </v-col>
+      </v-row>
+    </div>
   </div>
 </template>
 
@@ -85,6 +73,7 @@ export default {
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified'],
   data() {
     return {
+      file: null,
       headers: {
         authorization: this.$auth.strategy.token.get()
       },
@@ -103,26 +92,19 @@ export default {
       return process.env.API_URL + '/home-screen'
     }
   },
+  watch: {
+    file(v){
+      if (v){
+        this.getSrc(v)
+      }
+    }
+  },
   methods: {
     setType(t){
       this.type = t
     },
-    handleChange(info) {
-      const status = info.file.status
-      if (status !== 'uploading') {
-        console.log(info.file, info.fileList)
-      }
-      if (status === 'done') {
-        this.$message.success(`${info.file.name} ` + this.$t('upl_succ'))
-      } else if (status === 'error') {
-        this.$message.error(`${info.file.name} ` + this.$t('upl_fail'))
-      }
-    },
-    handleRemove(file) {
-      const index = this.fileList.indexOf(file)
-      const newFileList = this.fileList.slice()
-      newFileList.splice(index, 1)
-      this.fileList = newFileList
+    handleRemove() {
+      this.file = null
       this.src = ''
     },
     beforeUpload(file) {
@@ -131,11 +113,8 @@ export default {
       return false
     },
     handleUpload() {
-      const { fileList } = this
       const formData = new FormData()
-      fileList.forEach(file => {
-        formData.append('file', file)
-      })
+      formData.append('file', this.file)
       formData.append('type', this.type)
       this.uploading = true
       console.log('Type --->', this.type)
@@ -145,14 +124,14 @@ export default {
         }
       }).then(() => {
         this.fileList = []
-        this.$message.success(this.$t('upl_succ').toString())
+        this.$toast.success(this.$t('upl_succ').toString())
         setTimeout(() => {
           this.handleRemove()
           this.umUploadProgress = 0
         }, 1000)
 
       }).catch(() => {
-        this.$message.error(this.$t('upl_fail').toString())
+        this.$toast.error(this.$t('upl_fail').toString())
       }).finally(() => {
         this.uploading = false
       })

@@ -1,56 +1,59 @@
 <template>
 <div class='pa-6 mh-100v'>
-  <a-row class='mb-1'>
-    <a-col>
-      <a-breadcrumb>
-        <a-breadcrumb-item>
-          <nuxt-link :to="localePath('/view-mode')">Home</nuxt-link>
-        </a-breadcrumb-item>
-        <a-breadcrumb-item>
-          <nuxt-link :to="localePath('/pin')">PIN</nuxt-link>
-        </a-breadcrumb-item>
-        <a-breadcrumb-item>
-          Forgot my PIN
-        </a-breadcrumb-item>
-      </a-breadcrumb>
-    </a-col>
-  </a-row>
-  <a-row>
-    <a-col :xs='24'>
+  <v-row class='mb-1'>
+    <v-col md="12">
+      <v-breadcrumbs :items="[
+        {
+          text: 'Home',
+          to: localePath('/view-mode'),
+          disabled: false,
+        },
+           {
+          text: 'PIN',
+          to: localePath('/pin'),
+          disabled: false,
+        },
+          {
+          text: ' Forgot my PIN',
+          disabled: true,
+        },
+
+      ]"></v-breadcrumbs>
+    </v-col>
+  </v-row>
+  <v-row>
+    <v-col>
       <h1 class='mb-1'>
         Forgot my PIN
       </h1>
-    </a-col>
-    <a-col :xs='24' :sm='24' :md='12' :lg='8'>
-      <a-alert type='info' message='We will send you a verification code to your email to reset your PIN code.' :show-icon='true'></a-alert>
-      <a-form @submit.prevent>
-        <a-form-item>
-          <a-input v-model='email' placeholder='email' disabled></a-input>
-        </a-form-item>
-        <a-form-item>
-          <a-button type='primary' @click='sendEmail'>
-            <SpinOrText v-model='loading'>
-              Send me the email.
-            </SpinOrText>
-          </a-button>
-        </a-form-item>
-      </a-form>
-    </a-col>
-  </a-row>
+    </v-col>
+    <v-col md="12">
+      <v-alert type='info' dark>
+        We will send you a verification code to your email to reset your PIN code.
+      </v-alert>
+      <v-form ref="form" v-model="valid" @submit.prevent>
+        <v-text-field v-model='email' placeholder='email' disabled></v-text-field>
+        <v-btn color='primary' small tile :loading="loading" @click='sendEmail'>
+          Send me the email.
+        </v-btn>
+      </v-form>
+    </v-col>
+  </v-row>
   <RequestModal ref='rmodal'></RequestModal>
 </div>
 </template>
 
 <script>
-import SpinOrText from '~/components/SpinOrText'
 import RequestModal from '~/components/RequestModal'
+
 export default {
   name: 'ForgotPin',
-  components: { RequestModal, SpinOrText },
+  components: { RequestModal},
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified'],
   data () {
     return {
       loading: false,
+      valid: false,
     }
   },
   computed: {

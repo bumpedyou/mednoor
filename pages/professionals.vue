@@ -1,91 +1,105 @@
 <template>
-  <a-row class='pa-6 mh-100v'>
-    <a-col>
-      <div v-if='doctors && doctors.length' class='mb-1'>
-        <p class='h3 text-center'>
-          My Doctors
-        </p>
-        <div class='mb-1 my-doctors'>
-          <ProfessionalThumb v-for='(p, i) in doctors' :key='i' class='doctor' :user='p'></ProfessionalThumb>
-        </div>
-      </div>
-      <div class='mb-1'>
-        <v-row>
-          <v-col>
-            <p class='h2 text-center'>Find Doctors</p>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col  md="6" offset-md="3">
-            <a-form-item>
-              <a-input-search v-model='term' size='large' placeholder='Search by Professional Name' enter-button
-                              @search='search'>
-              </a-input-search>
-            </a-form-item>
-          </v-col>
-        </v-row>
-      </div>
-      <div>
-        <a-skeleton v-if='loadingResults'/>
-        <div v-else-if="results.length > 0">
-          <section v-for="(r, i) in results" :key="i" class="professional-bar">
-            <div>
-              <professional-thumb :user="r" :show-make-appointment="false"></professional-thumb>
-            </div>
-            <div>
-              <div class="w-100">
-                <h3>{{ r.user_last_name }}, {{ r.user_first_name }} {{ r.profe_credentials }}</h3>
-              </div>
-              <div v-if="r.addr_line1" class="w-100 mb-1">
-                <p>
-                  {{display_address(r)}}
-                </p>
-                <p>
-                  <v-chip
-                    v-if="r.category"
-                    color="primary"
-                  >
-                    {{ r.category }}
-                  </v-chip>
-                  <v-chip
-                    v-if="r.specialty"
-                    color="success"
-                  >
-                    {{ r.specialty }}
-                  </v-chip>
-                  <v-divider vertical></v-divider>
-                </p>
-              </div>
-              <div class="flex-line">
-                <add-my-doctors :uuid="r.uuid" class="mr-1"></add-my-doctors>
-                <MakeAppointment :user="r" :super-small="false" button></MakeAppointment>
-              </div>
-
-            </div>
-          </section>
-        </div>
-        <div v-else>
-          <p class="text-center">
-            {{ $t('no_data_av') }}
+  <div class='pa-6 mh-100v'>
+    <v-row>
+      <v-col>
+        <div v-if='doctors && doctors.length' class='mb-1'>
+          <p class='h3 text-center'>
+            My Doctors
           </p>
+          <div class='mb-1 my-doctors'>
+            <ProfessionalThumb v-for='(p, i) in doctors' :key='i' class='doctor' :user='p'></ProfessionalThumb>
+          </div>
         </div>
-      </div>
-    </a-col>
-    <a-col>
-      <RequestModal ref='rmodal'></RequestModal>
-    </a-col>
-    <a-col>
-      <a-modal
-        :title="$t('conf_action')"
-        :visible='visible'
-        :confirm-loading='confirmLoading'
-        @ok='handleOk'
-        @cancel='handleCancel'
-      >
-        <p>{{ $t('conf_send_ch') }}</p>
-      </a-modal>
-    </a-col>
-  </a-row>
+        <div class='mb-1'>
+          <v-row>
+            <v-col md="12">
+              <p class='h2 text-center'>Find Doctors</p>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col  md="6" offset-md="3" lg="6" offset-lg="3">
+              <div class="flex-center">
+                <v-text-field v-model="term" type="search" placeholder="Search by professional name" @keyup.enter="search"></v-text-field>
+                <v-btn small tile color="primary" @click="search"><v-icon>mdi-magnify</v-icon></v-btn>
+              </div>
+            </v-col>
+          </v-row>
+        </div>
+        <v-row>
+          <v-col md="12">
+            <v-skeleton-loader v-if='loadingResults'/>
+            <div v-else-if="results.length > 0">
+              <section v-for="(r, i) in results" :key="i" class="professional-bar">
+                <div>
+                  <professional-thumb :user="r" :show-make-appointment="false"></professional-thumb>
+                </div>
+                <div>
+                  <div class="w-100">
+                    <h3>{{ r.user_last_name }}, {{ r.user_first_name }} {{ r.profe_credentials }}</h3>
+                  </div>
+                  <div v-if="r.addr_line1" class="w-100 mb-1">
+                    <p>
+                      {{display_address(r)}}
+                    </p>
+                    <p>
+                      <v-chip
+                        v-if="r.category"
+                        color="primary"
+                      >
+                        {{ r.category }}
+                      </v-chip>
+                      <v-chip
+                        v-if="r.specialty"
+                        color="success"
+                      >
+                        {{ r.specialty }}
+                      </v-chip>
+                      <v-divider vertical></v-divider>
+                    </p>
+                  </div>
+                  <div class="flex-line">
+                    <add-my-doctors :uuid="r.uuid" class="mr-1"></add-my-doctors>
+                    <MakeAppointment :user="r" :super-small="false" button></MakeAppointment>
+                  </div>
+
+                </div>
+              </section>
+            </div>
+            <div v-else>
+              <p class="text-center">
+                {{ $t('no_data_av') }}
+              </p>
+            </div>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <RequestModal ref='rmodal'></RequestModal>
+      </v-col>
+      <v-col>
+        <v-dialog
+          v-model='visible'
+          max-width="320px"
+          persistent
+        >
+          <v-card>
+            <v-card-title>
+              $t('conf_action')
+            </v-card-title>
+            <v-card-text>
+              <p>{{ $t('conf_send_ch') }}</p>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color="error" small tile :disabled="confirmLoading" @click="handleCancel">Cancel</v-btn>
+              <v-btn color="primary" small tile :loading="confirmLoading" @click="handleOk">Ok</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script>

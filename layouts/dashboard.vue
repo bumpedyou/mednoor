@@ -1,8 +1,8 @@
 <template>
     <v-app>
         <Navbar></Navbar>
-        <div :class="sidebarClassess">
-            <div class="sidebar">
+        <v-container :class="sidebarClassess">
+            <div class="sidebar custom-scrollbar">
                 <div class="indicators">
                     <v-icon class="close" color="white" @click="close">mdi-chevron-left</v-icon>
                     <v-icon  class="open" color="white" @click="open">mdi-chevron-right</v-icon>
@@ -14,7 +14,7 @@
             <div class="content">
                 <nuxt/>
             </div>
-        </div>
+        </v-container>
     </v-app>
 </template>
 <script>
@@ -66,7 +66,7 @@ export default {
         left: 0
         top: 50px
         bottom: 0
-        width: 40px
+        width: 60px
         overflow-y: auto
         display: none
         ul
@@ -130,6 +130,6 @@ export default {
         .sidebar
             display: block
         .content
-            left: 40px
+            left: 60px
 
 </style>

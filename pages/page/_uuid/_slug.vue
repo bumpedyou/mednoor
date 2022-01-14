@@ -1,50 +1,54 @@
 <template>
-  <div class='pa-6 mh-100v bg-eee'>
-    <a-row>
-      <a-col :xs='24' :md='{span: 16, offset: 4}' class="content">
-        <a-skeleton v-if='loading' />
-        <div v-else-if='not_found'>
-          <p class='h1 text-center'>
-            {{ $t('not_found') }}
-          </p>
-          <p class='text-center'>
-            {{ $t('post_nf_del') }}
-          </p>
-          <p class='text-center'>
-            <nuxt-link :to='localePath("/")'>
-              {{ $t('home') }}
-            </nuxt-link>
-          </p>
-        </div>
-        <div v-else>
-          <main>
-            <h1 class='ml-0 pl-0'>{{ data.page_title }}</h1>
-            <p class='mb-0 d-flex text-muted mt-1 mb-1'>
-              <span class='mr-auto d-flex'>{{ $t('pub_date') }}: {{ dateStringDate(data.page_createdAt) }}</span>
-              <span v-if='data.page_createdAt !== data.page_updated_at' class='ml-auto d-flex'>{{ $t('last_pdate') }}: {{ dateStringDate(data.page_updated_at) }}</span>
-            </p>
-            <hr class="mb-1">
-            <!-- eslint-disable vue/no-v-html -->
-            <pre v-html='data.page_content'></pre>
-            <!--eslint-enable-->
-            <p class='text-muted'>
-              {{ $t('share') }}
-            </p>
-            <div class='share-links'>
-              <a :href='shareTwitter' target='_blank'>
-                <a-icon type='twitter' />
-              </a>
-              <a :href='shareFb' target='_blank'>
-                <a-icon type='facebook' />
-              </a>
-              <a :href='shareLd' target='_blank'>
-                <a-icon type='linkedin' />
-              </a>
+  <div class='mh-100v'>
+    <v-row>
+      <v-col md="8" offset-md="2">
+        <v-card elevation="6">
+          <v-card-text>
+            <v-skeleton-loader v-if='loading' />
+            <div v-else-if='not_found'>
+              <p class='h1 text-center'>
+                {{ $t('not_found') }}
+              </p>
+              <p class='text-center'>
+                {{ $t('post_nf_del') }}
+              </p>
+              <p class='text-center'>
+                <nuxt-link :to='localePath("/")'>
+                  {{ $t('home') }}
+                </nuxt-link>
+              </p>
             </div>
-          </main>
-        </div>
-      </a-col>
-    </a-row>
+            <div v-else>
+              <main>
+                <h1 class='ml-0 pl-0'>{{ data.page_title }}</h1>
+                <p class='mb-0 d-flex text-muted mt-1 mb-1'>
+                  <span class='mr-auto d-flex'>{{ $t('pub_date') }}: {{ dateStringDate(data.page_createdAt) }}</span>
+                  <span v-if='data.page_createdAt !== data.page_updated_at' class='ml-auto d-flex'>{{ $t('last_pdate') }}: {{ dateStringDate(data.page_updated_at) }}</span>
+                </p>
+                <hr class="mb-1">
+                <!-- eslint-disable vue/no-v-html -->
+                <pre v-html='data.page_content'></pre>
+                <!--eslint-enable-->
+                <p class='text-muted'>
+                  {{ $t('share') }}
+                </p>
+                <div class='share-links'>
+                  <a :href='shareTwitter' target='_blank'>
+                    <v-icon>mdi-twitter</v-icon>
+                  </a>
+                  <a :href='shareFb' target='_blank'>
+                    <v-icon>mdi-facebook</v-icon>
+                  </a>
+                  <a :href='shareLd' target='_blank'>
+                    <v-icon>mdi-linkedin</v-icon>
+                  </a>
+                </div>
+              </main>
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
   </div>
 </template>
 <script>

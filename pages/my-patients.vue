@@ -1,26 +1,35 @@
 <template>
   <div class='pa-6 mh-100v'>
-    <a-row>
-      <a-col :xs='24' :lg='24'>
+    <v-row>
+      <v-col md="12">
         <p class='h4 mb-1'>
           {{ $t('my_patients') }}
         </p>
-      </a-col>
-    </a-row>
-    <a-row>
-      <a-col>
-        <a-table :columns='columns' :data-source='items'>
-          <div slot="full_name" slot-scope="text, record">
-            <nuxt-link :to="localePath('/user/' + record.user_uuid)">
-              {{record.full_name}}
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-data-table :items="items" :headers="[
+          {
+            text: 'Patient\'s name',
+            value: 'full_name',
+          },
+          {
+            text: 'Actions',
+            value: 'actions'
+          }
+        ]">
+          <template #[`item.full_name`] = "{item}">
+            <nuxt-link :to="localePath('/user/' + item.user_uuid)">
+              {{item.full_name}}
             </nuxt-link>
-          </div>
-          <div slot='actions' slot-scope='text, record'>
-            <nuxt-link :to="{path: localePath('/new-emr'), query: {mere: record.mere_uuid}}">{{ $t('emr') }}</nuxt-link>
-          </div>
-        </a-table>
-      </a-col>
-    </a-row>
+          </template>
+          <template #[`item.actions`]="{item}" >
+            <nuxt-link :to="{path: localePath('/new-emr'), query: {mere: item.mere_uuid}}">{{ $t('emr') }}</nuxt-link>
+          </template>
+        </v-data-table>
+      </v-col>
+    </v-row>
   </div>
 </template>
 <script>

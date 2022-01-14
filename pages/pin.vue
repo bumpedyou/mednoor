@@ -1,38 +1,43 @@
 <template>
-<div class='pa-6 mh-100v'>
-  <a-row class='mb-1'>
-    <a-col>
-      <a-breadcrumb>
-        <a-breadcrumb-item>
-          <nuxt-link :to="localePath('/view-mode')">Home</nuxt-link>
-        </a-breadcrumb-item>
-        <a-breadcrumb-item>
-          <nuxt-link :to="localePath('/pin')">PIN</nuxt-link>
-        </a-breadcrumb-item>
-      </a-breadcrumb>
-    </a-col>
-  </a-row>
-  <a-row v-if='loadingMyRecord'>
-    <a-col>
-      <a-skeleton></a-skeleton>
-    </a-col>
-  </a-row>
-  <a-row v-else-if='has_record'>
-    <a-col :xs='24' :sm='24'>
+<div class='mh-100v'>
+  <v-row>
+    <v-col>
+      <v-breadcrumbs :items="[
+        {
+          text: 'Home',
+          to: localePath('/view-mode'),
+          disabled: false,
+        },
+        {
+          text: 'PIN',
+          to: localePath('/pin'),
+          disabled: true,
+        }
+      ]"></v-breadcrumbs>
+    </v-col>
+  </v-row>
+  <v-row v-if='loadingMyRecord'>
+    <v-col>
+      <v-skeleton-loader></v-skeleton-loader>
+    </v-col>
+  </v-row>
+  <v-row v-else-if='has_record'>
+    <v-col md="12">
       <p class='h4 mb-1'>
         PIN
       </p>
-      <a-form-item label='PIN'>
+      <div>
+        <label class='d-block'>PIN</label>
         <PincodeInput v-model='pin' placeholder="0" :length="6"></PincodeInput>
-      </a-form-item>
+      </div>
       <small class="d-flex mb-1">
         <nuxt-link :to='localePath("/forgot-pin")'>Forgot My PIN</nuxt-link>
       </small>
       <v-btn tile small color="primary" :loading="loading" @click="enter">
         Enter
       </v-btn>
-    </a-col>
-  </a-row>
+    </v-col>
+  </v-row>
   <RequestModal ref='rmodal'></RequestModal>
 </div>
 </template>

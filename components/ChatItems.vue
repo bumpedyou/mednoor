@@ -20,15 +20,13 @@
               {{m.profe_credentials}}
             </span>
             <div v-if="isModerator && !m.mypr_allowed" class="ml-1">
-              <a-icon type="alert" style='color: tomato;'></a-icon>
+              <v-icon color="tomato">mdi-alert</v-icon>
             </div>
             <div v-if="m.messages">
-              <a-badge :count="m.messages" class="ml-1" :number-style="{
-                    backgroundColor: 'tomato',
-                    color: '#fff',
-                    boxShadow: '0 0 0 1px #eee inset',
-                    }"
-              />
+              <v-badge
+                :content="m.messages"
+                color="tomato"
+              ></v-badge>
             </div>
           </div>
 

@@ -1,50 +1,54 @@
 <template>
 <div class='pa-6 mh-100v'>
-  <a-row class='mb-1'>
-    <a-col>
-      <a-breadcrumb>
-        <a-breadcrumb-item>
-          <nuxt-link :to="localePath('/forgot-pin')">Forgot MY PIN</nuxt-link>
-        </a-breadcrumb-item>
-        <a-breadcrumb-item>
-          <nuxt-link :to="localePath('/reset-pin')">Verification code</nuxt-link>
-        </a-breadcrumb-item>
-        <a-breadcrumb-item>
-          Set new PIN
-        </a-breadcrumb-item>
-      </a-breadcrumb>
-    </a-col>
-  </a-row>
-  <a-row>
-    <a-col :xs='24' :sm='24' :md='12' :lg='8'>
+  <v-row class='mb-1'>
+    <v-col>
+      <v-breadcrumbs :items="[
+        {
+          text: 'Forgot MY PIN',
+          to: localePath('/forgot-pin'),
+          disabled: false,
+        },
+           {
+          text: 'Verification code',
+          to: localePath('/reset-pin'),
+          disabled: false,
+        },
+        {
+          text: 'Set new PIN',
+          disabled: true,
+        }
+      ]"></v-breadcrumbs>
+    </v-col>
+  </v-row>
+  <v-row>
+    <v-col>
       <p class='h1'>
         Set your new PIN
       </p>
-      <a-form-item label='PIN'>
+      <div class="mb-3">
+        <label class='d-block'>New PIN</label>
         <PincodeInput v-model='new_pin' placeholder="0" :length="6"></PincodeInput>
-      </a-form-item>
-      <a-form-item label='PIN'>
+      </div>
+      <div class="mb-6">
+        <label class='d-block'>Verify your new PIN</label>
         <PincodeInput v-model='verify_new_pin' placeholder="0" :length="6"></PincodeInput>
-      </a-form-item>
-      <a-button :disabled='!enabled' type='primary' @click='setNewPin'>
-        <SpinOrText v-model='loading'>
-          Set my new PIN
-        </SpinOrText>
-      </a-button>
-    </a-col>
-  </a-row>
+      </div>
+      <v-btn small tile :disabled='!enabled' color='primary' :loading="loading" @click='setNewPin'>
+        Set my new PIN
+      </v-btn>
+    </v-col>
+  </v-row>
   <RequestModal ref='rmodal'></RequestModal>
 </div>
 </template>
 
 <script>
 import {mapMutations} from 'vuex'
-import SpinOrText from '~/components/SpinOrText'
 import RequestModal from '~/components/RequestModal'
 
 export default {
   name: 'SetNewPin',
-  components: { RequestModal, SpinOrText },
+  components: { RequestModal},
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified'],
   data: () =>({
     new_pin: '',

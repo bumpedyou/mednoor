@@ -1,40 +1,52 @@
 <template>
-  <a-row class="pa-6 mh-100v">
-    <a-col>
-      <p class='h4 mb-1'>
-        Chat Queue
-      </p>
-      <a-table :columns='columns' :data-source='items'>
-        <div slot='user_name' slot-scope='text, record'>
-          <nuxt-link :to="localePath('/user/' + record.user_uuid)">{{ record.user_first_name }} {{ record.user_last_name }}</nuxt-link>
-        </div>
-        <div slot='mypr_date' slot-scope='text'>
-          {{dateString(text)}}
-        </div>
-        <div slot='actions' slot-scope='text, record'>
-          <a href='javascript:void(0)' @click='aksAccept(record.mypr_id)'>{{$t('yes')}}</a>
-          <a-divider type='vertical' />
-          {{$t('no')}}
-        </div>
-      </a-table>
-    </a-col>
-    <RequestDialog ref='rmodal'></RequestDialog>
-    <a-modal v-model='visible' title='Accept chat request' ok-text='Accept chat request' :confirm-loading='loadingModal' :cancel-text="$t('cancel')"  @ok='allowChat'>
-      <p>
-        {{$t('chat_ask_allow')}}
-      </p>
-    </a-modal>
-  </a-row>
+  <div class="mh-100v">
+    <v-row>
+      <v-col>
+        <p class='h4 mb-1'>
+          Chat Queue
+        </p>
+        <v-data-table :items="items" :headers="[{
+          text: 'User Name',
+          value: 'user_first_name',
+        }, {
+          text: 'Date Requested',
+          value: 'mypr_date',
+        },
+        {
+          text: 'Accept',
+          value: 'actions',
+        }]">
+          <template #[`item.user_first_name`] = "{item}">
+            <nuxt-link :to="localePath('/user/' + item.user_uuid)">{{ item.user_first_name }} {{ item.user_last_name }}</nuxt-link>
+          </template>
+          <template #[`item.mypr_date`] = "{value}">
+            {{dateString(value)}}
+          </template>
+          <template #[`item.actions`] = "{item}">
+            <a href='javascript:void(0)' @click='aksAccept(item.mypr_id)'>{{$t('yes')}}</a>
+            <MedDivider></MedDivider>
+            {{$t('no')}}
+          </template>
+        </v-data-table>
+      </v-col>
+      <RequestDialog ref='rmodal'></RequestDialog>
+      <ConfirmDialog v-model="visible" :description="$t('chat_ask_allow')" :loading="loadingModal" title="Accept chat request" @accept="allowChat" @cancel="visible = false"></ConfirmDialog>
+    </v-row>
+  </div>
 </template>
 
 <script>
 import RequestDialog from '~/components/RequestModal'
 import dateMixin from '~/mixins/dateMixin'
 import authMixin from '~/mixins/authMixin'
+import MedDivider from "~/components/MedDivider";
+import ConfirmDialog from "~/components/ConfirmDialog";
 
 export default {
   name: 'ChatRequests',
   components: {
+    ConfirmDialog,
+    MedDivider,
     RequestDialog
   },
   mixins: [dateMixin, authMixin],

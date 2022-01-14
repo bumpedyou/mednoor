@@ -1,9 +1,11 @@
 <template>
-  <a-row class='mh-100v'>
-    <a-col>
-      <p class='h1 text-center'>{{$t('usr_del')}}</p>
-    </a-col>
-  </a-row>
+  <div class='mh-100v'>
+    <v-row >
+      <v-col>
+        <p class='h1 text-center'>{{$t('usr_del')}}</p>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script>

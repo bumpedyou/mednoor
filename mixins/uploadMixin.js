@@ -70,26 +70,27 @@ export default {
         }
       }
     },
-    getSrc(file){
+    getSrc(file) {
       if (process.browser) {
         const reader = new FileReader()
         reader.onload = (e) => {
           this.src = e.target.result
         }
+        console.log('Reader --->', file)
         reader.readAsDataURL(file)
       }
     },
-    getSrcInfo(info){
-      if (info && info.file && info.file.originFileObj){
-        this.getBase64(info.file.originFileObj, imageUrl => {
-          this.src = imageUrl;
-        });
+    getSrcInfo(info) {
+      if (info && info.file && info.file.originFileObj) {
+        this.getBase64(info.file.originFileObj, (imageUrl) => {
+          this.src = imageUrl
+        })
       }
     },
     getBase64(img, callback) {
-      const reader = new FileReader();
-      reader.addEventListener('load', () => callback(reader.result));
-      reader.readAsDataURL(img);
+      const reader = new FileReader()
+      reader.addEventListener('load', () => callback(reader.result))
+      reader.readAsDataURL(img)
     },
   },
 }

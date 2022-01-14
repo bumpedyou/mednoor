@@ -1,42 +1,54 @@
 <template>
 <div class="pa-6 mh-100v">
-  <a-row>
-    <a-col>
+  <v-row>
+    <v-col md="12">
       <p class="h1">
         Change my PIN
       </p>
-    </a-col>
-    <a-col>
-      <a-form-item label="Current PIN">
+    </v-col>
+    <v-col md="12">
+      <div>
+        <!--Current PIN-->
+        <label class="d-block">
+          Enter your PIN
+        </label>
         <PincodeInput v-show='current_enabled' v-model='current_pin' placeholder="0" :length="6"></PincodeInput>
-        <a-alert v-if='!current_enabled' type='info' :show-icon='true' message="You do not have a PIN."></a-alert>
-      </a-form-item>
-      <hr>
-      <a-form-item label='New PIN'>
+        <v-alert v-if='!current_enabled' color='info'>
+          <v-icon class="mr-1">mdi-information</v-icon>
+          You do not have a PIN.
+        </v-alert>
+      </div>
+      <hr class="my-3">
+      <div>
+        <!--New PIN-->
+        <label class="d-block">
+          New PIN
+        </label>
         <PincodeInput v-model='new_pin' placeholder="0" :length="6"></PincodeInput>
-      </a-form-item>
-      <a-form-item label='Confirm your new pin'>
+      </div>
+      <div>
+        <!--Confirm your new pin-->
+        <label class="d-block">
+          Confirm your new PIN
+        </label>
         <PincodeInput v-model='verify_new_pin' placeholder="0" :length="6"></PincodeInput>
-      </a-form-item>
-    </a-col>
-    <a-col>
-      <a-button :disabled='!enabled' type='primary' @click='resetPIN'>
-        <SpinOrText v-model='loading'>
-          Set my new PIN
-        </SpinOrText>
-      </a-button>
-    </a-col>
-  </a-row>
+      </div>
+    </v-col>
+    <v-col>
+      <v-btn :disabled='!enabled' color='primary' :loading="loading" small tile @click='resetPIN'>
+        Set my new PIN
+      </v-btn>
+    </v-col>
+  </v-row>
   <RequestModal ref='rmodal'></RequestModal>
 </div>
 </template>
 
 <script>
-import SpinOrText from '~/components/SpinOrText'
 import RequestModal from '~/components/RequestModal'
 export default {
   name: 'ChangeMyPin',
-  components: { RequestModal, SpinOrText },
+  components: { RequestModal },
   middleware: ['authenticated', 'not-blocked', 'verified', 'not-deleted', 'pin-set', 'view-set'],
   data: ()=>({
     current_pin: '',

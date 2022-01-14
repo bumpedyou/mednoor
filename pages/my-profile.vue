@@ -5,7 +5,7 @@
       <v-skeleton-loader></v-skeleton-loader>
     </v-col>
   </v-row>
-  <a-row v-else class="pa-6">
+  <v-row v-else class="pa-6">
     <v-col :xs="24" :sm="24">
       <div>
         <p class="h4 mb-1"  style="display: flex; align-items: center">
@@ -15,10 +15,22 @@
       </span></p>
       </div>
       <div>
-        <a-tabs v-if='showTabs' :default-active-key="tab.toString()">
-          <a-tab-pane key='1' tab='Profile Picture'>
+        <v-tabs v-model="tab">
+          <v-tab>Profile picture</v-tab>
+          <v-tab>Personal Information</v-tab>
+          <v-tab>Security</v-tab>
+          <v-tab v-if="isProfessional">Professional Information</v-tab>
+        </v-tabs>
+        <v-tabs-items v-model="tab">
+          <v-tab-item>
             <div class='profile-upload'>
               <div v-if='showUploadPicture' class='upload-box'>
+                <label for="file" class='upload-mini-box my-3'>
+                  <img v-if="src" :src='src' alt="preview">
+                  <v-icon v-else>mdi-plus</v-icon>
+                </label>
+                <input id="file" type="file" class="d-none" @change="fileChanged">
+                <!--
                 <a-upload
                   name="avatar"
                   list-type="picture-card"
@@ -29,33 +41,33 @@
                 >
                   <img v-if="src && !loadingUpload" :src="src" alt="avatar" />
                   <div v-else>
-                    <a-icon :type="loadingUpload ? 'loading' : 'plus'" />
+                    <v-progress-circular v-if="loadingUpload"></v-progress-circular>
+                    <v-icon v-else>mdi-plus</v-icon>
                     <div class="ant-upload-text">
                       Upload
                     </div>
                   </div>
                 </a-upload>
+                -->
                 <div class='buttons'>
-                  <a-button v-if='src && src.length' block type='primary' @click='uploadPicture'>
-                    <SpinOrText v-model='loadingUpload'>
-                      Save
-                    </SpinOrText>
-                  </a-button>
-                  <a-button block type='danger' @click='cancelUpload' >Cancel</a-button>
+                  <v-btn v-if='src && src.length' small tile block color='primary' :loading="loadingUpload" @click='uploadPicture'>
+                    Save
+                  </v-btn>
+                  <v-btn small tile block color='error' @click='cancelUpload'>Cancel</v-btn>
                 </div>
               </div>
               <div v-else >
                 <div>
                   <ProfilePicture :full-name='name' :picture='picture'>
                     <div class='profile-overlay' @click='showUploadPicture = true'>
-                      <a-icon type='upload'></a-icon>
+                      <v-icon dark>mdi-upload</v-icon>
                     </div>
                   </ProfilePicture>
                 </div>
               </div>
             </div>
-          </a-tab-pane>
-          <a-tab-pane key="2" tab="Personal Information">
+          </v-tab-item>
+          <v-tab-item>
             <v-row v-if="!$auth.user.has_phone">
               <v-col>
                 <v-alert type="warning">Please add your phone number</v-alert>
@@ -100,9 +112,10 @@
                 </v-col>
               </v-row>
             </v-form>
-          </a-tab-pane>
-          <a-tab-pane key="3" tab="Security" force-render>
-            <a-form-item>
+          </v-tab-item>
+          <v-tab-item>
+            <div>
+
               <p class="h4">
                 {{$t('pwd_reset')}}
               </p>
@@ -111,9 +124,9 @@
                   {{$t('change_pwd')}}
                 </nuxt-link>
               </div>
-            </a-form-item>
-            <hr>
-            <a-form-item v-if="isModerator">
+              <hr class="my-1">
+            </div>
+            <div v-if="isModerator">
               <p class="h4">
                 PIN
               </p>
@@ -122,11 +135,14 @@
                   Change my PIN
                 </nuxt-link>
               </div>
-            </a-form-item>
-          </a-tab-pane>
-          <a-tab-pane v-if="isProfessional" key="4" tab="Professional Information" force-render>
-            <div v-if='!isComplete'>
-              <a-alert message='Please complete your profile information' :show-icon='true' type='warning' :banner='true'></a-alert>
+            </div>
+          </v-tab-item>
+          <v-tab-item v-if="isProfessional">
+            <div v-if='!isComplete' class="mt-3">
+              <v-alert color="warning" dark>
+                <v-icon>mdi-alert</v-icon>
+                Please complete your profile information
+              </v-alert>
             </div>
             <v-form ref="profForm" v-model="validProfForm" @submit.prevent='saveProfessional'>
               <v-row>
@@ -163,26 +179,21 @@
                 Practice Address
               </p>
               <UserAddress ref="profAddr"></UserAddress>
-              <a-form-item>
-                <a-button type="primary" html-type='submit'>
-                  <SpinOrText v-model='loadingSaveP'>
-                    {{$t('save_changes')}}
-                  </SpinOrText>
-                </a-button>
-              </a-form-item>
+              <v-btn color="primary" small tile type='submit' :loading="loadingSaveP">
+                {{$t('save_changes')}}
+              </v-btn>
             </v-form>
-          </a-tab-pane>
-        </a-tabs>
+          </v-tab-item>
+        </v-tabs-items>
       </div>
     </v-col>
-  </a-row>
+  </v-row>
   <request-modal ref='rmodal'></request-modal>
 </div>
 </template>
 
 <script>
 import userRoleMixin from "~/mixins/userRoleMixin";
-import SpinOrText from '~/components/SpinOrText.vue'
 import inputMixin from '~/mixins/inputMixin'
 import authMixin from '~/mixins/authMixin'
 import RequestModal from '~/components/RequestModal'
@@ -196,7 +207,6 @@ export default {
   components: {
     UserAddress,
     ProfilePicture,
-    SpinOrText,
     RequestModal,
   },
   mixins: [userRoleMixin, inputMixin, authMixin, uploadMixin, addressMixin],
@@ -207,10 +217,8 @@ export default {
       validProfForm: false,
       picture: '',
       file: null,
-      showTabs: true,
       isComplete: false,
-      tab: 1,
-      form: this.$form.createForm(this, { name: 'user-data-form' }),
+      tab: 0,
       profForm: null,
       loading: false,
       category: null,
@@ -294,13 +302,7 @@ export default {
 
           if (!this.$auth.user.has_phone){
             console.log('Dont have a phone no')
-            this.showTabs = false
-            this.tab = '2'
-            setTimeout(() =>{
-              this.$nextTick(()=>{
-                this.showTabs = true
-              })
-            }, 200)
+            this.tab = 1
           }
         }
       })
@@ -316,6 +318,16 @@ export default {
     })
   },
   methods: {
+    fileChanged(e){
+      const files = e.srcElement.files
+      if (files && files.length > 0) {
+        this.file = files[0]
+        this.getSrc(this.file)
+      } else {
+        this.file = null
+        this.src = null
+      }
+    },
     uploadPicture(){
       this.loadingUpload = true
       const data = new FormData()
@@ -338,6 +350,7 @@ export default {
     cancelUpload(){
       if (!this.loadingUpload){
         this.src = ''
+        this.file = null
         this.showUploadPicture = false
       }
     },
@@ -361,14 +374,14 @@ export default {
         }
       }).then(() => {
         this.fileList = []
-        this.$message.success(this.$t('upl_succ').toString())
+        this.$toast.success(this.$t('upl_succ').toString())
         setTimeout(() => {
           this.handleRemove()
           this.umUploadProgress = 0
         }, 1000)
 
       }).catch(() => {
-        this.$message.error(this.$t('upl_fail').toString())
+        this.$toast.error(this.$t('upl_fail').toString())
       }).finally(() => {
         this.loadingUpload = false
       })
@@ -376,11 +389,11 @@ export default {
     beforeUpload(file) {
       const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
       if (!isJpgOrPng) {
-        this.$message.error('You can only upload JPG file!');
+        this.$toast.error('You can only upload JPG file!');
       }
       const isLt2M = file.size / 1024 / 1024 < 6;
       if (!isLt2M) {
-        this.$message.error('Image must smaller than 6MB!');
+        this.$toast.error('Image must smaller than 6MB!');
       }
       return isJpgOrPng && isLt2M;
     },
@@ -389,16 +402,12 @@ export default {
         if (data){
           this.isProfessional = this.isModerator
           this.category = data.profe_cate_id
-          this.isComplete = data.profe_specialty && data.profe_practice_name && data.profe_medical_license && data.profe_license_state && data.profe_credentials
+
+          this.isComplete = !!data.profe_spec_id && !!data.profe_practice_name && !!data.profe_medical_license && !!data.profe_license_state && !!data.profe_credentials
+
 
           if (!this.isComplete) {
-            this.showTabs = false
-            this.tab = 4
-            setTimeout(() =>{
-              this.$nextTick(()=>{
-                this.showTabs = true
-              })
-            }, 100)
+            this.tab = 3
           }
 
 
@@ -535,4 +544,17 @@ export default {
   .avatar-uploader.ant-upload-picture-card-wrapper
     img
       max-width: 120px !important
+
+  .upload-mini-box
+    width: 100px
+    height: 100px
+    border: 1px dashed #ccc
+    display: flex
+    justify-content: center
+    align-items: center
+    img
+      max-width: 100%
+      max-height: 100%
+    &:hover
+      cursor: pointer
 </style>

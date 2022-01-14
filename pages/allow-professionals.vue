@@ -1,24 +1,40 @@
 <template>
-<a-row>
-  <a-col>
-    <h1>{{$t('allo_usrs')}}</h1>
-    <p>{{$t('all_des')}}</p>
-    <a-table :columns='columns' :data-source='items'>
-            <span slot="professional" slot-scope="text, record">
-              {{ record.fn1 }} {{ record.ln1 }}
-            </span>
-      <span slot="user" slot-scope="text, record">
-              {{ record.fn2 }} {{ record.ln2 }}
-            </span>
-      <span slot="action" slot-scope="text, record">
-              <!--<span slot="action">-->
-                <span v-if="record.mypr_allowed">{{$t('all_urs_is')}}</span>
-                <a v-else @click='allow(record.mypr_id)'>{{$t('allo_usr')}}</a>
-              </span>
-    </a-table>
-  </a-col>
-  <RequestModal ref='rmodal'></RequestModal>
-</a-row>
+  <div>
+    <v-row>
+      <v-col>
+        <h1>{{$t('allo_usrs')}}</h1>
+        <p>{{$t('all_des')}}</p>
+        <v-data-table :headers="[{
+        text: 'Professional',
+        value: 'fn1',
+        sortable: false,
+      },
+      {
+        text: 'User',
+        value: 'user',
+        sortable: false,
+      },
+      {
+        text: 'Actions',
+        value: 'actions',
+        sortable: false,
+      }
+    ]" :items="items">
+          <template #[`item.fn1`] = "{item}">
+            {{item.fn1}} {{item.ln1}}
+          </template>
+          <template #[`item.user`] = "{item}">
+            {{item.fn2}} {{item.ln2}}
+          </template>
+          <template #[`item.actions`] = "{item}">
+            <span v-if="item.mypr_allowed">{{$t('all_urs_is')}}</span>
+            <a v-else @click='allow(item.mypr_id)'>{{$t('allo_usr')}}</a>
+          </template>
+        </v-data-table>
+      </v-col>
+      <RequestModal ref='rmodal'></RequestModal>
+    </v-row>
+  </div>
 </template>
 
 <script>
@@ -33,27 +49,6 @@ export default {
   data () {
     return {
       items: [],
-      columns: [
-        {
-          title: this.$t('professional'),
-          dataIndex: 'fn1',
-          key: 'fn1',
-          slots: {title: this.$t('professional')},
-          scopedSlots: {customRender: 'professional'}
-        },
-        {
-          title: this.$t('usr'),
-          dataIndex: 'fn2',
-          key: 'fn2',
-          slots: {title: this.$t('usr')},
-          scopedSlots: {customRender: 'user'}
-        },
-        {
-          title: this.$t('action'),
-          key: 'action',
-          scopedSlots: {customRender: 'action'}
-        }
-      ],
     }
   },
   head() {

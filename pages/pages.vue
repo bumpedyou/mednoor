@@ -1,37 +1,71 @@
 <template>
   <div class='pa-6 mh-100v'>
-    <a-row class='mb-1'>
-      <a-col>
-        <a-breadcrumb>
-          <a-breadcrumb-item>
-            <nuxt-link :to="localePath('/dashboard')">{{ $t('dashboard') }}</nuxt-link>
-          </a-breadcrumb-item>
-          <a-breadcrumb-item>{{ $t('pages') }}</a-breadcrumb-item>
-        </a-breadcrumb>
-      </a-col>
-    </a-row>
-    <a-row>
-      <a-col :xs='24'>
+    <v-row class='mb-1'>
+      <v-col>
+        <v-breadcrumbs :items="[
+          {
+            text: $t('dashboard'),
+            to: localePath('/dashboard'),
+            disabled: false,
+          },
+          {
+            text: $t('pages'),
+            disabled: true,
+          }
+        ]"></v-breadcrumbs>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
         <p class='h4 mb-1'>{{ $t('Pages') }}</p>
-        <a-button type='raisin-black' @click="$router.push(localePath('/new-page'))">{{ $t('new_page') }}</a-button>
-        <a-skeleton v-if='loading' />
-        <a-table v-else :columns='columns' :data-source='items'>
-          <div slot='page_actions' slot-scope='text, record'>
-            <nuxt-link :to="{path: localePath('/new-page'), query: {page: record.page_uuid}}">{{ $t('update') }}</nuxt-link>
-            <a-divider type='vertical' />
-            <span class='red--text clickable' @click='deleteItem(record.page_uuid)'>{{ $t('delete') }}</span>
-          </div>
-        </a-table>
-      </a-col>
-    </a-row>
+        <v-btn dark small tile @click="$router.push(localePath('/new-page'))">{{ $t('new_page') }}</v-btn>
+        <v-skeleton-loader v-if='loading' />
+        <v-data-table v-else :items="items" :headers="[
+          {
+            text: 'Title',
+            value: 'page_title',
+            sortable: false,
+          },
+          {
+            text: 'Slug',
+            value: 'page_slug',
+            sortable: false,
+          },
+          {
+            text: 'Keywords',
+            value: 'page_keywords',
+            sortable: false,
+          },
+          {
+            text: 'Actions',
+            value: 'page_actions',
+            sortable: false,
+          }
+        ]">
+          <template #[`item.page_actions`] = "{item}">
+            <nuxt-link :to="{path: localePath('/new-page'), query: {page: item.page_uuid}}">{{ $t('update') }}</nuxt-link>
+            <MedDivider></MedDivider>
+            <span class='red--text clickable' @click='deleteItem(item.page_uuid)'>{{ $t('delete') }}</span>
+          </template>
+        </v-data-table>
+      </v-col>
+    </v-row>
+    <ConfirmDialog v-model="confirm" :loading="loadingDelete" @cancel="confirm = false" @accept="confirmDelete"></ConfirmDialog>
+
   </div>
 </template>
 <script>
+import MedDivider from "~/components/MedDivider";
+import ConfirmDialog from "~/components/ConfirmDialog";
 export default {
+  components: {ConfirmDialog, MedDivider},
   layout: 'dashboard',
   middleware: ['authenticated', 'verified', 'not-blocked', 'not-deleted', 'admin-or-super'],
   data() {
     return {
+      deleteId: null,
+      loadingDelete: false,
+      confirm: false,
       loading: true,
       items: [],
       columns: [
@@ -79,29 +113,21 @@ export default {
     })
   },
   methods: {
-    deleteItem(v) {
-      const that = this
-      this.$confirm({
-        content: this.$t('sure_del_item'),
-        onOk() {
-          return new Promise((resolve, reject) => {
-            that.$api.delete('/page/' + v).then(() => {
-              setTimeout(() => {
-                that.items = that.items.filter((it) => {
-                  return it.page_uuid !== v
-                })
-                resolve()
-              }, 600)
-            }).catch((err) => {
-              resolve(err)
-            })
-          })
-        },
-        cancelText: this.$t('cancel'),
-        onCancel() {
-          that.$destroyAll()
-        }
+    confirmDelete(){
+      this.loadingDelete= true
+      this.$api.delete('/page/' + this.deleteId).then(() => {
+        this.items = this.items.filter((it) => {
+          return it.page_uuid !== this.deleteId
+        })
+      }).finally(() => {
+        this.deleteId = null
+        this.loadingDelete = false
+        this.confirm = false
       })
+    },
+    deleteItem(v) {
+      this.confirm = true
+      this.deleteId = v
     }
   }
 }

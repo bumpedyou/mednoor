@@ -1,6 +1,5 @@
 <template>
   <div class="bg-img" :style="backgroundURL">
-
   </div>
 </template>
 <script>

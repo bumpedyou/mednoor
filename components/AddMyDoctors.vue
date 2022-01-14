@@ -2,10 +2,10 @@
   <div v-if='isLoggedIn' class='mb-1 heart-actions'>
     <v-btn :color='owned ? "error" : "info"' small tile :loading="loadingHeart" @click='toggleOwned'>
       <span v-if='owned'>
-        Remove from my doctors <a-icon type='heart' theme='filled'/>
+        Remove from my doctors <v-icon>mdi-heart-off</v-icon>
       </span>
       <span v-else>
-        Add to my doctors. <a-icon type='heart'/>
+        Add to my doctors. <v-icon>mdi-heart-plus</v-icon>
       </span>
     </v-btn>
   </div>

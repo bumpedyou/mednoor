@@ -1,9 +1,9 @@
 <template>
-  <a-row>
-    <a-col>
+  <v-row>
+    <v-col>
       <p class='h1 text-center'>{{$t('blocked_legend')}}</p>
-    </a-col>
-  </a-row>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -17,7 +17,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-
-</style>

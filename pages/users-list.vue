@@ -1,18 +1,24 @@
 <template>
   <div class='pa-6'>
-    <a-row class='mb-1'>
-      <a-col>
-        <a-breadcrumb>
-          <a-breadcrumb-item>
-            <nuxt-link :to="localePath('/dashboard')">{{ $t('dashboard') }}</nuxt-link>
-          </a-breadcrumb-item>
-          <a-breadcrumb-item>{{ $t('list_usrs') }}</a-breadcrumb-item>
-        </a-breadcrumb>
-      </a-col>
-    </a-row>
-    <a-row class='pa-1'>
-      <a-col>
-        <p class='h4 mb-1 text-capitalize'>
+    <v-row class='mb-1'>
+      <v-col>
+        <v-breadcrumbs :items="[
+          {
+            text: $t('dashboard'),
+            disabled: false,
+            to: localePath('/dashboard'),
+          },
+          {
+            text: $t('list_usrs') ,
+            disabled: true,
+          }
+        ]">
+        </v-breadcrumbs>
+      </v-col>
+    </v-row>
+    <v-row class='pa-1'>
+      <v-col>
+        <p class='h4 text-capitalize'>
           <span v-if='mode === "archived"'>
             Archived users
           </span>
@@ -26,82 +32,101 @@
         <div class='mb-3'>
           <v-btn v-if='mode !== "archived"' color="primary" tile small @click='addUser'>
             {{ $t('add_urs') }}
-            <a-icon type='user-add'></a-icon>
+            <v-icon class="ml-1">mdi-account-plus</v-icon>
           </v-btn>
         </div>
 
-        <a-input-search v-model='search' placeholder='Filter by name/last name/email' class='mb-1'></a-input-search>
-
-        <a-skeleton v-if='loading' />
-        <a-table v-else :columns='columns' :data-source='filteredUsers'>
-          <div slot='name' slot-scope='text, record'>
-            <nuxt-link :to="localePath('/user/' + record.user_uuid)">
-              {{ record.user_first_name }} {{ record.user_last_name }}
-            </nuxt-link>
-          </div>
-
-          <div slot='user_date_of_birth' slot-scope='text, record'>
-            <span v-if='record && record.user_date_of_birth'>
-              {{ dateString(record.user_date_of_birth) }}
+        <v-text-field v-model='search' append-icon="mdi-magnify" placeholder='Filter by name/last name/email' class='mb-1'></v-text-field>
+        <v-skeleton-loader v-if='loading' />
+        <v-data-table v-else :headers="[
+          {
+            text: 'MRN',
+            value: 'mrn',
+            sortable: true,
+          },
+          {
+            text: 'First Name',
+            value: 'user_first_name',
+            sortable: false,
+          },
+          {
+            text: 'Last Name',
+            value: 'user_last_name',
+            sortable: false,
+          },
+          {
+            text: 'Email',
+            value: 'user_email',
+            sortable: false,
+          },
+          {
+            text: 'DOB',
+            value: 'user_date_of_birth',
+            sortable: false,
+          },
+          {
+            text: 'Phone No.',
+            value: 'user_phone_no',
+            sortable: false,
+          },
+          {
+            text: 'Actions',
+            value: 'actions',
+            sortable: false,
+          },
+          {
+            text: 'PRO',
+            value: 'checkbox',
+            sortable: false,
+          }
+        ]" :items="filteredUsers">
+          <template #[`item.user_date_of_birth`] = "{value}">
+            <span v-if='value'>
+              {{ dateString(value) }}
             </span>
-          </div>
-
-          <div slot='user_phone_no' slot-scope='text, record'>
-            <span v-if='record && record.user_country_code'>
-              +{{ record.user_country_code }} {{ record.user_phone_no }}
+          </template>
+          <template #[`item.user_phone_no`] = "{item}">
+            <span v-if='item && item.user_country_code'>
+              +{{ item.user_country_code }} {{ item.user_phone_no }}
             </span>
-          </div>
-          <div slot='action' slot-scope='text, record'>
-            <div v-if='mode === "archived"'>
-              <a v-if='record.user_deleted' @click.prevent='askUnarchive(record.user_uuid)'>
-                Remove from archived users.
-              </a>
-            </div>
-            <div v-else>
-              <div v-if='isAdmin || isSuper'>
-                <a v-if='record.user_blocked' @click='unblock(record.user_uuid)'>
-                  {{ $t('unblock') }}
+          </template>
+          <template #[`item.actions`] = "{item}">
+            <div>
+              <div v-if='mode === "archived"'>
+                <a v-if='item.user_deleted' @click.prevent='askUnarchive(item.user_uuid)'>
+                  Remove from archived users.
                 </a>
-                <a v-else @click='block(record.user_uuid)'>
-                  {{ $t('block') }}
-                </a>
-                <a-divider type='vertical' />
-                <a v-if='(Boolean(record.user_deleted)) === false' @click='deleteUser(record.user_uuid)'>
-                  Archive
-                </a>
-
+              </div>
+              <div v-else>
+                <div v-if='isAdmin || isSuper'>
+                  <a v-if='item.user_blocked' @click='unblock(item.user_uuid)'>
+                    {{ $t('unblock') }}
+                  </a>
+                  <a v-else @click='block(item.user_uuid)'>
+                    {{ $t('block') }}
+                  </a>
+                  <MedDivider></MedDivider>
+                  <a v-if='(Boolean(item.user_deleted)) === false' @click='deleteUser(item.user_uuid)'>
+                    Archive
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
-          <div slot='checkbox' slot-scope='text, record'>
+          </template>
+          <template #[`item.checkbox`] = "{item}">
             <div v-if='mode === "archived"'>
               No action available.
             </div>
             <div v-else>
-              <a-checkbox :checked='record.usro_key === "MODERATOR"' @change='changePro(record)'>PRO</a-checkbox>
+              <v-checkbox :input-value='item.usro_key === "MODERATOR"' @change='changePro(item)'>PRO</v-checkbox>
             </div>
-          </div>
-        </a-table>
-      </a-col>
-    </a-row>
+          </template>
+        </v-data-table>
+      </v-col>
+    </v-row>
     <RequestModal ref='rmodal'></RequestModal>
-    <a-modal v-model='visible' :title="$t('conf_action')" ok-text='Ok' :confirm-loading='loadingModal'
-             :cancel-text="$t('cancel')"
-             @ok='confirmAction'>
-      <p v-if="action === 'delete'">
-        Archive
-      </p>
-      <p v-else>
-        {{ $t('conf_act') }}
-      </p>
-    </a-modal>
-    <a-modal v-model='unarchiveModal' title="Remove from archived." ok-text='Ok' :confirm-loading='loadingUnarchive'
-             :cancel-text="$t('cancel')"
-             @ok='archive'>
-      <p>
-        This user will be active again.
-      </p>
-    </a-modal>
+    <ConfirmDialog v-model="visible" :title="$t('conf_action')" :loading="loadingModal" :description="action === 'delete' ? 'archive': $t('conf_act')" @accept="confirmAction" @cancel="visible = false"></ConfirmDialog>
+    <ConfirmDialog v-model="unarchiveModal" description="This user will be active again" title="Remove from archived" :loading="loadingUnarchive" @accept="archive" @cancel="unarchiveModal = false"></ConfirmDialog>
   </div>
 </template>
 
@@ -109,10 +134,14 @@
 import RequestModal from '~/components/RequestModal'
 import userRoleMixin from '~/mixins/userRoleMixin'
 import dateMixin from '~/mixins/dateMixin'
+import MedDivider from "~/components/MedDivider";
+import ConfirmDialog from "~/components/ConfirmDialog";
 
 export default {
   name: 'UsersList',
   components: {
+    ConfirmDialog,
+    MedDivider,
     RequestModal
   },
   mixins: [userRoleMixin, dateMixin],
@@ -299,7 +328,10 @@ export default {
       this.action = 'update-to-user'
     },
     confirmAction() {
+      console.log('confirm action')
       if (this.isAdmin || this.isSuper) {
+        console.log('isAdmin or super')
+        console.log('The action is ---->', this.action)
         this.loadingModal = true
         if (this.action === 'delete') {
           this.$api.delete('/user/' + this.uuid).then(() => {
@@ -314,10 +346,12 @@ export default {
             this.loadingModal = false
           })
         } else if (this.action === 'update-to-professional' || this.action === 'update-to-user') {
+          console.log('Update to pro')
           this.loadingModal = true
           this.$api.put('/user/role/' + this.uuid, {
             key: this.action === 'update-to-professional' ? 'MODERATOR' : 'USER'
           }).then(({ data }) => {
+            console.log('Updated.')
             this.users = this.users.map((usr) => {
               if (usr.user_uuid === this.uuid) {
                 usr.usro_id = data.usro_id

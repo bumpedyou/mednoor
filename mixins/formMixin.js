@@ -4,7 +4,6 @@ export default {
   mixins: [inputMixin],
   data() {
     return {
-      form: null,
       date: '',
       day: '',
       month: '',
@@ -14,7 +13,7 @@ export default {
   watch: {
     date(v) {
       // Auto format date into mm-dd-yyyy
-      if(v && v.length) {
+      if (v && v.length) {
         let str = ''
         for (let i = 0; i < v.length; i++) {
           if (
@@ -76,10 +75,9 @@ export default {
             }
             const currentYear = new Date().getFullYear()
             if (this.year <= currentYear - 100) {
-              err =
-                this.$t('v.year_caw_f') + ' ' + currentYear
+              err = this.$t('v.year_caw_f') + ' ' + currentYear
             } else if (this.year > currentYear) {
-              err =  this.$t('v.ycbl_than') + ' ' + currentYear
+              err = this.$t('v.ycbl_than') + ' ' + currentYear
             }
             console.log(err)
           }
@@ -88,7 +86,4 @@ export default {
       }
     },
   },
-  mounted(){
-    this.form = this.$form.createForm(this, { name: 'coordinated' })
-  }
 }

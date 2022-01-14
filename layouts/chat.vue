@@ -2,10 +2,10 @@
   <v-app>
     <navbar></navbar>
     <div id='app-content'>
-      <div :class='chatsLayoutClass'>
+      <div>
         <div v-if='savingPdf' class='chats-overlay'>
           <div class='flex-center'>
-            <SpinOrText v-model='savingPdf'></SpinOrText>
+            <v-progress-circular v-if="savingPdf" indeterminate class></v-progress-circular>
           </div>
         </div>
         <div class='chats-list'>
@@ -15,7 +15,7 @@
                 {{$t('chats')}}
               </b>
             </div>
-            <a-skeleton v-if='loadingItems' class='pa-1'></a-skeleton>
+            <v-skeleton-loader v-if='loadingItems' class='pa-1'></v-skeleton-loader>
             <div v-else>
               <div v-if='moderators && moderators.length > 0' :key="'force-update-' + updateIdx">
                 <ChatItems :data='moderators' :selected-chat='to' @open-chat='openChat'></ChatItems>
@@ -23,7 +23,7 @@
               <div v-else class='pa-1'>
                 <div v-if='isUser'>
                   {{$t('dont_h_chats')}}
-                  <nuxt-link :to="localePath('/professionals')"> <a-divider type='vertical'/>{{ $t('av_prof') }}</nuxt-link>
+                  <nuxt-link :to="localePath('/professionals')"> <med-divider type='vertical'/>{{ $t('av_prof') }}</nuxt-link>
                 </div>
                 <div v-else-if='isModerator'>
                   {{ $t('dont_h_users') }}
@@ -53,7 +53,7 @@
                         {{$t('th_uina')}}
                       </p>
                       <div class='flex-center'>
-                        <a-button type='primary' @click='allowChat'>{{$t('allow')}}</a-button>
+                        <v-btn color='primary' tile small @click='allowChat'>{{$t('allow')}}</v-btn>
                       </div>
                     </div>
                     <div v-else-if='isUser'>
@@ -69,22 +69,22 @@
             <typing-indicator :value='toIsTyping'></typing-indicator>
             <div v-if='fileName' class='upload-container'>
               <small class='mr-1 text-muted'>{{ fileName }}</small>
-              <a-progress :percent='umUploadProgress'></a-progress>
-              <a-button type='danger' @click='cancelUpload'>
-                <a-icon type='close' />
+              <v-progress-linear :value='umUploadProgress'></v-progress-linear>
+              <v-btn type='error' @click='cancelUpload'>
+                <v-icon>mdi-close</v-icon>
                 Cancel
-              </a-button>
-              <a-button type='primary' @click='uploadFile'>
-                <a-icon type='upload' />
+              </v-btn>
+              <v-btn type='primary' @click='uploadFile'>
+                <v-icon>mdi-upload</v-icon>
                 {{$t('upload')}}
-              </a-button>
+              </v-btn>
             </div>
             <VEmojiPicker v-if='showEmojiPicker' class="emoji-picker" @select="selectEmoji" />
             <div class='chat-controls'>
               <div>
                 <img :src="require('~/static/icon/happy-face.svg')" alt='happy face' @click='showEmojiPicker = !showEmojiPicker'>
               </div>
-              <a-input v-model='message' placeholder='Type a message' @keyup="imTyping" @keyup.enter='sendMessage(null)'></a-input>
+              <v-text-field v-model='message' placeholder='Type a message' @keyup="imTyping" @keyup.enter='sendMessage(null)'></v-text-field>
               <div class='chat-multiple-controls'>
                 <img v-if='!isUser' :src="require('~/static/icon/save.svg')" alt='save icon' @click='askSavePDF'>
                 <input id='file' ref='fileInput' type='file' style='opacity: 0; display: none' @change='fileChange' />
@@ -108,24 +108,35 @@
     </div>
     <RequestModal ref='rmodal'></RequestModal>
     <div>
-      <a-modal
-        title='Allow user'
-        :visible='visible'
-        :confirm-loading='confirmLoading'
-        @ok='handleOk'
-        @cancel='handleCancel'
-      >
-        <p>{{$t('do_y_wnt_all')}}</p>
-      </a-modal>
-      <a-modal
-        title='Save chat'
-        :visible='visiblePDF'
-        :confirm-loading='confirmLoading'
-        @ok='saveChatAsPdf'
-        @cancel='handleCancel'
-      >
-        <p>{{$t('ifys')}}</p>
-      </a-modal>
+      <v-dialog v-model="visible" persistent max-width="320px">
+        <v-card>
+          <v-card-title>
+            Allow user
+          </v-card-title>
+          <v-card-text>
+            <p>{{$t('do_y_wnt_all')}}</p>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn small tile color="error" @click="handleCancel">Cancel</v-btn>
+            <v-btn small tile color="primary" @click="handleOk">Ok</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog v-model="visiblePDF" persistent max-width="320px">
+        <v-card>
+          <v-card-title>
+            Save chat
+          </v-card-title>
+          <v-card-text>
+            <p>{{$t('ifys')}}</p>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn small tile color="error" @click="handleCancel">Cancel</v-btn>
+            <v-btn small tile color="primary" @click="saveChatAsPdf">Save</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </div>
     <a ref='downloadUrlRef' :href='downloadUrl' :download='downloadUrl' target='_blank' class='d-none'></a>
   </v-app>
@@ -143,11 +154,11 @@ import userUpdatedMixin from '~/mixins/userUpdatedMixin'
 import uploadMixin from '~/mixins/uploadMixin'
 import ChatItems from '~/components/ChatItems'
 import chatMixin from '~/mixins/chatMixin'
-import SpinOrText from '~/components/SpinOrText'
 import authMixin from '~/mixins/authMixin'
 import breakpoints from '~/mixins/breakpoints'
 import ChatMessages from '~/components/ChatMessages'
 import TypingIndicator from '~/components/TypingIndicator'
+import MedDivider from "~/components/MedDivider";
 
 export default {
   name: 'Chat',
@@ -157,12 +168,13 @@ export default {
     ChatItems,
     Navbar,
     RequestModal,
-    SpinOrText,
-    VEmojiPicker
+    VEmojiPicker,
+    MedDivider
   },
   mixins: [listenMixin, userRoleMixin, userUpdatedMixin, uploadMixin, chatMixin, authMixin, breakpoints],
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'pin-set','view-set'],
   data: () => ({
+    downloadUrl: '',
     showEmojiPicker: false,
     visible: false,
     confirmLoading: false,

@@ -2,12 +2,17 @@
   <div id="top" class="pa-6 mh-100v">
     <v-row class='mb-1'>
       <v-col>
-        <a-breadcrumb>
-          <a-breadcrumb-item>
-            <nuxt-link :to="localePath('/dashboard')">{{ $t('dashboard') }}</nuxt-link>
-          </a-breadcrumb-item>
-          <a-breadcrumb-item>Specialties</a-breadcrumb-item>
-        </a-breadcrumb>
+        <v-breadcrumbs :items="[
+          {
+            text: $t('dashboard'),
+            to: localePath('/dashboard'),
+            disabled: false,
+          },
+          {
+            text: 'Specialties',
+            disabled: true,
+          }
+        ]"></v-breadcrumbs>
       </v-col>
     </v-row>
     <v-row>
@@ -46,23 +51,41 @@
         </v-form>
       </v-col>
     </v-row>
-    <a-row v-if="loading">
-      <a-skeleton></a-skeleton>
-    </a-row>
-    <a-row v-else>
-      <a-table :columns="columns" :data-source="data">
-        <div slot='actions' slot-scope='text, record'>
-          <span class='clickable primary--text' @click="setSpecialty(record)">
+    <v-row v-if="loading">
+      <v-skeleton-loader></v-skeleton-loader>
+    </v-row>
+    <v-row v-else>
+      <v-col md="12">
+        <v-data-table :items="data" :headers="[
+        {
+          text: 'Category',
+          value: 'cate_category',
+          sortable: false,
+        },
+        {
+          text: 'Specialty',
+          value: 'spec_specialty',
+          sortable: false,
+        },
+        {
+          text: 'Actions',
+          value: 'actions',
+          sortable: false,
+        }
+      ]">
+          <template #[`item.actions`] = "{item}">
+          <span class='clickable primary--text' @click="setSpecialty(item)">
             Update
           </span>
-          <a-divider type="vertical"></a-divider>
-          <span class="clickable red--text" @click="askDel(record.spec_id)">
+            <MedDivider></MedDivider>
+            <span class="clickable red--text" @click="askDel(item.spec_id)">
             Delete
           </span>
-        </div>
-      </a-table>
-    </a-row>
-    <a-row>
+          </template>
+        </v-data-table>
+      </v-col>
+    </v-row>
+    <v-row>
       <v-dialog v-model="showDelete" max-width="320px">
         <v-card>
           <v-card-title>
@@ -81,13 +104,15 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-    </a-row>
+    </v-row>
   </div>
 </template>
 
 <script>
+import MedDivider from "~/components/MedDivider";
 export default {
   name: "Specialties",
+  components: {MedDivider},
   layout: 'dashboard',
   data () {
     return {

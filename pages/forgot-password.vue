@@ -1,35 +1,36 @@
-
 <template>
   <div class="mh-100v">
     <div>
-      <a-row>
-        <a-col class='mt-1' :xs='{span: 20, offset: 2}' :md='{span: 12, offset: 6}' :lg='{span: 10, offset: 7}' :xl='{span: 8, offset: 8}'>
-          <a-card>
-            <h1 class='text-center'>{{$t('forgot_pwd')}}</h1>
-            <p class='text-center'>
-              {{$t('fpwd_desc')}}
-            </p>
-            <a-form :form='form' size='small' @submit='handleSubmit'>
-              <a-form-item :label="$t('email')">
-                <a-input v-decorator="['email',{
-                    rules: [{ required: true, message: $t('v.email_req') },
-                    {max: 150, message: $t('v.max_email_150')},
-                    {type: 'email', message: $t('v.inv_email')}
-                    ],
-                  },
+      <v-row>
+        <v-col class='mt-1' md='6' offset-md="3">
+          <v-card>
+            <v-card-title>
+              <h1 class='text-center w-100'>{{ $t('forgot_pwd') }}</h1>
+            </v-card-title>
+            <v-card-text>
+              <p class='text-center'>
+                {{ $t('fpwd_desc') }}
+              </p>
+              <v-form ref='form' v-model="valid" @submit.prevent='handleSubmit'>
+                <div class="mb-1">
+                  <v-text-field v-model="email"
+                                :rules="[
+                    v => !!v || $t('v.email_req'),
+                    v => !!v && v.length <= 150 || $t('v.max_email_150')
                   ]"
-                  :placeholder="$t('email')"
-                />
-              </a-form-item>
-              <a-button block type='primary' html-type='submit'>
-                <SpinOrText v-model='loading'>
-                  {{$t('send_email')}}
-                </SpinOrText>
-              </a-button>
-            </a-form>
-          </a-card>
-        </a-col>
-      </a-row>
+                                label="Email"
+                                :placeholder="$t('email')"
+                  />
+                </div>
+                <v-btn block color='primary' small tile type='submit' :loading="loading">
+                  {{ $t('send_email') }}
+                </v-btn>
+              </v-form>
+
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
     </div>
     <RequestModal ref='rmodal'></RequestModal>
   </div>
@@ -37,23 +38,23 @@
 
 <script>
 import RequestModal from '~/components/RequestModal'
-import SpinOrText from '~/components/SpinOrText'
+
 export default {
   name: 'ForgotPassword',
   auth: false,
   components: {
     RequestModal,
-    SpinOrText
   },
   data() {
     return {
       formLayout: 'horizontal',
-      form: this.$form.createForm(this, { name: 'coordinated' }),
       loading: false,
       code: '',
+      email: '',
+      valid: false,
     }
   },
-    head() {
+  head() {
     return {
       title: this.$t('forgot_pwd'),
       meta: [
@@ -68,24 +69,22 @@ export default {
   methods: {
     handleSubmit(e) {
       e.preventDefault()
-      this.form.validateFields( (err, values) => {
-          if (!err) {
-            this.loading = true
-            this.$api.post('/user/forgot-password', {
-              email: values.email,
-            }).then(() =>{
-              this.$store.commit('setEmail', values.email)
-              this.$router.push({
-                path: this.localePath('/reset-password'),
-              })
-            }).catch((err)=>{
-              this.$refs.rmodal.$emit('error', err)
-            }).finally(() =>{
-              this.loading = false
-            })
-          }
-        }
-      )
+      this.$refs.form.validate()
+      if (this.valid) {
+        this.loading = true
+        this.$api.post('/user/forgot-password', {
+          email: this.email,
+        }).then(() => {
+          this.$store.commit('setEmail', this.email)
+          this.$router.push({
+            path: this.localePath('/reset-password'),
+          })
+        }).catch((err) => {
+          this.$refs.rmodal.$emit('error', err)
+        }).finally(() => {
+          this.loading = false
+        })
+      }
     },
 
   }

@@ -1,57 +1,59 @@
 <template>
   <div class="pa-6 mh-100v">
-    <a-row class='mb-1'>
-      <a-col>
-        <a-breadcrumb>
-          <a-breadcrumb-item>
-            <nuxt-link :to="localePath('/dashboard')">{{ $t('dashboard') }}</nuxt-link>
-          </a-breadcrumb-item>
-          <a-breadcrumb-item>Main Text</a-breadcrumb-item>
-        </a-breadcrumb>
-      </a-col>
-    </a-row>
-    <a-row>
-      <a-col>
+    <v-row class='mb-1'>
+      <v-col>
+        <v-breadcrumbs :items="[
+          {
+            text: $t('dashboard'),
+            to: localePath('/dashboard'),
+          },
+          {
+            text: 'Main Text',
+            disabled: true,
+          }
+        ]"></v-breadcrumbs>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
         <p class="h4 mb-1">
           Main Text
         </p>
         <p>
           Text that is shown above the footer.
         </p>
-        <a-skeleton v-if="loading"></a-skeleton>
-        <a-form v-else :form="form" @submit="handleSubmit">
-          <a-row :gutter="6">
-            <a-col :md='12'>
+        <v-skeleton-loader v-if="loading"></v-skeleton-loader>
+        <v-form v-else ref="form" @submit="handleSubmit">
+          <v-row>
+            <v-col md="6">
               <client-only>
                 <VueEditor v-model='text' placeholder='Left side text.' />
               </client-only>
-            </a-col>
-            <a-col :md='12'>
+            </v-col>
+            <v-col md='6'>
               <client-only>
                 <VueEditor v-model='text_b' placeholder='Right side text' />
               </client-only>
-            </a-col>
-          </a-row>
-          <a-form-item>
-            <a-button type="primary" html-type="submit">
-              <SpinOrText v-model="saving">Save</SpinOrText>
-            </a-button>
-          </a-form-item>
-        </a-form>
-      </a-col>
-    </a-row>
+            </v-col>
+          </v-row>
+          <div class='mt-3'>
+            <v-btn color="primary" small tile type="submit" :loading="saving">
+              Save
+            </v-btn>
+          </div>
+        </v-form>
+      </v-col>
+    </v-row>
     <request-modal ref="rmodal"></request-modal>
   </div>
 </template>
 
 <script>
-import SpinOrText from '~/components/SpinOrText'
 import RequestModal from '~/components/RequestModal'
 
 export default {
   name: "MainText",
   components: {
-    SpinOrText,
     RequestModal,
   },
   layout: 'dashboard',
@@ -59,7 +61,6 @@ export default {
   data() {
     return {
       saving: false,
-      form: this.$form.createForm(this),
       loading: true,
       text: '',
       text_b: '',
