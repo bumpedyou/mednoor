@@ -11,6 +11,10 @@
       <v-col>
         <v-data-table :items="items" :headers="[
           {
+            text: 'MRN',
+            value: 'mrn',
+          },
+          {
             text: 'Patient\'s name',
             value: 'full_name',
           },
@@ -25,7 +29,10 @@
             </nuxt-link>
           </template>
           <template #[`item.actions`]="{item}" >
-            <nuxt-link :to="{path: localePath('/new-emr'), query: {mere: item.mere_uuid}}">{{ $t('emr') }}</nuxt-link>
+            <nuxt-link v-if="item.mere_uuid" :to="{path: localePath('/new-emr'), query: {mere: item.mere_uuid}}">{{ $t('emr') }}</nuxt-link>
+            <span v-else class="text-muted">
+              No record found.
+            </span>
           </template>
         </v-data-table>
       </v-col>
@@ -56,7 +63,8 @@ export default {
         }
       ],
       items: [],
-      loading: true
+      loading: true,
+      ids: [],
     }
   },
   head(){
@@ -65,10 +73,30 @@ export default {
     }
   },
   mounted() {
+
     this.$api.get('/medical-record/patients').then(({ data }) => {
       this.items = data
+      data.forEach((user)=>{
+        this.ids.push(user.user_uuid)
+      })
     }).catch(() => {
       this.$toast.error(this.$t('could_nl_p').toString())
+    })
+    this.$api.get('/user', {
+      params: {
+        view: 'users'
+      }
+    }).then(({data})=>{
+      data.forEach((user)=>{
+        if (!this.ids.includes(user.user_uuid)){
+          this.items.push({
+            full_name: user.user_first_name + ' ' + user.user_last_name,
+            user_uuid: user.user_uuid,
+            mrn: user.mrn,
+          })
+          this.ids.push(user.user_uuid)
+        }
+      })
     })
   }
 }
