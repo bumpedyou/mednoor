@@ -23,6 +23,14 @@ export default {
             btnText: 'Main Text',
             icon: 'card-text',
             dark: true,
+          },
+          {
+            shortTitle: 'Claims',
+            cardTitle: 'Claims',
+            to: '/hcfa',
+            btnText: 'Claims',
+            icon: 'card-text',
+            dark: true,
           }
         )
       }
@@ -54,11 +62,20 @@ export default {
           dark: true,
         })
         i.push({
-          shortTitle: 'Chat Queue',
-          cardTitle: 'Chat Queue',
-          to: '/chat-requests',
-          btnText: 'Chat Queue',
-          icon: 'forum',
+            shortTitle: 'Chat Queue',
+            cardTitle: 'Chat Queue',
+            to: '/chat-requests',
+            btnText: 'Chat Queue',
+            icon: 'forum',
+            dark: true,
+          }
+        )
+        i.push({
+          shortTitle: 'Claims',
+          cardTitle: 'Claims',
+          to: '/hcfa',
+          btnText: 'Claims',
+          icon: 'card-text',
           dark: true,
         })
       }
@@ -141,6 +158,14 @@ export default {
             btnText: 'Archived users',
             icon: 'folder-account',
             type: 'primary',
+          },
+          {
+            shortTitle: 'Claims',
+            cardTitle: 'Claims',
+            to: '/hcfa',
+            btnText: 'Claims',
+            icon: 'card-text',
+            dark: true,
           }
         )
       }
