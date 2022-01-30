@@ -24,6 +24,7 @@ export default {
             icon: 'card-text',
             dark: true,
           },
+          /*
           {
             shortTitle: 'Claims',
             cardTitle: 'Claims',
@@ -31,7 +32,7 @@ export default {
             btnText: 'Claims',
             icon: 'card-text',
             dark: true,
-          }
+          } */
         )
       }
       if (this.isModeratorOrHigher) {
@@ -70,6 +71,7 @@ export default {
             dark: true,
           }
         )
+        /*
         i.push({
           shortTitle: 'Claims',
           cardTitle: 'Claims',
@@ -78,6 +80,7 @@ export default {
           icon: 'card-text',
           dark: true,
         })
+        */
       }
       if (this.isAdminOrSuper) {
         i.push(
@@ -159,6 +162,7 @@ export default {
             icon: 'folder-account',
             type: 'primary',
           },
+          /*
           {
             shortTitle: 'Claims',
             cardTitle: 'Claims',
@@ -167,6 +171,7 @@ export default {
             icon: 'card-text',
             dark: true,
           }
+           */
         )
       }
       return i
