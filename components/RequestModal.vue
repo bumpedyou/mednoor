@@ -3,7 +3,7 @@
     <v-dialog v-model="localValue" persistent max-width="320px">
       <v-card>
         <v-card-title>
-          {{title}}}
+          {{title}}
         </v-card-title>
         <v-card-text>
           <p>

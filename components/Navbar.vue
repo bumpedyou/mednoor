@@ -9,6 +9,7 @@
           <img :src='require("~/static/logo.png")' height='40px' />
         </nuxt-link>
       </div>
+      <!--
       <div v-if='!isSmall && !$props.hideMiddle' class='mednoor-logo'>
         <nuxt-link v-for='(page, i) in pages' :key='i'
                    :to='localePath({path: "/page/" + page.page_uuid + "/" + slugify(page.page_slug)})'
@@ -16,12 +17,16 @@
         </nuxt-link>
         <nuxt-link :to="localePath('/professionals')">Directory</nuxt-link>
       </div>
+      -->
       <div class='menu-icon'>
+        <!--
         <div class='mr-1 pay-icon'>
           <a href="https://pay.mednoor.com/submit" target="_blank">
           <img :src="require('~/static/pay.png')" alt="pay">
           </a>
         </div>
+        -->
+        <!--
         <div v-if="isLoggedIn" class='mx-1'>
           <v-tab>
             <v-badge
@@ -34,6 +39,7 @@
             </v-badge>
           </v-tab>
         </div>
+        -->
         <div class='mr-1'>
           <div class='lang-selector' @click='showLocales = !showLocales'>
             <div class='current'>
@@ -207,16 +213,13 @@ export default {
             })
           }
           if (this.isLoggedIn) {
+            /*
             items.push({
               text: this.$t('prev_c_pdf'),
               icon: 'file',
               to: '/my-chats'
             })
-            items.push({
-              text: this.$t('chats'),
-              icon: 'forum',
-              to: '/'
-            })
+            */
             items.push({
               text: 'Messenger',
               icon: 'message-flash',
