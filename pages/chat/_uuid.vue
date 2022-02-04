@@ -21,15 +21,15 @@
                   <profile-picture v-if="isModerator" :user="selectedUserObj" :x-small="true"></profile-picture>
                   <profile-picture v-else :user="$auth.user" :x-small="true"></profile-picture>
                   <span class="ml-3">
-                    {{userName}}
+                    {{ userName }}
                   </span>
                 </div>
               </div>
               <div class='mx-auto'>
                 <small class="d-block text-center date-center mr-3">
-                  {{dateString(new Date())}}
+                  {{ dateString(new Date()) }}
                   <br>
-                  {{hour(timestamp)}}
+                  {{ hour(timestamp) }}
                 </small>
               </div>
               <div class='mr-1'>
@@ -53,10 +53,10 @@
           </v-btn>
           <v-btn small tile type='primary' @click='uploadFile'>
             <v-icon>mdi-upload</v-icon>
-            {{$t('upload')}}
+            {{ $t('upload') }}
           </v-btn>
         </div>
-        <VEmojiPicker v-if='showEmojiPicker' class="emoji-picker" @select="selectEmoji" />
+        <VEmojiPicker v-if='showEmojiPicker' class="emoji-picker" @select="selectEmoji"/>
         <div class='chat-controls'>
           <div class="mr-1">
             <v-icon @click='showEmojiPicker = !showEmojiPicker'>mdi-emoticon-outline</v-icon>
@@ -64,7 +64,7 @@
           <v-text-field v-model='message' placeholder='Type a message' @keyup="imTyping" @keyup.enter='sendMessage(null)'></v-text-field>
           <div class='chat-multiple-controls'>
             <v-icon v-if='!isUser' class="mx-1" @click='askSavePDF'>mdi-content-save</v-icon>
-            <input id='file' ref='fileInput' type='file' style='opacity: 0; display: none' @change='fileChange' />
+            <input id='file' ref='fileInput' type='file' style='opacity: 0; display: none' @change='fileChange'/>
             <label for='file' class="clickable">
               <v-icon class="mx-1">mdi-attachment</v-icon>
             </label>
@@ -80,7 +80,7 @@
     >
       <v-card>
         <v-card-title class="text-h5">
-          {{callerName}} is calling you...
+          {{ callerName }} is calling you...
         </v-card-title>
         <v-card-text>
           <v-btn
@@ -110,7 +110,7 @@
 
 <script>
 import domtoimage from "dom-to-image";
-import { VEmojiPicker } from 'v-emoji-picker';
+import {VEmojiPicker} from 'v-emoji-picker';
 import ChatMessages from "~/components/ChatMessages";
 import TypingIndicator from "~/components/TypingIndicator";
 import listenMixin from "~/mixins/listenMixin";
@@ -132,7 +132,7 @@ export default {
   mixins: [listenMixin, userRoleMixin, userUpdatedMixin, uploadMixin, chatMixin, authMixin, breakpoints, chatMixin, dateMixin],
   layout: 'new-chat',
   middleware: ['authenticated', 'verified', 'pin-set', 'view-set'],
-  data(){
+  data() {
     return {
       showEmojiPicker: false,
       visible: false,
@@ -160,17 +160,17 @@ export default {
     }
   },
   computed: {
-    leftClasses(){
+    leftClasses() {
       const c = ['chats-list']
-      if (this.show_video){
+      if (this.show_video) {
         c.push('show-video')
       }
       return c.join(' ')
     },
-    toIsTyping(){
+    toIsTyping() {
       return this.to === this.typing
     },
-    downloadUrl(){
+    downloadUrl() {
       return process.env.API_URL + '/generated/' + this.pdfName
     },
     user() {
@@ -196,7 +196,7 @@ export default {
     myID() {
       return this.user.uuid
     },
-    selectedUserObj(){
+    selectedUserObj() {
       let u = {}
       if (this.to) {
         this.moderators.forEach((m) => {
@@ -211,15 +211,13 @@ export default {
     selectedUser() {
       let u = ''
       if (this.to) {
-
         this.moderators.forEach((m) => {
-          console.log('Evaluating allowed --->', m)
           if (m.user_uuid === this.to) {
             this.allowed = m.mypr_allowed
-            if (!this.allowed){
+            if (!this.allowed) {
               this.$router.push(this.localePath('/'))
             }
-            u = m.user_last_name + ', ' + m.user_first_name + ' ' +  (m.profe_credentials ?  m.profe_credentials : '')
+            u = m.user_last_name + ', ' + m.user_first_name + ' ' + (m.profe_credentials ? m.profe_credentials : '')
           }
         })
       }
@@ -254,13 +252,13 @@ export default {
     this.getChats()
     this.run_once(this.listen)
     this.setChatFromRoute()
-    this.socket.on('start-video', ({ from, roomId, name }) => {
+    this.socket.on('start-video', ({from, roomId, name}) => {
 
       this.callerName = name
       this.ringing = true
 
-      this.ring().then(()=>{
-      }).catch(()=>{
+      this.ring().then(() => {
+      }).catch(() => {
       })
       /*
       if (from === this.to && roomId) {
@@ -269,18 +267,18 @@ export default {
 
       this.callingRoomId = roomId
     })
-    this.socket.on('stop-video', ({ from, roomId }) => {
+    this.socket.on('stop-video', ({from, roomId}) => {
       if (from === this.to && roomId) {
         this.stopVideoByPro(roomId)
       }
     })
-    this.socket.on('call-accepted', ({roomId})=>{
+    this.socket.on('call-accepted', ({roomId}) => {
       this.stopAudio()
       this.$refs.videoRef.start(roomId)
       this.videoRoomId = roomId
     })
 
-    this.socket.on('stop-ringing', ({roomId})=>{
+    this.socket.on('stop-ringing', ({roomId}) => {
       this.stopAudio()
       this.ringing = false
     })
@@ -291,12 +289,12 @@ export default {
   },
   methods: {
     stopAudio() {
-      if (this.audio){
+      if (this.audio) {
         this.audio.currentTime = 0
         this.audio.pause()
       }
     },
-    acceptCall(){
+    acceptCall() {
       this.joinVideo(this.callingRoomId)
       this.stopAudio()
       this.ringing = false
@@ -306,15 +304,15 @@ export default {
         from: this.myUserId
       })
     },
-    ring(){
+    ring() {
       this.audio = this.getSound('phone-ringing.mp3')
       return this.audio.play()
     },
     getNow() {
       const today = new Date();
-      const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+      const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
       const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-      const dateTime = date +' '+ time;
+      const dateTime = date + ' ' + time;
       this.timestamp = dateTime;
     },
     setChatFromRoute() {
@@ -324,18 +322,18 @@ export default {
         this.openChat(p.uuid)
       }
     },
-    selectEmoji(e){
+    selectEmoji(e) {
       this.message += e.data
       this.showEmojiPicker = false
     },
-    imTyping(evt){
-      if (this.sentTypingEvt || evt.key ===  'Enter')
+    imTyping(evt) {
+      if (this.sentTypingEvt || evt.key === 'Enter')
         return
       this.socket.emit('typing-to', {to: this.to, from: this.myID})
       this.sentTypingEvt = true
-      setTimeout(()=>{
+      setTimeout(() => {
         this.sentTypingEvt = false
-      },1600)
+      }, 1600)
     },
     askSavePDF() {
       this.visiblePDF = true
@@ -378,7 +376,7 @@ export default {
           onUploadProgress: (evt) => {
             this.onProgress(evt)
           }
-        }).then(({ data }) => {
+        }).then(({data}) => {
           this.fileName = 0
           this.umUploadProgress = 0
           const opts = {
@@ -430,10 +428,8 @@ export default {
       }
     },
     joinVideo(roomId) {
-      console.log('join video')
       this.show_video = true
       this.videoRoomId = roomId
-      console.log('join room', roomId)
       if (this.$refs.videoRef)
         this.$refs.videoRef.join(roomId)
     },
@@ -477,15 +473,15 @@ export default {
               data: dataUrl,
               to: this.to,
               me: this.myID
-            }).then(({data})=>{
-              if (data.file_name){
+            }).then(({data}) => {
+              if (data.file_name) {
                 this.pdfName = data.file_name
-                this.$nextTick(()=>{
-                  if (this.$refs.downloadUrlRef){
+                this.$nextTick(() => {
+                  if (this.$refs.downloadUrlRef) {
                     this.$refs.downloadUrlRef.click()
                   }
                 })
-              }else{
+              } else {
                 this.$refs.rmodal.$emit('error', 'PDF File not found')
               }
             }).catch((err) => {
@@ -494,16 +490,19 @@ export default {
           } else {
             this.$refs.rmodal.$emit('error', 'The PDF was empty')
           }
-        }).finally(() => {
-        this.visiblePDF = false
-        this.confirmLoading = false
-        setTimeout(() => {
-          this.savingPdf = false
-        }, 1500)
-      })
+        })
+        .finally(() => {
+          this.visiblePDF = false
+          this.confirmLoading = false
+          setTimeout(() => {
+            this.savingPdf = false
+          }, 1500)
+        })
     },
     sendMessage(opts) {
-      if (!this.to) {
+      if (this.to === this.myID) {
+        this.$refs.rmodal.$emit('error', "You can't chat with yourself.")
+      } else if (!this.to) {
         const h = this.$createElement
         this.$info({
           title: this.$t('chnts'),
@@ -537,14 +536,16 @@ export default {
           this.message = ''
         }
       }
+
       this.scrollMessagesSection()
     },
     openChat(uuid) {
       this.to = uuid
       this.messages = []
-      if (this.myID && uuid){
+      if (this.myID && uuid) {
+        console.log('Get conversation with id -->', this.myID)
         this.$api.get('/conversation/id/' + this.myID + '/' + uuid).then(({data}) => {
-          if (data.conversationId) {
+          if (data.conversationId && data.conversationId !== -1) {
             this.$api.get('/conversation/messages/' + data.conversationId).then(({data}) => {
               this.messages = data
               this.$nextTick(() => {
@@ -553,8 +554,14 @@ export default {
                   this.scrollMessagesSection()
                 }, 600)
               })
+            }).catch((e) => {
+              alert(e)
             })
+          }else{
+            this.$refs.rmodal.$emit('error', 'Conversation not found')
           }
+        }).catch((e) => {
+          this.$refs.rmodal.$emit('error', e)
         })
       }
     }
@@ -726,6 +733,7 @@ export default {
   top: 0
   width: 100%
   height: 100%
+
 @media screen and (min-width: $md)
   .emoji-picker
     bottom: 110px
@@ -735,6 +743,7 @@ export default {
     left: 50% !important
   .chats-layout
     width: 100%
+
     .chats-list
       position: fixed
       width: 50%
@@ -746,6 +755,7 @@ export default {
       bottom: 0
       border-right: 1px solid $mdn-super-light-grey
       height: calc(100% - 50px)
+
       .moderators
         position: fixed
         top: 50px
@@ -799,8 +809,9 @@ export default {
 
   .chats-list.show-video
     width: 50% !important
+
     .video-control
-      // display: none !important
+// display: none !important
 
 
 .saving-pdf
@@ -848,6 +859,7 @@ export default {
   padding: 1rem
   box-shadow: 0 3px 6px #c9c6c6
   height: 50px
+
   i
     font-weight: bold
     color: red

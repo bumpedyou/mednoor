@@ -117,7 +117,6 @@ export default {
       formData.append('file', this.file)
       formData.append('type', this.type)
       this.uploading = true
-      console.log('Type --->', this.type)
       this.$api.post(this.computedAction, formData, {
         onUploadProgress: (evt) => {
           this.onProgress(evt)

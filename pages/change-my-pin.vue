@@ -68,7 +68,6 @@ export default {
   mounted () {
     console.log(this.c_pin)
     if (this.c_pin === 'reset1'){
-      console.log('reset')
       this.current_pin = '000000'
       this.current_enabled = false
     }

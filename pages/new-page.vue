@@ -121,7 +121,6 @@ export default {
   },
   methods: {
     handleSubmit() {
-      console.log('handleSubmit')
       this.$refs.form.validate()
       const values = {
         title: this.title,

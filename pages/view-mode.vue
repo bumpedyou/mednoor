@@ -66,8 +66,6 @@ export default {
   mounted(){
 
     if (this.isAdmin || this.isSuper){
-      console.log('isAdmin || isSuper', this.isAdmin, this.isSuper)
-      console.log('[view-mode.vue] ---> isAdmin')
       this.$cookies.set('view', 'admin')
       this.$router.push(this.localePath('/dashboard'))
     }

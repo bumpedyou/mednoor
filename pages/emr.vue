@@ -272,7 +272,6 @@ export default {
         }
       }).then(({data}) => {
         this.items = data
-        console.log('--->', data, '<---')
 
       }).finally(() => {
         this.loadingData = false

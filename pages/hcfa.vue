@@ -109,7 +109,7 @@
                         >
                             <v-row>3. PATIENT'S BIRTH DATE</v-row>
                             <v-row>
-                                <v-col 
+                                <v-col
                                     cols="2"
                                     md="2"
                                     sm="2"
@@ -118,7 +118,7 @@
                                     <p>MM</p>
                                     <v-text-field v-model="number3.mm" placeholder="mm" type="text" :hide-details = true :value="`${number3.mm}`"></v-text-field>
                                 </v-col>
-                                <v-col 
+                                <v-col
                                     cols="1"
                                     md="1"
                                     sm="1"
@@ -164,7 +164,7 @@
                                             >
                                             </v-checkbox>
                                         </div>
-                                        
+
                                     </v-row>
                                 </v-col>
                             </v-row>
@@ -397,7 +397,7 @@
                                 <v-col>
                                     <p>b. OTHER INSURED'S DATE OF BIRTH</p>
                                     <v-row>
-                                        <v-col 
+                                        <v-col
                                             cols="2"
                                             md="2"
                                             sm="2"
@@ -406,7 +406,7 @@
                                             <p>MM</p>
                                             <v-text-field v-model="number9.b.mm" placeholder="mm" type="text" :hide-details = true :value="`${number9.b.mm}`"></v-text-field>
                                         </v-col>
-                                        <v-col 
+                                        <v-col
                                             cols="1"
                                             md="1"
                                             sm="1"
@@ -452,7 +452,7 @@
                                                     >
                                                     </v-checkbox>
                                                 </div>
-                                                
+
                                             </v-row>
                                         </v-col>
                                     </v-row>
@@ -548,7 +548,7 @@
                             </v-row>
                         </v-col>
                     </v-row>
-                    
+
                 </v-col>
 
                 <v-col
@@ -569,7 +569,7 @@
                                 <v-col>
                                     <p>a. INSURED'S DATE OF BIRTH</p>
                                     <v-row>
-                                        <v-col 
+                                        <v-col
                                             cols="2"
                                             md="2"
                                             sm="2"
@@ -578,7 +578,7 @@
                                             <p>MM</p>
                                             <v-text-field v-model="number11.a.mm" placeholder="mm" type="text" :hide-details = true :value="`${number11.a.mm}`"></v-text-field>
                                         </v-col>
-                                        <v-col 
+                                        <v-col
                                             cols="1"
                                             md="1"
                                             sm="1"
@@ -624,7 +624,7 @@
                                                     >
                                                     </v-checkbox>
                                                 </div>
-                                                
+
                                             </v-row>
                                         </v-col>
                                     </v-row>
@@ -704,7 +704,7 @@
                             <span class="f-11 ml-auto"><b>If yes</b>, return to and complete item 9 a-d</span>
                         </div>
                     </div>
-                    
+
                 </v-col>
             </v-row>
             <!-- Line 7 -->
@@ -713,7 +713,7 @@
                     cols="8"
                     sm="8"
                     md="8"
-                >   
+                >
                     <b>READ BACK OF FORM BEFORE COMPLETING & SIGNING THIS FORM</b>
                     <p>12. PATIENT'S OR AUTHORIZED PERSON'S SIGNATURE I authorize the release of any medical or other information necessary to process this claim. I also request payment of government benefits either to myself or to the party who accepts assignment below</p>
                     <div class="d-flex align-center">
@@ -764,7 +764,7 @@
                                 <v-col cols="7" md = '7' sm = '7'>
                                     <p>14. DATE OF CURRENT:</p>
                                     <v-row>
-                                        <v-col 
+                                        <v-col
                                             cols="2"
                                             md="2"
                                             sm="2"
@@ -773,7 +773,7 @@
                                             <p>MM</p>
                                             <v-text-field v-model="number14.mm" placeholder="mm" type="text" :hide-details = true :value="`${number14.mm}`"></v-text-field>
                                         </v-col>
-                                        <v-col 
+                                        <v-col
                                             cols="2"
                                             md="2"
                                             sm="2"
@@ -819,7 +819,7 @@
                                                     >
                                                     </v-checkbox>
                                                 </div>
-                                                
+
                                             </v-row>
                                         </v-col>
                                     </v-row>
@@ -840,7 +840,7 @@
                         >
                             <p>15. IF PATIENT HAS HAD SAME OR SIMILAR ILLNESS</p>
                             <v-row align="center">
-                                <v-col 
+                                <v-col
                                     cols="4"
                                     md="4"
                                     sm="4"
@@ -848,7 +848,7 @@
                                 >
                                     <span>GIVE FIRST DATE</span>
                                 </v-col>
-                                <v-col 
+                                <v-col
                                     cols="2"
                                     md="2"
                                     sm="2   "
@@ -857,7 +857,7 @@
                                     <p>MM</p>
                                     <v-text-field v-model="number15.mm" placeholder="mm" type="text" :hide-details = true :value="`${number15.mm}`"></v-text-field>
                                 </v-col>
-                                <v-col 
+                                <v-col
                                     cols="2"
                                     md="2"
                                     sm="2"
@@ -891,7 +891,7 @@
                         <v-row>
                             <v-col cols="6" md='6' sm='6'>
                                 <v-row align="center">
-                                    <v-col 
+                                    <v-col
                                         cols="4"
                                         md="4"
                                         sm="4"
@@ -899,7 +899,7 @@
                                     >
                                         <span>FROM</span>
                                     </v-col>
-                                    <v-col 
+                                    <v-col
                                         cols="2"
                                         md="2"
                                         sm="2   "
@@ -908,7 +908,7 @@
                                         <p>MM</p>
                                         <v-text-field v-model="number16.from.mm" placeholder="mm" type="text" :hide-details = true :value="`${number16.from.mm}`"></v-text-field>
                                     </v-col>
-                                    <v-col 
+                                    <v-col
                                         cols="2"
                                         md="2"
                                         sm="2"
@@ -930,7 +930,7 @@
                             </v-col>
                             <v-col cols="6" md='6' sm='6'>
                                 <v-row align="center">
-                                    <v-col 
+                                    <v-col
                                         cols="4"
                                         md="4"
                                         sm="4"
@@ -938,7 +938,7 @@
                                     >
                                         <span>TO</span>
                                     </v-col>
-                                    <v-col 
+                                    <v-col
                                         cols="2"
                                         md="2"
                                         sm="2   "
@@ -947,7 +947,7 @@
                                         <p>MM</p>
                                         <v-text-field v-model="number16.to.mm" placeholder="mm" type="text" :hide-details = true :value="`${number16.to.mm}`"></v-text-field>
                                     </v-col>
-                                    <v-col 
+                                    <v-col
                                         cols="2"
                                         md="2"
                                         sm="2"
@@ -969,7 +969,7 @@
                             </v-col>
                         </v-row>
                     </div>
-                    
+
                 </v-col>
             </v-row>
             <!-- Line 9 -->
@@ -1032,7 +1032,7 @@
                         <v-row>
                             <v-col cols="6" md='6' sm='6'>
                                 <v-row align="center">
-                                    <v-col 
+                                    <v-col
                                         cols="4"
                                         md="4"
                                         sm="4"
@@ -1040,7 +1040,7 @@
                                     >
                                         <span>FROM</span>
                                     </v-col>
-                                    <v-col 
+                                    <v-col
                                         cols="2"
                                         md="2"
                                         sm="2   "
@@ -1049,7 +1049,7 @@
                                         <p>MM</p>
                                         <v-text-field v-model="number18.from.mm" placeholder="mm" type="text" :hide-details = true :value="`${number18.from.mm}`"></v-text-field>
                                     </v-col>
-                                    <v-col 
+                                    <v-col
                                         cols="2"
                                         md="2"
                                         sm="2"
@@ -1071,7 +1071,7 @@
                             </v-col>
                             <v-col cols="6" md='6' sm='6'>
                                 <v-row align="center">
-                                    <v-col 
+                                    <v-col
                                         cols="4"
                                         md="4"
                                         sm="4"
@@ -1079,7 +1079,7 @@
                                     >
                                         <span>TO</span>
                                     </v-col>
-                                    <v-col 
+                                    <v-col
                                         cols="2"
                                         md="2"
                                         sm="2   "
@@ -1088,7 +1088,7 @@
                                         <p>MM</p>
                                         <v-text-field v-model="number18.to.mm" placeholder="mm" type="text" :hide-details = true :value="`${number18.to.mm}`"></v-text-field>
                                     </v-col>
-                                    <v-col 
+                                    <v-col
                                         cols="2"
                                         md="2"
                                         sm="2"
@@ -1110,11 +1110,11 @@
                             </v-col>
                         </v-row>
                     </div>
-                    
+
                 </v-col>
             </v-row>
             <!-- Line 10 -->
-            <v-row class="bb-1">    
+            <v-row class="bb-1">
                 <v-col
                     cols="8"
                     sm="8"
@@ -1164,7 +1164,7 @@
                             </v-row>
                         </v-col>
                     </v-row>
-                    
+
                 </v-col>
             </v-row>
             <!-- Line 11 -->
@@ -1205,7 +1205,7 @@
                     <v-row>
                         <v-col cols="5" md = '5' sm = '5'>
                             <div class="d-flex flex-row">
-                                
+
                                 <div class="d-flex flex-column">
                                     <p>25. FEDERAL TAX I.D.NUMBER</p>
                                     <v-text-field v-model="number25.value" placeholder="enter" type="text" :hide-details = true :value="`${number25.value}`"></v-text-field>
@@ -1300,7 +1300,7 @@
                     <v-row>
                         <v-col cols="5" md = '5' sm = '5'>
                             <div class="d-flex flex-row">
-                                
+
                                 <div class="d-flex flex-column">
                                     <p>31. SIGNATURE OF PHYSICIAN OR SUPPLIER INCLUDING DEGREES OR CREDENTIALS</p>
                                     <p>(I certify that the statements on the reverse apply to this bill and are made a part thereof.)</p>
@@ -1333,9 +1333,9 @@
                                     </div>
                                 </v-col>
                             </v-row>
-                            
+
                         </v-col>
-                        
+
                     </v-row>
                 </v-col>
 
@@ -1679,9 +1679,9 @@ export default {
             }).catch(() => {
                 this.$toast.error('loading error')
             })
-        
+
     },
-    methods: 
+    methods:
     {
         openHcfa(){
             if(this.currentName === null || this.currentName?.user_uuid === null) return;
@@ -2102,145 +2102,145 @@ export default {
 
         makeXml(){
             let xmlbody = "<?xml version=\"1.0\" encoding=\"utf-8\"?><!DOCTYPE base>\n<base>\n\t";
-            
+
             // Line 1
-            xmlbody = xmlbody + '<number1>\n\t\t<medicare>' + this.number1[0] + 
-                                    '</medicare>\n\t\t<medicaid>' + this.number1[1] + 
-                                    '</medicaid>\n\t\t<sensor>' + this.number1[2] + 
-                                    '</sensor>\n\t\t<memeberid>' + this.number1[3] + 
-                                    '</memeberid>\n\t\t<ssnid>' + this.number1[4] + 
-                                    '</ssnid>\n\t\t<ssn>' + this.number1[5] + 
-                                    '</ssn>\n\t\t<id>' + this.number1[6] + 
-                                    '</id>\n\t\t<number1a>' + this.number1[this.number1.length - 1] + 
+            xmlbody = xmlbody + '<number1>\n\t\t<medicare>' + this.number1[0] +
+                                    '</medicare>\n\t\t<medicaid>' + this.number1[1] +
+                                    '</medicaid>\n\t\t<sensor>' + this.number1[2] +
+                                    '</sensor>\n\t\t<memeberid>' + this.number1[3] +
+                                    '</memeberid>\n\t\t<ssnid>' + this.number1[4] +
+                                    '</ssnid>\n\t\t<ssn>' + this.number1[5] +
+                                    '</ssn>\n\t\t<id>' + this.number1[6] +
+                                    '</id>\n\t\t<number1a>' + this.number1[this.number1.length - 1] +
                                     '</number1a>\n\t</number1>\n\t';
             // Line 2
             xmlbody = xmlbody + '<number2>' + this.number2.patientName + '</number2>\n\t';
-            xmlbody = xmlbody + '<number3>\n\t\t<month>' + this.number3.mm + 
-                                    '</month>\n\t\t<day>' + this.number3.dd + 
-                                    '</day>\n\t\t<year>' + this.number3.yy + 
-                                    '</year>\n\t\t<sex>\n\t\t<male>' + this.number3.sex.male + 
-                                    '</male>\n\t\t\t<female>' + this.number3.sex.female + 
+            xmlbody = xmlbody + '<number3>\n\t\t<month>' + this.number3.mm +
+                                    '</month>\n\t\t<day>' + this.number3.dd +
+                                    '</day>\n\t\t<year>' + this.number3.yy +
+                                    '</year>\n\t\t<sex>\n\t\t<male>' + this.number3.sex.male +
+                                    '</male>\n\t\t\t<female>' + this.number3.sex.female +
                                     '</female>\n\t\t</sex>\n\t</number3>\n\t';
             xmlbody = xmlbody + '<number4>' + this.number4.insuredName + '</number4>\n\t';
             // Line 3
-            xmlbody = xmlbody + '<number5>\n\t\t<patientaddress>' + this.number5.patientAddress + 
-                                    '</patientaddress>\n\t\t<patientcity>' + this.number5.patientCity + 
-                                    '</patientcity>\n\t\t<patientstate>' + this.number5.patientCity + 
-                                    '</patientstate>\n\t\t<patientzipcode>' + this.number5.patientZipcode + 
+            xmlbody = xmlbody + '<number5>\n\t\t<patientaddress>' + this.number5.patientAddress +
+                                    '</patientaddress>\n\t\t<patientcity>' + this.number5.patientCity +
+                                    '</patientcity>\n\t\t<patientstate>' + this.number5.patientCity +
+                                    '</patientstate>\n\t\t<patientzipcode>' + this.number5.patientZipcode +
                                     '</patientzipcode>\n\t\t<patienttelephone>' + this.number5.patientTelephone + '</patienttelephone>\n\t</number5>\n\t';
-            xmlbody = xmlbody + '<number6>\n\t\t<self>' + this.number6[0] + 
-                                    '</self>\n\t\t<supose>' + this.number6[1] + 
-                                    '</supose>\n\t\t<child>' + this.number6[2] + 
+            xmlbody = xmlbody + '<number6>\n\t\t<self>' + this.number6[0] +
+                                    '</self>\n\t\t<supose>' + this.number6[1] +
+                                    '</supose>\n\t\t<child>' + this.number6[2] +
                                     '</child>\n\t\t<other>' + this.number6[3] + '</other>\n\t</number6>\n\t';
-            xmlbody = xmlbody + '<number7>\n\t\t<insuredaddress>' + this.number5.insuredAddress + 
-                                    '</insuredaddress>\n\t\t<insuredcity>' + this.number5.insuredCity + 
-                                    '</insuredcity>\n\t\t<insuredstate>' + this.number5.insuredState + 
-                                    '</insuredstate>\n\t\t<insuredzipcode>' + this.number5.insuredZipcode + 
+            xmlbody = xmlbody + '<number7>\n\t\t<insuredaddress>' + this.number5.insuredAddress +
+                                    '</insuredaddress>\n\t\t<insuredcity>' + this.number5.insuredCity +
+                                    '</insuredcity>\n\t\t<insuredstate>' + this.number5.insuredState +
+                                    '</insuredstate>\n\t\t<insuredzipcode>' + this.number5.insuredZipcode +
                                     '</insuredzipcode>\n\t\t<insuredtelephone>' + this.number5.insuredTelephone + '</insuredtelephone>\n\t</number7>\n\t';
             // Line 4
-            xmlbody = xmlbody + '<number8>\n\t\t<single>' + this.number8[0] + 
-                                    '</single>\n\t\t<married>' + this.number8[1] + 
-                                    '</married>\n\t\t<other>' + this.number8[2] + 
-                                    '</other>\n\t\t<employed>' + this.number8[3] + 
-                                    '</employed>\n\t\t<fulltimestudent>' + this.number8[4] + 
+            xmlbody = xmlbody + '<number8>\n\t\t<single>' + this.number8[0] +
+                                    '</single>\n\t\t<married>' + this.number8[1] +
+                                    '</married>\n\t\t<other>' + this.number8[2] +
+                                    '</other>\n\t\t<employed>' + this.number8[3] +
+                                    '</employed>\n\t\t<fulltimestudent>' + this.number8[4] +
                                     '</fulltimestudent>\n\t\t<parttimestudent>' + this.number8[5] + '</parttimestudent>\n\t</number8>\n\t';
             // Line 5
-            xmlbody = xmlbody + '<number9>\n\t\t<value>' + this.number9.value + 
-                                    '</value>\n\t\t<a>' + this.number9.a + 
-                                    '</a>\n\t\t<b>\n\t\t\t<month>' + this.number9.b.mm + 
-                                    '</month>\n\t\t\t<day>' + this.number9.b.dd + 
-                                    '</day>\n\t\t\t<year>' + this.number9.b.yy + 
-                                    '</year>\n\t\t\t<sex>\n\t\t\t\t<male>' + this.number9.b.sex.male + 
-                                    '</male>\n\t\t\t\t<female>' + this.number9.b.sex.female + 
-                                    '</female>\n\t\t\t</sex>\n\t\t</b>\n\t\t<c>' + this.number9.c + 
+            xmlbody = xmlbody + '<number9>\n\t\t<value>' + this.number9.value +
+                                    '</value>\n\t\t<a>' + this.number9.a +
+                                    '</a>\n\t\t<b>\n\t\t\t<month>' + this.number9.b.mm +
+                                    '</month>\n\t\t\t<day>' + this.number9.b.dd +
+                                    '</day>\n\t\t\t<year>' + this.number9.b.yy +
+                                    '</year>\n\t\t\t<sex>\n\t\t\t\t<male>' + this.number9.b.sex.male +
+                                    '</male>\n\t\t\t\t<female>' + this.number9.b.sex.female +
+                                    '</female>\n\t\t\t</sex>\n\t\t</b>\n\t\t<c>' + this.number9.c +
                                     '</c>\n\t\t<d>' + this.number9.d + '</d>\n\t</number9>\n';
             // Line 6
-            xmlbody = xmlbody + '\t<number10>\n\t\t<value>' + this.number10.value + 
-                                    '</value>\n\t\t<a>\n\t\t\t<yes>' + this.number10.a.yes + 
-                                    '</yes>\n\t\t\t<no>' + this.number10.a.no + 
-                                    '</no>\n\t\t</a>\n\t\t<b>\n\t\t\t<yes>' + this.number10.b.yes + 
-                                    '</yes>\n\t\t\t<no>' + this.number10.b.no + 
-                                    '</no>\n\t\t\t<place>' + this.number10.b.place + 
-                                    '</place>\n\t\t</b>\n\t\t<c>\n\t\t\t<yes>' + this.number10.c.yes + 
+            xmlbody = xmlbody + '\t<number10>\n\t\t<value>' + this.number10.value +
+                                    '</value>\n\t\t<a>\n\t\t\t<yes>' + this.number10.a.yes +
+                                    '</yes>\n\t\t\t<no>' + this.number10.a.no +
+                                    '</no>\n\t\t</a>\n\t\t<b>\n\t\t\t<yes>' + this.number10.b.yes +
+                                    '</yes>\n\t\t\t<no>' + this.number10.b.no +
+                                    '</no>\n\t\t\t<place>' + this.number10.b.place +
+                                    '</place>\n\t\t</b>\n\t\t<c>\n\t\t\t<yes>' + this.number10.c.yes +
                                     '</yes>\n\t\t\t<no>' + this.number10.c.no + '</no>\n\t\t</c>\n\t</number10>\n\t';
             // Line 7
-            xmlbody = xmlbody + '<number11>\n\t\t<value>' + this.number11.value + 
-                                    '</value>\n\t\t<a>\n\t\t\t<month>' + this.number11.a.mm + 
-                                    '</month>\n\t\t\t<day>' + this.number11.a.dd + 
-                                    '</day>\n\t\t\t<year>' + this.number11.a.yy + 
-                                    '</year>\n\t\t\t<sex>\n\t\t\t\t<male>' + this.number11.a.sex.male + 
-                                    '</male>\n\t\t\t\t<female>' + this.number11.a.sex.female + 
-                                    '</female>\n\t\t\t</sex>\n\t\t</a>\n\t\t<b>' + this.number11.b + 
-                                    '</b>\n\t\t<c>' + this.number11.c + 
-                                    '</c>\n\t\t<d>\n\t\t\t<yes>' + this.number11.d.yes + 
+            xmlbody = xmlbody + '<number11>\n\t\t<value>' + this.number11.value +
+                                    '</value>\n\t\t<a>\n\t\t\t<month>' + this.number11.a.mm +
+                                    '</month>\n\t\t\t<day>' + this.number11.a.dd +
+                                    '</day>\n\t\t\t<year>' + this.number11.a.yy +
+                                    '</year>\n\t\t\t<sex>\n\t\t\t\t<male>' + this.number11.a.sex.male +
+                                    '</male>\n\t\t\t\t<female>' + this.number11.a.sex.female +
+                                    '</female>\n\t\t\t</sex>\n\t\t</a>\n\t\t<b>' + this.number11.b +
+                                    '</b>\n\t\t<c>' + this.number11.c +
+                                    '</c>\n\t\t<d>\n\t\t\t<yes>' + this.number11.d.yes +
                                     '</yes>\n\t\t\t<no>' + this.number11.d.yes + '</no>\n\t\t</d>\n\t</number11>\n\t';
             // Line 8
-            xmlbody = xmlbody + '<number12>\n\t\t<signed>' + this.number12.signed + 
-                                    '</signed>\n\t\t<date>' + this.number12.date + 
+            xmlbody = xmlbody + '<number12>\n\t\t<signed>' + this.number12.signed +
+                                    '</signed>\n\t\t<date>' + this.number12.date +
                                     '</date>\n\t</number12>\n\t';
             // Line 9
             xmlbody = xmlbody + '<number13>' + this.number13.value + '</number13>\n\t';
-            
+
             // Line 10
-            xmlbody = xmlbody + '<number14>\n\t\t<month>' + this.number14.mm + 
-                                    '</month>\n\t\t<day>' + this.number14.dd + 
-                                    '</day>\n\t\t<year>' + this.number14.yy + 
-                                    '</year>\n\t\t<sex>\n\t\t\t<male>' + this.number14.sex.male + 
+            xmlbody = xmlbody + '<number14>\n\t\t<month>' + this.number14.mm +
+                                    '</month>\n\t\t<day>' + this.number14.dd +
+                                    '</day>\n\t\t<year>' + this.number14.yy +
+                                    '</year>\n\t\t<sex>\n\t\t\t<male>' + this.number14.sex.male +
                                     '</female>\n\t\t</sex>\n\t</number14>\n\t';
-            
+
             // Line 11
-            xmlbody = xmlbody + '<number15>\n\t\t<month>' + this.number15.mm + 
-                                    '</month>\n\t\t<day>' + this.number15.dd + 
-                                    '</day>\n\t\t<year>' + this.number15.yy + 
+            xmlbody = xmlbody + '<number15>\n\t\t<month>' + this.number15.mm +
+                                    '</month>\n\t\t<day>' + this.number15.dd +
+                                    '</day>\n\t\t<year>' + this.number15.yy +
                                     '</year>\n\t</number15>\n\t';
 
             // Line 12
-            xmlbody = xmlbody + '<number16>\n\t\t<from>\n\t\t\t<month>' + this.number16.from.mm + 
-                                    '</month>\n\t\t\t<day>' + this.number16.from.dd + 
-                                    '</day>\n\t\t\t<year>' + this.number16.from.yy + 
-                                    '</year>\n\t\t</from>\n\t\t<to>\n\t\t\t<month>' + this.number16.to.mm + 
-                                    '</month>\n\t\t\t<day>' + this.number16.to.dd + 
-                                    '</day>\n\t\t\t<year>' + this.number16.to.yy + 
+            xmlbody = xmlbody + '<number16>\n\t\t<from>\n\t\t\t<month>' + this.number16.from.mm +
+                                    '</month>\n\t\t\t<day>' + this.number16.from.dd +
+                                    '</day>\n\t\t\t<year>' + this.number16.from.yy +
+                                    '</year>\n\t\t</from>\n\t\t<to>\n\t\t\t<month>' + this.number16.to.mm +
+                                    '</month>\n\t\t\t<day>' + this.number16.to.dd +
+                                    '</day>\n\t\t\t<year>' + this.number16.to.yy +
                                     '</year>\n\t\t</to>\n\t</number16>\n\t';
-            
+
             // Line 13
-            xmlbody = xmlbody + '<number17>\n\t\t<value>' + this.number17.value + 
-                                    '</value>\n\t\t<a>\n\t\t\t<first>' + this.number17.value + 
-                                    '</first>\n\t\t\t<second>' + this.number17.a.first + 
-                                    '</second>\n\t\t</a>\n\t\t<b>' + this.number17.b + 
+            xmlbody = xmlbody + '<number17>\n\t\t<value>' + this.number17.value +
+                                    '</value>\n\t\t<a>\n\t\t\t<first>' + this.number17.value +
+                                    '</first>\n\t\t\t<second>' + this.number17.a.first +
+                                    '</second>\n\t\t</a>\n\t\t<b>' + this.number17.b +
                                     '</b>\n\t</number17>\n\t';
-            
+
             // Line 14
-            xmlbody = xmlbody + '<number18>\n\t\t<from>\n\t\t\t<month>' + this.number18.from.mm + 
-                                    '</month>\n\t\t\t<day>' + this.number18.from.dd + 
-                                    '</day>\n\t\t\t<year>' + this.number18.from.yy + 
-                                    '</year>\n\t\t</from>\n\t\t<to>\n\t\t\t<month>' + this.number18.to.mm + 
-                                    '</month>\n\t\t\t<day>' + this.number18.to.dd + 
-                                    '</day>\n\t\t\t<year>' + this.number18.to.yy + 
+            xmlbody = xmlbody + '<number18>\n\t\t<from>\n\t\t\t<month>' + this.number18.from.mm +
+                                    '</month>\n\t\t\t<day>' + this.number18.from.dd +
+                                    '</day>\n\t\t\t<year>' + this.number18.from.yy +
+                                    '</year>\n\t\t</from>\n\t\t<to>\n\t\t\t<month>' + this.number18.to.mm +
+                                    '</month>\n\t\t\t<day>' + this.number18.to.dd +
+                                    '</day>\n\t\t\t<year>' + this.number18.to.yy +
                                     '</year>\n\t\t</to>\n\t</number18>\n\t';
 
             // Line 15
             xmlbody = xmlbody + '<number19>' + this.number19.value + '</number19>\n\t';
-            
+
             // Line 16
-            xmlbody = xmlbody + '<number20>\n\t\t<yes>' + this.number20.yes + 
-                                    '</yes>\n\t\t<no>' + this.number20.no + 
-                                    '</no>\n\t\t<charges>\n\t\t\t<first>' + this.number20.charges.first + 
-                                    '</first>\n\t\t\t<seconde>' + this.number20.charges.second + 
+            xmlbody = xmlbody + '<number20>\n\t\t<yes>' + this.number20.yes +
+                                    '</yes>\n\t\t<no>' + this.number20.no +
+                                    '</no>\n\t\t<charges>\n\t\t\t<first>' + this.number20.charges.first +
+                                    '</first>\n\t\t\t<seconde>' + this.number20.charges.second +
                                     '</seconde>\n\t\t</charges>\n\t</number20>\n\t';
 
 
             // Line 17
-            xmlbody = xmlbody + '<number25>\n\t\t<value>' + this.number25.value + 
-                                    '</value>\n\t\t<ssn>' + this.number25.ssn + 
+            xmlbody = xmlbody + '<number25>\n\t\t<value>' + this.number25.value +
+                                    '</value>\n\t\t<ssn>' + this.number25.ssn +
                                     '</ssn>\n\t\t<ein>' + this.number25.ein + '</ein>\n\t</number25>\n\t';
 
             // Line 18
             xmlbody = xmlbody + '<number26>' + this.number26.value + '</number26>\n\t';
 
             // Line 19
-            xmlbody = xmlbody + '<number27>\n\t\t<yes>' + this.number27.yes + 
-                                    '</yes>\n\t\t<no>' + this.number12.no + 
+            xmlbody = xmlbody + '<number27>\n\t\t<yes>' + this.number27.yes +
+                                    '</yes>\n\t\t<no>' + this.number12.no +
                                     '</no>\n\t</number27>\n\t';
 
             // Line 20
@@ -2256,14 +2256,14 @@ export default {
             xmlbody = xmlbody + '<number31>' + this.number31.value + '</number31>\n\t';
 
             // Line 24
-            xmlbody = xmlbody + '<number32>\n\t\t<value>' + this.number32.value + 
-                                    '</value>\n\t\t<a>' + this.number32.a + 
+            xmlbody = xmlbody + '<number32>\n\t\t<value>' + this.number32.value +
+                                    '</value>\n\t\t<a>' + this.number32.a +
                                     '</a>\n\t\t<b>' + this.number32.b + '</b>\n\t</number32>\n\t';
 
 
             // Line 25
-            xmlbody = xmlbody + '<number33>\n\t\t<value>' + this.number33.value + 
-                                    '</value>\n\t\t<a>' + this.number33.a + 
+            xmlbody = xmlbody + '<number33>\n\t\t<value>' + this.number33.value +
+                                    '</value>\n\t\t<a>' + this.number33.a +
                                     '</a>\n\t\t<b>' + this.number33.b + '</b>\n\t</number33>\n\t';
 
             xmlbody += "</base>\n";
@@ -2271,7 +2271,6 @@ export default {
         },
 
         export2xml(){
-            console.log('save')
             const data = this.makeXml();
             if(data)
                 this.download(data,(new Date().getTime())+'.xml','application/octet-stream');
@@ -2299,9 +2298,9 @@ export default {
 
         },
         savehcfa(){
-            
+
             this.created();
-           
+
         }
     }
 
@@ -2332,7 +2331,7 @@ export default {
     }
 
     .p-none{
-    padding: 0px; 
+    padding: 0px;
     }
 
     .block{
@@ -2369,7 +2368,7 @@ export default {
     .w-25{
         width: 25;
     }
-        
+
 
     .custome-input input{
         margin: 0px;

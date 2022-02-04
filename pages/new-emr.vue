@@ -352,7 +352,6 @@ export default {
       this.saveDraft('bp')
     },
     userSearch: debounce(function (v) {
-      console.log('Searching users...')
       if (validate(v)) {
         // The professional selected a valid user.
         this.saveDraft('user')
@@ -469,8 +468,6 @@ export default {
     },
     putData(name, value) {
 
-      console.log('Put', name, this[name])
-
       const values = this[name]
       let v = value || values[name]
       if (!v) {
@@ -531,8 +528,6 @@ export default {
     handleSubmit() {
       console.log('Handle submit')
       this.$refs.form.validate()
-
-      console.log('The date is --->', this.picker)
 
       if (this.valid) {
         const values = {
