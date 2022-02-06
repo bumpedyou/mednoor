@@ -97,7 +97,12 @@
           <div class="main-w-content-x">
             <div class="gallery-w">
               <div v-for="(f, i) in convFiles" :key="i" class="gallery-item-w">
-                <p class="gi-w-text-1">
+                <p class="gi-w-text-1 top">
+                  <!--
+                  <span>
+                    <v-icon class="ml-3" dark @click="thumbnailDetail()">mdi-window-maximize</v-icon>
+                  </span>
+                  -->
                   <a target='_blank' :href='filePath(f.file_name)' :download='filePath(f.file_name)' style="text-decoration: underline !important">
                     {{ f.file_title }}
                   </a>
@@ -105,6 +110,13 @@
                 <p class="gi-w-text-1">
                   {{f.file_description}}
                 </p>
+                <div class="file-thumbnail">
+                  <img v-if="isImage(f.file_name)" :src="filePath(f.file_name)" alt="File"/>
+                  <span v-else>.{{getExt(f.file_name)}}</span>
+                </div>
+                <div class="date-w">
+                  {{dateString(f.mess_date)}} {{hour(f.mess_date)}}
+                </div>
               </div>
             </div>
           </div>
@@ -389,6 +401,13 @@ export default {
     setInterval(this.getNow, 1000);
   },
   methods: {
+    isImage(s){
+      const e = this.getExt(s).toLowerCase()
+      return e === 'jpg' || e === 'jpeg' || e === 'png' || e === 'gif'
+    },
+    getExt(s){
+      return s.split('.').pop()
+    },
     removeFile() {
       this.$refs.fileInput.value = ""
       this.$refs.fileInput.dispatchEvent(new Event('change'))
@@ -864,28 +883,44 @@ export default {
   display: flex
   flex-wrap: wrap
   .gallery-item-w
-    padding: 6px
+    padding: 0
     display: block
     flex-grow: 2
     width: 120px
-    height: 120px
     font-size: 8px !important
     box-shadow: 0 3px 6px #ccc
     margin-bottom: 6px
     text-align: center
-    margin-right: 6px
+    margin-right: 9px
     .gi-w-text-1
       font-size: 9px !important
       white-space: nowrap
       overflow: hidden
-      text-overflow: clip
+      text-overflow: ellipsis
+      padding: 3px
+    .gi-w-text-1.top
+      background-color: #333
+      padding: 0.6rem
+      a
+        color: #fff !important
+    .file-thumbnail
+      display: block
+      margin: 0 auto
+      max-width: 120px
+      border: 1px solid #eee
+      img
+        max-width: 100%
+        max-height: 100px
+      span
+        font-size: 3em
+    .date-w
+      padding: 3px
 
 
 @media screen and (min-width: $md)
   .gallery-w
     .gallery-item-w
       width: 200px
-      height: 200px
   .emoji-picker
     bottom: 110px
     margin-left: 30px
