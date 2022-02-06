@@ -22,10 +22,13 @@
         />
       </div>
     </div>
+
     <div class='video-controls'>
+      <!--
       <div class="clickable" @click="saveVideo">
         <v-icon >mdi-content-save</v-icon>
       </div>
+      -->
     </div>
   </div>
 </template>

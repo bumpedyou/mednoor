@@ -62,7 +62,7 @@
               </v-btn>
             </div>
             <div v-else>
-              <span v-if="isSmall">
+              <span v-if="isSmall && !isLoggedIn">
                 <v-icon>mdi-menu</v-icon>
               </span>
               <span v-else-if="$auth.user.last_name">

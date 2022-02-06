@@ -12,7 +12,7 @@
           <img :src='filePath(msg.file_name)' alt='chat-img' class='img-fluid'>
         </span>
         <span v-else>
-          <a target='_blank' :href='filePath(msg.file_name)' :download='filePath(msg.file_name)'>
+          <a target='_blank' :href='filePath(msg.file_name)' :download='filePath(msg.file_name)' style="text-decoration: underline !important">
             {{ msg.file_title }}
           </a>
         </span>

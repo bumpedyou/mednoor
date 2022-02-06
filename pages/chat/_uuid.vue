@@ -9,7 +9,110 @@
       <div v-if="show_video" class="video-control" @click="stopVideo">
         <v-icon>mdi-close</v-icon>
       </div>
+      <!--
       <video-call ref="videoRef" :close="stopVideo"></video-call>
+      -->
+      <v-dialog
+        v-model="dialog"
+        fullscreen
+        hide-overlay
+        transition="dialog-bottom-transition"
+      >
+        <v-card>
+          <v-toolbar
+            dark
+            color="primary"
+          >
+            <v-btn
+              icon
+              dark
+              @click="dialog = false"
+            >
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+            <v-toolbar-title>Upload a File</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-toolbar-items>
+              <v-btn
+                dark
+                text
+                @click="dialog = false"
+              >
+                Close
+              </v-btn>
+            </v-toolbar-items>
+          </v-toolbar>
+          <v-list
+            three-line
+            subheader
+          >
+          </v-list>
+          <v-divider></v-divider>
+          <v-list
+            three-line
+            subheader
+          >
+            <v-subheader>Select a File</v-subheader>
+            <v-list-item>
+              <div v-if="fileName" class="file-name">
+                <div>
+                  {{ fileName }}
+                  <v-icon color="error" class="ml-3 clickable" @click="removeFile">mdi-close</v-icon>
+                </div>
+                <div>
+                </div>
+              </div>
+              <label v-else for='file' class="clickable file-upload-box-w">
+                <v-icon>mdi-upload</v-icon>
+                Upload
+              </label>
+            </v-list-item>
+            <v-list-item class="mt-3">
+              <v-text-field v-model="fileTitle" label="Title" placeholder="Title"></v-text-field>
+            </v-list-item>
+            <v-list-item class="mt-3">
+              <v-textarea v-model="description" label="Description" placeholder="Description" filled></v-textarea>
+            </v-list-item>
+            <v-list-item v-if="false">
+              <div class='upload-container flex-center'>
+                <small class='mr-1 text-muted'>{{ fileName }}</small>
+                <v-progress-linear :value='umUploadProgress' class="mx-3"></v-progress-linear>
+              </div>
+            </v-list-item>
+            <v-list-item>
+              <v-btn color='error' small tile @click='cancelUpload'>
+                <v-icon>mdi-close</v-icon>
+                Cancel
+              </v-btn>
+              <v-btn small tile color='primary' @click='uploadFile'>
+                <v-icon>mdi-upload</v-icon>
+                {{ $t('upload') }}
+              </v-btn>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-dialog>
+      <div class="left-panel">
+        <div class="main-container-w">
+          <div class="main-w-content-x">
+            <div class="gallery-w">
+              <div v-for="(f, i) in convFiles" :key="i" class="gallery-item-w">
+                <p class="gi-w-text-1">
+                  <a target='_blank' :href='filePath(f.file_name)' :download='filePath(f.file_name)' style="text-decoration: underline !important">
+                    {{ f.file_title }}
+                  </a>
+                </p>
+                <p class="gi-w-text-1">
+                  {{f.file_description}}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class='w-controls' @click="dialog=true">
+          <v-icon>mdi-upload</v-icon>
+        </div>
+      </div>
     </div>
     <div ref='chatView' class='chat-view'>
       <div ref='chatBox' class='chat-box-wrapper'>
@@ -35,7 +138,9 @@
               <div class='mr-1'>
                 {{ professionalName }}
               </div>
+              <!--
               <v-icon v-if="view === 'professional'" class="mx-1" @click='showVideo'>mdi-video</v-icon>
+              -->
               <v-icon class="mx-1" @click='leaveChat'>mdi-chevron-left</v-icon>
             </div>
             <div id='messages' ref='messages' :key='messages.length' class='message-container-100'>
@@ -44,18 +149,6 @@
           </div>
         </div>
         <typing-indicator :value='toIsTyping'></typing-indicator>
-        <div v-if='fileName' class='upload-container'>
-          <small class='mr-1 text-muted'>{{ fileName }}</small>
-          <v-progress-linear :value='umUploadProgress'></v-progress-linear>
-          <v-btn color='error' small tile @click='cancelUpload'>
-            <v-icon>mdi-close</v-icon>
-            Cancel
-          </v-btn>
-          <v-btn small tile type='primary' @click='uploadFile'>
-            <v-icon>mdi-upload</v-icon>
-            {{ $t('upload') }}
-          </v-btn>
-        </div>
         <VEmojiPicker v-if='showEmojiPicker' class="emoji-picker" @select="selectEmoji"/>
         <div class='chat-controls'>
           <div class="mr-1">
@@ -65,9 +158,6 @@
           <div class='chat-multiple-controls'>
             <v-icon v-if='!isUser' class="mx-1" @click='askSavePDF'>mdi-content-save</v-icon>
             <input id='file' ref='fileInput' type='file' style='opacity: 0; display: none' @change='fileChange'/>
-            <label for='file' class="clickable">
-              <v-icon class="mx-1">mdi-attachment</v-icon>
-            </label>
             <v-icon class="mx-1 clickable" @click='sendMessage(null)'>mdi-send</v-icon>
           </div>
         </div>
@@ -121,19 +211,21 @@ import chatMixin from "~/mixins/chatMixin";
 import authMixin from "~/mixins/authMixin";
 import breakpoints from "~/mixins/breakpoints";
 import RequestModal from "~/components/RequestModal";
-import VideoCall from "~/components/VideoCall";
 import ProfilePicture from "~/components/ProfilePicture";
 import dateMixin from "~/mixins/dateMixin";
 import ConfirmDialog from "~/components/ConfirmDialog";
 
 export default {
   name: "Uuid",
-  components: {ConfirmDialog, ChatMessages, TypingIndicator, RequestModal, VideoCall, ProfilePicture, VEmojiPicker},
+  components: {ConfirmDialog, ChatMessages, TypingIndicator, RequestModal, ProfilePicture, VEmojiPicker},
   mixins: [listenMixin, userRoleMixin, userUpdatedMixin, uploadMixin, chatMixin, authMixin, breakpoints, chatMixin, dateMixin],
   layout: 'new-chat',
   middleware: ['authenticated', 'verified', 'pin-set', 'view-set'],
   data() {
     return {
+      convFiles: [],
+      description: '',
+      dialog: false,
       showEmojiPicker: false,
       visible: false,
       confirmLoading: false,
@@ -141,6 +233,7 @@ export default {
       messages: [],
       file: null,
       fileName: '',
+      fileTitle: '',
       allowed: false,
       messagesScrollHeight: 0,
       updateIdx: 0,
@@ -248,6 +341,14 @@ export default {
       return this.$route.query
     }
   },
+  watch: {
+    fileName(s) {
+      this.fileTitle = s
+    },
+    file(s) {
+      console.log('File has changed.', s)
+    }
+  },
   mounted() {
     this.getChats()
     this.run_once(this.listen)
@@ -288,6 +389,10 @@ export default {
     setInterval(this.getNow, 1000);
   },
   methods: {
+    removeFile() {
+      this.$refs.fileInput.value = ""
+      this.$refs.fileInput.dispatchEvent(new Event('change'))
+    },
     stopAudio() {
       if (this.audio) {
         this.audio.currentTime = 0
@@ -372,11 +477,15 @@ export default {
         const data = new FormData()
         data.append('file', file[0])
 
+        data.append('title', this.fileTitle)
+        data.append('description', this.description)
+
         this.$api.post('/file', data, {
           onUploadProgress: (evt) => {
             this.onProgress(evt)
           }
         }).then(({data}) => {
+          console.log('File uploaded')
           this.fileName = 0
           this.umUploadProgress = 0
           const opts = {
@@ -391,6 +500,7 @@ export default {
           this.messages.push(opts)
           this.sendMessage(opts)
         }).catch((err) => {
+          console.log(err)
           this.umUploadProgress = 0
           this.$refs.rmodal.$emit('error', err)
         }).finally(() => {
@@ -405,6 +515,8 @@ export default {
       const file = f.target.value
       if (file) {
         this.fileName = file.split('\\').pop().split('/').pop()
+      } else {
+        this.fileName = ''
       }
     },
     showVideo() {
@@ -436,7 +548,6 @@ export default {
     stopVideo() {
       this.show_video = false
       if (this.view === 'professional') {
-        console.log(this.videoRoomId)
         this.socket.emit('stop-video', {
           from: this.myID,
           to: this.to,
@@ -543,7 +654,6 @@ export default {
       this.to = uuid
       this.messages = []
       if (this.myID && uuid) {
-        console.log('Get conversation with id -->', this.myID)
         this.$api.get('/conversation/id/' + this.myID + '/' + uuid).then(({data}) => {
           if (data.conversationId && data.conversationId !== -1) {
             this.$api.get('/conversation/messages/' + data.conversationId).then(({data}) => {
@@ -557,7 +667,14 @@ export default {
             }).catch((e) => {
               alert(e)
             })
-          }else{
+            this.$api.get('/conversation/messages/files/' + data.conversationId).then(({data})=>{
+              this.convFiles = data
+            }).catch((e) => {
+              console.log('Unable to get the files of the conversation')
+              console.log(e)
+            })
+
+          } else {
             this.$refs.rmodal.$emit('error', 'Conversation not found')
           }
         }).catch((e) => {
@@ -592,6 +709,14 @@ export default {
 
 .chat-content-top-bar
   background-color: #fff
+
+.file-upload-box-w
+  width: 100px
+  height: 100px
+  border: 1px dashed $mdn-primary
+  display: flex
+  justify-content: center
+  align-items: center
 
 .chats-overlay
   position: fixed
@@ -734,7 +859,33 @@ export default {
   width: 100%
   height: 100%
 
+.gallery-w
+  width: 100%
+  display: flex
+  flex-wrap: wrap
+  .gallery-item-w
+    padding: 6px
+    display: block
+    flex-grow: 2
+    width: 120px
+    height: 120px
+    font-size: 8px !important
+    box-shadow: 0 3px 6px #ccc
+    margin-bottom: 6px
+    text-align: center
+    margin-right: 6px
+    .gi-w-text-1
+      font-size: 9px !important
+      white-space: nowrap
+      overflow: hidden
+      text-overflow: clip
+
+
 @media screen and (min-width: $md)
+  .gallery-w
+    .gallery-item-w
+      width: 200px
+      height: 200px
   .emoji-picker
     bottom: 110px
     margin-left: 30px
@@ -810,9 +961,6 @@ export default {
   .chats-list.show-video
     width: 50% !important
 
-    .video-control
-// display: none !important
-
 
 .saving-pdf
   .chat-content
@@ -864,5 +1012,91 @@ export default {
     font-weight: bold
     color: red
     font-size: 1.9rem
+
+
+.left-panel
+  display: flex !important
+  flex-direction: column !important
+  flex-grow: 1
+  width: 100% !important
+
+  > div
+    display: flex
+    flex: 1
+
+  .w-controls
+    position: fixed
+    left: 0
+    bottom: 0
+    width: 100%
+    background: #fff
+    border-top: 1px solid $mdn-super-light-grey
+    box-shadow: inset 0 1px 3px $mdn-super-light-grey
+    padding: 0.5rem
+    height: 60px
+    display: flex
+    align-items: center
+    justify-content: center
+
+    &:hover
+      cursor: pointer
+
+      i
+        color: $mdn-primary
+
+  .main-container-w
+    width: 50%
+    position: fixed
+    bottom: 60px
+    top: 100px
+    overflow-y: auto
+    padding: 0.6rem
+
+    overflow-x: hidden
+    display: flex
+    flex-wrap: wrap
+    ::-webkit-scrollbar
+      width: 10px
+
+    /* Track */
+    ::-webkit-scrollbar-track
+      background: #f1f1f1
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb
+      background: #888
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover
+      background: #555
+
+    .main-w-content
+      width: 50%
+      min-width: 300px
+      height: fit-content
+
+@media screen and (min-width: $md)
+  .left-panel
+    flex-direction: row
+
+    .w-controls
+      width: 50%
+      right: 50%
+
+.main-w-content.zoom
+  position: fixed
+  top: 50px
+  bottom: 60px
+  padding: 1px
+  align-content: center
+  height: calc(100% - 110px)
+  display: flex
+  right: 0
+  width: 100% !important
+  line-height: 0
+  z-index: 1000
+  background: white
+
+
 
 </style>
