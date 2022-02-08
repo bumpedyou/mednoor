@@ -48,7 +48,11 @@
           >
           </v-list>
           <v-divider></v-divider>
+          <div v-if="uploadingFile" class="pa-9 ma-3 flex-center">
+            <v-progress-linear :value="umUploadProgress"></v-progress-linear>
+          </div>
           <v-list
+            v-else
             three-line
             subheader
           >
@@ -96,28 +100,61 @@
         <div class="main-container-w">
           <div class="main-w-content-x">
             <div class="gallery-w">
-              <div v-for="(f, i) in convFiles" :key="i" class="gallery-item-w">
-                <p class="gi-w-text-1 top">
-                  <!--
-                  <span>
-                    <v-icon class="ml-3" dark @click="thumbnailDetail()">mdi-window-maximize</v-icon>
-                  </span>
-                  -->
-                  <a target='_blank' :href='filePath(f.file_name)' :download='filePath(f.file_name)' style="text-decoration: underline !important">
-                    {{ f.file_title }}
+              <div v-if="loadingFiles">
+                <v-progress-circular indeterminate></v-progress-circular>
+              </div>
+              <v-data-table v-else :items="convFiles" :headers="[
+                {
+                  text: 'Title',
+                  value: 'file_title',
+                },
+                {
+                  text: 'Description',
+                  value: 'file_description',
+                },
+                {
+                  text: 'File Title',
+                  value: 'file_ext',
+                },
+                {
+                  text: 'Date',
+                  value: 'mess_date'
+                }
+              ]" :search="search">
+                <template #top>
+                  <v-text-field
+                    v-model="search"
+                    label="Search"
+                    class="mx-4"
+                  ></v-text-field>
+                </template>
+                <template #[`item.file_title`] = "{item}">
+                  <a target='_blank' :href='filePath(item.file_name)' :download='filePath(item.file_name)' style="text-decoration: underline !important">
+                    {{ item.file_title }}
                   </a>
-                </p>
+                </template>
+                <template #[`item.file_ext`]="{item}" ]>
+                  {{ getExt(item.file_name) }}
+                </template>
+                <template #[`item.mess_date`] = "{value}">
+                  {{dateString(value)}}<br>
+                  <small class="d-block text-center text-muted">{{hour(value)}}</small>
+                </template>
+              </v-data-table>
+              <!--
+              <div v-for="(f, i) in convFiles" :key="i" class="gallery-item-w">
                 <p class="gi-w-text-1">
-                  {{f.file_description}}
+                  {{ f.file_description }}
                 </p>
                 <div class="file-thumbnail">
                   <img v-if="isImage(f.file_name)" :src="filePath(f.file_name)" alt="File"/>
-                  <span v-else>.{{getExt(f.file_name)}}</span>
+                  <span v-else>.{{ getExt(f.file_name) }}</span>
                 </div>
                 <div class="date-w">
-                  {{dateString(f.mess_date)}} {{hour(f.mess_date)}}
+                  {{ dateString(f.mess_date) }} {{ hour(f.mess_date) }}
                 </div>
               </div>
+              -->
             </div>
           </div>
         </div>
@@ -235,6 +272,10 @@ export default {
   middleware: ['authenticated', 'verified', 'pin-set', 'view-set'],
   data() {
     return {
+      conversationId: null,
+      loadingFiles: false,
+      uploadingFile: false,
+      search: '',
       convFiles: [],
       description: '',
       dialog: false,
@@ -401,11 +442,25 @@ export default {
     setInterval(this.getNow, 1000);
   },
   methods: {
-    isImage(s){
+    loadFiles(){
+      if (this.conversationId){
+        this.loadingFiles = true
+        this.$api.get('/conversation/messages/files/' + this.conversationId).then(({data}) => {
+          this.convFiles = data
+        }).catch((e) => {
+          console.log('Unable to get the files of the conversation')
+          console.log(e)
+          alert(e)
+        }).finally(() => {
+          this.loadingFiles = false
+        })
+      }
+    },
+    isImage(s) {
       const e = this.getExt(s).toLowerCase()
       return e === 'jpg' || e === 'jpeg' || e === 'png' || e === 'gif'
     },
-    getExt(s){
+    getExt(s) {
       return s.split('.').pop()
     },
     removeFile() {
@@ -498,13 +553,13 @@ export default {
 
         data.append('title', this.fileTitle)
         data.append('description', this.description)
-
+        this.uploadingFile = true
         this.$api.post('/file', data, {
           onUploadProgress: (evt) => {
             this.onProgress(evt)
           }
         }).then(({data}) => {
-          console.log('File uploaded')
+          console.log('Data ---->', data)
           this.fileName = 0
           this.umUploadProgress = 0
           const opts = {
@@ -518,11 +573,13 @@ export default {
           }
           this.messages.push(opts)
           this.sendMessage(opts)
+          this.dialog = false
+          this.loadFiles()
         }).catch((err) => {
-          console.log(err)
           this.umUploadProgress = 0
           this.$refs.rmodal.$emit('error', err)
         }).finally(() => {
+          this.uploadingFile = false
         })
       }
     },
@@ -675,6 +732,7 @@ export default {
       if (this.myID && uuid) {
         this.$api.get('/conversation/id/' + this.myID + '/' + uuid).then(({data}) => {
           if (data.conversationId && data.conversationId !== -1) {
+            this.conversationId = data.conversationId
             this.$api.get('/conversation/messages/' + data.conversationId).then(({data}) => {
               this.messages = data
               this.$nextTick(() => {
@@ -686,12 +744,8 @@ export default {
             }).catch((e) => {
               alert(e)
             })
-            this.$api.get('/conversation/messages/files/' + data.conversationId).then(({data})=>{
-              this.convFiles = data
-            }).catch((e) => {
-              console.log('Unable to get the files of the conversation')
-              console.log(e)
-            })
+
+            this.loadFiles()
 
           } else {
             this.$refs.rmodal.$emit('error', 'Conversation not found')
@@ -882,6 +936,7 @@ export default {
   width: 100%
   display: flex
   flex-wrap: wrap
+
   .gallery-item-w
     padding: 0
     display: block
@@ -892,27 +947,34 @@ export default {
     margin-bottom: 6px
     text-align: center
     margin-right: 9px
+
     .gi-w-text-1
       font-size: 9px !important
       white-space: nowrap
       overflow: hidden
       text-overflow: ellipsis
       padding: 3px
+
     .gi-w-text-1.top
       background-color: #333
       padding: 0.6rem
+
       a
         color: #fff !important
+
     .file-thumbnail
       display: block
       margin: 0 auto
       max-width: 120px
       border: 1px solid #eee
+
       img
         max-width: 100%
         max-height: 100px
+
       span
         font-size: 3em
+
     .date-w
       padding: 3px
 
@@ -920,7 +982,7 @@ export default {
 @media screen and (min-width: $md)
   .gallery-w
     .gallery-item-w
-      width: 200px
+      width: 100%
   .emoji-picker
     bottom: 110px
     margin-left: 30px
@@ -1090,18 +1152,25 @@ export default {
     overflow-x: hidden
     display: flex
     flex-wrap: wrap
+
     ::-webkit-scrollbar
       width: 10px
 
     /* Track */
+
+
     ::-webkit-scrollbar-track
       background: #f1f1f1
 
     /* Handle */
+
+
     ::-webkit-scrollbar-thumb
       background: #888
 
     /* Handle on hover */
+
+
     ::-webkit-scrollbar-thumb:hover
       background: #555
 
@@ -1131,7 +1200,6 @@ export default {
   line-height: 0
   z-index: 1000
   background: white
-
 
 
 </style>
