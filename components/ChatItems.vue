@@ -98,10 +98,10 @@ export default {
   flex-direction: row
   flex: 1
   position: relative
-  padding-top: 1rem
+  padding-top: 0.3rem
   > div
     margin-bottom: 0.3rem
-    padding: 0.9rem
+    padding: 0.3rem
   .wrapper-indicator
     position: absolute
     right: -0.6rem

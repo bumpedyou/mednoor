@@ -96,7 +96,6 @@ export default {
           console.log('Does not have a PIN')
           this.$store.commit('pin/setPIN', 'reset1')
           this.$store.commit('pin/setValid', true)
-          console.log(this.$store.state.pin.pin)
           this.$router.push(this.localePath('/change-my-pin'))
         }
 

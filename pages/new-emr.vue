@@ -348,7 +348,6 @@ export default {
       if (this.bp.length > 7) {
         this.bp = this.bp.substr(0, 7)
       }
-      console.log(this.bp)
       this.saveDraft('bp')
     },
     userSearch: debounce(function (v) {

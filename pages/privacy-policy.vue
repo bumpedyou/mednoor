@@ -18,7 +18,6 @@ export default {
     this.$api.get('/content/privacy-policy').then(({ data }) => {
       if (data && data.prpo_text) {
         this.content = data.prpo_text
-        console.log(data)
       }
     })
   }
