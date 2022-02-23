@@ -8,76 +8,88 @@ export default {
       if (this.isAdminOrSuper) {
         i.push(
           {
-            shortTitle: this.$t('home_screen'),
-            cardTitle: this.$t('home_screen'),
-            to: '/home-screen',
-            btnText: this.$t('home_screen'),
-            icon: 'home',
+            title: 'Website',
+            icon: 'application-outline',
             type: 'primary',
             dark: false,
-          },
-          {
-            shortTitle: 'Main Text',
-            cardTitle: 'Main Text',
-            to: '/main-text',
-            btnText: 'Main Text',
-            icon: 'card-text',
-            dark: true,
-          },
+            isOpened: false,
+            children: [
+              {
+                title: 'Sliders',
+                to: '/sliders',
+              },
+              {
+                title: 'Home Screen',
+                to: '/home-screen',
+              },
+              {
+                title: 'Main Text',
+                to: '/main-text',
+              },
+              {
+                title: this.$t('terms_cond'),
+                to: '/update-terms-and-conditions',
+                icon: 'file-sign',
+                type: '#fa8072',
+                dark: true,
+              },
+              {
+                title: this.$t('privacy_p'),
+                to: '/update-privacy-policy',
+                icon: 'shield-lock-outline',
+                type: 'purple',
+                dark: true,
+              },
+              {
+                title: this.$t('pages'),
+                to: '/pages',
+                icon: 'file-outline',
+                type: 'primary',
+              },
+            ],
+          }
+
           /*
           {
-            shortTitle: 'Claims',
-            cardTitle: 'Claims',
+            title: 'Claims',
             to: '/hcfa',
-            btnText: 'Claims',
-            icon: 'card-text',
+            icon: 'card-text-outline',
             dark: true,
           } */
         )
       }
       if (this.isModeratorOrHigher) {
         i.push({
-          shortTitle: this.$t('my_chats'),
-          cardTitle: this.$t('my_chats'),
+          title: this.$t('my_chats'),
           to: '/',
-          btnText: this.$t('my_chats'),
-          icon: 'message',
+          icon: 'message-outline',
           type: 'success',
         })
         i.push({
-          shortTitle: this.$t('list_usrs'),
-          cardTitle: this.$t('list_usrs'),
+          title: this.$t('list_usrs'),
           to: '/users-list',
-          btnText: this.$t('list_usrs'),
-          icon: 'account-group',
+          icon: 'account-group-outline',
           type: 'pink',
           dark: true,
         })
         i.push({
-          shortTitle: this.$t('emr'),
-          cardTitle: this.$t('emr_lng'),
+          title: this.$t('emr'),
           to: '/emr',
-          btnText: this.$t('go_emr'),
           icon: 'medical-bag',
           type: 'purple',
           dark: true,
         })
         i.push({
-            shortTitle: 'Chat Queue',
-            cardTitle: 'Chat Queue',
-            to: '/chat-requests',
-            btnText: 'Chat Queue',
-            icon: 'forum',
-            dark: true,
-          }
-        )
+          title: 'Chat Queue',
+          to: '/chat-requests',
+          icon: 'forum-outline',
+          dark: true,
+        })
         /*
         i.push({
-          shortTitle: 'Claims',
-          cardTitle: 'Claims',
+          title: 'Claims',
           to: '/hcfa',
-          btnText: 'Claims',
-          icon: 'card-text',
+          icon: 'card-text-outline',
           dark: true,
         })
         */
@@ -85,89 +97,51 @@ export default {
       if (this.isAdminOrSuper) {
         i.push(
           {
-            shortTitle: this.$t('terms_cond'),
-            cardTitle: this.$t('terms_cond'),
-            to: '/update-terms-and-conditions',
-            btnText: this.$t('update'),
-            icon: 'file-sign',
-            type: '#fa8072',
-            dark: true,
-          },
-          {
-            shortTitle: this.$t('privacy_p'),
-            cardTitle: this.$t('privacy_p'),
-            to: '/update-privacy-policy',
-            btnText: this.$t('update'),
-            icon: 'shield-lock',
-            type: 'purple',
-            dark: true,
-          },
-          {
-            shortTitle: this.$t('pages'),
-            cardTitle: this.$t('pages'),
-            to: '/pages',
-            btnText: this.$t('pages'),
-            icon: 'file',
-            type: 'primary',
-          },
-          {
-            shortTitle: this.$t('professionals_list'),
-            cardTitle: this.$t('professionals_list'),
+            title: this.$t('professionals_list'),
             to: {
               path: '/users-list',
               query: {
                 view: 'professionals',
               },
             },
-            btnText: this.$t('professionals_list'),
-            icon: 'account-tie',
+            icon: 'account-tie-outline',
             type: 'black',
             dark: true,
           },
           {
-            shortTitle: 'Categories',
-            cardTitle: 'Categories',
+            title: 'Categories',
             to: '/categories',
-            btnText: 'Categories',
-            icon: 'shape',
+            icon: 'shape-outline',
             type: 'primary',
           },
           {
-            shortTitle: 'Specialties',
-            cardTitle: 'Specialties',
+            title: 'Specialties',
             to: '/specialties',
-            btnText: 'Specialties',
             icon: 'box-cutter',
             type: 'success',
           },
           {
-            shortTitle: 'Professional Requests',
-            cardTitle: 'Professional Requests',
+            title: 'Professional Requests',
             to: '/professional-requests',
-            btnText: 'List of requests',
-            icon: 'account-key',
+            icon: 'account-key-outline',
             type: 'pink',
             dark: true,
           },
           {
-            shortTitle: 'Archived users',
-            cardTitle: 'Archived users',
+            title: 'Archived users',
             to: {
               path: '/users-list',
               query: {
                 view: 'archived',
               },
             },
-            btnText: 'Archived users',
-            icon: 'folder-account',
+            icon: 'folder-account-outline',
             type: 'primary',
-          },
+          }
           /*
           {
-            shortTitle: 'Claims',
-            cardTitle: 'Claims',
+            title: 'Claims',
             to: '/hcfa',
-            btnText: 'Claims',
             icon: 'card-text',
             dark: true,
           }

@@ -18,7 +18,7 @@
               <v-card-text>
                 <v-btn :color="o.type" small tile :dark="o.dark">
                   <v-icon class="mr-1">mdi-{{o.icon}}</v-icon>
-                  {{o.cardTitle}}
+                  {{o.title}}
                 </v-btn>
               </v-card-text>
             </div>

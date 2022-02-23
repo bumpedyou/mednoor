@@ -91,7 +91,7 @@
                 <span>
                  {{ item.text }}
                 </span>
-                <v-icon v-if="item.icon">mdi-{{item.icon}}</v-icon>
+                <v-icon v-if="item.icon" color="#333">mdi-{{item.icon}}</v-icon>
               </nuxt-link>
             </li>
           </ul>
@@ -150,7 +150,7 @@ export default {
         if (!this.isAdminOrSuper){
           items.push({
             text: 'Home',
-            icon: 'home',
+            icon: 'home-outline',
             to: '/view-mode'
           })
         }
@@ -159,13 +159,13 @@ export default {
           if (this.isAdmin || this.isSuper || this.isModerator) {
             items.push({
               text: this.$t('dashboard'),
-              icon: 'view-dashboard',
+              icon: 'view-dashboard-outline',
               to: '/dashboard'
             })
           }
           items.push({
             text: this.$t('my_profile'),
-            icon: 'account-circle',
+            icon: 'account-circle-outline',
             to: '/my-profile'
           })
           if (this.isAdmin || this.isSuper) {
@@ -178,7 +178,7 @@ export default {
           if (this.isAdmin || this.isSuper) {
             items.push({
               text: this.$t('professionals_list'),
-              icon: 'account-tie',
+              icon: 'account-tie-outline',
               to: {
                 path: '/users-list',
                 query: {
@@ -190,36 +190,36 @@ export default {
           if (this.isModerator) {
             items.push({
               text: 'Chats queue',
-              icon: 'message',
+              icon: 'message-outline',
               to: '/chat-requests'
             })
             items.push({
               text: this.$t('my_patients'),
-              icon: 'emoticon-sick',
+              icon: 'emoticon-sick-outline',
               to: '/my-patients'
             })
           }
           if (this.isUser) {
             items.push({
               text: 'My appointments',
-              icon: 'contacts',
+              icon: 'contacts-outline',
               to: '/professionals'
             })
           }
           if (this.isLoggedIn) {
             items.push({
               text: this.$t('prev_c_pdf'),
-              icon: 'file',
+              icon: 'file-outline',
               to: '/my-chats'
             })
             items.push({
               text: this.$t('chats'),
-              icon: 'forum',
+              icon: 'forum-outline',
               to: '/'
             })
             items.push({
               text: 'Messenger',
-              icon: 'message-flash',
+              icon: 'message-flash-outline',
               to: {
                 path: '/',
                 query: {
@@ -471,8 +471,8 @@ export default {
       align-items: center
       justify-content: flex-start
       padding: 0.25rem
-      border: 1px solid $mdn-super-light-grey
-
+      color: #000 !important
+      font-size: 0.7em !important
       img
         height: 11px
         margin-right: 0.9rem
@@ -506,7 +506,7 @@ export default {
       width: 200px
       left: auto
       right: 0
-      box-shadow: 0 3px 6px $mdn-light-grey
+      border: 1px solid #ccc
   .md-only
     display: block
 
