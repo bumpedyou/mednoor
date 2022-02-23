@@ -247,7 +247,6 @@
 
 </template>
 <script>
-import RequestModal from '~/components/RequestModal.vue'
 import formMixin from '~/mixins/formMixin'
 
 const debounce = require('lodash.debounce')
@@ -256,9 +255,7 @@ const {validate} = require('uuid');
 
 export default {
   name: 'NewEmr',
-  components: {
-    RequestModal,
-  },
+
   mixins: [formMixin],
   layout: 'dashboard',
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified', 'pin-set'],

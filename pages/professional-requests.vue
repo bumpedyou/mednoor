@@ -59,11 +59,9 @@
 </template>
 <script>
 import listenMixin from "~/mixins/listenMixin";
-import ConfirmDialog from "~/components/ConfirmDialog";
 
 export default {
   name: "ProfessionalRequests",
-  components: {ConfirmDialog},
   mixins: [listenMixin],
   layout: 'dashboard',
   middleware: ['authenticated' , 'verified', 'not-deleted', 'not-blocked', 'admin-or-super'],

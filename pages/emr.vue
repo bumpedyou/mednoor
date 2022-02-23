@@ -118,17 +118,12 @@
 import authMixin from '~/mixins/authMixin'
 import dateMixin from '~/mixins/dateMixin'
 import userRoleMixin from '~/mixins/userRoleMixin'
-import MedDivider from "~/components/MedDivider";
-import ConfirmDialog from "~/components/ConfirmDialog";
 
 const debounce = require('lodash.debounce')
 
 export default {
   name: 'EMR',
-  components: {
-    ConfirmDialog,
-    MedDivider,
-  },
+
   mixins: [dateMixin, userRoleMixin, authMixin],
   layout: 'dashboard',
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified', 'pin-set'],

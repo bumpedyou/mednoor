@@ -38,13 +38,10 @@
 </template>
 
 <script>
-import RequestModal from '~/components/RequestModal'
 
 export default {
   name: "AllowProfessionals",
-  components: {
-    RequestModal
-  },
+
   middleware: ['authenticated', 'verified'],
   data () {
     return {

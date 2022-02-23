@@ -111,8 +111,6 @@
 <script>
 import domtoimage from "dom-to-image";
 import { VEmojiPicker } from 'v-emoji-picker';
-import ChatMessages from "~/components/ChatMessages";
-import TypingIndicator from "~/components/TypingIndicator";
 import listenMixin from "~/mixins/listenMixin";
 import userRoleMixin from "~/mixins/userRoleMixin";
 import userUpdatedMixin from "~/mixins/userUpdatedMixin";
@@ -120,15 +118,13 @@ import uploadMixin from "~/mixins/uploadMixin";
 import chatMixin from "~/mixins/chatMixin";
 import authMixin from "~/mixins/authMixin";
 import breakpoints from "~/mixins/breakpoints";
-import RequestModal from "~/components/RequestModal";
-import VideoCall from "~/components/VideoCall";
-import ProfilePicture from "~/components/ProfilePicture";
 import dateMixin from "~/mixins/dateMixin";
-import ConfirmDialog from "~/components/ConfirmDialog";
 
 export default {
   name: "Uuid",
-  components: {ConfirmDialog, ChatMessages, TypingIndicator, RequestModal, VideoCall, ProfilePicture, VEmojiPicker},
+  components: {
+    VEmojiPicker
+  },
   mixins: [listenMixin, userRoleMixin, userUpdatedMixin, uploadMixin, chatMixin, authMixin, breakpoints, chatMixin, dateMixin],
   layout: 'new-chat',
   middleware: ['authenticated', 'verified', 'pin-set', 'view-set'],
@@ -207,13 +203,10 @@ export default {
       }
       return u
     },
-
     selectedUser() {
       let u = ''
       if (this.to) {
-
         this.moderators.forEach((m) => {
-          console.log('Evaluating allowed --->', m)
           if (m.user_uuid === this.to) {
             this.allowed = m.mypr_allowed
             if (!this.allowed){

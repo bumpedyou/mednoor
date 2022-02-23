@@ -69,13 +69,10 @@
 
 <script>
 import formMixin from '~/mixins/formMixin'
-import RequestModal from '~/components/RequestModal'
 
 export default {
   name: 'AddUser',
-  components: {
-    RequestModal
-  },
+
   mixins: [formMixin],
   layout: 'dashboard',
   middleware: ['authenticated', 'verified', 'not-blocked', 'not-deleted'],

@@ -44,11 +44,9 @@
 
 <script>
 import {mapMutations} from 'vuex'
-import RequestModal from '~/components/RequestModal'
 
 export default {
   name: 'SetNewPin',
-  components: { RequestModal},
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified'],
   data: () =>({
     new_pin: '',

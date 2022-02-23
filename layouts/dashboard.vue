@@ -35,13 +35,9 @@
   </v-app>
 </template>
 <script>
-import Navbar from '~/components/Navbar.vue'
 import dashboardOptionsList from '~/mixins/dashboardOptionsList'
 
 export default {
-  components: {
-    Navbar,
-  },
   mixins: [dashboardOptionsList],
   data() {
     return {

@@ -49,11 +49,9 @@
 </template>
 
 <script>
-import RequestModal from '~/components/RequestModal'
 
 export default {
   name: "JoinProfessionals",
-  components: {RequestModal},
   middleware: ['authenticated', 'verified', 'not-blocked', 'not-deleted'],
   data() {
     return {

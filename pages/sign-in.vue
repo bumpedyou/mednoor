@@ -43,13 +43,10 @@
 </template>
 
 <script>
-import RequestModal from '~/components/RequestModal'
 import breakpoints from '~/mixins/breakpoints'
 
 export default {
-  components: {
-    RequestModal,
-  },
+
   mixins: [breakpoints],
   layout: 'home',
   middleware: ['unauthenticated'],

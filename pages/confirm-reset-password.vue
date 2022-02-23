@@ -51,14 +51,11 @@
 </template>
 
 <script>
-import RequestModal from '~/components/RequestModal'
 
 export default {
   name: 'ConfirmResetPassword',
   auth: false,
-  components: {
-    RequestModal,
-  },
+
   data() {
     return {
       formLayout: 'horizontal',

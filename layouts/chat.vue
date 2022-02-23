@@ -403,7 +403,7 @@ export default {
       this.to = uuid
       this.messages = []
       this.$api.get('/conversation/id/' + this.myID + '/' + uuid).then(({data}) => {
-        if (data.conversationId) {
+        if (data.conversationId && data.conversationId !== -1) {
           this.$api.get('/conversation/messages/' + data.conversationId).then(({data}) => {
             this.messages = data
             this.$nextTick(() => {

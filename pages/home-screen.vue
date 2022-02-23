@@ -60,14 +60,11 @@
 </template>
 
 <script>
-import backgroundItem from '~/components/BackgroundItem.vue'
 import breakpoints from '~/mixins/breakpoints'
 import uploadMixin from '~/mixins/uploadMixin'
 
 export default {
-  components: {
-    backgroundItem
-  },
+
   mixins: [breakpoints, uploadMixin],
   layout: 'dashboard',
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified'],

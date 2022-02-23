@@ -42,21 +42,17 @@
 </template>
 
 <script>
-import RequestModal from '~/components/RequestModal'
 import authMixin from '~/mixins/authMixin'
 import dateMixin from '~/mixins/dateMixin'
 export default {
   name: 'MyChats',
-  components: { RequestModal },
   mixins: [authMixin, dateMixin],
   middleware: ['authenticated', 'verified', 'not-blocked', 'not-deleted', 'pin-set', 'view-set'],
   data (){
     return {
       loading: true,
       items: [],
-      components: {
-        RequestModal
-      },
+
       columns: [
         {
           title: this.$t('chat_w'),

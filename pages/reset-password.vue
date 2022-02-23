@@ -27,12 +27,8 @@
 </template>
 
 <script>
-import RequestModal from '~/components/RequestModal'
 export default {
   name: 'VerifyEmail',
-  components: {
-    RequestModal,
-  },
   data: ()=>({
     loading: false,
     code: '',

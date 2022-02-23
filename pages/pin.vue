@@ -45,14 +45,11 @@
 <script>
 import {mapMutations} from 'vuex'
 import inputMixin from '~/mixins/inputMixin'
-import RequestModal from '~/components/RequestModal'
 import redirectionMixin from '~/mixins/redirectionMixin'
 
 export default {
   name: 'Pin',
-  components: {
-    RequestModal,
-  },
+
   mixins: [inputMixin, redirectionMixin],
   middleware: ['authenticated', 'verified', 'not-blocked', 'not-deleted', 'view-set'],
   data(){

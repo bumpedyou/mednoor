@@ -67,14 +67,10 @@
 </template>
 
 <script>
-import RequestModal from '~/components/RequestModal'
-import MedDivider from "~/components/MedDivider";
-import ConfirmDialog from "~/components/ConfirmDialog";
 
 
 export default {
   name: "Categories",
-  components: {ConfirmDialog, MedDivider, RequestModal},
   layout: 'dashboard',
   middleware: ['authenticated', 'verified', 'not-blocked', 'not-deleted', 'admin-or-super'],
   data() {

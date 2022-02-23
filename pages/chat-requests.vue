@@ -36,19 +36,11 @@
 </template>
 
 <script>
-import RequestDialog from '~/components/RequestModal'
 import dateMixin from '~/mixins/dateMixin'
 import authMixin from '~/mixins/authMixin'
-import MedDivider from "~/components/MedDivider";
-import ConfirmDialog from "~/components/ConfirmDialog";
 
 export default {
   name: 'ChatRequests',
-  components: {
-    ConfirmDialog,
-    MedDivider,
-    RequestDialog
-  },
   mixins: [dateMixin, authMixin],
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified', 'pin-set', 'view-set'],
   data (){

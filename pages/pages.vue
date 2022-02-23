@@ -55,10 +55,7 @@
   </div>
 </template>
 <script>
-import MedDivider from "~/components/MedDivider";
-import ConfirmDialog from "~/components/ConfirmDialog";
 export default {
-  components: {ConfirmDialog, MedDivider},
   layout: 'dashboard',
   middleware: ['authenticated', 'verified', 'not-blocked', 'not-deleted', 'admin-or-super'],
   data() {

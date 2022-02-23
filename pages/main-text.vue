@@ -49,13 +49,9 @@
 </template>
 
 <script>
-import RequestModal from '~/components/RequestModal'
 
 export default {
   name: "MainText",
-  components: {
-    RequestModal,
-  },
   layout: 'dashboard',
   middleware: ['authenticated', 'verified', 'not-blocked', 'not-deleted', 'admin-or-super'],
   data() {

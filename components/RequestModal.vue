@@ -3,7 +3,7 @@
     <v-dialog v-model="localValue" persistent max-width="320px">
       <v-card>
         <v-card-title>
-          {{title}}}
+          {{title}}
         </v-card-title>
         <v-card-text>
           <p>
@@ -44,13 +44,13 @@ export default {
             }else if (r.status === 500){
               this.title = this.$t('int_srv_err') + ' ' + r.status
               this.description = this.$t('isnt_flt')
-            }else if (r.msg){
-              this.description = r.msg
-            }else if (d.msg) {
-              this.description = d.msg
+            }else if (r.message){
+              this.description = r.message
+            }else if (d.message) {
+              this.description = d.message
             }
-          }else if (d.msg){
-            this.description = d.msg
+          }else if (d.message){
+            this.description = d.message
           }else{
             this.description = this.$t('un_err')
           }

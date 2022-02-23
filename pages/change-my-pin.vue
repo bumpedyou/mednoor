@@ -45,10 +45,8 @@
 </template>
 
 <script>
-import RequestModal from '~/components/RequestModal'
 export default {
   name: 'ChangeMyPin',
-  components: { RequestModal },
   middleware: ['authenticated', 'not-blocked', 'verified', 'not-deleted', 'pin-set', 'view-set'],
   data: ()=>({
     current_pin: '',

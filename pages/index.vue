@@ -6,10 +6,8 @@
 
 <script>
 import chatMixin from "~/mixins/chatMixin";
-import ChatItems from "~/components/ChatItems";
 
 export default {
-  components: {ChatItems},
   mixins: [chatMixin],
   layout: 'new-chat',
   middleware: ['authenticated', 'verified', 'view-set', 'pin-set'],
@@ -52,7 +50,7 @@ export default {
       if (!this.to || this.to !== uuid) {
         this.messages = []
         this.$api.get('/conversation/id/' + this.myID + '/' + uuid).then(({ data }) => {
-          if (data.conversationId) {
+          if (data.conversationId && data.conversationId !== -1) {
             this.$api.get('/conversation/messages/' + data.conversationId).then(({ data }) => {
               this.messages = data
               this.$nextTick(() => {

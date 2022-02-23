@@ -36,11 +36,9 @@
 <script>
 import { mapMutations } from 'vuex'
 import inputMixin from '~/mixins/inputMixin'
-import RequestModal from '~/components/RequestModal'
 
 export default {
   name: 'ResetPin',
-  components: { RequestModal },
   mixins: [inputMixin],
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified'],
   data () {

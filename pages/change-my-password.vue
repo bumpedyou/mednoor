@@ -50,12 +50,8 @@
 </template>
 
 <script>
-import RequestModal from '~/components/RequestModal'
 
 export default {
-  components: {
-    RequestModal,
-  },
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified'],
   data() {
     return {

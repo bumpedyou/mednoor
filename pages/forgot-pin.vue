@@ -44,11 +44,9 @@
 </template>
 
 <script>
-import RequestModal from '~/components/RequestModal'
 
 export default {
   name: 'ForgotPin',
-  components: { RequestModal},
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified'],
   data () {
     return {

@@ -170,7 +170,7 @@ export default {
           this.loadingItems = false
         })
     },
-    getChats(addMessages) {
+    getChats() {
       if (this.isLoggedIn) {
         this.loadingItems = true
         if (this.isAdmin) {
@@ -179,9 +179,9 @@ export default {
           this.$api
             .get('/my-professional/my-users/')
             .then(({ data }) => {
+              console.log('Moderators ---> --->', data)
               this.moderators = data
               this.moderatorsSet = true
-              console.log('The moderators are --->', this.moderators)
             })
             .catch((e) => {
               this.$refs.rmodal.$emit('error', e)
@@ -195,7 +195,6 @@ export default {
             .then(({ data }) => {
               this.moderators = data
               this.moderatorsSet = true
-              console.log('The moderators are --->', this.moderators)
             })
             .catch((e) => {
               this.$refs.rmodal.$emit('error', e)

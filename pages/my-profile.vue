@@ -196,19 +196,12 @@
 import userRoleMixin from "~/mixins/userRoleMixin";
 import inputMixin from '~/mixins/inputMixin'
 import authMixin from '~/mixins/authMixin'
-import RequestModal from '~/components/RequestModal'
-import ProfilePicture from '~/components/ProfilePicture'
 import uploadMixin from '~/mixins/uploadMixin'
-import UserAddress from "~/components/UserAddress";
 import addressMixin from "~/mixins/addressMixin";
 
 export default {
   name: "MyProfile",
-  components: {
-    UserAddress,
-    ProfilePicture,
-    RequestModal,
-  },
+
   mixins: [userRoleMixin, inputMixin, authMixin, uploadMixin, addressMixin],
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified', 'view-set'],
   data (){

@@ -37,14 +37,11 @@
 </template>
 
 <script>
-import RequestModal from '~/components/RequestModal'
 
 export default {
   name: 'ForgotPassword',
   auth: false,
-  components: {
-    RequestModal,
-  },
+
   data() {
     return {
       formLayout: 'horizontal',

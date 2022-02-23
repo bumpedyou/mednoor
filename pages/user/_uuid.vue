@@ -90,22 +90,13 @@
 </template>
 
 <script>
-import RequestModal from '~/components/RequestModal'
 import authMixin from '~/mixins/authMixin'
 import dateMixin from '~/mixins/dateMixin'
-import ProfilePicture from '~/components/ProfilePicture'
-import MakeAppointment from "~/components/MakeAppointment";
-import AddMyDoctors from "~/components/AddMyDoctors";
 import addressDisplayMixin from "~/mixins/addressDisplayMixin";
 
 export default {
   name: 'Uuid',
-  components: {
-    AddMyDoctors,
-    MakeAppointment,
-    ProfilePicture,
-    RequestModal
-  },
+
   mixins: [authMixin, dateMixin, addressDisplayMixin],
   data: () => ({
     loading: true,
