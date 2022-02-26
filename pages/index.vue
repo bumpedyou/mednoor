@@ -1,7 +1,10 @@
 <template>
-<div class="mh-100v pa-6">
-    <ChatItems :data='moderators' :selected-chat='to' @open-chat='openChat'></ChatItems>
-</div>
+  <div class="mh-100v pa-6">
+    <div>
+      <v-text-field v-model="search" type="search" filled dense placeholder="Search" label="Search"></v-text-field>
+    </div>
+    <ChatItems :data="filteredModerators" :selected-chat='to' @open-chat='openChat'></ChatItems>
+  </div>
 </template>
 
 <script>
@@ -11,6 +14,10 @@ export default {
   mixins: [chatMixin],
   layout: 'new-chat',
   middleware: ['authenticated', 'verified', 'view-set', 'pin-set'],
+  data: () => ({
+    search: '',
+    filteredModerators: [],
+  }),
   head() {
     return {
       title: this.$t('home'),
@@ -38,10 +45,30 @@ export default {
       ]
     }
   },
+  watch: {
+    moderators(v) {
+      if (Array.isArray(v)) {
+        this.filteredModerators = [...v]
+      }
+    },
+    search(v) {
+      this.filteredModerators = this.moderators.filter((mod) => {
+        console.log('Mod', mod)
+        let fn = [mod.user_first_name, mod.user_last_name].join(' ')
+        if (fn) {
+          fn = fn.toLowerCase()
+          if (fn.includes(v.toLowerCase())) {
+            return mod
+          }
+        }
+        return false
+      })
+    },
+  },
   mounted() {
+    /*
     this.$api.get('/previous-chats/grouped').then(({data})=>{
-      console.log('[index.vue] The grouped chats are --->', data)
-    })
+    }) */
     this.getChats()
   },
   methods: {

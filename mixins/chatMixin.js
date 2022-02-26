@@ -91,10 +91,6 @@ export default {
               mess_date: data.mess_date,
               mess_read: true,
             })
-            console.log('Mark as read.', {
-              from: data.from,
-              to: this.myUserId,
-            })
             this.socket.emit('message-read', {
               from: data.from,
               to: this.myUserId,
@@ -193,7 +189,6 @@ export default {
           this.$api
             .get('/my-professional')
             .then(({ data }) => {
-              this.moderators = data
               this.moderatorsSet = true
             })
             .catch((e) => {

@@ -2,11 +2,13 @@
   <div class="m-footer">
     <v-row>
       <v-col>
+        <!--
         <p class="text-center">
           <nuxt-link :to="localePath('/privacy-policy')">{{$t('privacy_p')}}</nuxt-link>
           -
           <nuxt-link :to="localePath('/terms-and-conditions')">{{$t('terms_cond')}}</nuxt-link>
         </p>
+        -->
         <p class="text-center">Mednoor © {{year}}</p>
       </v-col>
     </v-row>

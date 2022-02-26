@@ -303,7 +303,6 @@ export default {
     this.$api.get('/category').then(({data})=>{
       if (data){
         this.categories = data
-        console.log('Categories --->', data)
         this.getMyRecord()
       }
     }).catch(()=>{

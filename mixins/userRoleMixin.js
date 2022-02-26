@@ -4,7 +4,6 @@ export default {
   mixins: [authMixin],
   computed: {
     view() {
-      console.log(this.$cookies.get('view'))
       return this.$cookies.get('view')
     },
     userRoleTxt() {

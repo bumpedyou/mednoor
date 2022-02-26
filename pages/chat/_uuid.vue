@@ -9,7 +9,159 @@
       <div v-if="show_video" class="video-control" @click="stopVideo">
         <v-icon>mdi-close</v-icon>
       </div>
+      <!--
       <video-call ref="videoRef" :close="stopVideo"></video-call>
+      -->
+      <v-dialog
+        v-model="dialog"
+        fullscreen
+        hide-overlay
+        transition="dialog-bottom-transition"
+      >
+        <v-card>
+          <v-toolbar
+            dark
+            color="primary"
+          >
+            <v-btn
+              icon
+              dark
+              @click="dialog = false"
+            >
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+            <v-toolbar-title>Upload a File</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-toolbar-items>
+              <v-btn
+                dark
+                text
+                @click="dialog = false"
+              >
+                Close
+              </v-btn>
+            </v-toolbar-items>
+          </v-toolbar>
+          <v-list
+            three-line
+            subheader
+          >
+          </v-list>
+          <v-divider></v-divider>
+          <div v-if="uploadingFile" class="pa-9 ma-3 flex-center">
+            <v-progress-linear :value="umUploadProgress"></v-progress-linear>
+          </div>
+          <v-list
+            v-else
+            three-line
+            subheader
+          >
+            <v-subheader>Select a File</v-subheader>
+            <v-list-item>
+              <div v-if="fileName" class="file-name">
+                <div>
+                  {{ fileName }}
+                  <v-icon color="error" class="ml-3 clickable" @click="removeFile">mdi-close</v-icon>
+                </div>
+                <div>
+                </div>
+              </div>
+              <label v-else for='file' class="clickable file-upload-box-w">
+                <v-icon>mdi-upload</v-icon>
+                Upload
+              </label>
+            </v-list-item>
+            <v-list-item class="mt-3">
+              <v-text-field v-model="fileTitle" label="Title" placeholder="Title"></v-text-field>
+            </v-list-item>
+            <v-list-item class="mt-3">
+              <v-textarea v-model="description" label="Description" placeholder="Description" filled></v-textarea>
+            </v-list-item>
+            <v-list-item v-if="false">
+              <div class='upload-container flex-center'>
+                <small class='mr-1 text-muted'>{{ fileName }}</small>
+                <v-progress-linear :value='umUploadProgress' class="mx-3"></v-progress-linear>
+              </div>
+            </v-list-item>
+            <v-list-item>
+              <v-btn color='error' small tile @click='cancelUpload'>
+                <v-icon>mdi-close</v-icon>
+                Cancel
+              </v-btn>
+              <v-btn small tile color='primary' @click='uploadFile'>
+                <v-icon>mdi-upload</v-icon>
+                {{ $t('upload') }}
+              </v-btn>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-dialog>
+      <div class="left-panel">
+        <div class="main-container-w">
+          <div class="main-w-content-x">
+            <div class="gallery-w">
+              <div v-if="loadingFiles">
+                <v-progress-circular indeterminate></v-progress-circular>
+              </div>
+              <v-data-table v-else :items="convFiles" :headers="[
+                {
+                  text: 'Title',
+                  value: 'file_title',
+                },
+                {
+                  text: 'Description',
+                  value: 'file_description',
+                },
+                {
+                  text: 'File Title',
+                  value: 'file_ext',
+                },
+                {
+                  text: 'Date',
+                  value: 'mess_date'
+                }
+              ]" :search="search">
+                <template #top>
+                  <v-text-field
+                    v-model="search"
+                    label="Search"
+                    class="mx-4"
+                  ></v-text-field>
+                </template>
+                <template #[`item.file_title`] = "{item}">
+                  <a target='_blank' :href='filePath(item.file_name)' :download='filePath(item.file_name)' style="text-decoration: underline !important">
+                    {{ item.file_title }}
+                  </a>
+                </template>
+                <template #[`item.file_ext`]="{item}" ]>
+                  {{ getExt(item.file_name) }}
+                </template>
+                <template #[`item.mess_date`] = "{value}">
+                  {{dateString(value)}}<br>
+                  <small class="d-block text-center text-muted">{{hour(value)}}</small>
+                </template>
+              </v-data-table>
+              <!--
+              <div v-for="(f, i) in convFiles" :key="i" class="gallery-item-w">
+                <p class="gi-w-text-1">
+                  {{ f.file_description }}
+                </p>
+                <div class="file-thumbnail">
+                  <img v-if="isImage(f.file_name)" :src="filePath(f.file_name)" alt="File"/>
+                  <span v-else>.{{ getExt(f.file_name) }}</span>
+                </div>
+                <div class="date-w">
+                  {{ dateString(f.mess_date) }} {{ hour(f.mess_date) }}
+                </div>
+              </div>
+              -->
+            </div>
+          </div>
+        </div>
+        <div class='w-controls' @click="dialog=true">
+          <v-icon>mdi-upload</v-icon>
+        </div>
+      </div>
     </div>
     <div ref='chatView' class='chat-view'>
       <div ref='chatBox' class='chat-box-wrapper'>
@@ -21,21 +173,23 @@
                   <profile-picture v-if="isModerator" :user="selectedUserObj" :x-small="true"></profile-picture>
                   <profile-picture v-else :user="$auth.user" :x-small="true"></profile-picture>
                   <span class="ml-3">
-                    {{userName}}
+                    {{ userName }}
                   </span>
                 </div>
               </div>
               <div class='mx-auto'>
                 <small class="d-block text-center date-center mr-3">
-                  {{dateString(new Date())}}
+                  {{ dateString(new Date()) }}
                   <br>
-                  {{hour(timestamp)}}
+                  {{ hour(timestamp) }}
                 </small>
               </div>
               <div class='mr-1'>
                 {{ professionalName }}
               </div>
+              <!--
               <v-icon v-if="view === 'professional'" class="mx-1" @click='showVideo'>mdi-video</v-icon>
+              -->
               <v-icon class="mx-1" @click='leaveChat'>mdi-chevron-left</v-icon>
             </div>
             <div id='messages' ref='messages' :key='messages.length' class='message-container-100'>
@@ -44,19 +198,7 @@
           </div>
         </div>
         <typing-indicator :value='toIsTyping'></typing-indicator>
-        <div v-if='fileName' class='upload-container'>
-          <small class='mr-1 text-muted'>{{ fileName }}</small>
-          <v-progress-linear :value='umUploadProgress'></v-progress-linear>
-          <v-btn color='error' small tile @click='cancelUpload'>
-            <v-icon>mdi-close</v-icon>
-            Cancel
-          </v-btn>
-          <v-btn small tile type='primary' @click='uploadFile'>
-            <v-icon>mdi-upload</v-icon>
-            {{$t('upload')}}
-          </v-btn>
-        </div>
-        <VEmojiPicker v-if='showEmojiPicker' class="emoji-picker" @select="selectEmoji" />
+        <VEmojiPicker v-if='showEmojiPicker' class="emoji-picker" @select="selectEmoji"/>
         <div class='chat-controls'>
           <div class="mr-1">
             <v-icon @click='showEmojiPicker = !showEmojiPicker'>mdi-emoticon-outline</v-icon>
@@ -64,10 +206,7 @@
           <v-text-field v-model='message' placeholder='Type a message' @keyup="imTyping" @keyup.enter='sendMessage(null)'></v-text-field>
           <div class='chat-multiple-controls'>
             <v-icon v-if='!isUser' class="mx-1" @click='askSavePDF'>mdi-content-save</v-icon>
-            <input id='file' ref='fileInput' type='file' style='opacity: 0; display: none' @change='fileChange' />
-            <label for='file' class="clickable">
-              <v-icon class="mx-1">mdi-attachment</v-icon>
-            </label>
+            <input id='file' ref='fileInput' type='file' style='opacity: 0; display: none' @change='fileChange'/>
             <v-icon class="mx-1 clickable" @click='sendMessage(null)'>mdi-send</v-icon>
           </div>
         </div>
@@ -80,7 +219,7 @@
     >
       <v-card>
         <v-card-title class="text-h5">
-          {{callerName}} is calling you...
+          {{ callerName }} is calling you...
         </v-card-title>
         <v-card-text>
           <v-btn
@@ -110,7 +249,12 @@
 
 <script>
 import domtoimage from "dom-to-image";
-import { VEmojiPicker } from 'v-emoji-picker';
+
+
+import {VEmojiPicker} from 'v-emoji-picker';
+import ChatMessages from "~/components/ChatMessages";
+import TypingIndicator from "~/components/TypingIndicator";
+
 import listenMixin from "~/mixins/listenMixin";
 import userRoleMixin from "~/mixins/userRoleMixin";
 import userUpdatedMixin from "~/mixins/userUpdatedMixin";
@@ -118,18 +262,26 @@ import uploadMixin from "~/mixins/uploadMixin";
 import chatMixin from "~/mixins/chatMixin";
 import authMixin from "~/mixins/authMixin";
 import breakpoints from "~/mixins/breakpoints";
-import dateMixin from "~/mixins/dateMixin";
 
+import RequestModal from "~/components/RequestModal";
+import ProfilePicture from "~/components/ProfilePicture";
+import dateMixin from "~/mixins/dateMixin";
+import ConfirmDialog from "~/components/ConfirmDialog";
 export default {
   name: "Uuid",
-  components: {
-    VEmojiPicker
-  },
+  components: {ConfirmDialog, ChatMessages, TypingIndicator, RequestModal, ProfilePicture, VEmojiPicker},
   mixins: [listenMixin, userRoleMixin, userUpdatedMixin, uploadMixin, chatMixin, authMixin, breakpoints, chatMixin, dateMixin],
   layout: 'new-chat',
   middleware: ['authenticated', 'verified', 'pin-set', 'view-set'],
-  data(){
+  data() {
     return {
+      conversationId: null,
+      loadingFiles: false,
+      uploadingFile: false,
+      search: '',
+      convFiles: [],
+      description: '',
+      dialog: false,
       showEmojiPicker: false,
       visible: false,
       confirmLoading: false,
@@ -137,6 +289,7 @@ export default {
       messages: [],
       file: null,
       fileName: '',
+      fileTitle: '',
       allowed: false,
       messagesScrollHeight: 0,
       updateIdx: 0,
@@ -156,17 +309,17 @@ export default {
     }
   },
   computed: {
-    leftClasses(){
+    leftClasses() {
       const c = ['chats-list']
-      if (this.show_video){
+      if (this.show_video) {
         c.push('show-video')
       }
       return c.join(' ')
     },
-    toIsTyping(){
+    toIsTyping() {
       return this.to === this.typing
     },
-    downloadUrl(){
+    downloadUrl() {
       return process.env.API_URL + '/generated/' + this.pdfName
     },
     user() {
@@ -192,7 +345,7 @@ export default {
     myID() {
       return this.user.uuid
     },
-    selectedUserObj(){
+    selectedUserObj() {
       let u = {}
       if (this.to) {
         this.moderators.forEach((m) => {
@@ -209,10 +362,10 @@ export default {
         this.moderators.forEach((m) => {
           if (m.user_uuid === this.to) {
             this.allowed = m.mypr_allowed
-            if (!this.allowed){
+            if (!this.allowed) {
               this.$router.push(this.localePath('/'))
             }
-            u = m.user_last_name + ', ' + m.user_first_name + ' ' +  (m.profe_credentials ?  m.profe_credentials : '')
+            u = m.user_last_name + ', ' + m.user_first_name + ' ' + (m.profe_credentials ? m.profe_credentials : '')
           }
         })
       }
@@ -243,17 +396,25 @@ export default {
       return this.$route.query
     }
   },
+  watch: {
+    fileName(s) {
+      this.fileTitle = s
+    },
+    file(s) {
+      console.log('File has changed.', s)
+    }
+  },
   mounted() {
     this.getChats()
     this.run_once(this.listen)
     this.setChatFromRoute()
-    this.socket.on('start-video', ({ from, roomId, name }) => {
+    this.socket.on('start-video', ({from, roomId, name}) => {
 
       this.callerName = name
       this.ringing = true
 
-      this.ring().then(()=>{
-      }).catch(()=>{
+      this.ring().then(() => {
+      }).catch(() => {
       })
       /*
       if (from === this.to && roomId) {
@@ -262,18 +423,18 @@ export default {
 
       this.callingRoomId = roomId
     })
-    this.socket.on('stop-video', ({ from, roomId }) => {
+    this.socket.on('stop-video', ({from, roomId}) => {
       if (from === this.to && roomId) {
         this.stopVideoByPro(roomId)
       }
     })
-    this.socket.on('call-accepted', ({roomId})=>{
+    this.socket.on('call-accepted', ({roomId}) => {
       this.stopAudio()
       this.$refs.videoRef.start(roomId)
       this.videoRoomId = roomId
     })
 
-    this.socket.on('stop-ringing', ({roomId})=>{
+    this.socket.on('stop-ringing', ({roomId}) => {
       this.stopAudio()
       this.ringing = false
     })
@@ -283,13 +444,38 @@ export default {
     setInterval(this.getNow, 1000);
   },
   methods: {
+    loadFiles(){
+      if (this.conversationId){
+        this.loadingFiles = true
+        this.$api.get('/conversation/messages/files/' + this.conversationId).then(({data}) => {
+          this.convFiles = data
+        }).catch((e) => {
+          console.log('Unable to get the files of the conversation')
+          console.log(e)
+          alert(e)
+        }).finally(() => {
+          this.loadingFiles = false
+        })
+      }
+    },
+    isImage(s) {
+      const e = this.getExt(s).toLowerCase()
+      return e === 'jpg' || e === 'jpeg' || e === 'png' || e === 'gif'
+    },
+    getExt(s) {
+      return s.split('.').pop()
+    },
+    removeFile() {
+      this.$refs.fileInput.value = ""
+      this.$refs.fileInput.dispatchEvent(new Event('change'))
+    },
     stopAudio() {
-      if (this.audio){
+      if (this.audio) {
         this.audio.currentTime = 0
         this.audio.pause()
       }
     },
-    acceptCall(){
+    acceptCall() {
       this.joinVideo(this.callingRoomId)
       this.stopAudio()
       this.ringing = false
@@ -299,15 +485,15 @@ export default {
         from: this.myUserId
       })
     },
-    ring(){
+    ring() {
       this.audio = this.getSound('phone-ringing.mp3')
       return this.audio.play()
     },
     getNow() {
       const today = new Date();
-      const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+      const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
       const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-      const dateTime = date +' '+ time;
+      const dateTime = date + ' ' + time;
       this.timestamp = dateTime;
     },
     setChatFromRoute() {
@@ -317,18 +503,18 @@ export default {
         this.openChat(p.uuid)
       }
     },
-    selectEmoji(e){
+    selectEmoji(e) {
       this.message += e.data
       this.showEmojiPicker = false
     },
-    imTyping(evt){
-      if (this.sentTypingEvt || evt.key ===  'Enter')
+    imTyping(evt) {
+      if (this.sentTypingEvt || evt.key === 'Enter')
         return
       this.socket.emit('typing-to', {to: this.to, from: this.myID})
       this.sentTypingEvt = true
-      setTimeout(()=>{
+      setTimeout(() => {
         this.sentTypingEvt = false
-      },1600)
+      }, 1600)
     },
     askSavePDF() {
       this.visiblePDF = true
@@ -367,11 +553,15 @@ export default {
         const data = new FormData()
         data.append('file', file[0])
 
+        data.append('title', this.fileTitle)
+        data.append('description', this.description)
+        this.uploadingFile = true
         this.$api.post('/file', data, {
           onUploadProgress: (evt) => {
             this.onProgress(evt)
           }
-        }).then(({ data }) => {
+        }).then(({data}) => {
+          console.log('Data ---->', data)
           this.fileName = 0
           this.umUploadProgress = 0
           const opts = {
@@ -385,10 +575,13 @@ export default {
           }
           this.messages.push(opts)
           this.sendMessage(opts)
+          this.dialog = false
+          this.loadFiles()
         }).catch((err) => {
           this.umUploadProgress = 0
           this.$refs.rmodal.$emit('error', err)
         }).finally(() => {
+          this.uploadingFile = false
         })
       }
     },
@@ -400,6 +593,8 @@ export default {
       const file = f.target.value
       if (file) {
         this.fileName = file.split('\\').pop().split('/').pop()
+      } else {
+        this.fileName = ''
       }
     },
     showVideo() {
@@ -423,17 +618,14 @@ export default {
       }
     },
     joinVideo(roomId) {
-      console.log('join video')
       this.show_video = true
       this.videoRoomId = roomId
-      console.log('join room', roomId)
       if (this.$refs.videoRef)
         this.$refs.videoRef.join(roomId)
     },
     stopVideo() {
       this.show_video = false
       if (this.view === 'professional') {
-        console.log(this.videoRoomId)
         this.socket.emit('stop-video', {
           from: this.myID,
           to: this.to,
@@ -470,15 +662,15 @@ export default {
               data: dataUrl,
               to: this.to,
               me: this.myID
-            }).then(({data})=>{
-              if (data.file_name){
+            }).then(({data}) => {
+              if (data.file_name) {
                 this.pdfName = data.file_name
-                this.$nextTick(()=>{
-                  if (this.$refs.downloadUrlRef){
+                this.$nextTick(() => {
+                  if (this.$refs.downloadUrlRef) {
                     this.$refs.downloadUrlRef.click()
                   }
                 })
-              }else{
+              } else {
                 this.$refs.rmodal.$emit('error', 'PDF File not found')
               }
             }).catch((err) => {
@@ -487,16 +679,19 @@ export default {
           } else {
             this.$refs.rmodal.$emit('error', 'The PDF was empty')
           }
-        }).finally(() => {
-        this.visiblePDF = false
-        this.confirmLoading = false
-        setTimeout(() => {
-          this.savingPdf = false
-        }, 1500)
-      })
+        })
+        .finally(() => {
+          this.visiblePDF = false
+          this.confirmLoading = false
+          setTimeout(() => {
+            this.savingPdf = false
+          }, 1500)
+        })
     },
     sendMessage(opts) {
-      if (!this.to) {
+      if (this.to === this.myID) {
+        this.$refs.rmodal.$emit('error', "You can't chat with yourself.")
+      } else if (!this.to) {
         const h = this.$createElement
         this.$info({
           title: this.$t('chnts'),
@@ -530,14 +725,16 @@ export default {
           this.message = ''
         }
       }
+
       this.scrollMessagesSection()
     },
     openChat(uuid) {
       this.to = uuid
       this.messages = []
-      if (this.myID && uuid){
+      if (this.myID && uuid) {
         this.$api.get('/conversation/id/' + this.myID + '/' + uuid).then(({data}) => {
-          if (data.conversationId) {
+          if (data.conversationId && data.conversationId !== -1) {
+            this.conversationId = data.conversationId
             this.$api.get('/conversation/messages/' + data.conversationId).then(({data}) => {
               this.messages = data
               this.$nextTick(() => {
@@ -546,8 +743,17 @@ export default {
                   this.scrollMessagesSection()
                 }, 600)
               })
+            }).catch((e) => {
+              alert(e)
             })
+
+            this.loadFiles()
+
+          } else {
+            this.$refs.rmodal.$emit('error', 'Conversation not found')
           }
+        }).catch((e) => {
+          this.$refs.rmodal.$emit('error', e)
         })
       }
     }
@@ -578,6 +784,14 @@ export default {
 
 .chat-content-top-bar
   background-color: #fff
+
+.file-upload-box-w
+  width: 100px
+  height: 100px
+  border: 1px dashed $mdn-primary
+  display: flex
+  justify-content: center
+  align-items: center
 
 .chats-overlay
   position: fixed
@@ -719,7 +933,58 @@ export default {
   top: 0
   width: 100%
   height: 100%
+
+.gallery-w
+  width: 100%
+  display: flex
+  flex-wrap: wrap
+
+  .gallery-item-w
+    padding: 0
+    display: block
+    flex-grow: 2
+    width: 120px
+    font-size: 8px !important
+    box-shadow: 0 3px 6px #ccc
+    margin-bottom: 6px
+    text-align: center
+    margin-right: 9px
+
+    .gi-w-text-1
+      font-size: 9px !important
+      white-space: nowrap
+      overflow: hidden
+      text-overflow: ellipsis
+      padding: 3px
+
+    .gi-w-text-1.top
+      background-color: #333
+      padding: 0.6rem
+
+      a
+        color: #fff !important
+
+    .file-thumbnail
+      display: block
+      margin: 0 auto
+      max-width: 120px
+      border: 1px solid #eee
+
+      img
+        max-width: 100%
+        max-height: 100px
+
+      span
+        font-size: 3em
+
+    .date-w
+      padding: 3px
+
+
 @media screen and (min-width: $md)
+  .gallery-w
+    .gallery-item-w
+      width: 100%
   .emoji-picker
     bottom: 110px
     margin-left: 30px
@@ -728,6 +993,7 @@ export default {
     left: 50% !important
   .chats-layout
     width: 100%
+
     .chats-list
       position: fixed
       width: 50%
@@ -739,6 +1005,7 @@ export default {
       bottom: 0
       border-right: 1px solid $mdn-super-light-grey
       height: calc(100% - 50px)
+
       .moderators
         position: fixed
         top: 50px
@@ -792,8 +1059,6 @@ export default {
 
   .chats-list.show-video
     width: 50% !important
-    .video-control
-      // display: none !important
 
 
 .saving-pdf
@@ -841,9 +1106,102 @@ export default {
   padding: 1rem
   box-shadow: 0 3px 6px #c9c6c6
   height: 50px
+
   i
     font-weight: bold
     color: red
     font-size: 1.9rem
+
+
+.left-panel
+  display: flex !important
+  flex-direction: column !important
+  flex-grow: 1
+  width: 100% !important
+
+  > div
+    display: flex
+    flex: 1
+
+  .w-controls
+    position: fixed
+    left: 0
+    bottom: 0
+    width: 100%
+    background: #fff
+    border-top: 1px solid $mdn-super-light-grey
+    box-shadow: inset 0 1px 3px $mdn-super-light-grey
+    padding: 0.5rem
+    height: 60px
+    display: flex
+    align-items: center
+    justify-content: center
+
+    &:hover
+      cursor: pointer
+
+      i
+        color: $mdn-primary
+
+  .main-container-w
+    width: 50%
+    position: fixed
+    bottom: 60px
+    top: 100px
+    overflow-y: auto
+    padding: 0.6rem
+
+    overflow-x: hidden
+    display: flex
+    flex-wrap: wrap
+
+    ::-webkit-scrollbar
+      width: 10px
+
+    /* Track */
+
+
+    ::-webkit-scrollbar-track
+      background: #f1f1f1
+
+    /* Handle */
+
+
+    ::-webkit-scrollbar-thumb
+      background: #888
+
+    /* Handle on hover */
+
+
+    ::-webkit-scrollbar-thumb:hover
+      background: #555
+
+    .main-w-content
+      width: 50%
+      min-width: 300px
+      height: fit-content
+
+@media screen and (min-width: $md)
+  .left-panel
+    flex-direction: row
+
+    .w-controls
+      width: 50%
+      right: 50%
+
+.main-w-content.zoom
+  position: fixed
+  top: 50px
+  bottom: 60px
+  padding: 1px
+  align-content: center
+  height: calc(100% - 110px)
+  display: flex
+  right: 0
+  width: 100% !important
+  line-height: 0
+  z-index: 1000
+  background: white
+
 
 </style>

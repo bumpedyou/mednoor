@@ -129,13 +129,10 @@ export default {
     handleOk(){
       this.confirmLoading = true
       this.$api.post('/professional/accept/' + this.uuid).then(()=>{
-        console.log('Accepted')
         this.data = this.data.filter((it)=>{
           return it.profe_uuid !== this.uuid
         })
       }).catch((err)=>{
-        console.log('Not accepted')
-        console.log(err)
         this.$toast.error(err)
       }).finally(()=>{
         this.visible = false

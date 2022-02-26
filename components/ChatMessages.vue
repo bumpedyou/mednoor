@@ -3,7 +3,7 @@
     <div v-for='(msg, i) in msgs' :key="'msg-' + i" :ref="'msg-' + i" :class='messageClass(msg)'>
       <span v-if='msg'>
         {{ msg.message }}
-      </span>
+      </span>w
       <span v-if='msg.mess_message'>
         {{ msg.mess_message }}
       </span>
@@ -11,8 +11,11 @@
         <span v-if='isImg(msg.file_name)'>
           <img :src='filePath(msg.file_name)' alt='chat-img' class='img-fluid'>
         </span>
+        <p v-if="msg.file_description">
+          {{msg.file_description}}
+        </p>
         <span v-else>
-          <a target='_blank' :href='filePath(msg.file_name)' :download='filePath(msg.file_name)'>
+          <a target='_blank' :href='filePath(msg.file_name)' :download='filePath(msg.file_name)' style="text-decoration: underline !important">
             {{ msg.file_title }}
           </a>
         </span>

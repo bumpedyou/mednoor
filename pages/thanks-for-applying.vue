@@ -36,7 +36,6 @@ export default {
     isComplete: false,
   }),
   mounted() {
-    console.log('[thanks-for-applying]: Mounted.')
     this.$api.get('/professional/my-record').then(({ data }) => {
       if (data && data.profe_uuid) {
         this.has_record = true

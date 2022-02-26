@@ -38,9 +38,14 @@
 <script>
 import dateMixin from '~/mixins/dateMixin'
 import authMixin from '~/mixins/authMixin'
-
+import RequestDialog from '~/components/RequestModal'
+import ConfirmDialog from '~/components/ConfirmDialog'
 export default {
   name: 'ChatRequests',
+    components: {
+    RequestDialog,
+    ConfirmDialog
+  },
   mixins: [dateMixin, authMixin],
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified', 'pin-set', 'view-set'],
   data (){

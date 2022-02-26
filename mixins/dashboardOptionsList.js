@@ -66,6 +66,14 @@ export default {
           type: 'success',
         })
         i.push({
+          shortTitle: 'Messenger',
+          cardTitle: 'Messenger',
+          to: '/',
+          btnText: 'Messenger',
+          icon: 'message-flash',
+          type: 'success',
+        })
+        i.push({
           title: this.$t('list_usrs'),
           to: '/users-list',
           icon: 'account-group-outline',
@@ -120,6 +128,7 @@ export default {
             icon: 'box-cutter',
             type: 'success',
           },
+          /*
           {
             title: 'Professional Requests',
             to: '/professional-requests',

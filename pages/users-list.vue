@@ -346,12 +346,10 @@ export default {
             this.loadingModal = false
           })
         } else if (this.action === 'update-to-professional' || this.action === 'update-to-user') {
-          console.log('Update to pro')
           this.loadingModal = true
           this.$api.put('/user/role/' + this.uuid, {
             key: this.action === 'update-to-professional' ? 'MODERATOR' : 'USER'
           }).then(({ data }) => {
-            console.log('Updated.')
             this.users = this.users.map((usr) => {
               if (usr.user_uuid === this.uuid) {
                 usr.usro_id = data.usro_id

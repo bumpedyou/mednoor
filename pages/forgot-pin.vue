@@ -61,7 +61,6 @@ export default {
   },
   methods: {
     sendEmail(){
-      console.log('Sending email')
       this.loading = true
       this.$api.post('/verification-code/pin').then(()=>{
         this.$toast.success('Email has been sent successfully.')
