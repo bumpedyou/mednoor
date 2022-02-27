@@ -1,28 +1,22 @@
 <template>
   <div class='pa-6'>
-    <v-row class='mb-1'>
-      <v-col>
-        <v-breadcrumbs :items="[
-          {
-            text: $t('dashboard'),
-            disabled: false,
-            to: localePath('/dashboard'),
-          },
-          {
-            text: $t('list_usrs') ,
-            disabled: true,
-          }
-        ]">
-        </v-breadcrumbs>
-      </v-col>
-    </v-row>
-    <v-row class='pa-1'>
-      <v-col>
-        <p class='h4 text-capitalize'>
+    <a-row class='mb-1'>
+      <a-col>
+        <a-breadcrumb>
+          <a-breadcrumb-item>
+            <nuxt-link :to="localePath('/dashboard')">{{ $t('dashboard') }}</nuxt-link>
+          </a-breadcrumb-item>
+          <a-breadcrumb-item>{{ $t('list_usrs') }}</a-breadcrumb-item>
+        </a-breadcrumb>
+      </a-col>
+    </a-row>
+    <a-row class='pa-1'>
+      <a-col>
+        <p class='h4 mb-1 text-capitalize'>
           <span v-if='mode === "archived"'>
             Archived users
           </span>
-          <span v-else-if='mode === "professional"'>
+          <span v-else-if='mode === "professionals"'>
             Professional's list.
           </span>
           <span v-else>
@@ -32,101 +26,98 @@
         <div class='mb-3'>
           <v-btn v-if='mode !== "archived"' color="primary" tile small @click='addUser'>
             {{ $t('add_urs') }}
-            <v-icon class="ml-1">mdi-account-plus</v-icon>
+            <a-icon type='user-add'></a-icon>
           </v-btn>
         </div>
 
-        <v-text-field v-model='search' append-icon="mdi-magnify" placeholder='Filter by name/last name/email' class='mb-1'></v-text-field>
-        <v-skeleton-loader v-if='loading' />
-        <v-data-table v-else :headers="[
-          {
-            text: 'MRN',
-            value: 'mrn',
-            sortable: true,
-          },
-          {
-            text: 'First Name',
-            value: 'user_first_name',
-            sortable: false,
-          },
-          {
-            text: 'Last Name',
-            value: 'user_last_name',
-            sortable: false,
-          },
-          {
-            text: 'Email',
-            value: 'user_email',
-            sortable: false,
-          },
-          {
-            text: 'DOB',
-            value: 'user_date_of_birth',
-            sortable: false,
-          },
-          {
-            text: 'Phone No.',
-            value: 'user_phone_no',
-            sortable: false,
-          },
-          {
-            text: 'Actions',
-            value: 'actions',
-            sortable: false,
-          },
-          {
-            text: 'PRO',
-            value: 'checkbox',
-            sortable: false,
-          }
-        ]" :items="filteredUsers">
-          <template #[`item.user_date_of_birth`] = "{value}">
-            <span v-if='value'>
-              {{ dateString(value) }}
+        <a-input-search v-model='search' placeholder='Filter by name/last name/email' class='mb-1'></a-input-search>
+
+        <a-skeleton v-if='loading' />
+        <a-table v-else :columns='columns' :data-source='filteredUsers'>
+          <div slot='name' slot-scope='text, record'>
+            <nuxt-link :to="localePath('/user/' + record.user_uuid)">
+              {{ record.user_first_name }} {{ record.user_last_name }}
+            </nuxt-link>
+          </div>
+
+          <div slot='user_date_of_birth' slot-scope='text, record'>
+            <span v-if='record && record.user_date_of_birth'>
+              {{ dateString(record.user_date_of_birth) }}
             </span>
-          </template>
-          <template #[`item.user_phone_no`] = "{item}">
-            <span v-if='item && item.user_country_code'>
-              +{{ item.user_country_code }} {{ item.user_phone_no }}
+          </div>
+
+          <div slot='user_phone_no' slot-scope='text, record'>
+            <span v-if='record && record.user_country_code'>
+              +{{ record.user_country_code }} {{ record.user_phone_no }}
             </span>
-          </template>
-          <template #[`item.actions`] = "{item}">
-            <div>
-              <div v-if='mode === "archived"'>
-                <a v-if='item.user_deleted' @click.prevent='askUnarchive(item.user_uuid)'>
-                  Remove from archived users.
+          </div>
+          <div slot='action' slot-scope='text, record'>
+            <div v-if='mode === "archived"'>
+              <a v-if='record.user_deleted' @click.prevent='askUnarchive(record.user_uuid)'>
+                Remove from archived users.
+              </a>
+            </div>
+
+
+          
+             <div v-if = 'isProfessional'>
+                <a v-if='(Boolean(record.user_deleted)) === false' @click='deleteUser(record.user_uuid)'>
+                  Delete
+                </a>
+            </div>
+
+            <div v-else>
+              <div v-if='isAdmin || isSuper'>
+                <a v-if='record.user_blocked' @click='unblock(record.user_uuid)'>
+                  {{ $t('unblock') }}
+                </a>
+                <a v-else @click='block(record.user_uuid)'>
+                  {{ $t('block') }}
+                </a>
+                <a-divider v-if='(Boolean(record.user_deleted)) === false' type='vertical' />
+                <a v-if='(Boolean(record.user_deleted)) === false' @click='archiveUser(record.user_uuid)'>
+                  Archive
+                </a>
+
+                <a-divider type='vertical' />
+                <a  @click='deleteUser(record.user_uuid)'>
+                  Delete
                 </a>
               </div>
-              <div v-else>
-                <div v-if='isAdmin || isSuper'>
-                  <a v-if='item.user_blocked' @click='unblock(item.user_uuid)'>
-                    {{ $t('unblock') }}
-                  </a>
-                  <a v-else @click='block(item.user_uuid)'>
-                    {{ $t('block') }}
-                  </a>
-                  <MedDivider></MedDivider>
-                  <a v-if='(Boolean(item.user_deleted)) === false' @click='deleteUser(item.user_uuid)'>
-                    Archive
-                  </a>
-                </div>
-              </div>
+
+          
+
             </div>
-          </template>
-          <template #[`item.checkbox`] = "{item}">
-            <div v-if='mode === "archived"'>
+          </div>
+          <div slot='checkbox' slot-scope='text, record'>
+            <div v-if='false'>
               No action available.
             </div>
-            <div v-else>
-              <v-checkbox :input-value='item.usro_key === "MODERATOR"' @change='changePro(item)'>PRO</v-checkbox>
+            <div v-if='false'>
+              <a-checkbox :checked='record.usro_key === "MODERATOR"' @change='changePro(record)'>PRO</a-checkbox>
             </div>
-          </template>
-        </v-data-table>
-      </v-col>
-    </v-row>
+          </div>
+        </a-table>
+      </a-col>
+    </a-row>
     <RequestModal ref='rmodal'></RequestModal>
-    <ConfirmDialog v-model="visible" :title="$t('conf_action')" :loading="loadingModal" :description="action === 'delete' ? 'archive': $t('conf_act')" @accept="confirmAction" @cancel="visible = false"></ConfirmDialog>
-    <ConfirmDialog v-model="unarchiveModal" description="This user will be active again" title="Remove from archived" :loading="loadingUnarchive" @accept="archive" @cancel="unarchiveModal = false"></ConfirmDialog>
+    <a-modal v-model='visible' :title="$t('conf_action')" ok-text='Ok' :confirm-loading='loadingModal'
+             :cancel-text="$t('cancel')"
+             @ok='confirmAction'>
+      <p v-if="action === 'delete'">
+        Archive
+      </p>
+      <p v-else>
+        {{ $t('conf_act') }}
+      </p>
+    </a-modal>
+    <a-modal v-model='unarchiveModal' title="Remove from archived." ok-text='Ok' :confirm-loading='loadingUnarchive'
+             :cancel-text="$t('cancel')"
+             @ok='archive'>
+      <p>
+        This user will be active again.
+      </p>
+    </a-modal>
   </div>
 </template>
 
@@ -134,14 +125,10 @@
 import RequestModal from '~/components/RequestModal'
 import userRoleMixin from '~/mixins/userRoleMixin'
 import dateMixin from '~/mixins/dateMixin'
-import MedDivider from "~/components/MedDivider";
-import ConfirmDialog from "~/components/ConfirmDialog";
 
 export default {
   name: 'UsersList',
   components: {
-    ConfirmDialog,
-    MedDivider,
     RequestModal
   },
   mixins: [userRoleMixin, dateMixin],
@@ -242,7 +229,7 @@ export default {
   mounted() {
     this.setView()
     this.loadItems()
-    if (this.isAdmin || this.isSuper && this.mode !== 'unarchive') {
+    if ( this.mode === 'hide_prod' ) {
       this.columns.push({
         title: 'PRO',
         key: 'checkbox',
@@ -253,7 +240,7 @@ export default {
   methods: {
     archive(){
       this.loadingUnarchive = true
-      this.$api.post('/user/unarchive/' + this.uuid).then(() =>{
+      this.$userApi.post('/unarchive/' + this.uuid).then(() =>{
         this.users = this.users.filter((us)=>{
           return us.user_uuid !== this.uuid
         })
@@ -284,7 +271,7 @@ export default {
     },
     loadItems() {
       this.loading = true
-      this.$api.get('/user', {
+      this.$userApi.get('/list', {
         params: {
           view: this.mode
         }
@@ -299,10 +286,13 @@ export default {
     setView() {
       if (this.$route.query) {
         const q = this.$route.query
+         
         if (q.view && ['users', 'professionals', 'archived'].includes(q.view.toLowerCase())) {
-          const mode = q.mode
+        
+          const mode = q.view
           if (typeof mode === 'string'){
-            this.mode = q.mode.toLowerCase()
+            this.mode = q.view.toLowerCase();
+             console.log(this.mode)
           }
         } else {
           this.mode = 'users'
@@ -327,14 +317,14 @@ export default {
       this.askConfirmation(uuid)
       this.action = 'update-to-user'
     },
+
+
+
     confirmAction() {
-      console.log('confirm action')
-      if (this.isAdmin || this.isSuper) {
-        console.log('isAdmin or super')
-        console.log('The action is ---->', this.action)
+      if (this.isAdmin || this.isSuper || this.isProfessional) {
         this.loadingModal = true
         if (this.action === 'delete') {
-          this.$api.delete('/user/' + this.uuid).then(() => {
+          this.$userApi.delete('/archive/' + this.uuid).then(() => {
             this.users = this.users.filter((user) => {
               return user.user_uuid !== this.uuid
             })
@@ -347,7 +337,7 @@ export default {
           })
         } else if (this.action === 'update-to-professional' || this.action === 'update-to-user') {
           this.loadingModal = true
-          this.$api.put('/user/role/' + this.uuid, {
+          this.$userApi.put('/role/' + this.uuid, {
             key: this.action === 'update-to-professional' ? 'MODERATOR' : 'USER'
           }).then(({ data }) => {
             this.users = this.users.map((usr) => {
@@ -367,7 +357,7 @@ export default {
         } else if (this.action === 'block' || this.action === 'unblock') {
           this.loadingModal = true
           const blocked = this.action === 'block'
-          this.$api.put('/user/blocked/' + this.uuid, {
+          this.$userApi.put('/blocked/' + this.uuid, {
             blocked
           }).then(() => {
             this.users = this.users.map((user) => {
@@ -383,6 +373,19 @@ export default {
             this.visible = false
             this.uuid = null
           })
+        }else   if (this.action === 'delUser') {
+          console.log('dd')
+          this.$userApi.delete('/' + this.uuid).then(() => {
+            this.users = this.users.filter((user) => {
+              return user.user_uuid !== this.uuid
+            })
+            this.uuid = null
+          }).catch((err) => {
+            this.$refs.rmodal.$emit('error', err)
+          }).finally(() => {
+            this.visible = false
+            this.loadingModal = false
+          })
         }
       }
     },
@@ -391,10 +394,15 @@ export default {
       this.visible = true
       this.action = 'update-to-professional'
     },
-    deleteUser(uuid) {
+    archiveUser(uuid) {
       this.uuid = uuid
       this.visible = true
       this.action = 'delete'
+    },
+    deleteUser(uuid) {
+      this.uuid = uuid
+      this.visible = true
+      this.action = 'delUser'
     }
   }
 }

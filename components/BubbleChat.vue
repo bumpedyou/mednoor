@@ -82,7 +82,7 @@ export default {
     }
   },
   created() {
-    this.$api.get('/user/admin').then(({data})=>{
+    this.$userApi.get('/admin').then(({data})=>{
       if (data && data.user_uuid){
         this.to = data.user_uuid
         this.adminName = data.name
@@ -127,7 +127,7 @@ export default {
         return 0
       }
       this.confirmLoading = true
-      this.$api.post('/user/tmp', {
+      this.$userApi.post('/tmp', {
         first_name: this.name,
       }).then(({data})=>{
         console.log('Temporal user is --->', data)

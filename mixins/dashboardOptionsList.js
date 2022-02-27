@@ -46,16 +46,17 @@ export default {
                 icon: 'file-outline',
                 type: 'primary',
               },
+              {
+                title: 'Claims',
+                to: '/hcfa',
+                icon: 'card-text-outline',
+                dark: true,
+              } 
             ],
           }
 
-          /*
-          {
-            title: 'Claims',
-            to: '/hcfa',
-            icon: 'card-text-outline',
-            dark: true,
-          } */
+          
+       
         )
       }
       if (this.isModeratorOrHigher) {
@@ -128,7 +129,7 @@ export default {
             icon: 'box-cutter',
             type: 'success',
           },
-          /*
+         
           {
             title: 'Professional Requests',
             to: '/professional-requests',

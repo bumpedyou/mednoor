@@ -48,7 +48,7 @@ export default {
     verify(){
       if(this.code && this.code.length === 9){
         this.loading = true
-        this.$api.post('/user/verify', {
+        this.$userApi.post('/verify', {
           code: this.code
         }).then(async () => {
           await this.$auth.fetchUser()

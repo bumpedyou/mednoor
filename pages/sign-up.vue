@@ -119,8 +119,8 @@ export default {
       this.$refs.form.validate()
       if (this.validForm){
         this.loading = true
-        this.$api
-          .post('/user', {
+        this.$userApi
+          .post('/register', {
             first_name: this.first_name,
             last_name: this.last_name,
             email: this.email,

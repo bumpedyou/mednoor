@@ -118,8 +118,8 @@ export default {
           country_code: this.country_code,
         }
         // values.dob = [this.year, this.month, this.day].join('-')
-        this.$api
-          .post('/user', values)
+        this.$userApi
+          .post('/add', values)
           .then(() => {
             this.$router.push(this.localePath('/users-list'))
           })

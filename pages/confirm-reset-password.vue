@@ -89,7 +89,7 @@ export default {
       this.$refs.form.validate()
       if (this.valid) {
         this.loading = true
-        this.$api.patch('/user/password', {
+        this.$userApi.patch('/password', {
           email: this.email,
           code: this.code,
           password: this.password,

@@ -2,7 +2,15 @@
   <v-app>
     <navbar></navbar>
     <div id="app-content">
-      <v-row>
+      <a-row class="pa-6 mh-100v">
+        <a-col span="8" offset="8">
+          <h1 class="h1 text-center w-100 mb-1">{{ $t('welcome') }}</h1>
+          <div class="f-center w-100">
+            <a-spin></a-spin>
+          </div>
+        </a-col>
+      </a-row>
+      <!-- <v-row>
         <v-col v-if='!mounted || !isSmall' md="6">
           <BackgroundItem :file='file' source='api' height='100vh'></BackgroundItem>
         </v-col>
@@ -19,45 +27,44 @@
           <BubbleChat></BubbleChat>
         </v-col>
       </v-row>
-      <div>
+      <v-container>
         <v-row>
           <v-col md="6">
             <div v-if='main_text' class='middle-text'>
-              <!-- eslint-disable vue/no-v-html -->
+            
               <pre v-html='main_text'></pre>
-              <!--eslint-enable-->
+           
             </div>
           </v-col>
           <v-col md="6">
             <div v-if='main_text_b' class='middle-text'>
-              <!-- eslint-disable vue/no-v-html -->
+       
               <pre v-html='main_text_b'></pre>
-              <!--eslint-enable-->
+        
             </div>
           </v-col>
         </v-row>
-      </div>
+      </v-container> -->
     </div>
-    <MFooter></MFooter>
+    <!-- <MFooter></MFooter> -->
   </v-app>
-
 </template>
 
 <script>
 import breakpoints from '~/mixins/breakpoints'
 // import FlagsPicker from '~/components/FlagsPicker'
 import Navbar from '~/components/Navbar'
-import BackgroundItem from '~/components/BackgroundItem'
-import MFooter from '~/components/MFooter'
-import BubbleChat from '~/components/BubbleChat'
+// import BackgroundItem from '~/components/BackgroundItem'
+// import MFooter from '~/components/MFooter'
+// import BubbleChat from '~/components/BubbleChat'
 
 export default {
   components: {
     Navbar,
     // FlagsPicker,
-    BackgroundItem,
-    MFooter,
-    BubbleChat
+    // BackgroundItem,
+    // MFooter,
+    // BubbleChat
   },
   mixins: [breakpoints],
   data() {
@@ -72,10 +79,20 @@ export default {
     file() {
       const type = this.$route.path.split('/').slice(-1)[0]
       return 'hs/' + type + '.png'
-    }
+    },
   },
   mounted() {
     this.mounted = true
+    console.log(this.$route.query.token_exchange)
+    this.$auth
+      .loginWith('local', {
+        data: {
+          session_id: this.$route.query.token_exchange,
+        },
+      })
+      .then(() => {
+        this.$router.push(this.localePath('/'))
+      })
   },
   created() {
     this.$api.get('/main-text').then(({ data }) => {
@@ -85,7 +102,7 @@ export default {
         this.main_text_b = data.mate_text_b
       }
     })
-  }
+  },
 }
 </script>
 <style lang='sass' scoped>
@@ -107,6 +124,4 @@ export default {
 
 #app-content
   margin-top: 50px !important
-
-
 </style>

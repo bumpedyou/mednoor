@@ -361,7 +361,7 @@ export default {
       if (this.to) {
         this.moderators.forEach((m) => {
           if (m.user_uuid === this.to) {
-            this.allowed = m.mypr_allowed
+            this.allowed = true
             if (!this.allowed) {
               this.$router.push(this.localePath('/'))
             }

@@ -73,7 +73,7 @@ export default {
       this.$refs.form.validate()
       if (this.valid) {
         this.loading = true
-        this.$api.post('/user/change-password', {
+        this.$userApi.post('/change-password', {
           old_password: this.old_password,
           password: this.new_password,
           confirm_password: this.confirm_new_password,

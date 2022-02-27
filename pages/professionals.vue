@@ -170,7 +170,7 @@ export default {
   methods: {
     search() {
       this.loadingResults = true
-      this.$api.get('/user/search', {
+      this.$userApi.get('/search', {
         params: {
           searchTerm: this.term,
           type: 'MODERATOR',

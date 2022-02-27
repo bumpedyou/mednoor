@@ -354,7 +354,7 @@ export default {
       }
       if (v && v.length > 0) {
         this.loadingUsers = true
-        this.$api.get('/user/search', {
+        this.$userApi.get('/search', {
           params: {
             searchTerm: v
           }

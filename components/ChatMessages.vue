@@ -3,7 +3,7 @@
     <div v-for='(msg, i) in msgs' :key="'msg-' + i" :ref="'msg-' + i" :class='messageClass(msg)'>
       <span v-if='msg'>
         {{ msg.message }}
-      </span>w
+      </span>
       <span v-if='msg.mess_message'>
         {{ msg.mess_message }}
       </span>

@@ -52,7 +52,7 @@ export default {
     verify(){
       if(this.code && this.code.length === 9){
         this.loading = true
-        this.$api.post('/user/verify-password-code', {
+        this.$userApi.post('/verify-password-code', {
           email: this.email,
           code: this.code
         }).then( ({ data }) => {

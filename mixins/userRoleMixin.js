@@ -4,6 +4,7 @@ export default {
   mixins: [authMixin],
   computed: {
     view() {
+      console.log(this.$cookies.get('view'))
       return this.$cookies.get('view')
     },
     userRoleTxt() {
@@ -43,9 +44,16 @@ export default {
         (this.userRole === 'user' && this.view === 'professional')
       )
     },
+
     isModeratorOrHigher() {
       return this.isModerator || this.isAdmin || this.isSuper
     },
+
+    isProfessional() {
+      // This is the same as Professional. (The keyword is moderator)
+      return this.isModeratorOrHigher && this.view === 'professional';
+    },
+
     isUser() {
       return (
         (this.userRole === 'user' || this.view === 'user') &&

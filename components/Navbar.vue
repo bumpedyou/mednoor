@@ -200,7 +200,7 @@ export default {
               to: '/chat-requests'
             })
             items.push({
-              text: this.$t('my_patients'),
+              text: 'My EMR',
               icon: 'emoticon-sick-outline',
               to: '/my-patients'
             })
@@ -238,6 +238,14 @@ export default {
               },
             })
           }
+        }
+           
+        if (this.isAdmin || this.isSuper || this.isModerator) {
+            items.push({
+              text: 'Appointments',
+              icon: 'calendar-month',
+              to: '/calendar-appointments'
+            })
         }
         items.push({
           text: this.$t('sign_out'),

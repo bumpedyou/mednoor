@@ -18,10 +18,15 @@ export default {
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
   },
 
-  css: ['./assets/_variables.sass', './assets/global.sass'],
+  css: [
+    'ant-design-vue/dist/antd.css',
+    './assets/_variables.sass',
+    './assets/global.sass',
+  ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    '@/plugins/antd-ui',
     '~/plugins/directives',
     '~/plugins/api',
     { src: '~/plugins/pincode', mode: 'client' },
@@ -102,26 +107,33 @@ export default {
           // maxAge: 0,
         },
         endpoints: {
+          // login: {
+          //   url: process.env.USER_BASE_URL + '/sign-in',
+          //   method: 'post',
+          //   propertyName: 'data.token',
+          // },
+
           login: {
-            url: process.env.API_URL + '/user/sign-in',
+            url: process.env.USER_BASE_URL + '/token-exchange',
             method: 'post',
             propertyName: 'data.token',
           },
           user: {
-            url: process.env.API_URL + '/user/me',
+            url: process.env.USER_BASE_URL + '/me',
             method: 'get',
             propertyName: 'data.user',
           },
           refresh: {
-            url: process.env.API_URL + '/user/refresh',
+            url: process.env.USER_BASE_URL + '/refresh',
             method: 'post',
             propertyName: 'data.token',
           },
           logout: {
-            url: process.env.API_URL + '/user/logout',
+            url: process.env.USER_BASE_URL + '/logout',
             method: 'post',
             propertyName: 'data.refresh_token',
           },
+
           autoLogout: false,
         },
       },
@@ -139,6 +151,10 @@ export default {
     BASE_URL: process.env.BASE_URL,
     API_URL: process.env.API_URL,
     MEDIA_URL: process.env.MEDIA_URL,
+    USER_BASE_URL: process.env.USER_BASE_URL,
+    APPOINTMENTS_URL: process.env.APPOINTMENTS_URL,
+    INSURANCE_URL: process.env.INSURANCE_URL,
+
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios

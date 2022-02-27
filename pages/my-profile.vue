@@ -5,7 +5,7 @@
       <v-skeleton-loader></v-skeleton-loader>
     </v-col>
   </v-row>
-  <v-row v-else class="pa-6">
+  <a-row v-else class="pa-6">
     <v-col :xs="24" :sm="24">
       <div>
         <p class="h4 mb-1"  style="display: flex; align-items: center">
@@ -15,22 +15,10 @@
       </span></p>
       </div>
       <div>
-        <v-tabs v-model="tab">
-          <v-tab>Profile picture</v-tab>
-          <v-tab>Personal Information</v-tab>
-          <v-tab>Security</v-tab>
-          <v-tab v-if="isProfessional">Professional Information</v-tab>
-        </v-tabs>
-        <v-tabs-items v-model="tab">
-          <v-tab-item>
+        <a-tabs v-if='showTabs' :default-active-key="tab.toString()">
+          <a-tab-pane key='1' tab='Profile Picture'>
             <div class='profile-upload'>
               <div v-if='showUploadPicture' class='upload-box'>
-                <label for="file" class='upload-mini-box my-3'>
-                  <img v-if="src" :src='src' alt="preview">
-                  <v-icon v-else>mdi-plus</v-icon>
-                </label>
-                <input id="file" type="file" class="d-none" @change="fileChanged">
-                <!--
                 <a-upload
                   name="avatar"
                   list-type="picture-card"
@@ -41,33 +29,33 @@
                 >
                   <img v-if="src && !loadingUpload" :src="src" alt="avatar" />
                   <div v-else>
-                    <v-progress-circular v-if="loadingUpload"></v-progress-circular>
-                    <v-icon v-else>mdi-plus</v-icon>
+                    <a-icon :type="loadingUpload ? 'loading' : 'plus'" />
                     <div class="ant-upload-text">
                       Upload
                     </div>
                   </div>
                 </a-upload>
-                -->
                 <div class='buttons'>
-                  <v-btn v-if='src && src.length' small tile block color='primary' :loading="loadingUpload" @click='uploadPicture'>
-                    Save
-                  </v-btn>
-                  <v-btn small tile block color='error' @click='cancelUpload'>Cancel</v-btn>
+                  <a-button v-if='src && src.length' block type='primary' @click='uploadPicture'>
+                    <SpinOrText v-model='loadingUpload'>
+                      Save
+                    </SpinOrText>
+                  </a-button>
+                  <a-button block type='danger' @click='cancelUpload' >Cancel</a-button>
                 </div>
               </div>
               <div v-else >
                 <div>
                   <ProfilePicture :full-name='name' :picture='picture'>
                     <div class='profile-overlay' @click='showUploadPicture = true'>
-                      <v-icon dark>mdi-upload</v-icon>
+                      <a-icon type='upload'></a-icon>
                     </div>
                   </ProfilePicture>
                 </div>
               </div>
             </div>
-          </v-tab-item>
-          <v-tab-item>
+          </a-tab-pane>
+          <a-tab-pane key="2" tab="Personal Information">
             <v-row v-if="!$auth.user.has_phone">
               <v-col>
                 <v-alert type="warning">Please add your phone number</v-alert>
@@ -112,10 +100,9 @@
                 </v-col>
               </v-row>
             </v-form>
-          </v-tab-item>
-          <v-tab-item>
-            <div>
-
+          </a-tab-pane>
+          <a-tab-pane key="3" tab="Security" force-render>
+            <a-form-item>
               <p class="h4">
                 {{$t('pwd_reset')}}
               </p>
@@ -124,9 +111,9 @@
                   {{$t('change_pwd')}}
                 </nuxt-link>
               </div>
-              <hr class="my-1">
-            </div>
-            <div v-if="isModerator">
+            </a-form-item>
+            <hr>
+            <a-form-item v-if="isModerator">
               <p class="h4">
                 PIN
               </p>
@@ -135,14 +122,11 @@
                   Change my PIN
                 </nuxt-link>
               </div>
-            </div>
-          </v-tab-item>
-          <v-tab-item v-if="isProfessional">
-            <div v-if='!isComplete' class="mt-3">
-              <v-alert color="warning" dark>
-                <v-icon>mdi-alert</v-icon>
-                Please complete your profile information
-              </v-alert>
+            </a-form-item>
+          </a-tab-pane>
+          <a-tab-pane v-if="isProfessional" key="4" tab="Professional Information" force-render>
+            <div v-if='!isComplete'>
+              <a-alert message='Please complete your profile information' :show-icon='true' type='warning' :banner='true'></a-alert>
             </div>
             <v-form ref="profForm" v-model="validProfForm" @submit.prevent='saveProfessional'>
               <v-row>
@@ -179,39 +163,272 @@
                 Practice Address
               </p>
               <UserAddress ref="profAddr"></UserAddress>
-              <v-btn color="primary" small tile type='submit' :loading="loadingSaveP">
-                {{$t('save_changes')}}
-              </v-btn>
+              <a-form-item>
+                <a-button type="primary" html-type='submit'>
+                  <SpinOrText v-model='loadingSaveP'>
+                    {{$t('save_changes')}}
+                  </SpinOrText>
+                </a-button>
+              </a-form-item>
             </v-form>
-          </v-tab-item>
-        </v-tabs-items>
+          </a-tab-pane>
+          <!-- Insured -->
+          <a-tab-pane v-if="!isProfessional" key="5" tab="Insurance" force-render>
+            <div v-if='!isCompletedInsured'>
+              <a-alert message='Is the patient same as insured?' :show-icon='true' type='warning' :banner='true'></a-alert>
+            </div>
+            <div class="mb-10 d-flex flex-row justify-center">
+                <v-checkbox v-model="yes"
+                    :false-value="false"
+                    :true-value="true"
+                    :hide-details = true
+                    label="Yes"
+                    @change="checkCopy(true)"
+                >
+                </v-checkbox>
+                <v-checkbox v-model="no"
+                    :false-value="false"
+                    :true-value="true"
+                    :hide-details = true
+                    label="No"
+                    style="margin-left: 10px"
+                    @change="checkCopy(false)"
+                >
+                </v-checkbox>
+            </div>
+            <v-form  ref="insuredForm" v-model="validInsuredForm" @submit.prevent='saveInsured'>
+              <v-row>
+                <v-col md='6' lg="6">
+                  <v-text-field v-model="number5.patientName" label="Patient Name" placeholder="Patient Name" :rules="[v => !!v || 'The Patient Name is required', v => !!v && v.length >= 3 || 'Enter at least 3 characters', v => !!v && v.length <=12 || 'Enter a maximum of 12 characters']" :hide-details = true>
+                  </v-text-field>
+                </v-col>
+                <v-col md='6' lg="6">
+                  <v-text-field v-model="number5.patientAddress" label="Patient Address" placeholder="Patient Address" :rules="[v => !!v || 'The Patient Address is required', v => !!v && v.length > 1 || 'Enter at least 2 characters', v => !!v && v.length <= 30 || 'Enter a maximum of 30 characters']" :hide-details = true></v-text-field>
+                </v-col>
+              </v-row>
+
+              <v-row>
+                <v-col md='6' lg="3">
+                  <v-text-field v-model="number5.patientCity" label="Patient City" placeholder="Patient City" :rules="[v => !!v || 'The Patient City is required', v => !!v && v.length >= 3 || 'Enter at least 3 characters', v => !!v && v.length <=12 || 'Enter a maximum of 12 characters']" :hide-details = true>
+                  </v-text-field>
+                </v-col>
+                <v-col md='6' lg="3">
+                  <v-text-field v-model="number5.patientState" label="Patient State" placeholder="Patient State" :rules="[v => !!v || 'The Patient State is required', v => !!v && v.length > 1 || 'Enter at least 2 characters', v => !!v && v.length <= 30 || 'Enter a maximum of 30 characters']" :hide-details = true></v-text-field>
+                </v-col>
+                <v-col md='6' lg="3">
+                  <v-text-field v-model="number5.patientZipcode" label="PatientZipcode" placeholder="PatientZipcode" :rules="[v => !!v || 'The PatientZipcode is required', v => !!v && v.length > 1 || 'Enter at least 2 characters', v => !!v && v.length <= 30 || 'Enter a maximum of 30 characters']" :hide-details = true></v-text-field>
+                </v-col>
+                <v-col md='6' lg="3">
+                  <v-text-field v-model="number5.patientTelephone" label="Patient Teletephone" placeholder="Patient Teletephone" :rules="[v => !!v || 'The Patient Teletephone is required', v => !!v && v.length > 1 || 'Enter at least 2 characters', v => !!v && v.length <= 30 || 'Enter a maximum of 30 characters']" :hide-details = true></v-text-field>
+                </v-col>
+              </v-row>
+
+              <v-row>
+                <v-col md='6' lg="6">
+                  <v-text-field v-model="number4.insuredName" label="Insured's Name" placeholder="Insured's Name" :rules="[v => !!v || 'The Insured\'s Name is required', v => !!v && v.length >= 3 || 'Enter at least 3 characters', v => !!v && v.length <=12 || 'Enter a maximum of 12 characters']" :hide-details = true>
+                  </v-text-field>
+                </v-col>
+                <v-col md='6' lg="6">
+                  <v-text-field v-model="number7.insuredAddress" label="Insured's Address" placeholder="Insured's Address" :rules="[v => !!v || 'The Insured\'n Address is required', v => !!v && v.length > 1 || 'Enter at least 2 characters', v => !!v && v.length <= 30 || 'Enter a maximum of 30 characters']" :hide-details = true></v-text-field>
+                </v-col>
+              </v-row>
+
+              <v-row>
+                <v-col md='6' lg="3">
+                  <v-text-field v-model="number7.insuredCity" label="Insured's City" placeholder="Insured's City" :rules="[v => !!v || 'The Insured\'s City is required', v => !!v && v.length >= 3 || 'Enter at least 3 characters', v => !!v && v.length <=12 || 'Enter a maximum of 12 characters']" :hide-details = true>
+                  </v-text-field>
+                </v-col>
+                <v-col md='6' lg="3">
+                  <v-text-field v-model="number7.insuredState" label="Insured's State" placeholder="Insured's State" :rules="[v => !!v || 'The Insured\'s State is required', v => !!v && v.length > 1 || 'Enter at least 2 characters', v => !!v && v.length <= 30 || 'Enter a maximum of 30 characters']" :hide-details = true></v-text-field>
+                </v-col>
+                <v-col md='6' lg="3">
+                  <v-text-field v-model="number7.insuredZipcode" label="Insured's Zip Code" placeholder="Insured's Zip Code" :rules="[v => !!v || 'The Insured\'s Zip Code is required', v => !!v && v.length > 1 || 'Enter at least 2 characters', v => !!v && v.length <= 30 || 'Enter a maximum of 30 characters']" :hide-details = true></v-text-field>
+                </v-col>
+                <v-col md='6' lg="3">
+                  <v-text-field v-model="number7.insuredTelephone" label="Insured's Teletephone" placeholder="Insured's Teletephone" :rules="[v => !!v || 'The Insured\'s Teletephone is required', v => !!v && v.length > 1 || 'Enter at least 2 characters', v => !!v && v.length <= 30 || 'Enter a maximum of 30 characters']" :hide-details = true></v-text-field>
+                </v-col>
+              </v-row>
+
+              <v-row>
+                <v-col md='6' lg="3">
+                  <v-text-field v-model="number11.c" label="Insurance Plan Name" placeholder="Insurance Plan Name" :rules="[v => !!v || 'The Insurance Plan Name is required', v => !!v && v.length > 1 || 'Enter at least 2 characters', v => !!v && v.length <= 30 || 'Enter a maximum of 30 characters']" :hide-details = true></v-text-field>
+                </v-col>
+                <v-col md='6' lg="4">
+                  <div class="d-flex flex-row align-end">
+                    <label for="">Insured's Date Of Birth: </label>
+                    <date-picker v-model="insuredBirthDay" type="date" style="margin-left: 15px"></date-picker>
+                  </div>
+                </v-col>
+                <v-col md='6' lg="2">
+                  <v-select
+                    v-model="number11.a.sex"
+                    :items="sexs"
+                    label="Insured's Sex"
+                  ></v-select>
+                </v-col>
+                <v-col md='6' lg="3">
+                  <v-select
+                    v-model="number6"
+                    :items="relations"
+                    label="Relation with patient"
+                  ></v-select>
+                </v-col>
+              </v-row>
+
+              <v-row>
+                <v-col md='6' lg="3">
+                  <v-text-field v-model="number17.value" label="name of referring provider" placeholder="name of referring provider" :rules="[v => !!v || 'The name of referring provider is required', v => !!v && v.length >= 3 || 'Enter at least 3 characters', v => !!v && v.length <=12 || 'Enter a maximum of 12 characters']">
+                  </v-text-field>
+                </v-col>
+                <v-col md='6' lg="3">
+                  <v-text-field v-model="number17.a.first" label="17.a.1" placeholder="17.a.1" :rules="[v => !!v || 'The 17.a.1 is required', v => !!v && v.length > 1 || 'Enter at least 2 characters', v => !!v && v.length <= 30 || 'Enter a maximum of 30 characters']"></v-text-field>
+                </v-col>
+                <v-col md='6' lg="3">
+                  <v-text-field v-model="number17.a.second" label="17.a.2" placeholder="17.a.2" :rules="[v => !!v || 'The 17.a.2 is required', v => !!v && v.length >= 3 || 'Enter at least 3 characters', v => !!v && v.length <=12 || 'Enter a maximum of 12 characters']">
+                  </v-text-field>
+                </v-col>
+                <v-col md='6' lg="3">
+                  <v-text-field v-model="number17.b" label="17.b" placeholder="17.b" :rules="[v => !!v || 'The 17.b is required', v => !!v && v.length >= 3 || 'Enter at least 3 characters', v => !!v && v.length <=12 || 'Enter a maximum of 12 characters']">
+                  </v-text-field>
+                </v-col>
+              </v-row>
+
+              <v-row>
+                <v-col md='6' lg="4">
+                  <v-text-field v-model="number13.value" label="Insured's Sign" placeholder="Insured's Sign" :rules="[v =>!!v || 'The Insured\'s Sign are required', v => !!v && v.length > 1 || 'Enter at least 2 characters', v=> !!v && v.length <= 30 || 'Enter a maximum of 30 characters']" :hide-details = true></v-text-field>
+                </v-col>
+                <v-col md='6' lg="4">
+                  <v-text-field v-model="number12.signed" label="Patient Sign" placeholder="Patient Sign" :rules="[v => !!v || 'The Patient Sign is required', v => !!v && v.length >= 3 || 'Enter at least 3 characters', v => !!v && v.length <=12 || 'Enter a maximum of 12 characters']" :hide-details = true>
+                  </v-text-field>
+                </v-col>
+                <v-col md='6' lg="4">
+                  <div class="d-flex flex-row align-end">
+                    <label for="">Patient Sign Date: </label>
+                    <date-picker v-model="patientSignDate" type="date" style="margin-left: 15px"></date-picker>
+                  </div>
+                </v-col>
+              </v-row>
+
+              <a-form-item class="mt-5">
+                <a-button type="primary" html-type='submit'>
+                  <SpinOrText v-model='loadingSaveP'>
+                    {{$t('save_changes')}}
+                  </SpinOrText>
+                </a-button>
+              </a-form-item>
+            </v-form>
+          </a-tab-pane>
+          <!-- Claims -->
+          <a-tab-pane v-if="isProfessional" key="6" tab="Claims" force-render>
+            <div v-if='!isCompletedClaims'>
+              <a-alert message='Please complete your Claims information' :show-icon='true' type='warning' :banner='true'></a-alert>
+            </div>
+            <v-form ref="claimsForm" v-model="validClaimsForm" @submit.prevent='saveClaims'>
+              <v-row>
+                <v-col md='6' lg="3">
+                  <v-text-field v-model="number25.value" label="Federal Tax I.D. Number" placeholder="Federal Tax I.D. Number" :rules="[v => !!v || 'The Federal Tax I.D. Number is required', v => !!v && v.length >= 3 || 'Enter at least 3 characters', v => !!v && v.length <=12 || 'Enter a maximum of 12 characters']">
+                  </v-text-field>
+                </v-col>
+                <v-col md='6' lg="3">
+                  <v-select
+                  v-model="number25.selectedValue"
+                    :items="selItems"
+                    label="Select Item"
+                  ></v-select>
+                </v-col>
+                <v-col md='6' lg="3">
+                  <v-text-field v-model="number26.value" label="Patient Account NO." placeholder="Patient Account NO." :rules="[v => !!v || 'The Patient Account NO. is required', v => !!v && v.length >= 3 || 'Enter at least 3 characters', v => !!v && v.length <=12 || 'Enter a maximum of 12 characters']">
+                  </v-text-field>
+                </v-col>
+                <v-col md='6' lg="3">
+                  <v-text-field v-model="number31.value" label="Signature Of Physicican" placeholder="Signature Of Physicican" :rules="[v => !!v || 'The Patient Name is required', v => !!v && v.length >= 3 || 'Enter at least 3 characters', v => !!v && v.length <=12 || 'Enter a maximum of 12 characters']">
+                  </v-text-field>
+                </v-col>
+              </v-row>
+
+              <v-row>
+                <v-col md='6' lg="4">
+                  <v-text-field v-model="number32.value" label="Service Facility" placeholder="Service Facility" :rules="[v =>!!v || 'The Service Facility are required', v => !!v && v.length > 1 || 'Enter at least 2 characters', v=> !!v && v.length <= 30 || 'Enter a maximum of 30 characters']"></v-text-field>
+                </v-col>
+                <v-col md='6' lg="4">
+                  <v-text-field v-model="number32.a" label="1 of number32" placeholder="1 of number32" :rules="[v => !!v || 'The 1 of number32 is required', v => !!v && v.length >= 3 || 'Enter at least 3 characters', v => !!v && v.length <=12 || 'Enter a maximum of 12 characters']">
+                  </v-text-field>
+                </v-col>
+                <v-col md='6' lg="4">
+                  <v-text-field v-model="number32.b" label="2 of number32" placeholder="2 of number32" :rules="[v => !!v || 'The 2 of number32 is required', v => !!v && v.length >= 3 || 'Enter at least 3 characters', v => !!v && v.length <=12 || 'Enter a maximum of 12 characters']">
+                  </v-text-field>
+                </v-col>
+              </v-row>
+
+              <v-row>
+                <v-col md='6' lg="4">
+                  <v-text-field v-model="number33.value" label="Billing Provider Info" placeholder="Billing Provider Info" :rules="[v =>!!v || 'The Billing Provider Info are required', v => !!v && v.length > 1 || 'Enter at least 2 characters', v=> !!v && v.length <= 30 || 'Enter a maximum of 30 characters']"></v-text-field>
+                </v-col>
+                <v-col md='6' lg="4">
+                  <v-text-field v-model="number33.a" label="1 of number33" placeholder="1 of number33" :rules="[v => !!v || 'The 1 of number33 is required', v => !!v && v.length >= 3 || 'Enter at least 3 characters', v => !!v && v.length <=12 || 'Enter a maximum of 12 characters']">
+                  </v-text-field>
+                </v-col>
+                <v-col md='6' lg="4">
+                  <v-text-field v-model="number33.b" label="2 of number33" placeholder="2 of number33" :rules="[v => !!v || 'The 2 of number33 is required', v => !!v && v.length >= 3 || 'Enter at least 3 characters', v => !!v && v.length <=12 || 'Enter a maximum of 12 characters']">
+                  </v-text-field>
+                </v-col>
+              </v-row>
+
+              <a-form-item>
+                <a-button type="primary" html-type='submit'>
+                  <SpinOrText v-model='loadingSaveP'>
+                    {{$t('save_changes')}}
+                  </SpinOrText>
+                </a-button>
+              </a-form-item>
+            </v-form>
+          </a-tab-pane>
+        </a-tabs>
       </div>
     </v-col>
-  </v-row>
+  </a-row>
   <request-modal ref='rmodal'></request-modal>
 </div>
 </template>
 
 <script>
+import DatePicker from "vue2-datepicker";
 import userRoleMixin from "~/mixins/userRoleMixin";
+import SpinOrText from '~/components/SpinOrText.vue'
 import inputMixin from '~/mixins/inputMixin'
 import authMixin from '~/mixins/authMixin'
+import RequestModal from '~/components/RequestModal'
+import ProfilePicture from '~/components/ProfilePicture'
 import uploadMixin from '~/mixins/uploadMixin'
+import UserAddress from "~/components/UserAddress";
 import addressMixin from "~/mixins/addressMixin";
+import 'vue2-datepicker/index.css';
 
 export default {
   name: "MyProfile",
-
+  components: {
+    UserAddress,
+    ProfilePicture,
+    SpinOrText,
+    RequestModal,
+    DatePicker,
+  },
   mixins: [userRoleMixin, inputMixin, authMixin, uploadMixin, addressMixin],
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified', 'view-set'],
   data (){
     return {
       validPersonalForm: false,
       validProfForm: false,
+      validClaimsForm: false,
+      validInsuredForm: false,
       picture: '',
       file: null,
+      showTabs: true,
       isComplete: false,
-      tab: 0,
+      isCompletedInsured: false,
+      isCompletedClaims: false,
+      tab: 1,
+      form: this.$form.createForm(this, { name: 'user-data-form' }),
       profForm: null,
       loading: false,
       category: null,
@@ -221,7 +438,7 @@ export default {
       phone_no: '',
       loadingSaveP: false,
       loadingPage: true,
-      isProfessional: false,
+     // isProfessional: false,
       loadingUpload: false,
       imageUrl: '',
       showUploadPicture: false,
@@ -232,6 +449,83 @@ export default {
       medical_license: '',
       license_state: '',
       credentials: '',
+
+      // Copy All Data
+      yes: false,
+      no: true,
+      // Insured Information
+      number4: { insuredName: '' },
+      number5: {
+          patientAddress: '',
+          patientCity: '',
+          patientState: '',
+          patientZipcode: '',
+          patientTelephone: '',
+      },
+      number6: '',
+      number7: {
+          insuredAddress: '',
+          insuredCity: '',
+          insuredState: '',
+          insuredZipcode: '',
+          insuredTelephone: '',
+      },
+      number11: {
+          a: {
+              mm: '',
+              dd: '',
+              yy: '',
+              sex: '',
+          },
+          c: '',
+      },
+      number12: {
+          signed: '',
+          date: '',
+      },
+      number13: {
+          value: '',
+      },
+      insuredBirthDay: new Date(),
+      insuredSign: '',
+      patientSign: '',
+      patientSignDate: new Date(),
+      relations: [ 'Self', 'Spouse', 'Child', 'Other' ],
+      sexs: [ 'male', 'female' ],
+      relationWithPatient: null,
+      patientSex: null,
+
+      // Claims Information
+      selItems: ['ssn', 'ein'],
+      selItem: '',
+      number17: {
+          value: '',
+          a: {
+              first: '',
+              second: '',
+          },
+          b: '',
+      },
+      number25: {
+          value: '',
+          selectedValue: '',
+      },
+      number26: {
+          value: '',
+      },
+      number31: {
+          value: ''
+      },
+      number32: {
+          value: '',
+          a: '',
+          b: '',
+      },
+      number33: {
+          value: '',
+          a: '',
+          b: '',
+      },
     }
   },
   head() {
@@ -287,7 +581,7 @@ export default {
   },
   mounted() {
     if (this.myUserId){
-      this.$api.get('/user/'+ this.myUserId).then(({data})=>{
+      this.$userApi.get('/'+ this.myUserId).then(({data})=>{
         if (data && data.user_uuid){
           this.phone_no = data.user_phone_no
           this.country_code = '+' + data.user_country_code
@@ -295,7 +589,13 @@ export default {
 
           if (!this.$auth.user.has_phone){
             console.log('Dont have a phone no')
-            this.tab = 1
+            this.showTabs = false
+            this.tab = '2'
+            setTimeout(() =>{
+              this.$nextTick(()=>{
+                this.showTabs = true
+              })
+            }, 200)
           }
         }
       })
@@ -303,30 +603,49 @@ export default {
     this.$api.get('/category').then(({data})=>{
       if (data){
         this.categories = data
+        console.log('Categories --->', data)
         this.getMyRecord()
+      }
+    }).catch(()=>{
+      this.$toast.error('Failed to load categories.')
+    })
+    this.$insuranceApi.get(`/insured/?id=${this.myUserId}`).then(({data})=>{
+      if (data && Object.keys(data).length > 0){
+        console.log('insured --->', data);
+        this.number4 = data.number4;
+        this.number5 = data.number5;
+        this.number6 = data.number6;
+        this.number7 = data.number7;
+        this.number11 = data.number11;
+        this.number12 = data.number12;
+        this.number13 = data.number13;
+        this.number17 = data.number17;
+      }
+    }).catch(()=>{
+      this.$toast.error('Failed to load categories.')
+    })
+
+    this.$insuranceApi.get(`/claims/?id=${this.myUserId}`).then(({data})=>{
+      if (data && Object.keys(data).length > 0){
+        console.log('claims --->', data);
+        this.number25 = data.number25;
+        this.number26 = data.number26;
+        this.number31 = data.number31;
+        this.number32 = data.number32;
+        this.number33 = data.number33;
       }
     }).catch(()=>{
       this.$toast.error('Failed to load categories.')
     })
   },
   methods: {
-    fileChanged(e){
-      const files = e.srcElement.files
-      if (files && files.length > 0) {
-        this.file = files[0]
-        this.getSrc(this.file)
-      } else {
-        this.file = null
-        this.src = null
-      }
-    },
     uploadPicture(){
       this.loadingUpload = true
       const data = new FormData()
 
       data.append('file', this.file)
 
-      this.$api.post('/user/picture', data).then(({data})=>{
+      this.$userApi.post('/picture', data).then(({data})=>{
         this.$toast.success('Your profile picture has been updated.')
         this.src = ''
         this.showUploadPicture = false
@@ -342,7 +661,6 @@ export default {
     cancelUpload(){
       if (!this.loadingUpload){
         this.src = ''
-        this.file = null
         this.showUploadPicture = false
       }
     },
@@ -366,14 +684,14 @@ export default {
         }
       }).then(() => {
         this.fileList = []
-        this.$toast.success(this.$t('upl_succ').toString())
+        this.$message.success(this.$t('upl_succ').toString())
         setTimeout(() => {
           this.handleRemove()
           this.umUploadProgress = 0
         }, 1000)
 
       }).catch(() => {
-        this.$toast.error(this.$t('upl_fail').toString())
+        this.$message.error(this.$t('upl_fail').toString())
       }).finally(() => {
         this.loadingUpload = false
       })
@@ -381,25 +699,29 @@ export default {
     beforeUpload(file) {
       const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
       if (!isJpgOrPng) {
-        this.$toast.error('You can only upload JPG file!');
+        this.$message.error('You can only upload JPG file!');
       }
       const isLt2M = file.size / 1024 / 1024 < 6;
       if (!isLt2M) {
-        this.$toast.error('Image must smaller than 6MB!');
+        this.$message.error('Image must smaller than 6MB!');
       }
       return isJpgOrPng && isLt2M;
     },
     getMyRecord(){
       this.$api.get('/professional/my-record').then(({data})=>{
         if (data){
-          this.isProfessional = this.isModerator
+         // this.isProfessional = this.isModerator
           this.category = data.profe_cate_id
-
-          this.isComplete = !!data.profe_spec_id && !!data.profe_practice_name && !!data.profe_medical_license && !!data.profe_license_state && !!data.profe_credentials
-
+          this.isComplete = data.profe_specialty && data.profe_practice_name && data.profe_medical_license && data.profe_license_state && data.profe_credentials
 
           if (!this.isComplete) {
-            this.tab = 3
+            this.showTabs = false
+            this.tab = 4
+            setTimeout(() =>{
+              this.$nextTick(()=>{
+                this.showTabs = true
+              })
+            }, 100)
           }
 
 
@@ -482,6 +804,81 @@ export default {
         })
       }
     },
+
+    saveClaims(){
+      this.$refs.claimsForm.validate();
+      if (this.validClaimsForm){
+        const data = {
+          user_uuid: this.$auth.user.uuid,
+          claims_info: {
+            number25: this.number25,
+            number26: this.number26,
+            number31: this.number31,
+            number32: this.number32,
+            number33: this.number33,
+          }
+        }
+        this.loadingSaveP = true
+        this.$insuranceApi.post('/claims/save', data).then(()=>{
+          this.$toast.success(this.$t('updated_suc').toString());
+        }).catch((e)=>{
+          this.$refs.rmodal.$emit('error', e)
+        }).finally(() => {
+          this.loadingSaveP = false
+        })
+      }
+    },
+    saveInsured(){
+      this.$refs.insuredForm.validate();
+      if (this.validInsuredForm){
+        const insuredDate = this.insuredBirthDay.toISOString().substr(0, 10).split('-');
+        this.number11.a.yy = insuredDate[0];
+        this.number11.a.mm = insuredDate[1];
+        this.number11.a.dd = insuredDate[2];
+
+        this.number12.date = this.patientSignDate.toISOString().substr(0, 10);
+
+        const data = {
+          user_uuid: this.$auth.user.uuid,
+          insured_info: {
+            number4: this.number4,
+            number5: this.number5,
+            number6: this.number6,
+            number7: this.number7,
+            number11: this.number11,
+            number12: this.number12,
+            number13: this.number13,
+            number17: this.number17,
+          }
+        }
+        this.loadingSaveP = true
+        this.$insuranceApi.post('/insured/save', data).then(()=>{
+          this.$toast.success(this.$t('updated_suc').toString());
+        }).catch((e)=>{
+          this.$refs.rmodal.$emit('error', e)
+        }).finally(() => {
+          this.loadingSaveP = false
+        })
+      }
+    },
+
+    checkCopy(value){
+      if(value){
+        this.yes = true;
+        this.no = false;
+      }else{
+        this.yes = false;
+        this.no = true;
+      }
+      if(this.yes){
+        this.number4.insuredName = this.number5.patientName;
+        this.number7.insuredAddress = this.number5.patientAddress;
+        this.number7.insuredCity = this.number5.patientCity;
+        this.number7.insuredState = this.number5.patientState;
+        this.number7.insuredZipcode = this.number5.patientZipcode;
+        this.number7.insuredTelephone = this.number5.patientTelephone;
+      }
+    }
   }
 }
 </script>
@@ -536,17 +933,6 @@ export default {
   .avatar-uploader.ant-upload-picture-card-wrapper
     img
       max-width: 120px !important
-
-  .upload-mini-box
-    width: 100px
-    height: 100px
-    border: 1px dashed #ccc
-    display: flex
-    justify-content: center
-    align-items: center
-    img
-      max-width: 100%
-      max-height: 100%
-    &:hover
-      cursor: pointer
+  .v-text-field
+        padding: 0px
 </style>

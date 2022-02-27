@@ -82,7 +82,7 @@ export default {
     }).catch(() => {
       this.$toast.error(this.$t('could_nl_p').toString())
     })
-    this.$api.get('/user', {
+    this.$userApi.get('/list', {
       params: {
         view: 'users'
       }

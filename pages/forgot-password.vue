@@ -69,7 +69,7 @@ export default {
       this.$refs.form.validate()
       if (this.valid) {
         this.loading = true
-        this.$api.post('/user/forgot-password', {
+        this.$userApi.post('/forgot-password', {
           email: this.email,
         }).then(() => {
           this.$store.commit('setEmail', this.email)

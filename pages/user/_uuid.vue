@@ -144,11 +144,11 @@ export default {
     if (q && q.uuid) {
       this.uuid = q.uuid
 
-      this.$api.get('/user/practice-address/' + q.uuid).then(({data})=>{
+      this.$userApi.get('/practice-address/' + q.uuid).then(({data})=>{
         this.address = data
       })
 
-      this.$api.get('/user/' + q.uuid).then(({ data }) => {
+      this.$userApi.get('/' + q.uuid).then(({ data }) => {
         this.loading = false
         if (data && data.user_uuid) {
           this.user = data
