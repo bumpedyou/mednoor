@@ -21,7 +21,7 @@ export default {
     this.$cookies.set('view', null)
     this.$cookies.set('appointments', null)
     this.$auth.logout().then(()=>{
-       window.location.href = `http://mednoor.com/`;
+       window.location.href = process.env.HOME_URL;
     })
   },
 }

@@ -84,15 +84,7 @@ export default {
   mounted() {
     this.mounted = true
     console.log(this.$route.query.token_exchange)
-    this.$auth
-      .loginWith('local', {
-        data: {
-          session_id: this.$route.query.token_exchange,
-        },
-      })
-      .then(() => {
-        this.$router.push(this.localePath('/'))
-      })
+    this.login()
   },
   created() {
     this.$api.get('/main-text').then(({ data }) => {
@@ -102,6 +94,20 @@ export default {
         this.main_text_b = data.mate_text_b
       }
     })
+  },
+  methods: {
+    async login() {
+      try {
+        await this.$auth.loginWith('local', {
+          data: {
+            session_id: this.$route.query.token_exchange,
+          },
+        })
+        this.$router.push(this.localePath('/'))
+      } catch (e) {
+        window.location.href = process.env.HOME_URL
+      }
+    },
   },
 }
 </script>
