@@ -204,6 +204,11 @@ export default {
               icon: 'emoticon-sick-outline',
               to: '/my-patients'
             })
+            items.push({
+              text: this.$t('prev_c_pdf'),
+              icon: 'file-outline',
+              to: '/my-chats'
+            })
           }
           if (this.isUser) {
             items.push({
@@ -213,19 +218,15 @@ export default {
             })
           }
           if (this.isLoggedIn) {
-            /*
-            items.push({
-              text: this.$t('prev_c_pdf'),
-              icon: 'file-outline',
-              to: '/my-chats'
-            })
+            
+        
             items.push({
               text: this.$t('chats'),
               icon: 'forum-outline',
               to: '/'
             })
 
-            */
+            
 
             items.push({
               text: 'Messenger',
@@ -241,6 +242,7 @@ export default {
         }
            
         if (this.isAdmin || this.isSuper || this.isModerator) {
+          
             items.push({
               text: 'Appointments',
               icon: 'calendar-month',
