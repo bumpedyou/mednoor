@@ -200,7 +200,7 @@ export default {
               to: '/chat-requests'
             })
             items.push({
-              text: 'My EMR',
+              text: 'My Patients',
               icon: 'emoticon-sick-outline',
               to: '/my-patients'
             })

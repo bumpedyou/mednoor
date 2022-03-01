@@ -59,6 +59,29 @@ export default {
        
         )
       }
+
+      if (this.isModeratorOrHigher && this.isProfessional) {
+        i.push({
+          shortTitle: this.$t('my_patients'),
+          cardTitle: this.$t('my_patients'),
+          to: '/users-list',
+          btnText: this.$t('my_patients'),
+          icon: 'account-group-outline',
+          type: 'pink',
+          dark: true,
+        })
+      } else {
+        i.push({
+          shortTitle: this.$t('list_usrs'),
+          cardTitle: this.$t('list_usrs'),
+          to: '/users-list',
+          btnText: this.$t('list_usrs'),
+          icon: 'account-group-outline',
+          type: 'pink',
+          dark: true,
+        })
+      }
+
       if (this.isModeratorOrHigher) {
         i.push({
           title: this.$t('my_chats'),
@@ -69,18 +92,17 @@ export default {
         i.push({
           shortTitle: 'Messenger',
           cardTitle: 'Messenger',
-          to: '/',
+          to: {
+            path: '/',
+            query: {
+              type: 'messenger'
+            },
+          },
           btnText: 'Messenger',
           icon: 'message-flash',
           type: 'success',
         })
-        i.push({
-          title: this.$t('list_usrs'),
-          to: '/users-list',
-          icon: 'account-group-outline',
-          type: 'pink',
-          dark: true,
-        })
+   
         i.push({
           title: this.$t('emr'),
           to: '/emr',
@@ -94,14 +116,14 @@ export default {
           icon: 'forum-outline',
           dark: true,
         })
-        /*
+        
         i.push({
           title: 'Claims',
           to: '/hcfa',
           icon: 'card-text-outline',
           dark: true,
         })
-        */
+        
       }
       if (this.isAdminOrSuper) {
         i.push(

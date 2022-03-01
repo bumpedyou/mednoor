@@ -1,14 +1,25 @@
 <template>
   <div class="mh-100v pa-6">
     <div>
-      <v-text-field v-model="search" type="search" filled dense placeholder="Search" label="Search"></v-text-field>
+      <v-text-field
+        v-model="search"
+        type="search"
+        filled
+        dense
+        placeholder="Search"
+        label="Search"
+      ></v-text-field>
     </div>
-    <ChatItems :data="filteredModerators" :selected-chat='to' @open-chat='openChat'></ChatItems>
+    <ChatItems
+      :data="filteredModerators"
+      :selected-chat="to"
+      @open-chat="openChat"
+    ></ChatItems>
   </div>
 </template>
 
 <script>
-import chatMixin from "~/mixins/chatMixin";
+import chatMixin from '~/mixins/chatMixin'
 
 export default {
   mixins: [chatMixin],
@@ -25,24 +36,24 @@ export default {
         {
           hid: 'description',
           name: 'description',
-          content: this.$t('seo.index')
+          content: this.$t('seo.index'),
         },
         {
           hid: 'og:description',
           name: 'og:description',
-          content: this.$t('seo.index')
+          content: this.$t('seo.index'),
         },
         {
           hid: 'keywords',
           name: 'keywords',
-          content: this.$t('seo.keywords.index')
+          content: this.$t('seo.keywords.index'),
         },
         {
           hid: 'og:image',
           name: 'og:image',
-          content: process.env.BASE_URL + '/logo.png'
-        }
-      ]
+          content: process.env.BASE_URL + '/logo.png',
+        },
+      ],
     }
   },
   watch: {
@@ -73,7 +84,13 @@ export default {
   },
   methods: {
     openChat(uuid) {
-      this.$router.push(this.localePath('/chat/' + uuid))
+    //  console.log(uuid, this.$route)
+      if (this.$route.query.type === 'messenger') {
+        this.$router.push(this.localePath('/messanger/' + uuid))
+      } else {
+        this.$router.push(this.localePath('/chat/' + uuid))
+      }
+
       if (!this.to || this.to !== uuid) {
         this.messages = []
         this.$api.get('/conversation/id/' + this.myID + '/' + uuid).then(({ data }) => {
@@ -98,7 +115,7 @@ export default {
         return moderator
       })
     },
-  }
+  },
 }
 </script>
 <style lang="sass">
