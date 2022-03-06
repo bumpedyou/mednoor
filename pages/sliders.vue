@@ -23,7 +23,7 @@
         <p>Here you can manage the home screen sliders</p>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="isAddNew">
       <v-col>
         <div class="slider-container mb-3" @dragover.prevent @drop.prevent>
           <div v-if="src">
@@ -82,7 +82,7 @@
     </v-row>
     <v-row>
       <v-col>
-        <slider ref="slider" edit @edit="editSlide" @delete="deleteSlide" />
+        <slider ref="slider" edit @add="addSlider"  @edit="editSlide" @delete="deleteSlide"  @activeToggle="activeToggleSlider"/>
       </v-col>
     </v-row>
     <request-modal ref="rmodal"></request-modal>
@@ -119,7 +119,8 @@ export default {
     description: '',
     confirm: false,
     loadingDelete: false,
-    id: null
+    id: null,
+    isAddNew : false
   }),
   methods: {
     confirmDelete() {
@@ -142,6 +143,7 @@ export default {
       }
     },
     editSlide(id) {
+      this.isAddNew = true;
       this.id = id
       this.$api
         .get('/slider/' + this.id)
@@ -154,10 +156,31 @@ export default {
           this.$refs.rmodal.$emit('error', err)
         })
     },
+
+    activeToggleSlider(slider) {
+     // console.log(slider)
+      this.id = slider.slid_id;
+      const model= {
+      
+        slid_active:!slider.slid_active
+      }
+      this.$api
+        .post('/slider/active/' + this.id,model)
+        .then(({ data }) => {
+           this.$refs.slider.$emit('get-items')
+            this.$toast.success('The slider has been updated successfully.')
+        })
+        .catch((err) => {
+          this.$refs.rmodal.$emit('error', err)
+        })
+    },
     deleteSlide(id) {
       this.id = id
       this.confirm = true
       console.log('Delete slide')
+    },
+    addSlider() {
+  this.isAddNew = true
     },
     removeFileSelected() {
       this.$refs.file.value = ''

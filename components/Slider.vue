@@ -6,8 +6,10 @@
         <div class="slider-item">
           <div class="slider-bg" :style="sliderBg(s.slid_image)">
             <div v-if="$props.edit" class="edit-top-bar">
+                  <v-icon @click="$emit('add')">mdi-plus</v-icon>
               <v-icon @click="$emit('delete', s.slid_id)">mdi-delete</v-icon>
               <v-icon @click="$emit('edit', s.slid_id)">mdi-pencil</v-icon>
+           <v-icon  @click="$emit('activeToggle', s)">{{s.slid_active? 'mdi-check-circle-outline':'mdi-check-circle'}}</v-icon>
             </div>
             <div class="slider-content">
               <p class="h1">{{ s.slid_title }}</p>
@@ -76,6 +78,13 @@ export default {
   position: relative;
 }
 
+
+.mdi-check-circle {
+  color: #89c8fd!important;
+}
+.v-icon {
+  color: #cccccc;
+}
 .edit-top-bar {
   position: absolute;
   right: 0;
