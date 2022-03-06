@@ -187,7 +187,8 @@ export default {
       this.src = ''
       this.file = null
       this.title = ''
-      this.description = ''
+      this.description = '',
+      this.isAddNew = false;
     },
     change({ coordinates, canvas }) {
       this.left = coordinates.left
