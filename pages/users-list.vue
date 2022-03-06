@@ -6,7 +6,10 @@
           <a-breadcrumb-item>
             <nuxt-link :to="localePath('/dashboard')">{{ $t('dashboard') }}</nuxt-link>
           </a-breadcrumb-item>
-          <a-breadcrumb-item>{{ $t('list_usrs') }}</a-breadcrumb-item>
+          <a-breadcrumb-item>
+            <span v-if="isProfessional">{{ 'Patient\'s List'  }}</span>
+            <span v-else>{{$t('list_usrs')}}</span>
+          </a-breadcrumb-item>
         </a-breadcrumb>
       </a-col>
     </a-row>
@@ -19,13 +22,17 @@
           <span v-else-if='mode === "professionals"'>
             Professional's list.
           </span>
+             <span v-else-if=isProfessional>
+            Patient's list.
+          </span>
           <span v-else>
             List of users.
           </span>
         </p>
         <div class='mb-3'>
           <v-btn v-if='mode !== "archived"' color="primary" tile small @click='addUser'>
-            {{ $t('add_urs') }}
+           <span v-if="isProfessional">Add Patient</span>
+           <span v-else> {{ $t('add_urs') }}</span>
             <a-icon type='user-add'></a-icon>
           </v-btn>
         </div>

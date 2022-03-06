@@ -155,6 +155,7 @@ export default {
     APPOINTMENTS_URL: process.env.APPOINTMENTS_URL,
     INSURANCE_URL: process.env.INSURANCE_URL,
     HOME_URL: process.env.HOME_URL,
+    PAYMENT_URL:process.env.PAYMENT_URL
 
   },
 

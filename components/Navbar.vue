@@ -19,13 +19,13 @@
       </div>
       -->
       <div class='menu-icon'>
-        <!--
-        <div class='mr-1 pay-icon'>
-          <a href="https://pay.mednoor.com/submit" target="_blank">
+        
+        <!-- <div v-if="isLoggedIn" class='mr-1 pay-icon' >
+          <a @click='onClickPayment()'>
           <img :src="require('~/static/pay.png')" alt="pay">
           </a>
-        </div>
-        -->
+        </div> -->
+        
         <!--
         <div v-if="isLoggedIn" class='mx-1'>
           <v-tab>
@@ -93,13 +93,23 @@
           <sidebar-mobile-title>{{ $t('menu') }}</sidebar-mobile-title>
           <ul class='sidebar-menu-items'>
             <li v-for='(item, i) in menuItems' :key='i'>
-              <nuxt-link :to='localePath(item.to)' class='sidebar-item'>
+              <nuxt-link v-if="item.to!='redirect'" :to='localePath(item.to)' class='sidebar-item'>
                 <span>
                  {{ item.text }}
                 </span>
-                <v-icon v-if="item.icon" color="#333">mdi-{{item.icon}}</v-icon>
+                <v-icon v-if="item.icon"  color="#333">mdi-{{item.icon}}</v-icon>
               </nuxt-link>
+
+             
+         
+                      <a  v-if="item.to=='redirect'"  @click='onClickPayment()'>
+                        <span style="margin-right:57%!important">Financial </span>
+                      <img style="width:25px;height: 25px;" :src="require('~/static/pay.png')" alt="pay">
+                      </a>
+           
             </li>
+
+
           </ul>
         </div>
       </transition>
@@ -174,6 +184,16 @@ export default {
             icon: 'account-circle-outline',
             to: '/my-profile'
           })
+           items.push({
+            text: 'Financial',
+            icon: 'static/pay.png',
+            to: 'redirect',
+            
+          })
+
+     
+
+
           if (this.isAdmin || this.isSuper) {
             items.push({
               text: this.$t('usrs_list'),
@@ -200,7 +220,7 @@ export default {
               to: '/chat-requests'
             })
             items.push({
-              text: 'My Patients',
+              text: 'My EMR',
               icon: 'emoticon-sick-outline',
               to: '/my-patients'
             })
@@ -375,6 +395,11 @@ export default {
     },
     toggleMenuNavigation(clickFromInside) {
       this.showMenuNav = this.toggleDirective(this.showMenuNav, clickFromInside)
+    },
+
+    onClickPayment(){
+      // console.log(this.myId)
+       window.location.href = `${process.env.PAYMENT_URL}?user_id=${this.myId}&session_id=`
     }
   }
 }

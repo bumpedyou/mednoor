@@ -3,7 +3,7 @@
     <v-row>
       <v-col md="12">
         <p class='h4 mb-1'>
-          {{ $t('my_patients') }}
+          {{ $t('My EMR') }}
         </p>
       </v-col>
     </v-row>
