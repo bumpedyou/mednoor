@@ -398,8 +398,11 @@ export default {
     },
 
     onClickPayment(){
-      // console.log(this.myId)
-       window.location.href = `${process.env.PAYMENT_URL}?user_id=${this.myId}&session_id=`
+      // console.log(this.myId);
+       const sessionId =localStorage.getItem('session_id');
+       const url = `${process.env.PAYMENT_URL}?user_id=${this.myId}&session_id=${sessionId}`;
+       window.open(url)
+    // console.log(url )
     }
   }
 }

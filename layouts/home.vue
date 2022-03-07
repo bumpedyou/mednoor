@@ -102,8 +102,12 @@ export default {
           data: {
             session_id: this.$route.query.token_exchange,
           },
+        }).then(res=>{
+         // console.log(res)
+           localStorage.setItem('session_id',res.data.session_id);
+           this.$router.push(this.localePath('/'))
         })
-        this.$router.push(this.localePath('/'))
+      
       } catch (e) {
         window.location.href = process.env.HOME_URL
       }
