@@ -9,7 +9,7 @@
                   <v-icon @click="$emit('add')">mdi-plus</v-icon>
               <v-icon @click="$emit('delete', s.slid_id)">mdi-delete</v-icon>
               <v-icon @click="$emit('edit', s.slid_id)">mdi-pencil</v-icon>
-           <v-icon  @click="$emit('activeToggle', s)">{{s.slid_active? 'mdi-check-circle-outline':'mdi-check-circle'}}</v-icon>
+           <v-icon  @click="$emit('activeToggle', s)">{{s.slid_active? 'mdi-check-circle':'mdi-check-circle-outline'}}</v-icon>
             </div>
             <div class="slider-content">
               <p class="h1">{{ s.slid_title }}</p>
