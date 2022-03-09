@@ -10,7 +10,8 @@
     </div>
     <div v-else class="mt-3">
       <small v-if="isMade" class="success--text">
-        Appointment Queued <v-icon class="ml-1">mdi-check-circle</v-icon>
+        Appointment Queued 
+        <span v-if="isActive"><v-icon class="ml-1">mdi-check-circle</v-icon></span>
       </small>
       <small v-else-if="isLoggedIn" :class='makeClasses' @click='confirmAppointment'>
         Make Appointment
@@ -40,18 +41,25 @@ export default {
     button: {
       type: Boolean,
       default: false,
-    }
+    },
+   
   },
   data() {
+
     return {
       loadingMakeAppointment: false,
       appointmentVisible: false,
       count: 0,
+       myProfessionals:[]
     }
   },
+
+
+
   computed: {
     isMade(){
-      const a = this.$cookies.get('appointments')
+      const a = this.$cookies.get('appointments');
+     
       let includes = false
       if (a){
         a.forEach((item)=>{
@@ -60,7 +68,14 @@ export default {
           }
         })
       }
+ // console.log(a,this.professional )
       return includes || this.count > 0
+    },
+
+    isActive(){
+
+    //  console.log(this.myProfessionals)
+      return this.myProfessionals.find(x=>x.user_uuid === this.professional);
     },
     makeClasses(){
       const c = ['clickable']
@@ -80,7 +95,18 @@ export default {
         }
       }
       return null
-    }
+    },
+  },
+    mounted(){
+          this.$api
+          .get('/my-professional')
+          .then((res) => {
+             // console.log(res)
+          this.myProfessionals = res.data || []
+          })
+          .catch((err) => {
+            this.$toast.error(err)
+          })
   },
   methods: {
     cancelMakeAppointment() {

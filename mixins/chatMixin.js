@@ -189,6 +189,7 @@ export default {
           this.$api
             .get('/my-professional')
             .then(({ data }) => {
+              this.moderators = data
               this.moderatorsSet = true
             })
             .catch((e) => {
@@ -217,7 +218,8 @@ export default {
       this.playNotification()
     },
     getSound(soundName) {
-      const audioPath = process.env.BASE_URL + '/' + soundName
+      const audioPath = process.env.API_URL + '/' + soundName
+     // console.log(audioPath)
       return new Audio(audioPath)
     },
     playNotification() {
