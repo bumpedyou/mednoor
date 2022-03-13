@@ -172,7 +172,29 @@ export default {
         if (this.isAdmin) {
           this.mergeWithConversations()
         } else if (this.isModerator) {
-          this.$api
+
+          if(this.$route.query && this.$route.query.type==="messenger"){
+            this.$userApi
+            .get('list?view=users')
+            .then(({ data }) => {
+              console.log('Moderators ---> --->', data)
+              this.moderators = data.map(x=>{
+                return {
+                  ...x,
+                  mypr_allowed: true
+                  
+                }
+              })
+              this.moderatorsSet = true
+            })
+            .catch((e) => {
+              this.$refs.rmodal.$emit('error', e)
+            })
+            .finally(() => {
+              this.loadingItems = false
+            })
+          }else {
+            this.$api
             .get('/my-professional/my-users/')
             .then(({ data }) => {
               console.log('Moderators ---> --->', data)
@@ -185,9 +207,18 @@ export default {
             .finally(() => {
               this.loadingItems = false
             })
+          }
+        
         } else {
+
+          // check chat or messenger
+          const  url =this.$route && this.$route.query && this.$route.query.type==="messenger"?'/my-doctor':'/my-professional'
+
+        //  console.log(this.$route)
+
+  
           this.$api
-            .get('/my-professional')
+            .get(url)
             .then(({ data }) => {
               this.moderators = data
               this.moderatorsSet = true

@@ -64,7 +64,7 @@ export default {
     },
     search(v) {
       this.filteredModerators = this.moderators.filter((mod) => {
-        console.log('Mod', mod)
+        // console.log('Mod', mod)
         let fn = [mod.user_first_name, mod.user_last_name].join(' ')
         if (fn) {
           fn = fn.toLowerCase()
