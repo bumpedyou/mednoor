@@ -251,12 +251,7 @@ export default {
             items.push({
               text: 'Messenger',
               icon: 'message-flash-outline',
-              to: {
-                path: '/',
-                query: {
-                  type: 'messenger'
-                },
-              },
+              to: '/my-messanger'
             })
           }
         }

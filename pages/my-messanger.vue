@@ -77,23 +77,19 @@ export default {
     },
   },
   mounted() {
-    /*
-    this.$api.get('/previous-chats/grouped').then(({data})=>{
-    }) */
+ 
     this.getChats()
   },
   methods: {
     openChat(uuid) {
-     // console.log(uuid)
+    
       if (this.$route.path.includes('messanger')) {
         this.$router.push(this.localePath('/messanger/' + uuid))
-      } else {
-        this.$router.push(this.localePath('/chat/' + uuid))
       }
 
       if (!this.to || this.to !== uuid) {
         this.messages = []
-        this.$api.get('/conversation/id/' + this.myID + '/' + uuid).then(({ data }) => {
+        this.$api.get('/conversation/id/' + this.$auth.user.uuid + '/' + uuid).then(({ data }) => {
           if (data.conversationId && data.conversationId !== -1) {
             this.$api.get('/conversation/messages/' + data.conversationId).then(({ data }) => {
               this.messages = data
@@ -114,6 +110,8 @@ export default {
         }
         return moderator
       })
+
+     // console.log(this.moderators)
     },
   },
 }

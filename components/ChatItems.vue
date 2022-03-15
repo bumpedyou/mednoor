@@ -3,7 +3,9 @@
     <div v-if="moderators && moderators.length > 0">
       <ChatItem :can-hover="false">
         <p class="h4">
-          Chats
+          <span v-if="isMessanger">Messenger</span>
+          <span v-if="!isMessanger">Chats</span>
+          
         </p>
       </ChatItem>
       <ChatItem v-for='(m,i) in moderators' :key='"chat-" + i' :class="chatItemClass(m)" :active='to === m.user_uuid' @click="$emit('open-chat', m.user_uuid)">
@@ -66,7 +68,8 @@ export default {
     selectedChat: {
       type: String,
       default: '',
-    }
+    },
+    
   },
   computed: {
     to (){
@@ -74,6 +77,9 @@ export default {
     },
     moderators(){
       return this.$props.data
+    },
+    isMessanger (){
+      return this.$route.path.includes('messanger')
     }
   },
   methods: {

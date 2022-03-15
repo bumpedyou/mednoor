@@ -167,13 +167,15 @@ export default {
         })
     },
     getChats() {
+
+      const isMessangerWindow = this.$route.path.includes('messanger');
       if (this.isLoggedIn) {
         this.loadingItems = true
         if (this.isAdmin) {
           this.mergeWithConversations()
         } else if (this.isModerator) {
 
-          if(this.$route.query && this.$route.query.type==="messenger"){
+          if(isMessangerWindow){
             this.$userApi
             .get('list?view=users')
             .then(({ data }) => {
@@ -210,17 +212,21 @@ export default {
           }
         
         } else {
+ // check chat or messenger
 
-          // check chat or messenger
-          const  url =this.$route && this.$route.query && this.$route.query.type==="messenger"?'/my-doctor':'/my-professional'
-
-        //  console.log(this.$route)
-
-  
-          this.$api
-            .get(url)
+ // console.log(this.$route.path,isMessangerWindow)
+          if(isMessangerWindow)  { 
+            this.$userApi
+            .get('search?searchTerm=&type=MODERATOR')
             .then(({ data }) => {
-              this.moderators = data
+              console.log('Moderators ---> --->', data)
+              this.moderators = data.map(x=>{
+                return {
+                  ...x,
+                  mypr_allowed: true
+                  
+                }
+              })
               this.moderatorsSet = true
             })
             .catch((e) => {
@@ -229,7 +235,30 @@ export default {
             .finally(() => {
               this.loadingItems = false
             })
+          } 
+          
+          if(!isMessangerWindow) {
+     
+
+              this.$api
+                .get('/my-professional')
+                .then(({ data }) => {
+                  this.moderators = data
+                  this.moderatorsSet = true
+                })
+                .catch((e) => {
+                  this.$refs.rmodal.$emit('error', e)
+                })
+                .finally(() => {
+                  this.loadingItems = false
+                })
+                }
+
+    
         }
+
+
+
       } else {
         this.moderators = []
         this.moderatorsSet = true

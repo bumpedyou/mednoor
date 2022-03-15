@@ -92,12 +92,7 @@ export default {
         i.push({
           shortTitle: 'Messenger',
           cardTitle: 'Messenger',
-          to: {
-            path: '/',
-            query: {
-              type: 'messenger'
-            },
-          },
+          to: '/my-messanger',
           btnText: 'Messenger',
           icon: 'message-flash',
           type: 'success',
