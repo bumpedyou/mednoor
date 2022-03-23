@@ -62,7 +62,7 @@ export default {
 
       if (this.isModeratorOrHigher && this.isProfessional) {
         i.push({
-          shortTitle: this.$t('my_patients'),
+          title: this.$t('my_patients'),
           cardTitle: this.$t('my_patients'),
           to: '/users-list',
           btnText: this.$t('my_patients'),
@@ -90,7 +90,7 @@ export default {
           type: 'success',
         })
         i.push({
-          shortTitle: 'Messenger',
+          title: 'Messenger',
           cardTitle: 'Messenger',
           to: '/my-messanger',
           btnText: 'Messenger',
