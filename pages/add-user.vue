@@ -80,7 +80,18 @@
               </div>
             </v-col>
             <v-col>
-              <div class="d-flex flex-column align-start">
+
+                     <div>
+                <v-text-field
+                  v-model="dob"
+                  type="search"
+                    placeholder="MM.DD.YYYY"
+                  :autocomplete="false"
+            
+                  :rules="[(v) => !!v || $t('Date of Birth required')]"
+                ></v-text-field>
+              </div>
+              <!-- <div class="d-flex flex-column align-start">
                 <label class="v-label theme--light" style="margin-bottom: 10px">
                   Date Of Birth:
                 </label>
@@ -89,7 +100,7 @@
                   type="date"
                   :rules="[(v) => !!v || $t('Date of Birth required')]"
                 ></date-picker>
-              </div>
+              </div> -->
             </v-col>
           </v-row>
 
@@ -157,13 +168,12 @@
 </template>
 
 <script>
-import DatePicker from 'vue2-datepicker'
+
 import formMixin from '~/mixins/formMixin'
 import userRoleMixin from '~/mixins/userRoleMixin'
-import 'vue2-datepicker/index.css'
+
 export default {
   name: 'AddUser',
-  components: { DatePicker },
   mixins: [formMixin, userRoleMixin],
   layout: 'dashboard',
   middleware: ['authenticated', 'verified', 'not-blocked', 'not-deleted'],
@@ -199,7 +209,7 @@ export default {
     generateEmail() {
       console.log(this.first_name, this.last_name)
       if (this.first_name && this.last_name) {
-        this.email = `${this.first_name}.${this.last_name}@pronoor.com`
+        this.email = `${String(this.first_name).trim().toLowerCase()}.${String(this.last_name).trim().toLowerCase()}@pronoor.com`
       }
     },
     handleSubmit(e) {
@@ -213,6 +223,16 @@ export default {
         this.$refs.rmodal.$emit('error', err)
         return
       }
+      if(this.dob){
+        const isValid = this.dob.split(".").length===3
+        console.log(isValid)
+        if(!isValid){
+              const err = {
+          response: { message: 'Invalid date formate ', status: 400 },
+        }
+        this.$refs.rmodal.$emit('error', err)
+        }
+      }
 
       if (this.password) {
         if (this.password !== this.confirm_password) {
@@ -224,7 +244,7 @@ export default {
         }
       }
       if (this.valid) {
-        const _dob = this.dob.toISOString().substr(0, 10).split('-')
+        const _dob = this.dob.split('.')
         this.loading = true
         const values = {
           first_name: this.first_name,
