@@ -19,6 +19,10 @@ export default {
                 to: '/sliders',
               },
               {
+                title: 'SubMenu',
+                to: '/sub-menu',
+              },
+              {
                 title: 'Home Screen',
                 to: '/home-screen',
               },
