@@ -21,7 +21,7 @@
       <v-col md="2">
       <v-form ref="form"  v-model="validForm" class="mt-6" @submit.prevent='saveSubMenuItem'>
         <v-text-field v-model="name" label="Name" :rules="[v => !!v || $t('v.field_req')]" placeholder="Sub menu item name"></v-text-field>
-        <v-text-field v-model="url" label="Url" :rules="[v => !!v || $t('v.field_req')]" placeholder="Sub menu item url end point" ></v-text-field>
+        <v-text-field v-model="url" label="Url" :rules="[v => !!v || $t('v.field_req'),v => /^[a-zA-Z0-9 ]*$/.test(v) || 'Olny alphabets and number are allowed']" placeholder="Sub menu item url end point" ></v-text-field>
         <v-btn color="primary" dark block tile small type="submit">
           {{$t('save')}}
         </v-btn>
@@ -41,13 +41,18 @@
             sortable: false,
           },
           {
+            text: 'Status',
+            value: 'status',
+            sortable: false,
+          },
+          {
             text: 'Actions',
             value: 'page_actions',
             sortable: false,
           }
         ]">
           <template  #[`item.page_actions`] = "{item}">
-            <!-- <span class='red--text clickable' @click='deleteItem(item.smid_id)'>{{ $t('update') }}</span> -->
+            <span class='green--text clickable' @click='updateStatus(item.smid_id)'>{{item.status =='active' ? "Make it inactive":"Make it active"}}</span>
             <MedDivider></MedDivider>
             <span class='red--text clickable' @click='deleteItem(item.smid_id)'>{{ $t('delete') }}</span>
           </template>
@@ -74,7 +79,11 @@ export default {
       this.$api
         .post('/submenu',{name:this.name,url:this.url})
         .then(({ data }) => {
-          console.log(data);
+          this.submenus = [];
+          this.name = '';
+          this.url = '';
+          this.getSubMenuItem();
+          this.$toast.success(data.result.message);
         })
         .catch((err) => {
           console.log(err);
@@ -85,7 +94,19 @@ export default {
       this.$api
         .delete('/submenu/' + id)
         .then(({ data }) => {
-           this.$toast.success('Submenu Item has been deleted successfuly.');
+           this.$toast.success(data.result.message);
+           this.submenus = [];
+           this.getSubMenuItem();
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+    },
+    updateStatus(id){
+      this.$api
+        .get('/submenu/update-status/' + id)
+        .then(({ data }) => {
+           this.$toast.success(data.result.message);
            this.submenus = [];
            this.getSubMenuItem();
         })
