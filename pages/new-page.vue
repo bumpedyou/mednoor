@@ -35,11 +35,15 @@
             </v-text-field>
           </div>
           <div>
-            <v-text-field v-model="slug" :rules="[
+            <v-select v-model="slug" 
+              :rules="[ v => !!v || 'Submenu is required']"
+              :items="menus" label="Page for Submenu">
+            </v-select>
+            <!-- <v-text-field v-model="slug" :rules="[
               v => !!v || 'The slug is required',
               v => !!v && v.length<= 330 || $t('v.max_330')
             ]" :label="$t('slug_p')"  :placeholder="$t('slug_p')">
-            </v-text-field>
+            </v-text-field> -->
           </div>
           <div>
             <v-text-field v-model="keywords" :rules="[
@@ -84,6 +88,7 @@ export default {
       slug: '',
       keywords: '',
       valid: false,
+      menus:[]
     }
   },
   head(){
@@ -92,6 +97,7 @@ export default {
     }
   },
   mounted() {
+    this.getSubMenuItem();
     if (this.$route.query && this.$route.query.page) {
       this.loading = true
       this.uuid = this.$route.query.page
@@ -116,6 +122,18 @@ export default {
     }
   },
   methods: {
+    getSubMenuItem(){
+      this.$api
+        .get('/submenu')
+        .then(({ data }) => {
+          if(data){
+            this.menus  = data.map(item => { return  item.url_end_point });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+    },
     handleSubmit() {
       this.$refs.form.validate()
       const values = {
@@ -128,16 +146,16 @@ export default {
         this.loadingCreate = true
         values.txt = this.txt
         if (this.uuid) {
-          this.$api.put('/page/' + this.uuid, values).then(() => {
-            this.$toast.success(this.$t('page_hb_updated').toString())
+          this.$api.put('/page/' + this.uuid, values).then((data) => {
+            this.$toast.success(data.data.result.message)
           }).catch((err) => {
             this.$refs.rmodal.$emit('error', err)
           }).finally(() => {
             this.loadingCreate = false
           })
         } else {
-          this.$api.post('/page/', values).then(() => {
-            this.$toast.success(this.$t('page_hb_created').toString())
+          this.$api.post('/page/', values).then((data) => {
+            this.$toast.success(data.data.result.message)
             this.$router.push(this.localePath('/pages'))
           }).catch((err) => {
             this.$refs.rmodal.$emit('error', err)

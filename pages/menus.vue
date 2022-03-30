@@ -20,8 +20,14 @@
     <v-row>
       <v-col md="2">
       <v-form ref="form"  v-model="validForm" class="mt-6" @submit.prevent='saveSubMenuItem'>
-        <v-text-field v-model="name" label="Name" :rules="[v => !!v || $t('v.field_req')]" placeholder="Sub menu item name"></v-text-field>
+        <v-text-field v-model="name" label="Name" :rules="[v => !!v || $t('v.field_req')]" placeholder="menu item name"></v-text-field>
         <v-text-field v-model="url" label="Url" :rules="[v => !!v || $t('v.field_req'),v => /^[a-zA-Z0-9 ]*$/.test(v) || 'Olny alphabets and number are allowed']" placeholder="Sub menu item url end point" ></v-text-field>
+        <v-select
+          :items="['sub_menu','main_menu']"
+          label="Menu"
+          v-model="type"
+          :rules="[v => !!v || $t('v.field_req')]"
+        ></v-select>
         <v-btn color="primary" dark block tile small type="submit">
           {{$t('save')}}
         </v-btn>
@@ -29,20 +35,25 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-data-table  class="mt-3" :items="submenus" :headers="[
+      <v-data-table  class="mt-3" :items="menus" :headers="[
           {
             text: 'Name',
-            value: 'smid_name',
+            value: 'name',
             sortable: false,
           },
           {
             text: 'Url end point',
-            value: 'smid_url_end_point',
+            value: 'url_end_point',
             sortable: false,
           },
           {
             text: 'Status',
             value: 'status',
+            sortable: false,
+          },
+          {
+            text: 'Type',
+            value: 'type',
             sortable: false,
           },
           {
@@ -52,9 +63,9 @@
           }
         ]">
           <template  #[`item.page_actions`] = "{item}">
-            <span class='green--text clickable' @click='updateStatus(item.smid_id)'>{{item.status =='active' ? "Make it inactive":"Make it active"}}</span>
+            <span class='green--text clickable' @click='updateStatus(item.mid_id)'>{{item.status =='active' ? "Make it inactive":"Make it active"}}</span>
             <MedDivider></MedDivider>
-            <span class='red--text clickable' @click='deleteItem(item.smid_id)'>{{ $t('delete') }}</span>
+            <span class='red--text clickable' @click='deleteItem(item.mid_id)'>{{ $t('delete') }}</span>
           </template>
         </v-data-table>
     </v-row>
@@ -67,8 +78,9 @@ export default {
   data: () => ({
     name:'',
     url:'',
+    type:'sub_menu',
     validForm:false,
-    submenus:[]
+    menus:[]
   }),
   mounted(){
     this.getSubMenuItem();
@@ -77,17 +89,21 @@ export default {
     saveSubMenuItem(){
       if(this.validForm){
       this.$api
-        .post('/submenu',{name:this.name,url:this.url})
+        .post('/submenu',{name:this.name,url:this.url,type:this.type})
         .then(({ data }) => {
-          this.submenus = [];
+          this.menus = [];
           this.name = '';
           this.url = '';
+          this.type = 'sub_menu';
           this.getSubMenuItem();
           this.$toast.success(data.result.message);
         })
         .catch((err) => {
           console.log(err);
+           this.$toast.error("Url already exists with same menu");
         })
+      }else{
+        this.$toast.error("All fields are required");
       }
     },
     deleteItem(id){
@@ -95,7 +111,7 @@ export default {
         .delete('/submenu/' + id)
         .then(({ data }) => {
            this.$toast.success(data.result.message);
-           this.submenus = [];
+           this.menus = [];
            this.getSubMenuItem();
         })
         .catch((err) => {
@@ -107,7 +123,7 @@ export default {
         .get('/submenu/update-status/' + id)
         .then(({ data }) => {
            this.$toast.success(data.result.message);
-           this.submenus = [];
+           this.menus = [];
            this.getSubMenuItem();
         })
         .catch((err) => {
@@ -118,7 +134,7 @@ export default {
       this.$api
         .get('/submenu')
         .then(({ data }) => {
-          this.submenus = data;
+          this.menus = data;
         })
         .catch((err) => {
           console.log(err);

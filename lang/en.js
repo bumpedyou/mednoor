@@ -65,7 +65,7 @@ export default {
   send_email: 'Send email',
   reset_pwd_desc: "Reset the password of your mednoor's account.",
   home_screen: 'Home Screen',
-  sub_menu: 'Sub Menu',
+  sub_menu: 'Menu',
   home: 'Home',
   file_desc_drag: 'Click or drag file to this area to upload',
   file_desc_sel: 'Select a short video or an image.',
