@@ -65,6 +65,7 @@ export default {
   send_email: 'Send email',
   reset_pwd_desc: "Reset the password of your mednoor's account.",
   home_screen: 'Home Screen',
+  sub_menu: 'Menu',
   home: 'Home',
   file_desc_drag: 'Click or drag file to this area to upload',
   file_desc_sel: 'Select a short video or an image.',
@@ -85,6 +86,7 @@ export default {
   your_info: 'Your Information',
   pwd_reset: 'Password reset',
   save_changes: 'Save Changes',
+  save: 'Save',
   my_profile: 'My Profile',
   updated_suc: 'Updated successfully',
   emr_template: 'EMR Template',
@@ -220,6 +222,7 @@ export default {
   welcome: 'Welcome',
   v: {
     email_req: 'Email is required',
+    field_req: 'This filed is required',
     ln_req: 'Last Name is required',
     pw_req: 'Password is required',
     title_req: 'The Title is required',

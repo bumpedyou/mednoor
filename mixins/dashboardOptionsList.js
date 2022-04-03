@@ -19,6 +19,18 @@ export default {
                 to: '/sliders',
               },
               {
+                title: 'Menus',
+                to: '/menus',
+              },
+              {
+                title: 'New Categories',
+                to: '/news-categories',
+              },
+              {
+                title: 'Qestion Answers',
+                to: '/qestion-answer',
+              },
+              {
                 title: 'Home Screen',
                 to: '/home-screen',
               },

@@ -65,6 +65,7 @@ export default {
   send_email: 'Enviar email',
   reset_pwd_desc: 'Restablecer la contraseña de su cuenta de mednoor',
   home_screen: 'Fondo de pantalla',
+  sub_menu: 'Submenú',
   home: 'Inicio',
   file_desc_drag: 'Haga click sobre esta área para subir',
   file_desc_sel: 'Seleccione un vídeo corto o una imagen.',
@@ -154,6 +155,7 @@ export default {
   med_med_cen: 'Centro Médico Mednoor',
   alw_open: 'Siempre abierto',
   sign_in: 'Ingresar',
+  save: 'Save',
   sign_up: 'Registrarse',
   dont_h_acc: '¿No tiene cuenta?',
   signing_out: 'Saliendo',
@@ -221,6 +223,7 @@ export default {
   welcome: 'Bienvenido',
   v: {
     email_req: 'El email es requerido',
+    field_req: 'This filed is required',
     ln_req: 'El apellido es requerido',
     pw_req: 'La contraseña es requerida',
     title_req: 'El título es requerido',
