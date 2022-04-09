@@ -18,14 +18,19 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col md="4">
+      <v-col md="8">
       <v-form ref="form"  v-model="validForm" class="mt-6" @submit.prevent='saveQuestionAnswer'>
-        <v-text-field v-model="question" label="Question" :rules="[v => !!v || $t('v.field_req')]" placeholder="Question"></v-text-field>
-        <v-text-field v-model="answer" label="Answer" :rules="[v => !!v || $t('v.field_req')]" placeholder="Answer" ></v-text-field>
         <v-select v-model="news_category" 
               :rules="[ v => !!v || $t('v.field_req')]"
               :items="news_categories" label="News Category">
             </v-select>
+        <v-text-field v-model="question" label="Question" :rules="[v => !!v || $t('v.field_req')]" placeholder="Question"></v-text-field>
+        <!-- <v-text-field v-model="answer" label="Answer" :rules="[v => !!v || $t('v.field_req')]" placeholder="Answer" ></v-text-field> -->
+          <div>
+            <client-only>
+              <VueEditor v-model='answer' :rules="[ v => !!v || $t('v.field_req')]" />
+            </client-only>
+          </div>
         <v-btn color="primary" dark block tile small type="submit">
           {{$t('save')}}
         </v-btn>
@@ -37,11 +42,6 @@
           {
             text: 'Question',
             value: 'question',
-            sortable: false,
-          },
-          {
-            text: 'Answer',
-            value: 'answer',
             sortable: false,
           },
           {
@@ -87,7 +87,7 @@ export default {
   },
   methods: {
     saveQuestionAnswer(){
-      if(this.validForm){
+      if(this.validForm && this.answer){
       this.$api
         .post('/question-answer',{question:this.question,answer:this.answer,news_category:this.news_category})
         .then(({ data }) => {

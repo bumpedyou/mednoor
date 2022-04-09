@@ -19,11 +19,11 @@ export default {
                 to: '/sliders',
               },
               {
-                title: 'Menus',
+                title: 'Menu',
                 to: '/menus',
               },
               {
-                title: 'New Categories',
+                title: 'News Categories',
                 to: '/news-categories',
               },
               {
@@ -35,7 +35,7 @@ export default {
                 to: '/home-screen',
               },
               {
-                title: 'Main Text',
+                title: 'Patient & Provider Section',
                 to: '/main-text',
               },
               {

@@ -21,9 +21,9 @@
       <v-col md="2">
       <v-form ref="form"  v-model="validForm" class="mt-6" @submit.prevent='saveSubMenuItem'>
         <v-text-field v-model="name" label="Name" :rules="[v => !!v || $t('v.field_req')]" placeholder="menu item name"></v-text-field>
-        <v-text-field v-model="url" label="Url" :rules="[v => !!v || $t('v.field_req'),v => /^[a-zA-Z0-9 ]*$/.test(v) || 'Olny alphabets and number are allowed']" placeholder="Sub menu item url end point" ></v-text-field>
+        <!-- <v-text-field v-model="url" label="Url" :rules="[v => !!v || $t('v.field_req'),v => /^[a-zA-Z0-9 ]*$/.test(v) || 'Olny alphabets and number are allowed']" placeholder="Sub menu item url end point" ></v-text-field> -->
         <v-select
-          :items="['sub_menu','main_menu']"
+          :items="['main_menu','sub_menu','footer_quick_menu','footer_support_menu','footer_info_menu']"
           label="Menu"
           v-model="type"
           :rules="[v => !!v || $t('v.field_req')]"

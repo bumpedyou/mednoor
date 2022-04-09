@@ -8,7 +8,7 @@
             to: localePath('/dashboard'),
           },
           {
-            text: 'Main Text',
+            text: 'For Patient and Provider Section',
             disabled: true,
           }
         ]"></v-breadcrumbs>
@@ -17,11 +17,16 @@
     <v-row>
       <v-col>
         <p class="h4 mb-1">
-          Main Text
+          For Patient and Provider Section
         </p>
-        <p>
-          Text that is shown above the footer.
-        </p>
+        <v-row>
+        <v-col md="6">
+        <p>For Patient</p>
+        </v-col>
+        <v-col md="6">
+        <p>For Provider</p>
+        </v-col>
+        </v-row>
         <v-skeleton-loader v-if="loading"></v-skeleton-loader>
         <v-form v-else ref="form" @submit="handleSubmit">
           <v-row>
