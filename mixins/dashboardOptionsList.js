@@ -130,6 +130,14 @@ export default {
           icon: 'card-text-outline',
           dark: true,
         })
+
+        i.push({
+          title: 'Financial History',
+          to: '/financial-list',
+          icon: 'card-text-outline',
+          dark: true,
+          redirect:true
+        })
         
       }
       if (this.isAdminOrSuper) {

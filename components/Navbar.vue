@@ -184,12 +184,7 @@ export default {
             icon: 'account-circle-outline',
             to: '/my-profile'
           })
-           items.push({
-            text: 'Financial',
-            icon: 'static/pay.png',
-            to: 'redirect',
-            
-          })
+    
 
      
 
@@ -224,6 +219,12 @@ export default {
               icon: 'emoticon-sick-outline',
               to: '/my-patients'
             })
+                   items.push({
+            text: 'Financial',
+            icon: 'static/pay.png',
+            to: 'redirect',
+            
+          })
         
           }
           if (this.isUser) {
