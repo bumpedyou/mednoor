@@ -24,7 +24,7 @@
               :rules="[ v => !!v || $t('v.field_req')]"
               :items="news_categories" label="News Category">
             </v-select>
-        <v-text-field v-model="question" label="Question" :rules="[v => !!v || $t('v.field_req')]" placeholder="Question"></v-text-field>
+        <v-text-field v-model="question" label="Sub heading" :rules="[v => !!v || $t('v.field_req')]" placeholder="Sub heading"></v-text-field>
         <!-- <v-text-field v-model="answer" label="Answer" :rules="[v => !!v || $t('v.field_req')]" placeholder="Answer" ></v-text-field> -->
           <div>
             <client-only>
@@ -40,7 +40,7 @@
     <v-row>
       <v-data-table  class="mt-3" :items="question_answers" :headers="[
           {
-            text: 'Question',
+            text: 'Sub heading',
             value: 'question',
             sortable: false,
           },
