@@ -8,7 +8,7 @@
             to: localePath('/dashboard'),
           },
           {
-            text: 'For Patient and Provider Section',
+            text: 'Banners',
             disabled: true,
           }
         ]"></v-breadcrumbs>
@@ -17,27 +17,27 @@
     <v-row>
       <v-col>
         <p class="h4 mb-1">
-          For Patient and Provider Section
+          Banners
         </p>
-        <v-row>
-        <v-col md="6">
-        <p>For Patient</p>
-        </v-col>
-        <v-col md="6">
-        <p>For Provider</p>
-        </v-col>
-        </v-row>
         <v-skeleton-loader v-if="loading"></v-skeleton-loader>
         <v-form v-else ref="form" @submit="handleSubmit">
           <v-row>
             <v-col md="6">
+              <h5>First Banner</h5>
               <client-only>
-                <VueEditor v-model='text' placeholder='Left side text.' />
+                <VueEditor v-model='first_banner' placeholder='First Banner' />
               </client-only>
             </v-col>
             <v-col md='6'>
+              <h5>Second Banner</h5>
               <client-only>
-                <VueEditor v-model='text_b' placeholder='Right side text' />
+                <VueEditor v-model='second_banner' placeholder='Second Banner' />
+              </client-only>
+            </v-col>
+            <v-col md='6'>
+              <h5>Third Banner</h5>
+              <client-only>
+                <VueEditor v-model='third_banner' placeholder='Third Banner' />
               </client-only>
             </v-col>
           </v-row>
@@ -63,16 +63,18 @@ export default {
     return {
       saving: false,
       loading: true,
-      text: '',
-      text_b: '',
+      first_banner: '',
+      second_banner: '',
+      third_banner: '',
     }
   },
   mounted() {
-    this.$api.get('/main-text').then(({data})=>{
+    this.$api.get('/banners').then(({data})=>{
       this.loading = false
       if (data){
-        this.text = data.mate_text
-        this.text_b = data.mate_text_b
+        this.first_banner = data.first_banner
+        this.second_banner = data.second_banner
+        this.third_banner = data.third_banner
       }
     }).finally(() => {
       this.loading = false
@@ -83,12 +85,13 @@ export default {
       e.preventDefault()
       this.saving = true
       const values = {
-        text: this.text,
-        text_b: this.text_b
+        first_banner: this.first_banner,
+        second_banner: this.second_banner,
+        third_banner: this.third_banner
       }
 
-      this.$api.post('/main-text', values).then(()=>{
-        this.$toast.success('Main text has been updated successfully')
+      this.$api.post('/banners', values).then(()=>{
+        this.$toast.success('Banners updated successfully')
       }).catch((err)=>{
         this.$refs.rmodal.$emit('error', err)
       }).finally(() => {

@@ -19,11 +19,11 @@ export default {
                 to: '/sliders',
               },
               {
-                title: 'Menus',
+                title: 'Menu',
                 to: '/menus',
               },
               {
-                title: 'New Categories',
+                title: 'News Categories',
                 to: '/news-categories',
               },
               {
@@ -35,26 +35,38 @@ export default {
                 to: '/home-screen',
               },
               {
-                title: 'Main Text',
+                title: 'Patient & Provider Section',
                 to: '/main-text',
               },
-              {
-                title: this.$t('terms_cond'),
-                to: '/update-terms-and-conditions',
-                icon: 'file-sign',
-                type: '#fa8072',
-                dark: true,
-              },
-              {
-                title: this.$t('privacy_p'),
-                to: '/update-privacy-policy',
-                icon: 'shield-lock-outline',
-                type: 'purple',
-                dark: true,
-              },
+              // {
+              //   title: this.$t('terms_cond'),
+              //   to: '/update-terms-and-conditions',
+              //   icon: 'file-sign',
+              //   type: '#fa8072',
+              //   dark: true,
+              // },
+              // {
+              //   title: this.$t('privacy_p'),
+              //   to: '/update-privacy-policy',
+              //   icon: 'shield-lock-outline',
+              //   type: 'purple',
+              //   dark: true,
+              // },
               {
                 title: this.$t('pages'),
                 to: '/pages',
+                icon: 'file-outline',
+                type: 'primary',
+              },
+              {
+                title: 'Banners',
+                to: '/banners',
+                icon: 'file-outline',
+                type: 'primary',
+              },
+              {
+                title: 'Contact Info',
+                to: '/contact-info',
                 icon: 'file-outline',
                 type: 'primary',
               },
