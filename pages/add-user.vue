@@ -265,7 +265,12 @@ export default {
         this.$userApi
           .post(url, values)
           .then((r) => {
+            if(this.$route.query && this.$route.query.redirect){
+                this.$router.push(this.localePath('/'+this.$route.query.redirect))
+            } else{
             this.$router.push(this.localePath('/users-list'))
+            }
+          
           })
           .catch((err) => {
             console.log(err)

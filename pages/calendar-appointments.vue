@@ -120,7 +120,25 @@
       max-width="800"
     >
       <v-card>
-        <v-card-title> New Appointment </v-card-title>
+        <v-row style="width: 100%">
+          <v-col class="d-flex align-left" cols="12" md="10">
+            <v-card-title> Add Appointment </v-card-title>
+          </v-col>
+          <v-col class="d-flex align-right" cols="12" md="2">
+            <v-btn
+              small
+              tile
+              color="primary"
+              class="mt-5"
+              type="submit"
+              block
+              @click="addPatient()"
+            >
+              {{ 'Add patient' }}
+            </v-btn>
+          </v-col>
+        </v-row>
+
         <v-card-text>
           <v-row>
             <v-col :xs="24" :sm="24" :md="12">
@@ -430,7 +448,7 @@ export default {
         this.$toast.error('loading error')
       })
 
-   // console.log(this.$appointmentsApi)
+    // console.log(this.$appointmentsApi)
     const res = await this.$appointmentsApi.get('/appointments/', {
       params: {
         uuid: this.$auth.user.uuid,
@@ -452,7 +470,9 @@ export default {
     }
 
     this.splitUsers.forEach((item, index) => {
-      this.selectedResource.push(index)
+      if (item.label !== 'All') {
+        this.selectedResource.push(index)
+      }
     })
   },
   methods: {
@@ -670,26 +690,34 @@ export default {
     },
     deleteResource(uuid) {
       if (confirm('Do you want to delete resource?')) {
-        this.$appointmentsApi.delete('appointments/deleteresource/' + uuid).then(() => {
-          this.splitUsers = this.splitUsers.filter(
-            (x) => x.resource_uuid !== uuid
-          )
+        this.$appointmentsApi
+          .delete('appointments/deleteresource/' + uuid)
+          .then(() => {
+            this.splitUsers = this.splitUsers.filter(
+              (x) => x.resource_uuid !== uuid
+            )
 
-          this.splitUsers = this.splitUsers.map((item, index) => {
-            return {
-              id: index,
-              resource_uuid: item.resource_uuid,
-              label: item.label,
-            }
+            this.splitUsers = this.splitUsers.map((item, index) => {
+              return {
+                id: index,
+                resource_uuid: item.resource_uuid,
+                label: item.label,
+              }
+            })
+
+            this.selectedResource = []
+
+            this.splitUsers.forEach((item, index) => {
+              this.selectedResource.push(index)
+            })
           })
-
-          this.selectedResource = []
-
-          this.splitUsers.forEach((item, index) => {
-            this.selectedResource.push(index)
-          })
-        })
       }
+    },
+
+    addPatient() {
+      this.$router.push(
+        this.localePath('/add-user?redirect=calendar-appointments')
+      )
     },
   },
 }

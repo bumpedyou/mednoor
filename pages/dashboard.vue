@@ -60,7 +60,7 @@ export default {
       console.log(value)
       if (value && value.redirect) {
         const sessionId = localStorage.getItem('session_id')
-        const url = `${process.env.PAYMENT_URL}/financial?user_id=${this.myId}&session_id=${sessionId}`
+        const url = `${process.env.PAYMENT_URL}/financial?session_id=${sessionId}`
         window.open(url)
       } else {
         this.$router.push(this.localePath(value.to))
