@@ -81,6 +81,10 @@
               >
                 Delete
               </a>
+              
+            <span class="ml-5">
+                <nuxt-link v-if="record.user_uuid" :to="localePath('/user-profile/' + record.user_uuid)">      <v-icon>   mdi-eye</v-icon></nuxt-link>
+            </span>
             </div>
 
             <div v-else>

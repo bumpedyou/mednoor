@@ -24,7 +24,7 @@
           }
         ]">
           <template #[`item.full_name`] = "{item}">
-            <nuxt-link :to="localePath('/user/' + item.user_uuid)">
+            <nuxt-link :to="localePath('/user-profile/' + item.user_uuid)">
               {{item.full_name}}
             </nuxt-link>
           </template>
@@ -32,6 +32,10 @@
             <nuxt-link v-if="item.mere_uuid" :to="{path: localePath('/new-emr'), query: {mere: item.mere_uuid}}">{{ $t('emr') }}</nuxt-link>
             <span v-else class="text-muted">
               No record found.
+            </span>
+
+            <span class="ml-5">
+                <nuxt-link v-if="item.mere_uuid" :to="localePath('/user-profile/' + item.user_uuid)">      <v-icon>   mdi-eye</v-icon></nuxt-link>
             </span>
           </template>
         </v-data-table>
