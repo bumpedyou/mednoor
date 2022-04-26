@@ -276,7 +276,7 @@
                       :rules="[
                         (v) => !!v || 'The Patient City is required',
                         (v) =>
-                          (!!v && v.length >= 3) ||
+                          (!!v && v.length >= 2) ||
                           'Enter at least 3 characters',
                         (v) =>
                           (!!v && v.length <= 12) ||
@@ -839,9 +839,11 @@ export default {
           this.country_code = '+' + data.user_country_code
           this.picture = data.user_picture
         }
+        this.getInsuranceClaimInfo();
       })
     }
-    this.$api
+
+      this.$api
       .get('/category')
       .then(({ data }) => {
         if (data) {
@@ -853,6 +855,12 @@ export default {
       .catch(() => {
         this.$toast.error('Failed to load categories.')
       })
+  
+  },
+  methods: {
+
+    getInsuranceClaimInfo(){
+
     this.$insuranceApi
       .get(`/insured/?id=${this.user_uuid}`)
       .then(({ data }) => {
@@ -866,6 +874,18 @@ export default {
           this.number12 = data.number12
           this.number13 = data.number13
           this.number17 = data.number17
+        }
+
+console.log(this.number5 , this.user)
+        if( (!this.number5 || !this.number5.patientName) && this.user){
+           
+        this.number5.patientAddress= this.user.addr_line1;
+         this.number5.patientCity= this.user.addr_city;
+         this.number5.patientState= this.user.addr_state;
+         this.number5.patientZipcode= this.user.addr_zip;
+         this.number5.patientTelephone= this.user.addr_city;
+         this.number5.patientName=this.user.user_first_name +' '+this.user.user_last_name;
+     
         }
       })
       .catch(() => {
@@ -887,8 +907,7 @@ export default {
       .catch(() => {
         this.$toast.error('Failed to load categories.')
       })
-  },
-  methods: {
+    },
     uploadPicture() {
       this.loadingUpload = true
       const data = new FormData()

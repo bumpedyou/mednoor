@@ -217,7 +217,7 @@
 
               <v-row>
                 <v-col md='6' lg="3">
-                  <v-text-field v-model="number5.patientCity" label="Patient City" placeholder="Patient City" :rules="[v => !!v || 'The Patient City is required', v => !!v && v.length >= 3 || 'Enter at least 3 characters', v => !!v && v.length <=12 || 'Enter a maximum of 12 characters']" :hide-details = true>
+                  <v-text-field v-model="number5.patientCity" label="Patient City" placeholder="Patient City" :rules="[v => !!v || 'The Patient City is required', v => !!v && v.length >= 2 || 'Enter at least 3 characters', v => !!v && v.length <=12 || 'Enter a maximum of 12 characters']" :hide-details = true>
                   </v-text-field>
                 </v-col>
                 <v-col md='6' lg="3">
@@ -611,6 +611,7 @@ export default {
             }, 200)
           }
         }
+        this.getInsuranceClaimInfo(data);
       })
     }
     this.$api.get('/category').then(({data})=>{
@@ -622,36 +623,60 @@ export default {
     }).catch(()=>{
       this.$toast.error('Failed to load categories.')
     })
-    this.$insuranceApi.get(`/insured/?id=${this.myUserId}`).then(({data})=>{
-      if (data && Object.keys(data).length > 0){
-        console.log('insured --->', data);
-        this.number4 = data.number4;
-        this.number5 = data.number5;
-        this.number6 = data.number6;
-        this.number7 = data.number7;
-        this.number11 = data.number11;
-        this.number12 = data.number12;
-        this.number13 = data.number13;
-        this.number17 = data.number17;
-      }
-    }).catch(()=>{
-      this.$toast.error('Failed to load categories.')
-    })
 
-    this.$insuranceApi.get(`/claims/?id=${this.myUserId}`).then(({data})=>{
-      if (data && Object.keys(data).length > 0){
-        console.log('claims --->', data);
-        this.number25 = data.number25;
-        this.number26 = data.number26;
-        this.number31 = data.number31;
-        this.number32 = data.number32;
-        this.number33 = data.number33;
-      }
-    }).catch(()=>{
-      this.$toast.error('Failed to load categories.')
-    })
+
+
   },
   methods: {
+        getInsuranceClaimInfo(userInfo){
+
+    this.$insuranceApi
+      .get(`/insured/?id=${this.myUserId}`)
+      .then(({ data }) => {
+        if (data && Object.keys(data).length > 0) {
+          console.log('insured --->', data)
+          this.number4 = data.number4
+          this.number5 = data.number5
+          this.number6 = data.number6
+          this.number7 = data.number7
+          this.number11 = data.number11
+          this.number12 = data.number12
+          this.number13 = data.number13
+          this.number17 = data.number17
+        }
+
+
+        if( (!this.number5 || !this.number5.patientName) && userInfo){
+           
+        this.number5.patientAddress= userInfo.addr_line1;
+         this.number5.patientCity= userInfo.addr_city;
+         this.number5.patientState= userInfo.addr_state;
+         this.number5.patientZipcode= userInfo.addr_zip;
+         this.number5.patientTelephone= userInfo.addr_city;
+         this.number5.patientName=userInfo.user_first_name +' '+userInfo.user_last_name;
+     
+        }
+      })
+      .catch(() => {
+        this.$toast.error('Failed to load insurance.')
+      })
+
+    this.$insuranceApi
+      .get(`/claims/?id=${this.myUserId}`)
+      .then(({ data }) => {
+        if (data && Object.keys(data).length > 0) {
+          console.log('claims --->', data)
+          this.number25 = data.number25
+          this.number26 = data.number26
+          this.number31 = data.number31
+          this.number32 = data.number32
+          this.number33 = data.number33
+        }
+      })
+      .catch(() => {
+        this.$toast.error('Failed to load categories.')
+      })
+    },
     uploadPicture(){
       this.loadingUpload = true
       const data = new FormData()
