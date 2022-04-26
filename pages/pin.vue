@@ -76,7 +76,7 @@ export default {
     this.$api.get('/professional/my-record').then(({data}) =>{
       if (data && data.profe_uuid){
         this.has_record = true
-        const isComplete = data.profe_specialty && data.profe_practice_name && data.profe_medical_license && data.profe_license_state && data.profe_credentials
+        const isComplete = data.profe_spec_id && data.profe_practice_name && data.profe_medical_license && data.profe_license_state && data.profe_credentials
 
         if (!isComplete){
           return this.$router.push({

@@ -76,13 +76,21 @@
                 </v-col>
               </v-row>
               <v-row>
-                <v-col sm="4" md="2">
+                <v-col sm="4" md="4">
                   <v-text-field v-model="country_code" placeholder="Country code" label="Country code"></v-text-field>
                 </v-col>
-                <v-col sm="8" md="10">
+                <v-col sm="4" md="4">
                   <v-text-field v-model="phone_no" placeholder="Phone number" label="Phone number" maxlength="10"></v-text-field>
                 </v-col>
+                  <v-col sm="4" md="4">
+                    <div class="d-flex flex-row align-end">
+                       <label for="">Date Of Birth: </label>
+                      <date-picker v-model="date_of_birth" type="date" style="margin-left: 15px"></date-picker>
+                    </div>
+                </v-col>
               </v-row>
+
+
               <v-row v-if="isUser">
                 <v-col>
                   <hr>
@@ -402,6 +410,7 @@ import ProfilePicture from '~/components/ProfilePicture'
 import uploadMixin from '~/mixins/uploadMixin'
 import UserAddress from "~/components/UserAddress";
 import addressMixin from "~/mixins/addressMixin";
+import dateMixin from '~/mixins/dateMixin'
 import 'vue2-datepicker/index.css';
 
 export default {
@@ -413,7 +422,7 @@ export default {
     RequestModal,
     DatePicker,
   },
-  mixins: [userRoleMixin, inputMixin, authMixin, uploadMixin, addressMixin],
+  mixins: [userRoleMixin, inputMixin, authMixin, uploadMixin, addressMixin,dateMixin],
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified', 'view-set'],
   data (){
     return {
@@ -436,6 +445,7 @@ export default {
       categories: [],
       country_code: '',
       phone_no: '',
+      date_of_birth:null,
       loadingSaveP: false,
       loadingPage: true,
      // isProfessional: false,
@@ -584,6 +594,9 @@ export default {
       this.$userApi.get('/'+ this.myUserId).then(({data})=>{
         if (data && data.user_uuid){
           this.phone_no = data.user_phone_no
+          this.date_of_birth = new Date(data.user_date_of_birth);
+
+        //  console.log(  this.date_of_birth)
           this.country_code = '+' + data.user_country_code
           this.picture = data.user_picture
 
@@ -759,6 +772,7 @@ export default {
             zip: this.zip,
             first_name: this.first_name,
             last_name: this.last_name,
+            date_of_birth:this.date_of_birth
           })
           .then(() => {
             setTimeout(async () => {

@@ -129,23 +129,19 @@
                     ></v-text-field>
                   </v-col>
                 </v-row>
-                <v-row>
-                  <v-col sm="4" md="2">
-                    <v-text-field
-                      v-model="country_code"
-                      placeholder="Country code"
-                      label="Country code"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col sm="8" md="10">
-                    <v-text-field
-                      v-model="phone_no"
-                      placeholder="Phone number"
-                      label="Phone number"
-                      maxlength="10"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
+               <v-row>
+                <v-col sm="4" md="4">
+                  <v-text-field v-model="country_code" placeholder="Country code" label="Country code"></v-text-field>
+                </v-col>
+                <v-col sm="4" md="4">
+                  <v-text-field v-model="phone_no" placeholder="Phone number" label="Phone number" maxlength="10"></v-text-field>
+                </v-col>
+                  <v-col sm="4" md="4">
+                    <div class="d-flex flex-row align-end">
+                        <v-text-field v-model="date_of_birth" disabled label="Date Of Birth" ></v-text-field>
+                    </div>
+                </v-col>
+              </v-row>
                 <v-row v-if="isUser">
                   <v-col>
                     <hr />
@@ -647,7 +643,7 @@ import uploadMixin from '~/mixins/uploadMixin'
 import UserAddress from '~/components/UserAddress'
 import addressMixin from '~/mixins/addressMixin'
 import 'vue2-datepicker/index.css'
-
+import dateMixin from '~/mixins/dateMixin'
 export default {
   name: 'MyProfile',
   components: {
@@ -657,7 +653,7 @@ export default {
     RequestModal,
     DatePicker,
   },
-  mixins: [userRoleMixin, inputMixin, authMixin, uploadMixin, addressMixin],
+  mixins: [userRoleMixin, inputMixin, authMixin, uploadMixin, addressMixin,dateMixin],
   middleware: [
     'authenticated',
     'not-blocked',
@@ -690,7 +686,7 @@ export default {
       phone_no: '',
       loadingSaveP: false,
       loadingPage: true,
-   
+      date_of_birth:null,
       loadingUpload: false,
       imageUrl: '',
       showUploadPicture: false,
@@ -839,6 +835,7 @@ export default {
         if (data && data.user_uuid) {
           this.user = data
           this.phone_no = data.user_phone_no
+          this.date_of_birth = this.dateString(data.user_date_of_birth);
           this.country_code = '+' + data.user_country_code
           this.picture = data.user_picture
         }
