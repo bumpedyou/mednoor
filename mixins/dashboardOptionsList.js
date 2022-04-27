@@ -196,6 +196,13 @@ export default {
             },
             icon: 'folder-account-outline',
             type: 'primary',
+          },
+          {
+            title: 'Financial History',
+            to: '/financial-list',
+            icon: 'card-text-outline',
+            dark: true,
+            redirect:true
           }
           /*
           {
