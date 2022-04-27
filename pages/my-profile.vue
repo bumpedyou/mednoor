@@ -646,14 +646,14 @@ export default {
         }
 
 
-        if( (!this.number5 || !this.number5.patientName) && userInfo){
+        if(userInfo){
            
-        this.number5.patientAddress= userInfo.addr_line1;
-         this.number5.patientCity= userInfo.addr_city;
-         this.number5.patientState= userInfo.addr_state;
-         this.number5.patientZipcode= userInfo.addr_zip;
-         this.number5.patientTelephone= userInfo.addr_city;
-         this.number5.patientName=userInfo.user_first_name +' '+userInfo.user_last_name;
+        this.number5.patientAddress=  this.number5.patientAddress|| userInfo.addr_line1;
+         this.number5.patientCity=  this.number5.patientCity || userInfo.addr_city;
+         this.number5.patientState=  this.number5.patientState||  userInfo.addr_state;
+         this.number5.patientZipcode= this.number5.patientZipcode|| userInfo.addr_zip;
+         this.number5.patientTelephone= this.number5.patientTelephone||  userInfo.user_phone_no;
+         this.number5.patientName= this.number5.patientName || userInfo.user_first_name +' '+userInfo.user_last_name;
      
         }
       })

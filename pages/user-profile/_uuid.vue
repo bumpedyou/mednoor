@@ -876,15 +876,15 @@ export default {
           this.number17 = data.number17
         }
 
-console.log(this.number5 , this.user)
-        if( (!this.number5 || !this.number5.patientName) && this.user){
+
+        if(this.user){
            
-        this.number5.patientAddress= this.user.addr_line1;
-         this.number5.patientCity= this.user.addr_city;
-         this.number5.patientState= this.user.addr_state;
-         this.number5.patientZipcode= this.user.addr_zip;
-         this.number5.patientTelephone= this.user.addr_city;
-         this.number5.patientName=this.user.user_first_name +' '+this.user.user_last_name;
+        this.number5.patientAddress=  this.number5.patientAddress || this.user.addr_line1;
+         this.number5.patientCity= this.number5.patientCity || this.user.addr_city;
+         this.number5.patientState= this.number5.patientState|| this.user.addr_state;
+         this.number5.patientZipcode= this.number5.patientZipcode|| this.user.addr_zip;
+         this.number5.patientTelephone= this.number5.patientTelephone|| this.user.user_phone_no;
+         this.number5.patientName=this.number5.patientName || this.user.user_first_name +' '+this.user.user_last_name;
      
         }
       })
