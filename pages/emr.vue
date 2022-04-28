@@ -78,9 +78,9 @@
           </v-row>
         </v-form>
       </v-col>
-      <v-col md="12">
+      <v-col md="12" >
         <v-skeleton-loader v-if="loadingData" />
-        <v-data-table v-else :items="items" :headers="headers">
+        <v-data-table v-else :items="items" :headers="headers" >
           <template #[`item.patient`]="{ item }">
             <nuxt-link :to="localePath('/user/' + item.user_uuid)">
               {{ item.user_first_name }} {{ item.user_last_name }}
@@ -92,8 +92,15 @@
           <template #[`item.mere_date`]="{ value }">
             {{ dateString(value) }}
           </template>
-          <template #[`item.actions`]="{ item }">
-            <nuxt-link
+          <template #[`item.actions`]="{ item }" >
+            <div class="emr-action">
+
+              
+                      
+           
+                <nuxt-link  v-if="item.mrus_user_uuid" class="mr-5" :to="localePath('/user-profile/' + item.mrus_user_uuid)">      <v-icon>   mdi-eye</v-icon></nuxt-link>
+           
+                <nuxt-link class="mr-5"
               :to="{
                 path: localePath('/new-emr'),
                 query: {
@@ -104,7 +111,7 @@
               >View
             </nuxt-link>
             <MedDivider></MedDivider>
-            <nuxt-link
+            <nuxt-link class="mr-5"
               :to="{
                 path: localePath('/new-emr'),
                 query: {
@@ -113,11 +120,11 @@
               }"
               >{{ $t('edit') }}
             </nuxt-link>
-            <div
+            <div 
               v-if="
                 item.user_uuid &&
                 (isAdmin || isSuper || myUserId === item.mere_owner)
-              "
+              " class="mr-5"
             >
               <MedDivider></MedDivider>
               <a
@@ -141,6 +148,7 @@
               @click="deleteItem(item.mere_uuid)"
               >{{ $t('delete') }}</span
             >
+            </div>
           </template>
           <template #[`item.owner_name`]="{ item }">
             Owner name:
@@ -227,7 +235,8 @@ export default {
           }
         })
         .then(({ data }) => {
-          this.items = data
+          this.items = data;
+          console.log('records',data)
         })
     }, 500)
   },
@@ -351,6 +360,9 @@ export default {
         })
         .then(({ data }) => {
           this.items = data
+              this.items.sort(function(a,b){
+            return new Date(b.mere_date) - new Date(a.mere_date);
+          });
           console.log('--->', data, '<---')
         })
         .finally(() => {
@@ -360,3 +372,10 @@ export default {
   }
 }
 </script>
+
+
+<style scoped lang="sass">
+  .emr-action 
+    display: flex
+
+</style>

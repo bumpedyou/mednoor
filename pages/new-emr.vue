@@ -574,8 +574,21 @@ export default {
           }
 
           this.$api.put('/medical-record/' + this.recordId, values).then(() => {
-            this.$toast.success(this.$t('record_hb_updated').toString())
-            this.$router.push(this.localePath('/emr'))
+            if (this.isValidUser()) {
+            this.$api.post('/medical-record/record', values).then(() => {
+              this.$toast.success(this.$t('record_hb_created').toString())
+              setTimeout(() => {
+                this.$router.push(this.localePath('/emr'))
+              }, 500)
+            }).catch((err) => {
+              this.$refs.rmodal.$emit('error', err)
+            }).finally(() => {
+              this.loading = false
+            })
+          } else{
+             this.$router.push(this.localePath('/emr'))
+          }
+
           }).catch((err) => {
             this.$refs.rmodal.$emit('error', err)
           }).finally(() => {
@@ -591,22 +604,7 @@ export default {
           }).finally(() => {
             this.loading = false
           })
-        } else if (this.isValidUser()) {
-            this.$api.post('/medical-record/record', values).then(() => {
-              this.$refs.form.reset()
-              this.$toast.success(this.$t('record_hb_created').toString())
-              setTimeout(() => {
-                this.$router.push(this.localePath('/emr'))
-              }, 500)
-            }).catch((err) => {
-              this.$refs.rmodal.$emit('error', err)
-            }).finally(() => {
-              this.loading = false
-            })
-          } else {
-            this.loading = false
-            this.$toast.error(this.$t('please_select_user').toString())
-          }
+        }  
       }
     },
     setData(tm) {
