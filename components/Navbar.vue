@@ -215,9 +215,9 @@ export default {
               to: '/chat-requests'
             })
             items.push({
-              text: 'My EMR',
+              text: 'EMR',
               icon: 'emoticon-sick-outline',
-              to: '/my-patients'
+              to: '/emr'
             })
                    items.push({
             text: 'Financial',
