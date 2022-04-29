@@ -70,7 +70,7 @@
               </div>
             </a-tab-pane>
             <a-tab-pane key="2" tab="Personal Information">
-              <v-row v-if="!$auth.user.has_phone">
+              <v-row v-if="!user.user_phone_no">
                 <v-col>
                   <v-alert type="warning">Please add your phone number</v-alert>
                 </v-col>
@@ -663,6 +663,8 @@ export default {
   ],
   data() {
     return {
+      first_name:'',
+      last_name:'',
       user: {},
       user_uuid: null,
       validPersonalForm: false,
@@ -782,12 +784,7 @@ export default {
     }
   },
   computed: {
-    first_name() {
-      return this.user.user_first_name
-    },
-    last_name() {
-      return this.user.user_last_name
-    },
+ 
     name() {
       return this.user.user_first_name + ' ' + this.user.user_last_name
     },
@@ -828,20 +825,8 @@ export default {
     },
   },
   mounted() {
-    const q = this.$route.params
-    this.user_uuid = q.uuid
-    if (this.user_uuid) {
-      this.$userApi.get('/' + this.user_uuid).then(({ data }) => {
-        if (data && data.user_uuid) {
-          this.user = data
-          this.phone_no = data.user_phone_no
-          this.date_of_birth = this.dateString(data.user_date_of_birth);
-          this.country_code = '+' + data.user_country_code
-          this.picture = data.user_picture
-        }
-        this.getInsuranceClaimInfo();
-      })
-    }
+
+      this.getuser();
 
       this.$api
       .get('/category')
@@ -858,6 +843,27 @@ export default {
   
   },
   methods: {
+
+
+    getuser(){
+          const q = this.$route.params
+          this.user_uuid = q.uuid
+          if (this.user_uuid) {
+            this.$userApi.get('/' + this.user_uuid).then(({ data }) => {
+              if (data && data.user_uuid) {
+                this.user = data
+                this.first_name=this.user.user_first_name
+                this.last_name=this.user.user_last_name
+          
+                this.phone_no = data.user_phone_no
+                this.date_of_birth = this.dateString(data.user_date_of_birth);
+                this.country_code = '+' + data.user_country_code
+                this.picture = data.user_picture
+              }
+              this.getInsuranceClaimInfo();
+            })
+          }
+    },
 
     getInsuranceClaimInfo(){
 
@@ -909,25 +915,25 @@ export default {
       })
     },
     uploadPicture() {
-      this.loadingUpload = true
-      const data = new FormData()
+      // this.loadingUpload = true
+      // const data = new FormData()
 
-      data.append('file', this.file)
+      // data.append('file', this.file)
 
-      this.$userApi
-        .post('/picture', data)
-        .then(({ data }) => {
-          this.$toast.success('Your profile picture has been updated.')
-          this.src = ''
-          this.showUploadPicture = false
-          this.picture = data.file
-        })
-        .catch((err) => {
-          this.$refs.rmodal.$emit('error', err)
-        })
-        .finally(() => {
-          this.loadingUpload = false
-        })
+      // this.$userApi
+      //   .post('/picture', data)
+      //   .then(({ data }) => {
+      //     this.$toast.success('Your profile picture has been updated.')
+      //     this.src = ''
+      //     this.showUploadPicture = false
+      //     this.picture = data.file
+      //   })
+      //   .catch((err) => {
+      //     this.$refs.rmodal.$emit('error', err)
+      //   })
+      //   .finally(() => {
+      //     this.loadingUpload = false
+      //   })
     },
     cancelUpload() {
       if (!this.loadingUpload) {
@@ -942,33 +948,33 @@ export default {
       }
     },
     handleUpload() {
-      const { fileList } = this
-      const formData = new FormData()
-      fileList.forEach((file) => {
-        formData.append('file', file)
-      })
-      formData.append('type', this.type)
-      this.loadingUpload = true
-      this.$api
-        .post(this.computedAction, formData, {
-          onUploadProgress: (evt) => {
-            this.onProgress(evt)
-          },
-        })
-        .then(() => {
-          this.fileList = []
-          this.$message.success(this.$t('upl_succ').toString())
-          setTimeout(() => {
-            this.handleRemove()
-            this.umUploadProgress = 0
-          }, 1000)
-        })
-        .catch(() => {
-          this.$message.error(this.$t('upl_fail').toString())
-        })
-        .finally(() => {
-          this.loadingUpload = false
-        })
+      // const { fileList } = this
+      // const formData = new FormData()
+      // fileList.forEach((file) => {
+      //   formData.append('file', file)
+      // })
+      // formData.append('type', this.type)
+      // this.loadingUpload = true
+      // this.$api
+      //   .post(this.computedAction, formData, {
+      //     onUploadProgress: (evt) => {
+      //       this.onProgress(evt)
+      //     },
+      //   })
+      //   .then(() => {
+      //     this.fileList = []
+      //     this.$message.success(this.$t('upl_succ').toString())
+      //     setTimeout(() => {
+      //       this.handleRemove()
+      //       this.umUploadProgress = 0
+      //     }, 1000)
+      //   })
+      //   .catch(() => {
+      //     this.$message.error(this.$t('upl_fail').toString())
+      //   })
+      //   .finally(() => {
+      //     this.loadingUpload = false
+      //   })
     },
     beforeUpload(file) {
       const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
@@ -1026,12 +1032,14 @@ export default {
     handleSubmit() {
       this.$refs.personalForm.validate()
       if (this.validPersonalForm) {
-        this.loading = true
+        this.loading = true;
+        console.log(this.first_name,this.last_name)
         this.$api
           .put('/user', {
+            user_uuid:this.user_uuid,
             country_code: this.country_code,
             phone_no: this.phone_no,
-            is_patient: this.isUser,
+            is_patient: false,
             line1: this.line1,
             city: this.city,
             state: this.state,
@@ -1040,8 +1048,8 @@ export default {
             last_name: this.last_name,
           })
           .then(() => {
-            setTimeout(async () => {
-              await this.$auth.fetchUser()
+            setTimeout( () => {
+              this.getuser()
               console.log('Fetched user --->', this.$auth.user)
               this.$toast.success(this.$t('updated_suc').toString())
             }, 100)
