@@ -100,16 +100,7 @@
            
                 <nuxt-link  v-if="item.mrus_user_uuid" class="mr-5" :to="localePath('/user-profile/' + item.mrus_user_uuid)">      <v-icon>   mdi-eye</v-icon></nuxt-link>
            
-                <nuxt-link class="mr-5"
-              :to="{
-                path: localePath('/new-emr'),
-                query: {
-                  mere: item.mere_uuid,
-                  mode: 'view'
-                }
-              }"
-              >View
-            </nuxt-link>
+          
             <MedDivider></MedDivider>
             <nuxt-link class="mr-5"
               :to="{
@@ -142,12 +133,18 @@
                 </div>
               </a>
             </div>
+         
             <MedDivider></MedDivider>
             <span
               class="red--text clickable"
               @click="deleteItem(item.mere_uuid)"
               >{{ $t('delete') }}</span
             >
+
+        
+            <span  v-if="item.mere_sign" class="ml-5">
+              <v-icon type="lock"> mdi-lock-outline</v-icon>
+            </span>
             </div>
           </template>
           <template #[`item.owner_name`]="{ item }">

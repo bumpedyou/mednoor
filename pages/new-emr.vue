@@ -222,7 +222,7 @@
               <span v-else>{{ $t('create_template') }}</span>
             </span>
             <span v-else>
-              <span v-if='recordId'>{{ $t('update_record') }}</span>
+              <span v-if='recordId'>{{'Save'}}</span>
               <span v-else>{{ $t('chat_record') }}</span>
             </span>
           </v-btn>
