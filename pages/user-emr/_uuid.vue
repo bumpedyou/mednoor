@@ -6,12 +6,12 @@
           :items="[
             {
               text: $t('dashboard'),
-              to: localePath('/dashboard')
+              to: localePath('/dashboard'),
             },
             {
               text: $t('emr'),
-              disabled: false
-            }
+              to: localePath('/emr'),
+            },
           ]"
         ></v-breadcrumbs>
       </v-col>
@@ -39,7 +39,7 @@
           @click="
             $router.push({
               path: localePath('/new-emr'),
-              query: { type: 'template' }
+              query: { type: 'template' },
             })
           "
         >
@@ -47,7 +47,7 @@
           {{ $t('new_template') }}
         </v-btn>
       </v-col>
-      <v-col class="mb-1">
+      <!-- <v-col class="mb-1">
         <v-form ref="form" v-model="valid">
           <v-row>
             <v-col md="3">
@@ -77,74 +77,79 @@
             </v-col>
           </v-row>
         </v-form>
-      </v-col>
-      <v-col md="12" >
+      </v-col> -->
+      <v-col md="12">
         <v-skeleton-loader v-if="loadingData" />
-        <v-data-table v-else :items="items" :headers="headers" >
+        <v-data-table v-else :items="items" :headers="headers">
           <template #[`item.patient`]="{ item }">
             <nuxt-link :to="localePath('/user/' + item.user_uuid)">
               {{ item.user_first_name }} {{ item.user_last_name }}
             </nuxt-link>
           </template>
           <template #[`item.mere_is_draft`]="{ item }">
-            <span v-if="item.mere_is_draft && type=='template'" class="text-muted"> [Draft] </span>
+            <span v-if="item.mere_is_draft" class="text-muted"> [Draft] </span>
           </template>
           <template #[`item.mere_date`]="{ value }">
             {{ dateString(value) }}
           </template>
-          <template #[`item.actions`]="{ item }" >
+          <template #[`item.mere_updated`]="{ value }">
+            {{ dateString(value) }}
+          </template>
+          <template #[`item.actions`]="{ item }">
             <div class="emr-action">
-
-              
-                      
-           
-                <nuxt-link  v-if="item.mrus_user_uuid" class="mr-5" :to="localePath('/user-emr/' + item.mrus_user_uuid)">     view</nuxt-link>
-           
-          
-             <MedDivider></MedDivider> 
-            <nuxt-link v-if="type=='template'"
-            class="mr-5"
-              :to="{
-                path: localePath('/new-emr'),
-                query: {
-                  mere: item.mere_uuid
-                }
-              }"
-              >{{ $t('edit') }}
-            </nuxt-link>
-            <!-- <div 
-              v-if="
-                item.user_uuid &&
-                (isAdmin || isSuper || myUserId === item.mere_owner)
-              " class="mr-5"
-            >
-              <MedDivider></MedDivider>
-              <a
-                href="javascript:void(0)"
-                type="old-rose"
-                @click="printRecord(item.mere_uuid)"
+              <nuxt-link
+                v-if="item.mrus_user_uuid"
+                class="mr-5"
+                :to="localePath('/user-profile/' + item.mrus_user_uuid)"
               >
-                <v-progress-circular
-                  v-if="isPdfLoading(item.mere_uuid)"
-                  indeterminate
-                ></v-progress-circular>
-                <div v-else>
-                  <v-icon type="file-pdf">mdi-file</v-icon>
-                  {{ $t('print') }}
-                </div>
-              </a>
-            </div> -->
-         
-            <!-- <MedDivider></MedDivider> -->
-            <span v-if="type=='template'"
-              class="red--text clickable" 
-              @click="deleteItem(item.mere_uuid)"
-              >{{ $t('delete') }}</span>
+                <v-icon> mdi-eye</v-icon></nuxt-link
+              >
 
-        
-            <!-- <span  v-if="item.mere_sign" class="ml-5">
-              <v-icon type="lock"> mdi-lock-outline</v-icon>
-            </span> -->
+              <MedDivider></MedDivider>
+              <nuxt-link
+                class="mr-5"
+                :to="{
+                  path: localePath('/new-emr'),
+                  query: {
+                    mere: item.mere_uuid,
+                  },
+                }"
+                >{{ $t('edit') }}
+              </nuxt-link>
+              <div
+                v-if="
+                  item.user_uuid &&
+                  (isAdmin || isSuper || myUserId === item.mere_owner)
+                "
+                class="mr-5"
+              >
+                <MedDivider></MedDivider>
+                <a
+                  href="javascript:void(0)"
+                  type="old-rose"
+                  @click="printRecord(item.mere_uuid)"
+                >
+                  <v-progress-circular
+                    v-if="isPdfLoading(item.mere_uuid)"
+                    indeterminate
+                  ></v-progress-circular>
+                  <div v-else>
+                    <v-icon type="file-pdf">mdi-file</v-icon>
+                    {{ $t('print') }}
+                  </div>
+                </a>
+              </div>
+
+              <MedDivider></MedDivider>
+              <span
+                class="red--text clickable"
+                @click="deleteItem(item.mere_uuid)"
+                >{{ $t('delete') }}</span
+              >
+
+              <span v-if="item.mere_sign" class="ml-5">
+                <v-icon type="lock"> mdi-lock-outline</v-icon>
+              </span>
             </div>
           </template>
           <template #[`item.owner_name`]="{ item }">
@@ -192,7 +197,7 @@ export default {
   name: 'EMR',
   components: {
     ConfirmDialog,
-    MedDivider
+    MedDivider,
   },
   mixins: [dateMixin, userRoleMixin, authMixin],
   layout: 'dashboard',
@@ -201,7 +206,7 @@ export default {
     'not-blocked',
     'not-deleted',
     'verified',
-    'pin-set'
+    'pin-set',
   ],
   data: () => ({
     items: [],
@@ -215,11 +220,11 @@ export default {
     headers: [],
     confirm: false,
     deleteId: null,
-    loadingDelete: false
+    loadingDelete: false,
   }),
   head() {
     return {
-      title: this.$t('emr')
+      title: this.$t('emr'),
     }
   },
   watch: {
@@ -228,14 +233,14 @@ export default {
         .get('/medical-record', {
           params: {
             type: this.type,
-            search: v
-          }
+            search: v,
+          },
         })
         .then(({ data }) => {
-          this.items = data;
-          console.log('records',data)
+          this.items = data
+          console.log('records', data)
         })
-    }, 500)
+    }, 500),
   },
   mounted() {
     this.setColumns()
@@ -294,7 +299,7 @@ export default {
       const draftHeader = {
         text: '',
         value: 'mere_is_draft',
-        sortable: false
+        sortable: false,
       }
 
       if (this.type === 'record') {
@@ -302,36 +307,41 @@ export default {
           {
             text: 'EMR',
             value: 'user_mrn',
-            sortable: false
+            sortable: false,
           },
           {
             text: 'Patient',
             value: 'patient',
-            sortable: false
+            sortable: false,
           },
           {
             text: 'Created At',
             value: 'mere_date',
-            sortable: false
+            sortable: false,
+          },
+            {
+            text: 'LastUpdate At',
+            value: 'mere_updated',
+            sortable: false,
           },
           draftHeader,
           {
             text: 'Actions',
             value: 'actions',
-            sortable: false
-          }
+            sortable: false,
+          },
         ]
       } else {
         this.headers = [
           {
             text: this.$t('template_name'),
-            value: 'mere_name'
-          }
+            value: 'mere_name',
+          },
         ]
         if (this.isAdmin || this.isSuper) {
           this.headers.push({
             text: this.$t('created_by'),
-            value: 'owner_name'
+            value: 'owner_name',
           })
         }
 
@@ -339,40 +349,45 @@ export default {
           draftHeader,
           {
             text: this.$t('created_at'),
-            value: 'mere_date'
+            value: 'mere_date',
           },
           {
             text: 'Actions',
             value: 'actions',
-            sortable: false
+            sortable: false,
           }
         )
       }
       this.loadingData = true
+      const p = {
+        type: this.type,
+      }
+      if (this.$route.params && this.$route.params.uuid) {
+        p.mrus_user_uuid = this.$route.params.uuid
+      }
+
+      console.log(this.$route.params)
       this.$api
         .get('/medical-record', {
-          params: {
-            type: this.type
-          }
+          params: p,
         })
         .then(({ data }) => {
           this.items = data
-              this.items.sort(function(a,b){
-            return new Date(b.mere_date) - new Date(a.mere_date);
-          });
+          this.items.sort(function (a, b) {
+            return new Date(b.mere_date) - new Date(a.mere_date)
+          })
           console.log('--->', data, '<---')
         })
         .finally(() => {
           this.loadingData = false
         })
-    }
-  }
+    },
+  },
 }
 </script>
 
 
 <style scoped lang="sass">
-  .emr-action 
+.emr-action
     display: flex
-
 </style>

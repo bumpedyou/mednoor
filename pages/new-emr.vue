@@ -1,64 +1,81 @@
 <template>
-  <div class='pa-6 mh-100v'>
-    <v-row class='mb-1'>
+  <div class="pa-6 mh-100v">
+    <v-row class="mb-1">
       <v-col>
-        <v-breadcrumbs :items="[
-          {
-            text: $t('dashboard'),
-            to: localePath('/dashboard'),
-            disabled: false,
-          },
-          {
-            text: $t('emr'),
-            to: localePath('/emr'),
-            disabled: false,
-          },
-          {
-            text: isTemplate ? $t('emr_template') : 'Encounter',
-            disabled: true,
-          }
-        ]"></v-breadcrumbs>
+        <v-breadcrumbs
+          :items="[
+            {
+              text: $t('dashboard'),
+              to: localePath('/dashboard'),
+              disabled: false,
+            },
+            {
+              text: $t('emr'),
+              to: localePath('/emr'),
+              disabled: false,
+            },
+            {
+              text: isTemplate ? $t('emr_template') : 'Encounter',
+              disabled: true,
+            },
+          ]"
+        ></v-breadcrumbs>
       </v-col>
     </v-row>
-    <div v-if='loadingData'>
-      <v-skeleton-loader/>
+    <div v-if="loadingData">
+      <v-skeleton-loader />
     </div>
-    <v-form v-else ref="form" v-model="valid" @submit.prevent='handleSubmit'>
+    <v-form v-else ref="form" v-model="valid" @submit.prevent="handleSubmit">
       <v-row>
         <v-col>
-          <p class='h4 mb-1'>
-                    <span v-if='isTemplate'>
-                        <span v-if='recordId'>{{ $t('update_template') }}</span>
-                        <span v-else>{{ $t('create_template') }}</span>
-                    </span>
+          <p class="h4 mb-1">
+            <span v-if="isTemplate">
+              <span v-if="recordId">{{ $t('update_template') }}</span>
+              <span v-else>{{ $t('create_template') }}</span>
+            </span>
             <span v-else>
-                        <span v-if='recordId'>{{ $t('update_record') }}</span>
-                        <span v-else>New Encounter</span>
-                    </span>
+              <span v-if="recordId">{{ $t('update_record') }}</span>
+              <span v-else>New Encounter</span>
+            </span>
           </p>
         </v-col>
       </v-row>
       <v-row>
         <v-col md="12">
           <div>
-            <v-text-field v-if='isTemplate' v-model="template_name" :rules="[
-
-              v => !!v ||  $t('v.en_tmp_name'),
-              v => !!v && v.length >= 2 || $t('v.min_2')
-
-            ]"
-                          type='text'
-                          :label="$t('template_name')"
-                          :placeholder="$t('template_name')"
-                          @input="inputReceived('template_name')">
+            <v-text-field
+              v-if="isTemplate"
+              v-model="template_name"
+              :rules="[
+                (v) => !!v || $t('v.en_tmp_name'),
+                (v) => (!!v && v.length >= 2) || $t('v.min_2'),
+              ]"
+              type="text"
+              :label="$t('template_name')"
+              :placeholder="$t('template_name')"
+              @input="inputReceived('template_name')"
+            >
             </v-text-field>
-            <v-autocomplete v-else v-model="selectedUser" :search-input.sync="userSearch"
-                            :loading="loadingUsers" hide-no-data :items="usersList" placeholder="Search patient" :disabled="!!recordId && draft"></v-autocomplete>
+            <v-autocomplete
+              v-else
+              v-model="selectedUser"
+              :search-input.sync="userSearch"
+              :loading="loadingUsers"
+              hide-no-data
+              :items="usersList"
+              placeholder="Search patient"
+              :disabled="recordId ? true:false"
+            ></v-autocomplete>
           </div>
         </v-col>
         <v-col v-if="!isTemplate" md="6">
           <div>
-            <v-text-field v-model="picker" placeholder="Date" readonly @click="visiblePicker = true"></v-text-field>
+            <v-text-field
+              v-model="picker"
+              placeholder="Date"
+              readonly
+              @click="visiblePicker = true"
+            ></v-text-field>
             <v-dialog v-model="visiblePicker" persistent max-width="320px">
               <v-date-picker
                 v-model="picker"
@@ -70,8 +87,21 @@
             </v-dialog>
           </div>
         </v-col>
-        <v-col v-if='!isTemplate' md="6">
-          <v-autocomplete :disabled="isDisabled" :items="templatesList" :label="$t('template_name')" :placeholder="$t('template_name')" clearable @change="changeTemplate"></v-autocomplete>
+        <v-col v-if="!isTemplate" md="6">
+          <v-text-field
+            v-if="template_name"
+            v-model="template_name"
+            readonly
+          ></v-text-field>
+          <v-autocomplete
+            v-if="!template_name"
+            :disabled="isDisabled"
+            :items="templatesList"
+            :label="$t('template_name')"
+            :placeholder="$t('template_name')"
+            clearable
+            @change="changeTemplate"
+          ></v-autocomplete>
         </v-col>
       </v-row>
       <v-row>
@@ -82,70 +112,118 @@
             <v-tab>{{ $t('med_htry') }}</v-tab>
             <v-tab>{{ $t('soc_htry') }}</v-tab>
             <v-tab>{{ $t('fam_hry') }}</v-tab>
-
           </v-tabs>
           <v-tabs-items v-model="tab">
             <v-tab-item>
-              <v-textarea v-model="allergies" :label="$t('allergies')" :placeholder="$t('allergies')" :disabled='isDisabled' @input="inputReceived('allergies')"/>
+              <v-textarea
+                v-model="allergies"
+                :label="$t('allergies')"
+                :placeholder="$t('allergies')"
+                :disabled="isDisabled"
+                @input="inputReceived('allergies')"
+              />
             </v-tab-item>
             <v-tab-item>
-              <v-textarea v-model="current_meds" :label="$t('current_meds')" :placeholder="$t('current_meds')" :disabled='isDisabled' @input="inputReceived('current_meds')"/>
+              <v-textarea
+                v-model="current_meds"
+                :label="$t('current_meds')"
+                :placeholder="$t('current_meds')"
+                :disabled="isDisabled"
+                @input="inputReceived('current_meds')"
+              />
             </v-tab-item>
             <v-tab-item>
               <v-textarea
                 v-model="medical_history"
                 :label="$t('med_htry')"
-                :placeholder="$t('med_htry')" :disabled='isDisabled' @input="inputReceived('medical_history')"/>
+                :placeholder="$t('med_htry')"
+                :disabled="isDisabled"
+                @input="inputReceived('medical_history')"
+              />
             </v-tab-item>
             <v-tab-item>
               <v-textarea
                 v-model="social_history"
                 :label="$t('soc_htry')"
-                :placeholder="$t('soc_htry')" :disabled='isDisabled' @input="inputReceived('social_history')"/>
+                :placeholder="$t('soc_htry')"
+                :disabled="isDisabled"
+                @input="inputReceived('social_history')"
+              />
             </v-tab-item>
             <v-tab-item>
               <v-textarea
                 v-model="family_history"
                 :label="$t('fam_hry')"
-                :placeholder="$t('fam_hry')" :disabled='isDisabled' @input="inputReceived('family_history')"/>
+                :placeholder="$t('fam_hry')"
+                :disabled="isDisabled"
+                @input="inputReceived('family_history')"
+              />
             </v-tab-item>
           </v-tabs-items>
         </v-col>
       </v-row>
-      <v-row class='mt-1 mb-1'>
+      <v-row class="mt-1 mb-1">
         <v-col>
-          <div class='emr-inline-inputs'>
+          <div class="emr-inline-inputs">
             <div>
               <v-text-field
-                v-model='bp'
+                v-model="bp"
                 :label="$t('bp')"
-                :placeholder="$t('bp')" :disabled='isDisabled'/>
+                :placeholder="$t('bp')"
+                :disabled="isDisabled"
+              />
             </div>
             <div>
               <v-text-field
                 :label="$t('pulse')"
-                :placeholder="$t('pulse')" :disabled='isDisabled' @input="inputReceived('pulse')"/>
+                :placeholder="$t('pulse')"
+                :disabled="isDisabled"
+                @input="inputReceived('pulse')"
+              />
             </div>
             <div>
               <v-text-field
                 v-model="resp_rate"
                 :label="$t('resp_rate')"
-                :placeholder="$t('resp_rate')" :disabled='isDisabled' @input="inputReceived('resp_rate')"/>
+                :placeholder="$t('resp_rate')"
+                :disabled="isDisabled"
+                @input="inputReceived('resp_rate')"
+              />
             </div>
             <div>
-              <v-text-field v-model="temp"
-                            :placeholder="$t('temp')" :label="$t('temp')" :disabled='isDisabled' @input="inputReceived('temp')"/>
+              <v-text-field
+                v-model="temp"
+                :placeholder="$t('temp')"
+                :label="$t('temp')"
+                :disabled="isDisabled"
+                @input="inputReceived('temp')"
+              />
             </div>
             <div>
-              <v-text-field v-model="height" :label="$t('height_in')" :placeholder="$t('height_in')" :disabled='isDisabled'
-                            @input='updateBMI("height")'/>
+              <v-text-field
+                v-model="height"
+                :label="$t('height_in')"
+                :placeholder="$t('height_in')"
+                :disabled="isDisabled"
+                @input="updateBMI('height')"
+              />
             </div>
             <div>
-              <v-text-field v-model="weight" :label="$t('weight_lb')" :placeholder="$t('weight_lb')" :disabled='isDisabled'
-                            @input='updateBMI("weight")'/>
+              <v-text-field
+                v-model="weight"
+                :label="$t('weight_lb')"
+                :placeholder="$t('weight_lb')"
+                :disabled="isDisabled"
+                @input="updateBMI('weight')"
+              />
             </div>
             <div>
-              <v-text-field v-model='bmi' :label="$t('bmi')" :placeholder="$t('bmi')" disabled/>
+              <v-text-field
+                v-model="bmi"
+                :label="$t('bmi')"
+                :placeholder="$t('bmi')"
+                disabled
+              />
             </div>
           </div>
         </v-col>
@@ -167,98 +245,145 @@
               <v-textarea
                 v-model="chief_complaint"
                 :label="$t('chief_complaint')"
-                :placeholder="$t('chief_complaint')" :disabled='isDisabled' @input="inputReceived('chief_complaint')"/>
+                :placeholder="$t('chief_complaint')"
+                :disabled="isDisabled"
+                @input="inputReceived('chief_complaint')"
+              />
             </v-tab-item>
             <v-tab-item>
               <v-textarea
                 v-model="hip"
                 :label="$t('hpi')"
-                :placeholder="$t('hpi')" :disabled='isDisabled' @input="inputReceived('hip')"/>
+                :placeholder="$t('hpi')"
+                :disabled="isDisabled"
+                @input="inputReceived('hip')"
+              />
             </v-tab-item>
             <v-tab-item>
               <v-textarea
                 v-model="subject"
                 :label="$t('subject')"
-                :placeholder="$t('subject')" :disabled='isDisabled' @input="inputReceived('subject')"/>
+                :placeholder="$t('subject')"
+                :disabled="isDisabled"
+                @input="inputReceived('subject')"
+              />
             </v-tab-item>
             <v-tab-item>
               <v-textarea
                 v-model="objective"
                 :label="$t('objective')"
-                :placeholder="$t('objective')" :disabled='isDisabled' @input="inputReceived('objective')"/>
+                :placeholder="$t('objective')"
+                :disabled="isDisabled"
+                @input="inputReceived('objective')"
+              />
             </v-tab-item>
             <v-tab-item>
               <v-textarea
                 v-model="assessment"
                 :label="$t('assessment')"
-                :placeholder="$t('assessment')" :disabled='isDisabled' @input="inputReceived('assessment')"/>
+                :placeholder="$t('assessment')"
+                :disabled="isDisabled"
+                @input="inputReceived('assessment')"
+              />
             </v-tab-item>
             <v-tab-item>
               <v-textarea
                 v-model="plan"
                 :label="$t('plan')"
-                :placeholder="$t('plan')" :disabled='isDisabled' @input="inputReceived('plan')"/>
+                :placeholder="$t('plan')"
+                :disabled="isDisabled"
+                @input="inputReceived('plan')"
+              />
             </v-tab-item>
             <v-tab-item>
               <v-textarea
                 v-model="sign"
                 :label="$t('sign')"
-                :placeholder="$t('sign')" :disabled='isDisabled' @input="inputReceived('sign')"/>
+                :placeholder="$t('sign')"
+                :disabled="isDisabled"
+                @input="inputReceived('sign')"
+              />
             </v-tab-item>
             <v-tab-item>
               <v-textarea
                 v-model="addendum"
                 :label="$t('addendum')"
-                :placeholder="$t('addendum')" :disabled="locked" @input="inputReceived('addendum')"/>
+                :placeholder="$t('addendum')"
+               
+                @input="inputReceived('addendum')"
+              />
             </v-tab-item>
           </v-tabs-items>
         </v-col>
       </v-row>
-      <v-row v-if="!locked" class='mt-1'>
+      <v-row  class="mt-1">
         <v-col>
-          <v-btn color='primary' small tile type='submit' :loading="loading">
-            <span v-if='isTemplate'>
-              <span v-if='recordId'>{{ $t('update_template') }}</span>
+          <v-btn color="primary" small tile type="submit" :loading="loading">
+            <span v-if="isTemplate">
+              <span v-if="recordId">{{ $t('update_template') }}</span>
               <span v-else>{{ $t('create_template') }}</span>
             </span>
             <span v-else>
-              <span v-if='recordId'>{{'Save'}}</span>
+              <span v-if="recordId">{{ 'Save' }}</span>
               <span v-else>{{ $t('chat_record') }}</span>
             </span>
           </v-btn>
-          <v-btn v-if='!isTemplate' small tile color='pink' dark :loading="loadingPdf" @click='printRecord'>
+          <v-btn
+            v-if="!isTemplate"
+            small
+            tile
+            color="pink"
+            dark
+            :loading="loadingPdf"
+            @click="printRecord"
+          >
             <v-icon>mdi-file</v-icon>
             {{ $t('print') }}
           </v-btn>
         </v-col>
       </v-row>
-      <v-row v-else class="mt-1">
+      <!-- <v-row v-else class="mt-1">
         <v-col>
-          <v-btn small tile color='success' @click.prevent="$router.push(localePath('/emr'))">
+          <v-btn
+            small
+            tile
+            color="success"
+            @click.prevent="$router.push(localePath('/emr'))"
+          >
             Go Back
             <v-icon>mdi-arrow-left</v-icon>
           </v-btn>
         </v-col>
-      </v-row>
-      <RequestModal ref='rmodal'/>
-      <a ref='pdfDownload' :href='pdfFile' :download='pdfFile' class='d-none' target='_blank'></a>
+      </v-row> -->
+      <RequestModal ref="rmodal" />
+      <a
+        ref="pdfDownload"
+        :href="pdfFile"
+        :download="pdfFile"
+        class="d-none"
+        target="_blank"
+      ></a>
     </v-form>
   </div>
-
 </template>
 <script>
 import formMixin from '~/mixins/formMixin'
 
 const debounce = require('lodash.debounce')
-const {validate} = require('uuid');
-
+const { validate } = require('uuid')
 
 export default {
   name: 'NewEmr',
 
   mixins: [formMixin],
   layout: 'dashboard',
-  middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified', 'pin-set'],
+  middleware: [
+    'authenticated',
+    'not-blocked',
+    'not-deleted',
+    'verified',
+    'pin-set',
+  ],
   data: () => ({
     selectedUser: null,
     loadingUsers: false,
@@ -298,12 +423,12 @@ export default {
     canSaveDraft: false,
     valid: false,
     template_name: '',
-    picker: new Date().toISOString().substr(0,10),
+    picker: new Date().toISOString().substr(0, 10),
     visiblePicker: false,
   }),
   head() {
     return {
-      title: 'New Encounter'
+      title: 'New Encounter',
     }
   },
   computed: {
@@ -323,7 +448,7 @@ export default {
     },
     isTemplate() {
       return this.type === 'template' || this.isTemplateD
-    }
+    },
   },
   watch: {
     date(v) {
@@ -354,79 +479,93 @@ export default {
       }
       if (v && v.length > 0) {
         this.loadingUsers = true
-        this.$userApi.get('/search', {
-          params: {
-            searchTerm: v
-          }
-        }).then(({data}) => {
-          if (data && data.length) {
-            this.usersList = data.map((user) => {
-              return {
-                text: user.full_name,
-                value: user.uuid
-              }
-            })
-          }
-        }).catch(() => {
-          this.$toast.error(this.$t('unable_search').toString())
-        }).finally(() => {
-          this.loadingUsers = false
-        })
+        this.$userApi
+          .get('/search', {
+            params: {
+              searchTerm: v,
+            },
+          })
+          .then(({ data }) => {
+            if (data && data.length) {
+              this.usersList = data.map((user) => {
+                return {
+                  text: user.full_name,
+                  value: user.uuid,
+                }
+              })
+            }
+          })
+          .catch(() => {
+            this.$toast.error(this.$t('unable_search').toString())
+          })
+          .finally(() => {
+            this.loadingUsers = false
+          })
       } else {
         this.usersList = []
       }
-    }, 600)
+    }, 600),
   },
   mounted() {
     const c = this.$route.query
     if (c.mere) {
       this.recordId = c.mere
       this.loadingData = true
-      this.$api.get('/medical-record/' + this.recordId).then(({data}) => {
-        this.selectedUser = data.user_uuid
-        this.setData(data)
-        if (data.mrus_user_uuid) {
-          this.usersList = [
-            {
-              text: data.user_first_name + ' ' + data.user_last_name,
-              value: data.user_uuid
-            }
-          ]
-          this.userSearch = data.user_uuid
-        }
-        if (data && data.mrus_mere_uuid) {
-          this.$route.query.type = 'record'
-          this.isTemplateD = false
-        } else {
-          this.$route.query.type = 'template'
-          this.isTemplateD = true
-        }
-        this.updateBMI()
-        setTimeout(() => {
-          this.canSaveDraft = true
-        }, 1000)
-      }).catch(() => {
-        this.recordId = null
-        this.$toast.error(this.$t('could_nf_rec').toString())
-      }).finally(() => {
-        this.loadingData = false
-      })
+      this.$api
+        .get('/medical-record/' + this.recordId)
+        .then(({ data }) => {
+          this.selectedUser = data.user_uuid
+          this.setData(data)
+          if (data.mere_sign) {
+            this.locked = true
+          }
+
+          if (data.mrus_user_uuid) {
+            this.usersList = [
+              {
+                text: data.user_first_name + ' ' + data.user_last_name,
+                value: data.user_uuid,
+              },
+            ]
+            this.userSearch = data.user_uuid
+          }
+          if (data && data.mrus_mere_uuid) {
+            this.$route.query.type = 'record'
+            this.isTemplateD = false
+          } else {
+            this.$route.query.type = 'template'
+            this.isTemplateD = true
+          }
+          this.updateBMI()
+          setTimeout(() => {
+            this.canSaveDraft = true
+          }, 1000)
+        })
+        .catch(() => {
+          this.recordId = null
+          this.$toast.error(this.$t('could_nf_rec').toString())
+        })
+        .finally(() => {
+          this.loadingData = false
+        })
     } else {
       this.canSaveDraft = true
     }
-    this.$api.get('/medical-record', {
-      params: {
-        type: 'template'
-      }
-    }).then(({data}) => {
-      this.templates = data
-      this.templatesList = data.map((tmp) => {
-        return {
-          text: tmp.mere_name,
-          value: tmp.mere_uuid
-        }
+    this.$api
+      .get('/medical-record', {
+        params: {
+          type: 'template',
+        },
       })
-    })
+      .then(({ data }) => {
+        this.templates = data
+        this.templatesList = data.map((tmp) => {
+          return {
+            text: tmp.mere_name,
+            value: tmp.mere_uuid,
+          }
+        })
+      })
     if (c.mode && c.mode === 'view') {
       this.locked = true
     }
@@ -437,33 +576,35 @@ export default {
     }, 1000),
     saveDraft(arg, valueOverride) {
       if (this.canSaveDraft) {
-
-
         console.log('Save draft. Update -->', arg)
         const v = this[arg]
         console.log(`The new value of ${arg} is ${v}`)
         if (this.draft === null && !this.recordId) {
           // type ---> new || template
-          this.$api.post('/medical-record/draft', {
-            type: this.type,
-            arg,
-          }).then(({data}) => {
-            if (data && data.mere_uuid) {
-              this.recordId = data.mere_uuid
-              this.$toast.success('A new draft has been created')
-              this.draft = true
-              this.putData(arg, v || valueOverride)
-            }
-          }).catch(() => {
-            this.$toast.error('Failed to create a new draft. You can continue but your changes won\'t be saved automatically.')
-          })
+          this.$api
+            .post('/medical-record/draft', {
+              type: this.type,
+              arg,
+            })
+            .then(({ data }) => {
+              if (data && data.mere_uuid) {
+                this.recordId = data.mere_uuid
+                this.$toast.success('A new draft has been created')
+                this.draft = true
+                this.putData(arg, v || valueOverride)
+              }
+            })
+            .catch(() => {
+              this.$toast.error(
+                "Failed to create a new draft. You can continue but your changes won't be saved automatically."
+              )
+            })
         } else if (validate(this.recordId)) {
           this.putData(arg, v || valueOverride)
         }
       }
     },
     putData(name, value) {
-
       const values = this[name]
       let v = value || values[name]
       if (!v) {
@@ -472,28 +613,36 @@ export default {
         }
       }
       name = name.replace(/_/g, '-')
-      this.$api.patch('/medical-record/' + name + '/' + this.recordId, {
-        value: v
-      }).then(({data}) => {
-        console.log(`Updated ${name} successfully`)
-      }).catch(() => {
-        this.$toast.error(`Failed to update ${name}`)
-      })
+      this.$api
+        .patch('/medical-record/' + name + '/' + this.recordId, {
+          value: v,
+        })
+        .then(({ data }) => {
+          console.log(`Updated ${name} successfully`)
+        })
+        .catch(() => {
+          this.$toast.error(`Failed to update ${name}`)
+        })
     },
     printRecord() {
       if (this.recordId) {
         this.loadingPdf = true
-        this.$api.get('/medical-record/pdf/' + this.recordId).then(({data}) => {
-          this.$toast.success(this.$t('pdf_gend').toString())
-          this.pdfFile = process.env.API_URL + '/generated/record/' + data.file
-          setTimeout(() => {
-            this.$refs.pdfDownload.click()
-          }, 500)
-        }).catch(() => {
-          this.$toast.error(this.$t('pdf_fail').toString())
-        }).finally(() => {
-          this.loadingPdf = false
-        })
+        this.$api
+          .get('/medical-record/pdf/' + this.recordId)
+          .then(({ data }) => {
+            this.$toast.success(this.$t('pdf_gend').toString())
+            this.pdfFile =
+              process.env.API_URL + '/generated/record/' + data.file
+            setTimeout(() => {
+              this.$refs.pdfDownload.click()
+            }, 500)
+          })
+          .catch(() => {
+            this.$toast.error(this.$t('pdf_fail').toString())
+          })
+          .finally(() => {
+            this.loadingPdf = false
+          })
       } else {
         this.$toast.success(this.$t('record_hnb_cy').toString())
       }
@@ -508,7 +657,6 @@ export default {
       return r
     },
     updateBMI(arg) {
-
       let w = this.weight
       let h = this.height
       let r = 0
@@ -525,6 +673,13 @@ export default {
       console.log('Handle submit')
       this.$refs.form.validate()
 
+     if (!this.template_name) {
+          const err = {
+            response: { message: 'Template name required', status: 400 },
+          }
+          this.$refs.rmodal.$emit('error', err)
+          return
+        }
       if (this.valid) {
         const values = {
           template_name: this.template_name,
@@ -550,7 +705,6 @@ export default {
           addendum: this.addendum,
         }
 
-
         /*
         if (!this.date || !this.date.isValid()){
           return this.$toast.error('Please enter a valid date')
@@ -565,6 +719,7 @@ export default {
 
         this.loading = true
 
+        console.log('record id ', this.recordId, this.isTemplate)
         if (this.recordId) {
           values.patient = this.selectedUser
           if (!this.isTemplate && !this.isValidUser()) {
@@ -573,42 +728,48 @@ export default {
             return false
           }
 
-          this.$api.put('/medical-record/' + this.recordId, values).then(() => {
-            if (this.isValidUser()) {
-            this.$api.post('/medical-record/record', values).then(() => {
-              this.$toast.success(this.$t('record_hb_created').toString())
-              setTimeout(() => {
-                this.$router.push(this.localePath('/emr'))
-              }, 500)
-            }).catch((err) => {
+          this.$api
+            .put('/medical-record/' + this.recordId, values)
+            .then(() => {
+                if (this.isValidUser() && !this.$route.query.mere) {
+                this.$api.post('/medical-record/record', values).then(() => {
+                  this.$toast.success(this.$t('record_hb_created').toString())
+                  setTimeout(() => {
+                    this.$router.push(this.localePath('/emr'))
+                  }, 500)
+                }).catch((err) => {
+                  this.$refs.rmodal.$emit('error', err)
+                }).finally(() => {
+                  this.loading = false
+                })
+              } else{
+                 this.$router.push(this.localePath('/emr'))
+              }
+             // this.$router.push(this.localePath('/emr'))
+            })
+            .catch((err) => {
               this.$refs.rmodal.$emit('error', err)
-            }).finally(() => {
+            })
+            .finally(() => {
               this.loading = false
             })
-          } else{
-             this.$router.push(this.localePath('/emr'))
-          }
-
-          }).catch((err) => {
-            this.$refs.rmodal.$emit('error', err)
-          }).finally(() => {
-            this.loading = false
-          })
         } else if (this.isTemplate) {
-          this.$api.post('/medical-record', values).then(() => {
-
-            this.$toast.success(this.$t('template_hb_created').toString())
-            this.$router.push(this.localePath('/emr'))
-          }).catch((err) => {
-            this.$refs.rmodal.$emit('error', err)
-          }).finally(() => {
-            this.loading = false
-          })
-        }  
+          this.$api
+            .post('/medical-record', values)
+            .then(() => {
+              this.$toast.success(this.$t('template_hb_created').toString())
+              this.$router.push(this.localePath('/emr'))
+            })
+            .catch((err) => {
+              this.$refs.rmodal.$emit('error', err)
+            })
+            .finally(() => {
+              this.loading = false
+            })
+        }
       }
     },
     setData(tm) {
-      console.log('Setting data.',tm)
       this.template_name = tm.mere_name
       this.allergies = tm.mere_allergies
       this.current_meds = tm.mere_allergies
@@ -629,6 +790,8 @@ export default {
       this.plan = tm.mere_plan
       this.sign = tm.mere_sign
       this.addendum = tm.mere_addendum
+
+      console.log('Setting data.', tm, this.template_name)
     },
     changeTemplate(t) {
       this.templates.forEach((tm) => {
@@ -636,9 +799,8 @@ export default {
           this.setData(tm)
         }
       })
-    }
-  }
-
+    },
+  },
 }
 </script>
 <style scoped lang='sass'>
