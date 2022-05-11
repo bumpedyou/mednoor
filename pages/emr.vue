@@ -90,7 +90,7 @@
             <span v-if="item.mere_is_draft && type=='template'" class="text-muted"> [Draft] </span>
           </template>
           <template #[`item.mere_date`]="{ value }">
-            {{ dateString(value) }}
+           {{ dateString(value) }} {{timeString(value)}}
           </template>
           <template #[`item.actions`]="{ item }" >
             <div class="emr-action">
@@ -182,6 +182,7 @@
 <script>
 import authMixin from '~/mixins/authMixin'
 import dateMixin from '~/mixins/dateMixin'
+import timeMixin from '~/mixins/timeMixin'
 import userRoleMixin from '~/mixins/userRoleMixin'
 import MedDivider from '~/components/MedDivider'
 import ConfirmDialog from '~/components/ConfirmDialog'
@@ -194,7 +195,7 @@ export default {
     ConfirmDialog,
     MedDivider
   },
-  mixins: [dateMixin, userRoleMixin, authMixin],
+  mixins: [dateMixin, userRoleMixin, authMixin,timeMixin],
   layout: 'dashboard',
   middleware: [
     'authenticated',
@@ -301,7 +302,7 @@ export default {
         this.headers = [
           {
             text: 'EMR',
-            value: 'user_mrn',
+            value: 'mere_emr',
             sortable: false
           },
           {
