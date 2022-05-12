@@ -71,7 +71,7 @@
         <v-col v-if="!isTemplate" md="6">
           <div>
             <v-text-field
-              v-model="picker"
+            :value="dateString(picker)"
               placeholder="Date"
               readonly
               @click="visiblePicker = true"
@@ -91,7 +91,7 @@
           <v-text-field
             v-if="template_name"
             v-model="template_name"
-            readonly
+            :disabled="isDisabled"
           ></v-text-field>
           <v-autocomplete
             v-if="!template_name"
@@ -368,14 +368,14 @@
 </template>
 <script>
 import formMixin from '~/mixins/formMixin'
-
+import dateMixin from '~/mixins/dateMixin'
 const debounce = require('lodash.debounce')
 const { validate } = require('uuid')
 
 export default {
   name: 'NewEmr',
 
-  mixins: [formMixin],
+  mixins: [formMixin,dateMixin],
   layout: 'dashboard',
   middleware: [
     'authenticated',
@@ -516,6 +516,10 @@ export default {
         .then(({ data }) => {
           this.selectedUser = data.user_uuid
           this.setData(data)
+          if(data && data.mere_date){
+            this.picker= new Date(data.mere_date).toISOString().substr(0, 10) ;
+          }
+          
           if (data.mere_sign) {
             this.locked = true
           }
@@ -696,7 +700,7 @@ export default {
           height: this.height,
           weight: this.weight,
           chief_complaint: this.chief_complaint,
-          hip: this.hpi,
+          hip: this.hip,
           subject: this.subject,
           objective: this.objective,
           assessment: this.assessment,

@@ -7,8 +7,8 @@ export default {
     
      formatBirthDate(date) {
           return [
+            this.padTo2Digits(date.getMonth() + 1),
               this.padTo2Digits(date.getDate()),
-              this.padTo2Digits(date.getMonth() + 1),
               date.getFullYear(),
             ].join('/');
     },
