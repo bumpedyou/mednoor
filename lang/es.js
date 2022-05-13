@@ -127,6 +127,9 @@ export default {
   slug_p: 'Slug (Separado por espacios)',
   keywords: 'Palabras clave',
   keywords_p: 'Palabras clave (Separadas por comas)',
+  header_s:"Subtítulo del encabezado",
+  header_bg:"Fondo del encabezado",
+  body_bg:"Fondo del cuerpo",
   update: 'Actualizar',
   create_new_page: 'Crear nueva página',
   page_does_not_exist:
