@@ -122,6 +122,8 @@ export default {
             // Store the PIN
             this.$store.commit('pin/setPIN', this.pin)
             this.$store.commit('pin/setValid', true)
+            this.$cookies.set('setPIN',this.pin)
+            this.$cookies.set('setValidPin',true)
             this.checkRedirect()
           }else{
             this.$toast.error('Incorrect pin')
@@ -133,7 +135,9 @@ export default {
         this.loading = false
       })
 
-    }
+    },
+
+
   }
 }
 </script>

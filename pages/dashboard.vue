@@ -58,12 +58,14 @@ export default {
   methods: {
     navigate(value) {
       console.log(value)
-      if (value && value.redirect) {
-        const sessionId = localStorage.getItem('session_id')
+        const sessionId = this.$cookies.get('session_id')
+      if (value && value.redirect && sessionId) {
         const url = `${process.env.PAYMENT_URL}/financial?session_id=${sessionId}`
         window.open(url)
       } else {
-        this.$router.push(this.localePath(value.to))
+             const  route = this.$router.resolve({ path: value.to });
+             window.open(route.href);
+        // this.$router.push(this.localePath(value.to))
       }
     },
   },

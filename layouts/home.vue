@@ -104,7 +104,7 @@ export default {
           },
         }).then(res=>{
          // console.log(res)
-           localStorage.setItem('session_id',res.data.session_id);
+           this.$cookies.set('session_id',res.data.session_id)
            this.$router.push(this.localePath('/'))
         })
       

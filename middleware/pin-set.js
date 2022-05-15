@@ -14,8 +14,9 @@ export default function ({
     }
     if (u && u.role === 'MODERATOR' && view === 'professional') {
       if (store) {
-        const pinState = store.state.pin
-        if (!pinState || !pinState.valid) {
+        const pinState =$cookies.get('setPIN')
+        const validPin = $cookies.get('setValidPin')
+        if (!pinState || !validPin) {
           console.log('We are at', route.path)
           return redirect({
             path: localePath('/pin'),

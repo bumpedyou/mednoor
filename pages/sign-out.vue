@@ -21,6 +21,9 @@ export default {
     this.$cookies.set('view', null)
     this.$cookies.set('appointments', null)
     this.$auth.logout().then(()=>{
+        this.$cookies.set('session_id',null)
+        this.$cookies.set('setValidPin',false)
+         this.$cookies.set('setPIN',null)
        window.location.href = process.env.HOME_URL;
     })
   },

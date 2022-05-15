@@ -64,7 +64,7 @@
               hide-no-data
               :items="usersList"
               placeholder="Search patient"
-              :disabled="recordId ? true:false"
+              :disabled="recordId && selectedUser  ? true:false"
             ></v-autocomplete>
           </div>
         </v-col>

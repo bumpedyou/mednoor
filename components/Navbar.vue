@@ -88,12 +88,12 @@
           <ChatItems :data='moderators' :selected-chat='to' @open-chat='openChat'></ChatItems>
         </div>
       </transition>
-      <transition name='side-slide' mode='in-out'>
+      <transition name='side-slide' mode='in-out'> 
         <div v-if='showMenuNav' class='sidebar menu-sidebar'>
           <sidebar-mobile-title>{{ $t('menu') }}</sidebar-mobile-title>
           <ul class='sidebar-menu-items'>
             <li v-for='(item, i) in menuItems' :key='i'>
-              <nuxt-link v-if="item.to!='redirect'" :to='localePath(item.to)' class='sidebar-item'>
+              <nuxt-link v-if="item.to!='redirect'" :to='localePath(item.to)'  :target="item.openWith" class='sidebar-item'>
                 <span>
                  {{ item.text }}
                 </span>
@@ -268,7 +268,8 @@ export default {
         items.push({
           text: this.$t('sign_out'),
           icon: 'logout',
-          to: '/sign-out'
+          to: '/sign-out',
+          
         })
       } else {
         items.push({
@@ -288,6 +289,15 @@ export default {
           })
         })
       }
+
+      items.forEach(_i=>{
+            
+        if(_i.to!=='/sign-out'){
+          _i.openWith="_blank"
+           console.log(_i.to) 
+        }
+      })
+
       return items
     },
     query() {
@@ -395,9 +405,12 @@ export default {
 
     onClickPayment(){
       // console.log(this.myId);
-       const sessionId =localStorage.getItem('session_id');
-       const url = `${process.env.PAYMENT_URL}?session_id=${sessionId}`;
+       const sessionId = this.$cookies.get('session_id');
+       if(sessionId){
+        const url = `${process.env.PAYMENT_URL}?session_id=${sessionId}`;
        window.open(url)
+       }
+       
     // console.log(url )
     }
   }
