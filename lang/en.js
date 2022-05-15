@@ -128,6 +128,9 @@ export default {
   slug_p: 'Slug (space separated)',
   keywords: 'Keywords',
   keywords_p: 'Keywords (comma separated)',
+  header_s:"Header Subtitle",
+  header_bg:"Header Background",
+  body_bg:"Body Background",
   update: 'Update',
   create_new_page: 'Create new page',
   page_does_not_exist:
