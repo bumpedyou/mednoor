@@ -64,14 +64,15 @@
               hide-no-data
               :items="usersList"
               placeholder="Search patient"
-              :disabled="recordId && selectedUser  ? true:false"
+              :disabled="recordId && selectedUser && isDisabled ? true : false"
+              @change="UserSelectedFunc"
             ></v-autocomplete>
           </div>
         </v-col>
         <v-col v-if="!isTemplate" md="6">
           <div>
             <v-text-field
-            :value="dateString(picker)"
+              :value="dateString(picker)"
               placeholder="Date"
               readonly
               @click="visiblePicker = true"
@@ -309,14 +310,13 @@
                 v-model="addendum"
                 :label="$t('addendum')"
                 :placeholder="$t('addendum')"
-               
                 @input="inputReceived('addendum')"
               />
             </v-tab-item>
           </v-tabs-items>
         </v-col>
       </v-row>
-      <v-row  class="mt-1">
+      <v-row class="mt-1">
         <v-col>
           <v-btn color="primary" small tile type="submit" :loading="loading">
             <span v-if="isTemplate">
@@ -375,7 +375,7 @@ const { validate } = require('uuid')
 export default {
   name: 'NewEmr',
 
-  mixins: [formMixin,dateMixin],
+  mixins: [formMixin, dateMixin],
   layout: 'dashboard',
   middleware: [
     'authenticated',
@@ -425,6 +425,7 @@ export default {
     template_name: '',
     picker: new Date().toISOString().substr(0, 10),
     visiblePicker: false,
+    isDeafaultData :false
   }),
   head() {
     return {
@@ -516,10 +517,10 @@ export default {
         .then(({ data }) => {
           this.selectedUser = data.user_uuid
           this.setData(data)
-          if(data && data.mere_date){
-            this.picker= new Date(data.mere_date).toISOString().substr(0, 10) ;
+          if (data && data.mere_date) {
+            this.picker = new Date(data.mere_date).toISOString().substr(0, 10)
           }
-          
+
           if (data.mere_sign) {
             this.locked = true
           }
@@ -593,7 +594,10 @@ export default {
             .then(({ data }) => {
               if (data && data.mere_uuid) {
                 this.recordId = data.mere_uuid
+                if(!this.isDeafaultData){
                 this.$toast.success('A new draft has been created')
+                }
+                
                 this.draft = true
                 this.putData(arg, v || valueOverride)
               }
@@ -677,13 +681,13 @@ export default {
       console.log('Handle submit')
       this.$refs.form.validate()
 
-     if (!this.template_name) {
-          const err = {
-            response: { message: 'Template name required', status: 400 },
-          }
-          this.$refs.rmodal.$emit('error', err)
-          return
+      if (!this.template_name) {
+        const err = {
+          response: { message: 'Template name required', status: 400 },
         }
+        this.$refs.rmodal.$emit('error', err)
+        return
+      }
       if (this.valid) {
         const values = {
           template_name: this.template_name,
@@ -717,8 +721,15 @@ export default {
 
         // nv.date = this.date.format('YYYY-MM-DD')
 
-        values.date = this.picker
-        console.log('The values --->', values)
+          const savingDate = new Date(this.picker);
+          savingDate.setHours(new Date().getHours());
+          savingDate.setMinutes(new Date().getMinutes());
+
+      
+          values.date = new Date(savingDate).toISOString()
+         
+          console.log('The values --->', values)
+          console.log('saving Date :  --->', values.date)
         // 2022-01-14
 
         this.loading = true
@@ -735,21 +746,25 @@ export default {
           this.$api
             .put('/medical-record/' + this.recordId, values)
             .then(() => {
-                if (this.isValidUser() && !this.$route.query.mere) {
-                this.$api.post('/medical-record/record', values).then(() => {
-                  this.$toast.success(this.$t('record_hb_created').toString())
-                  setTimeout(() => {
-                    this.$router.push(this.localePath('/emr'))
-                  }, 500)
-                }).catch((err) => {
-                  this.$refs.rmodal.$emit('error', err)
-                }).finally(() => {
-                  this.loading = false
-                })
-              } else{
-                 this.$router.push(this.localePath('/emr'))
+              if (this.isValidUser() && !this.$route.query.mere) {
+                this.$api
+                  .post('/medical-record/record', values)
+                  .then(() => {
+                    this.$toast.success(this.$t('record_hb_created').toString())
+                    setTimeout(() => {
+                      this.$router.push(this.localePath('/emr'))
+                    }, 500)
+                  })
+                  .catch((err) => {
+                    this.$refs.rmodal.$emit('error', err)
+                  })
+                  .finally(() => {
+                    this.loading = false
+                  })
+              } else {
+                this.$router.push(this.localePath('/emr'))
               }
-             // this.$router.push(this.localePath('/emr'))
+              // this.$router.push(this.localePath('/emr'))
             })
             .catch((err) => {
               this.$refs.rmodal.$emit('error', err)
@@ -803,6 +818,38 @@ export default {
           this.setData(tm)
         }
       })
+    },
+    UserSelectedFunc(u) {
+      this.$api
+        .get('/medical-record?type=record&mrus_user_uuid=' + u)
+        .then(({ data }) => {
+             console.log('user last record ', data)
+          if (data && data.length) {
+            if (data && data.length > 1) {
+              data = data.sort(function (a, b) {
+                return new Date(b.mere_date) - new Date(a.mere_date)
+              })
+            }
+        
+            const item = data[0]
+             item.mere_sign = null;
+            this.setData(item)
+            if (item && item.mere_date) {
+              this.picker = new Date(item.mere_date).toISOString().substr(0, 10)
+            }
+
+            this.isTemplateD = false
+            this.locked = false;
+        //    this.updateBMI()
+          }
+        })
+        .catch(() => {
+          this.recordId = null
+          this.$toast.error(this.$t('could_nf_rec').toString())
+        })
+        .finally(() => {
+          this.loadingData = false
+        })
     },
   },
 }
