@@ -118,7 +118,6 @@
                   <v-col>
                     <v-text-field
                       v-model="email"
-                      disabled
                       label="Email"
                       :rules="[
                         (v) => !!v || $t('v.email_req'),
@@ -129,19 +128,29 @@
                     ></v-text-field>
                   </v-col>
                 </v-row>
-               <v-row>
-                <v-col sm="4" md="4">
-                  <v-text-field v-model="country_code" placeholder="Country code" label="Country code"></v-text-field>
-                </v-col>
-                <v-col sm="4" md="4">
-                  <v-text-field v-model="phone_no" placeholder="Phone number" label="Phone number" maxlength="10"></v-text-field>
-                </v-col>
+                <v-row>
+                  <v-col sm="4" md="4">
+                    <v-text-field
+                      v-model="country_code"
+                      placeholder="Country code"
+                      label="Country code"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col sm="4" md="4">
+                    <v-text-field
+                      v-model="phone_no"
+                      placeholder="Phone number"
+                      label="Phone number"
+                      maxlength="10"
+                    ></v-text-field>
+                  </v-col>
                   <v-col sm="4" md="4">
                     <div class="d-flex flex-row align-end">
-                        <v-text-field v-model="date_of_birth" disabled label="Date Of Birth" ></v-text-field>
+                       <label for="">Date Of Birth: </label>
+                      <date-picker v-model="date_of_birth" type="date" style="margin-left: 15px"></date-picker>
                     </div>
                 </v-col>
-              </v-row>
+                </v-row>
                 <v-row v-if="isUser">
                   <v-col>
                     <hr />
@@ -187,13 +196,8 @@
               </div>
             </a-form-item>
           </a-tab-pane> -->
-     
-            <a-tab-pane
-            
-              key="5"
-              tab="Insurance"
-              force-render
-            >
+
+            <a-tab-pane key="5" tab="Insurance" force-render>
               <!-- <div v-if="!isCompletedInsured">
                 <a-alert
                   message="Is the patient same as insured?"
@@ -622,7 +626,6 @@
               </v-form>
             </a-tab-pane>
             <!-- Claims -->
-       
           </a-tabs>
         </div>
       </v-col>
@@ -653,7 +656,14 @@ export default {
     RequestModal,
     DatePicker,
   },
-  mixins: [userRoleMixin, inputMixin, authMixin, uploadMixin, addressMixin,dateMixin],
+  mixins: [
+    userRoleMixin,
+    inputMixin,
+    authMixin,
+    uploadMixin,
+    addressMixin,
+    dateMixin,
+  ],
   middleware: [
     'authenticated',
     'not-blocked',
@@ -663,8 +673,9 @@ export default {
   ],
   data() {
     return {
-      first_name:'',
-      last_name:'',
+      email: '',
+      first_name: '',
+      last_name: '',
       user: {},
       user_uuid: null,
       validPersonalForm: false,
@@ -688,7 +699,7 @@ export default {
       phone_no: '',
       loadingSaveP: false,
       loadingPage: true,
-      date_of_birth:null,
+      date_of_birth: null,
       loadingUpload: false,
       imageUrl: '',
       showUploadPicture: false,
@@ -784,13 +795,8 @@ export default {
     }
   },
   computed: {
- 
     name() {
       return this.user.user_first_name + ' ' + this.user.user_last_name
-    },
-    email() {
-        console.log(this.user)
-      return this.user.user_email
     },
   },
   watch: {
@@ -825,10 +831,9 @@ export default {
     },
   },
   mounted() {
+    this.getuser()
 
-      this.getuser();
-
-      this.$api
+    this.$api
       .get('/category')
       .then(({ data }) => {
         if (data) {
@@ -840,86 +845,84 @@ export default {
       .catch(() => {
         this.$toast.error('Failed to load categories.')
       })
-  
   },
   methods: {
-
-
-    getuser(){
-          const q = this.$route.params
-          this.user_uuid = q.uuid
-          if (this.user_uuid) {
-            this.$userApi.get('/' + this.user_uuid).then(({ data }) => {
-              if (data && data.user_uuid) {
-                this.user = data
-                this.first_name=this.user.user_first_name
-                this.last_name=this.user.user_last_name
-          
-                this.phone_no = data.user_phone_no
-                this.date_of_birth = this.dateString(data.user_date_of_birth);
-                this.country_code = '+' + data.user_country_code
-                this.picture = data.user_picture
-              }
-              this.getInsuranceClaimInfo();
-            })
+    getuser() {
+      const q = this.$route.params
+      this.user_uuid = q.uuid
+      if (this.user_uuid) {
+        this.$userApi.get('/' + this.user_uuid).then(({ data }) => {
+          if (data && data.user_uuid) {
+            this.user = data
+            this.first_name = this.user.user_first_name
+            this.last_name = this.user.user_last_name
+            this.email = this.user.user_email
+            this.phone_no = data.user_phone_no
+            this.date_of_birth =  new Date(data.user_date_of_birth);
+            this.country_code = '+' + data.user_country_code
+            this.picture = data.user_picture
           }
+          this.getInsuranceClaimInfo()
+        })
+      }
     },
 
-    getInsuranceClaimInfo(){
+    getInsuranceClaimInfo() {
+      this.$insuranceApi
+        .get(`/insured/?id=${this.user_uuid}`)
+        .then(({ data }) => {
+          if (data && Object.keys(data).length > 0) {
+            console.log('insured --->', data)
+            this.number4 = data.number4
+            this.number5 = data.number5
+            this.number6 = data.number6
+            this.number7 = data.number7
+            this.number11 = data.number11
+            this.number12 = data.number12
+            this.number13 = data.number13
+            this.number17 = data.number17
+          }
 
-    this.$insuranceApi
-      .get(`/insured/?id=${this.user_uuid}`)
-      .then(({ data }) => {
-        if (data && Object.keys(data).length > 0) {
-          console.log('insured --->', data)
-          this.number4 = data.number4
-          this.number5 = data.number5
-          this.number6 = data.number6
-          this.number7 = data.number7
-          this.number11 = data.number11
-          this.number12 = data.number12
-          this.number13 = data.number13
-          this.number17 = data.number17
-        }
+          if (this.user) {
+            this.number5.patientAddress =
+              this.number5.patientAddress || this.user.addr_line1
+            this.number5.patientCity =
+              this.number5.patientCity || this.user.addr_city
+            this.number5.patientState =
+              this.number5.patientState || this.user.addr_state
+            this.number5.patientZipcode =
+              this.number5.patientZipcode || this.user.addr_zip
+            this.number5.patientTelephone =
+              this.number5.patientTelephone || this.user.user_phone_no
+            this.number5.patientName =
+              this.number5.patientName ||
+              this.user.user_first_name + ' ' + this.user.user_last_name
+          }
+        })
+        .catch(() => {
+          this.$toast.error('Failed to load insurance.')
+        })
 
-
-        if(this.user){
-           
-        this.number5.patientAddress=  this.number5.patientAddress || this.user.addr_line1;
-         this.number5.patientCity= this.number5.patientCity || this.user.addr_city;
-         this.number5.patientState= this.number5.patientState|| this.user.addr_state;
-         this.number5.patientZipcode= this.number5.patientZipcode|| this.user.addr_zip;
-         this.number5.patientTelephone= this.number5.patientTelephone|| this.user.user_phone_no;
-         this.number5.patientName=this.number5.patientName || this.user.user_first_name +' '+this.user.user_last_name;
-     
-        }
-      })
-      .catch(() => {
-        this.$toast.error('Failed to load insurance.')
-      })
-
-    this.$insuranceApi
-      .get(`/claims/?id=${this.user_uuid}`)
-      .then(({ data }) => {
-        if (data && Object.keys(data).length > 0) {
-          console.log('claims --->', data)
-          this.number25 = data.number25
-          this.number26 = data.number26
-          this.number31 = data.number31
-          this.number32 = data.number32
-          this.number33 = data.number33
-        }
-      })
-      .catch(() => {
-        this.$toast.error('Failed to load categories.')
-      })
+      this.$insuranceApi
+        .get(`/claims/?id=${this.user_uuid}`)
+        .then(({ data }) => {
+          if (data && Object.keys(data).length > 0) {
+            console.log('claims --->', data)
+            this.number25 = data.number25
+            this.number26 = data.number26
+            this.number31 = data.number31
+            this.number32 = data.number32
+            this.number33 = data.number33
+          }
+        })
+        .catch(() => {
+          this.$toast.error('Failed to load categories.')
+        })
     },
     uploadPicture() {
       // this.loadingUpload = true
       // const data = new FormData()
-
       // data.append('file', this.file)
-
       // this.$userApi
       //   .post('/picture', data)
       //   .then(({ data }) => {
@@ -1032,11 +1035,11 @@ export default {
     handleSubmit() {
       this.$refs.personalForm.validate()
       if (this.validPersonalForm) {
-        this.loading = true;
-        console.log(this.first_name,this.last_name)
+        this.loading = true
+       // console.log(this.date_of_birth)
         this.$api
           .put('/user', {
-            user_uuid:this.user_uuid,
+            user_uuid: this.user_uuid,
             country_code: this.country_code,
             phone_no: this.phone_no,
             is_patient: false,
@@ -1046,9 +1049,11 @@ export default {
             zip: this.zip,
             first_name: this.first_name,
             last_name: this.last_name,
+            user_email: this.email,
+            date_of_birth:new Date(this.date_of_birth).toISOString()
           })
           .then(() => {
-            setTimeout( () => {
+            setTimeout(() => {
               this.getuser()
               console.log('Fetched user --->', this.$auth.user)
               this.$toast.success(this.$t('updated_suc').toString())
@@ -1186,54 +1191,54 @@ export default {
 
 <style scoped lang="sass">
 .user-role
-    background-color: #444
-    color: #fff
-    border: 0
-    border-radius: 0
-    padding: 0.2rem 0.5rem
-    display: inline-block
-    text-transform: capitalize
-    font-size: 15px !important
+  background-color: #444
+  color: #fff
+  border: 0
+  border-radius: 0
+  padding: 0.2rem 0.5rem
+  display: inline-block
+  text-transform: capitalize
+  font-size: 15px !important
 .profile-upload
+  display: flex
+  flex-direction: row
+  flex-wrap: wrap
+  > div
     display: flex
-    flex-direction: row
-    flex-wrap: wrap
-    > div
-        display: flex
-        align-items: center
-        justify-content: center
-        padding: 0.9rem
+    align-items: center
+    justify-content: center
+    padding: 0.9rem
     .upload-box
-        display: flex
-        justify-content: center
-        align-items: center
-        flex-direction: column
+      display: flex
+      justify-content: center
+      align-items: center
+      flex-direction: column
     .buttons
-        display: flex
-        width: 100%
+      display: flex
+      width: 100%
 
 .profile-overlay
-    opacity: 0
-    color: #fff
-    position: absolute
-    left: 0
-    top: 0
-    bottom: 0
-    width: 100%
-    height: 100%
-    display: flex
-    justify-content: center
-    align-items: center
-    font-weight: bold
-    font-size: 3rem
-    &:hover
-        cursor: pointer
-        background: rgba(0,0,0,0.9)
-        opacity: 1
+  opacity: 0
+  color: #fff
+  position: absolute
+  left: 0
+  top: 0
+  bottom: 0
+  width: 100%
+  height: 100%
+  display: flex
+  justify-content: center
+  align-items: center
+  font-weight: bold
+  font-size: 3rem
+  &:hover
+    cursor: pointer
+    background: rgba(0,0,0,0.9)
+    opacity: 1
 
 .avatar-uploader.ant-upload-picture-card-wrapper
-    img
-        max-width: 120px !important
+  img
+    max-width: 120px !important
 .v-text-field
-    padding: 0px
+  padding: 0px
 </style>

@@ -788,6 +788,8 @@ export default {
         this.loading = true
         this.$api
           .put('/user', {
+             user_uuid: this.$auth.user.uuid,
+             uuid: this.$auth.user.uuid,
             country_code: this.country_code,
             phone_no: this.phone_no,
             is_patient: this.isUser,
@@ -797,7 +799,8 @@ export default {
             zip: this.zip,
             first_name: this.first_name,
             last_name: this.last_name,
-            date_of_birth:this.date_of_birth
+            date_of_birth:this.date_of_birth,
+            user_email:this.email
           })
           .then(() => {
             setTimeout(async () => {
