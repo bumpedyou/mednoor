@@ -459,15 +459,7 @@
                       v-model="number11.c"
                       label="Insurance Plan Name"
                       placeholder="Insurance Plan Name"
-                      :rules="[
-                        (v) => !!v || 'The Insurance Plan Name is required',
-                        (v) =>
-                          (!!v && v.length > 1) ||
-                          'Enter at least 2 characters',
-                        (v) =>
-                          (!!v && v.length <= 30) ||
-                          'Enter a maximum of 30 characters',
-                      ]"
+                   
                       :hide-details="true"
                     ></v-text-field>
                   </v-col>
@@ -505,16 +497,7 @@
                       v-model="number17.value"
                       label="name of referring provider"
                       placeholder="name of referring provider"
-                      :rules="[
-                        (v) =>
-                          !!v || 'The name of referring provider is required',
-                        (v) =>
-                          (!!v && v.length >= 3) ||
-                          'Enter at least 3 characters',
-                        (v) =>
-                          (!!v && v.length <= 12) ||
-                          'Enter a maximum of 12 characters',
-                      ]"
+                    
                     >
                     </v-text-field>
                   </v-col>
@@ -523,15 +506,7 @@
                       v-model="number17.a.first"
                       label="17.a.1"
                       placeholder="17.a.1"
-                      :rules="[
-                        (v) => !!v || 'The 17.a.1 is required',
-                        (v) =>
-                          (!!v && v.length > 1) ||
-                          'Enter at least 2 characters',
-                        (v) =>
-                          (!!v && v.length <= 30) ||
-                          'Enter a maximum of 30 characters',
-                      ]"
+                   
                     ></v-text-field>
                   </v-col>
                   <v-col md="6" lg="3">
@@ -539,15 +514,7 @@
                       v-model="number17.a.second"
                       label="17.a.2"
                       placeholder="17.a.2"
-                      :rules="[
-                        (v) => !!v || 'The 17.a.2 is required',
-                        (v) =>
-                          (!!v && v.length >= 3) ||
-                          'Enter at least 3 characters',
-                        (v) =>
-                          (!!v && v.length <= 12) ||
-                          'Enter a maximum of 12 characters',
-                      ]"
+                   
                     >
                     </v-text-field>
                   </v-col>
@@ -556,15 +523,7 @@
                       v-model="number17.b"
                       label="17.b"
                       placeholder="17.b"
-                      :rules="[
-                        (v) => !!v || 'The 17.b is required',
-                        (v) =>
-                          (!!v && v.length >= 3) ||
-                          'Enter at least 3 characters',
-                        (v) =>
-                          (!!v && v.length <= 12) ||
-                          'Enter a maximum of 12 characters',
-                      ]"
+                    
                     >
                     </v-text-field>
                   </v-col>
@@ -576,15 +535,7 @@
                       v-model="number13.value"
                       label="Insured's Sign"
                       placeholder="Insured's Sign"
-                      :rules="[
-                        (v) => !!v || 'The Insured\'s Sign are required',
-                        (v) =>
-                          (!!v && v.length > 1) ||
-                          'Enter at least 2 characters',
-                        (v) =>
-                          (!!v && v.length <= 30) ||
-                          'Enter a maximum of 30 characters',
-                      ]"
+                   
                       :hide-details="true"
                     ></v-text-field>
                   </v-col>
@@ -593,15 +544,7 @@
                       v-model="number12.signed"
                       label="Patient Sign"
                       placeholder="Patient Sign"
-                      :rules="[
-                        (v) => !!v || 'The Patient Sign is required',
-                        (v) =>
-                          (!!v && v.length >= 3) ||
-                          'Enter at least 3 characters',
-                        (v) =>
-                          (!!v && v.length <= 12) ||
-                          'Enter a maximum of 12 characters',
-                      ]"
+                   
                       :hide-details="true"
                     >
                     </v-text-field>

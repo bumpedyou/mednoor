@@ -3,6 +3,7 @@
     <div class="d-flex">
       <div class="calendar-left">
         <vue-cal
+      
           style="height: calc(100vh - 231px)"
           today-button
           hide-view-selector
@@ -754,7 +755,7 @@ export default {
 }
 .vuecal__cell-split {
   border-left: 1px solid hsla(0, 0%, 76.9%, 0.25);
-  background-color: rgba(255, 250, 196, 0.5);
+  background-color: rgba(102,204,0,.1);
 }
 .vuecal__event {
   background-color: rgb(255, 255, 255);
