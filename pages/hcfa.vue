@@ -2127,7 +2127,7 @@ export default {
         return
       this.$insuranceApi
         .get(
-          `/hcfa/?id=${this.$auth.user.uuid}&patientId=${this.currentName.user_uuid}`
+          `/hcfa/?doctorId=${this.$auth.user.uuid}&patientId=${this.currentName.user_uuid}`
         )
         .then((res) => {
           console.log('response', res.status, res.data)
@@ -3000,7 +3000,8 @@ export default {
     async created() {
       // POST request using axios with async/await
       const sendingData = {
-        id: this.$auth.user.uuid,
+       
+        doctorId: this.$auth.user.uuid,
         patientId: this.currentName.user_uuid,
         hcfaInfo: {
           number1: this.number1,
