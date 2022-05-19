@@ -207,9 +207,12 @@
                   ></v-text-field>
                 </template>
                 <v-date-picker
+               
                   v-model="startDate"
                   no-title
+                    format="MM/DD/YYYY"
                   @input="startDateMenu = false"
+                 
                 ></v-date-picker>
               </v-menu>
             </v-col>
@@ -250,9 +253,12 @@
                   ></v-text-field>
                 </template>
                 <v-date-picker
+                
                   v-model="endDate"
                   no-title
+                     format="MM/DD/YYYY"
                   @input="endDateMenu = false"
+               
                 ></v-date-picker>
               </v-menu>
             </v-col>

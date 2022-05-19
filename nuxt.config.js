@@ -42,8 +42,11 @@ export default {
     '@nuxtjs/style-resources',
     '@nuxtjs/google-fonts',
     '@nuxtjs/vuetify',
+    '@nuxtjs/moment'
   ],
-
+  moment: {
+    defaultTimezone: 'America/Los_Angeles'
+  },
   i18n: {
     strategy: 'prefix',
     locales: [

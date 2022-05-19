@@ -147,7 +147,7 @@
                   <v-col sm="4" md="4">
                     <div class="d-flex flex-row align-end">
                        <label for="">Date Of Birth: </label>
-                      <date-picker v-model="date_of_birth" type="date" style="margin-left: 15px"></date-picker>
+                      <date-picker v-model="date_of_birth" format="MM/DD/YYYY" type="date" style="margin-left: 15px"></date-picker>
                     </div>
                 </v-col>
                 </v-row>
@@ -198,7 +198,7 @@
           </a-tab-pane> -->
 
             <a-tab-pane key="5" tab="Insurance" force-render>
-              <!-- <div v-if="!isCompletedInsured">
+              <div v-if="!isCompletedInsured">
                 <a-alert
                   message="Is the patient same as insured?"
                   :show-icon="true"
@@ -226,7 +226,7 @@
                   @change="checkCopy(false)"
                 >
                 </v-checkbox>
-              </div> -->
+              </div>
 
               <v-form
                 ref="insuredForm"
@@ -475,9 +475,11 @@
                     <div class="d-flex flex-row align-end">
                       <label for="">Insured's Date Of Birth: </label>
                       <date-picker
+                     
                         v-model="insuredBirthDay"
                         type="date"
                         style="margin-left: 15px"
+                         format="MM/DD/YYYY"
                       ></date-picker>
                     </div>
                   </v-col>
@@ -608,9 +610,11 @@
                     <div class="d-flex flex-row align-end">
                       <label for="">Patient Sign Date: </label>
                       <date-picker
+                    
                         v-model="patientSignDate"
                         type="date"
                         style="margin-left: 15px"
+                          format="MM/DD/YYYY"
                       ></date-picker>
                     </div>
                   </v-col>
@@ -645,6 +649,7 @@ import ProfilePicture from '~/components/ProfilePicture'
 import uploadMixin from '~/mixins/uploadMixin'
 import UserAddress from '~/components/UserAddress'
 import addressMixin from '~/mixins/addressMixin'
+import uTcDate from '~/mixins/uTcDate'
 import 'vue2-datepicker/index.css'
 import dateMixin from '~/mixins/dateMixin'
 export default {
@@ -663,6 +668,7 @@ export default {
     uploadMixin,
     addressMixin,
     dateMixin,
+    uTcDate
   ],
   middleware: [
     'authenticated',
@@ -747,7 +753,7 @@ export default {
       number13: {
         value: '',
       },
-      insuredBirthDay: new Date(),
+      insuredBirthDay: null,
       insuredSign: '',
       patientSign: '',
       patientSignDate: new Date(),
@@ -897,6 +903,7 @@ export default {
             this.number5.patientName =
               this.number5.patientName ||
               this.user.user_first_name + ' ' + this.user.user_last_name
+              
           }
         })
         .catch(() => {
@@ -1036,7 +1043,7 @@ export default {
       this.$refs.personalForm.validate()
       if (this.validPersonalForm) {
         this.loading = true
-       // console.log(this.date_of_birth)
+        console.log('date of birth',this.date_of_birth)
         this.$api
           .put('/user', {
             user_uuid: this.user_uuid,
@@ -1050,7 +1057,7 @@ export default {
             first_name: this.first_name,
             last_name: this.last_name,
             user_email: this.email,
-            date_of_birth:new Date(this.date_of_birth).toISOString()
+            date_of_birth:this.getISODate(this.date_of_birth)
           })
           .then(() => {
             setTimeout(() => {
@@ -1183,6 +1190,7 @@ export default {
         this.number7.insuredState = this.number5.patientState
         this.number7.insuredZipcode = this.number5.patientZipcode
         this.number7.insuredTelephone = this.number5.patientTelephone
+        this.insuredBirthDay= new Date(this.user.user_date_of_birth)
       }
     },
   },

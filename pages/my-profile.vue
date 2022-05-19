@@ -85,7 +85,7 @@
                   <v-col sm="4" md="4">
                     <div class="d-flex flex-row align-end">
                        <label for="">Date Of Birth: </label>
-                      <date-picker v-model="date_of_birth" type="date" style="margin-left: 15px"></date-picker>
+                      <date-picker v-model="date_of_birth" type="date" style="margin-left: 15px" format="MM/DD/YYYY"></date-picker>
                     </div>
                 </v-col>
               </v-row>
@@ -264,7 +264,7 @@
                 <v-col md='6' lg="4">
                   <div class="d-flex flex-row align-end">
                     <label for="">Insured's Date Of Birth: </label>
-                    <date-picker v-model="insuredBirthDay" type="date" style="margin-left: 15px"></date-picker>
+                    <date-picker v-model="insuredBirthDay" format="MM/DD/YYYY" type="date" style="margin-left: 15px"></date-picker>
                   </div>
                 </v-col>
                 <v-col md='6' lg="2">
@@ -312,7 +312,7 @@
                 <v-col md='6' lg="4">
                   <div class="d-flex flex-row align-end">
                     <label for="">Patient Sign Date: </label>
-                    <date-picker v-model="patientSignDate" type="date" style="margin-left: 15px"></date-picker>
+                    <date-picker v-model="patientSignDate" format="MM/DD/YYYY" type="date" style="margin-left: 15px"></date-picker>
                   </div>
                 </v-col>
               </v-row>
@@ -402,6 +402,7 @@
 <script>
 import DatePicker from "vue2-datepicker";
 import userRoleMixin from "~/mixins/userRoleMixin";
+import uTcDate from '~/mixins/uTcDate'
 import SpinOrText from '~/components/SpinOrText.vue'
 import inputMixin from '~/mixins/inputMixin'
 import authMixin from '~/mixins/authMixin'
@@ -422,7 +423,7 @@ export default {
     RequestModal,
     DatePicker,
   },
-  mixins: [userRoleMixin, inputMixin, authMixin, uploadMixin, addressMixin,dateMixin],
+  mixins: [userRoleMixin, inputMixin, authMixin, uploadMixin, addressMixin,dateMixin,uTcDate],
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified', 'view-set'],
   data (){
     return {
@@ -799,7 +800,7 @@ export default {
             zip: this.zip,
             first_name: this.first_name,
             last_name: this.last_name,
-            date_of_birth:this.date_of_birth,
+            date_of_birth:this.getISODate(this.date_of_birth),
             user_email:this.email
           })
           .then(() => {

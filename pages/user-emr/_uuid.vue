@@ -92,9 +92,9 @@
           <template #[`item.mere_date`]="{ value }">
             {{ dateString(value) }} {{timeString(value)}}
           </template>
-          <template #[`item.mere_updated`]="{ value }">
+          <!-- <template #[`item.mere_updated`]="{ value }">
              {{ dateString(value) }} {{timeString(value)}}
-          </template>
+          </template> -->
           <template #[`item.actions`]="{ item }">
             <div class="emr-action">
               <nuxt-link
@@ -320,11 +320,11 @@ export default {
             value: 'mere_date',
             sortable: false,
           },
-            {
-            text: 'LastUpdate At',
-            value: 'mere_updated',
-            sortable: false,
-          },
+          //   {
+          //   text: 'LastUpdate At',
+          //   value: 'mere_updated',
+          //   sortable: false,
+          // },
           draftHeader,
           {
             text: 'Actions',

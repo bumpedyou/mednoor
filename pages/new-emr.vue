@@ -369,13 +369,14 @@
 <script>
 import formMixin from '~/mixins/formMixin'
 import dateMixin from '~/mixins/dateMixin'
+import uTcDate from '~/mixins/uTcDate'
 const debounce = require('lodash.debounce')
 const { validate } = require('uuid')
 
 export default {
   name: 'NewEmr',
 
-  mixins: [formMixin, dateMixin],
+  mixins: [formMixin, dateMixin,uTcDate],
   layout: 'dashboard',
   middleware: [
     'authenticated',
@@ -721,7 +722,7 @@ export default {
 
         // nv.date = this.date.format('YYYY-MM-DD')
 
-          const savingDate = new Date(this.picker);
+          const savingDate = new Date(this.getISODate(this.picker));
           savingDate.setHours(new Date().getHours());
           savingDate.setMinutes(new Date().getMinutes());
 
