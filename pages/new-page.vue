@@ -101,7 +101,7 @@
           </div>
           <div>
             <client-only>
-              <ckeditor-nuxt v-model="txt" :config="editorConfig" />
+              <VueEditor v-model="txt" />
             </client-only>
           </div>
           <div class="mt-3">
@@ -130,19 +130,8 @@
 export default {
   layout: 'dashboard',
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified'],
-  components: {
-    'ckeditor-nuxt': () => { if (process.client) { return import('@blowstack/ckeditor-nuxt') } },
-  },
   data() {
     return {
-      editorConfig: {
-        simpleUpload: {
-          uploadUrl: 'path_to_image_controller',
-          headers: {
-            'Authorization': 'optional_token'
-          }
-        }
-      },
       loadingCreate: false,
       txt: '',
       uuid: null,
