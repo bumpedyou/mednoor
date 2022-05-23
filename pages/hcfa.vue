@@ -1,6 +1,6 @@
 <template>
   <div class="pa-6">
-    <div class="d-flex flex-row justify-center mb-5">
+    <div v-if="!editMode" class="d-flex flex-row justify-center mb-5">
       <div class="d-flex flex-row align-center" style="width: 350px">
         <v-autocomplete
           v-model="currentName"
@@ -34,7 +34,11 @@
           <div class="d-flex flex-column">
             <div>{{ `${$data.number11.c}` }}</div>
             <div>P. O. BOX {{ `${$data.number11.c}` }}</div>
-            <div>{{ `${$data.number7.insuredAddress} , ${$data.number7.insuredCity} - ${$data.number7.insuredZipcode}` }}</div>
+            <div>
+              {{
+                `${$data.number7.insuredAddress} , ${$data.number7.insuredCity} - ${$data.number7.insuredZipcode}`
+              }}
+            </div>
           </div>
         </div>
         <div class="d-flex flex-row">
@@ -48,6 +52,17 @@
             @click="savehcfa"
           >
             Save
+          </v-btn>
+
+          <v-btn
+            v-if="hcfaCount"
+            style="margin-left: 10px"
+            depressed
+            color="primary"
+            @click="savedList"
+          >
+            <span class="hcfa-count">{{ hcfaCount }}</span>
+            SavedList
           </v-btn>
         </div>
       </div>
@@ -1654,6 +1669,8 @@ export default {
   middleware: ['authenticated', 'not-blocked', 'not-deleted', 'verified'],
   data() {
     return {
+      hcfaCount: 0,
+      editMode: false,
       hcfa: {
         hcfaTitle: {
           pNo: 1500,
@@ -2104,7 +2121,11 @@ export default {
 
   mounted() {
     this.init()
-   this.$userApi
+
+    if (this.$route.query && this.$route.query.id && this.$route.query.patientId) {
+      this.editMode= true;
+    }
+    this.$userApi
       .get(`/list?view=users`)
       .then((res) => {
         if (res?.status === 200 && res.data) {
@@ -2114,6 +2135,17 @@ export default {
               ...x,
             }
           })
+          // check edit mode
+            if (this.editMode) {
+              
+              const selectedUser = this.patientList.find(
+                (x) => x.user_uuid === this.$route.query.patientId
+              )
+              if (selectedUser) {
+                this.currentName = selectedUser
+                this.openHcfa()
+              }
+            }
         }
       })
       .catch(() => {
@@ -2123,12 +2155,18 @@ export default {
   methods: {
     openHcfa() {
       this.init()
+      this.getHcfaCount()
       if (this.currentName === null || this.currentName?.user_uuid === null)
         return
+
+      let url
+      if (this.editMode) {
+        url = `/hcfa/${this.$route.query.id}?doctorId=${this.$auth.user.uuid}&patientId=${this.currentName.user_uuid}`
+      } else {
+        url=`/hcfa/?doctorId=${this.$auth.user.uuid}&patientId=${this.currentName.user_uuid}`
+      }
       this.$insuranceApi
-        .get(
-          `/hcfa/?id=${this.$auth.user.uuid}&patientId=${this.currentName.user_uuid}`
-        )
+        .get(url)
         .then((res) => {
           console.log('response', res.status, res.data)
           if (res?.status === 200 && res.data) {
@@ -2220,6 +2258,19 @@ export default {
       this.isLoading = false
     },
 
+    getHcfaCount() {
+      this.$insuranceApi
+        .get(
+          `/hcfa/saved-count?doctorId=${this.$auth.user.uuid}&patientId=${this.currentName.user_uuid}`
+        )
+        .then(({ data }) => {
+          console.log(data)
+          this.hcfaCount = data
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
     checkNumber1(index) {
       for (let i = 0; i <= 6; i++) {
         if (index === i) {
@@ -2997,10 +3048,10 @@ export default {
         )
     },
 
-    async created() {
+    async createOrUpdate() {
       // POST request using axios with async/await
       const sendingData = {
-        id: this.$auth.user.uuid,
+        doctorId: this.$auth.user.uuid,
         patientId: this.currentName.user_uuid,
         hcfaInfo: {
           number1: this.number1,
@@ -3025,13 +3076,35 @@ export default {
           strArray: this.strArray,
         },
       }
-      const response = await this.$insuranceApi.post('/hcfa/save', sendingData)
+
+      let posturl
+      if (this.editMode) {
+        sendingData.hcfa_uuid = this.$route.query.id
+        sendingData.hcfa_date= new Date().toISOString()
+        posturl = '/hcfa/update'
+      } else {
+        posturl = '/hcfa/save'
+      }
+      const response = await this.$insuranceApi.post(posturl, sendingData)
       console.log(response)
-      if (response.status === 200) this.$toast.success('save success')
-      else this.$toast.error('save error')
+
+      if (response.status === 200) {
+        this.$toast.success(this.editMode?'Updated success':'save success')
+        this.getHcfaCount()
+      } else this.$toast.error('save error')
     },
+
     savehcfa() {
-      this.created()
+      this.createOrUpdate()
+    },
+
+    savedList() {
+      this.$router.push({
+        path: this.localePath('/saved-hcfa'),
+        query: {
+          patient: this.currentName.user_uuid,
+        },
+      })
     },
   },
 }
@@ -3042,6 +3115,18 @@ export default {
   color: black;
   font-weight: 500;
   font-size: 13px;
+}
+
+.hcfa-count {
+  color: #fff;
+  position: absolute;
+  top: -30px;
+  width: 25px;
+  height: 25px;
+  background: red;
+  padding: 7px;
+  border-radius: 50%;
+  right: -17px;
 }
 .hcfa-container {
   border: 1px solid black;
