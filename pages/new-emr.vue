@@ -80,6 +80,7 @@
             <v-dialog v-model="visiblePicker" persistent max-width="320px">
               <v-date-picker
                 v-model="picker"
+                :max="new Date().toISOString().substr(0, 10)"
                 year-icon="mdi-calendar-blank"
                 prev-icon="mdi-skip-previous"
                 next-icon="mdi-skip-next"
@@ -519,7 +520,8 @@ export default {
           this.selectedUser = data.user_uuid
           this.setData(data)
           if (data && data.mere_date) {
-            this.picker = new Date(data.mere_date).toISOString().substr(0, 10)
+            this.picker = this.getUtcDate(data.mere_date).substr(0, 10)
+            console.log(this.picker,data.mere_date)
           }
 
           if (data.mere_sign) {
@@ -836,7 +838,7 @@ export default {
              item.mere_sign = null;
             this.setData(item)
             if (item && item.mere_date) {
-              this.picker = new Date(item.mere_date).toISOString().substr(0, 10)
+              this.picker = new Date().toISOString().substr(0, 10)
             }
 
             this.isTemplateD = false

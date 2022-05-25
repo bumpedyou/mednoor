@@ -9,7 +9,7 @@
               to: localePath('/dashboard'),
             },
             {
-              text: 'Saved Hcfa',
+              text: 'Saved',
               disabled: false,
             },
           ]"
@@ -49,26 +49,27 @@
           </template>
           <template #[`item.actions`]="{ item }">
             <div class="emr-action">
-            
               <nuxt-link
                 class="mr-5"
                 :to="{
                   path: localePath('/hcfa'),
-                
+
                   query: {
-                    patientId:item.hcfa_patient_id,
-                    id: item.hcfa_uuid
-                   
+                    patientId: item.hcfa_patient_id,
+                    id: item.hcfa_uuid,
                   },
                 }"
                 >{{ $t('edit') }}
               </nuxt-link>
-
+            <span class="clickable mr-5"  @click="export2xml(item)">{{
+                          'Ready'
+                        }}</span>
               <span
-                class="red--text clickable"
+                class="red--text clickable "
                 @click="deleteItem(item.hcfa_uuid)"
                 >{{ $t('delete') }}</span
               >
+           
             </div>
           </template>
         </v-data-table>
@@ -95,6 +96,7 @@
 import authMixin from '~/mixins/authMixin'
 import dateMixin from '~/mixins/dateMixin'
 import timeMixin from '~/mixins/timeMixin'
+import exportHcfa from '~/mixins/exportHcfa'
 import userRoleMixin from '~/mixins/userRoleMixin'
 // import MedDivider from '~/components/MedDivider'
 import ConfirmDialog from '~/components/ConfirmDialog'
@@ -104,10 +106,9 @@ const debounce = require('lodash.debounce')
 export default {
   name: 'EMR',
   components: {
-    ConfirmDialog
-    
+    ConfirmDialog,
   },
-  mixins: [dateMixin, userRoleMixin, authMixin, timeMixin],
+  mixins: [dateMixin, userRoleMixin, authMixin, timeMixin,exportHcfa],
   layout: 'dashboard',
   middleware: [
     'authenticated',
@@ -128,7 +129,9 @@ export default {
     headers: [],
     confirm: false,
     deleteId: null,
+
     loadingDelete: false,
+
   }),
   head() {
     return {
@@ -234,7 +237,7 @@ export default {
           value: 'hcfa_date',
           sortable: false,
         },
-     
+
         {
           text: 'Actions',
           value: 'actions',
@@ -242,27 +245,27 @@ export default {
         }
       )
 
-      if (this.$route.query && this.$route.query.patient) {
+   
         this.loadingData = true
         this.$insuranceApi
           .get(
-            `hcfa/?doctorId=${this.$auth.user.uuid}&patientId=${this.$route.query.patient}&list=true`
+            `hcfa/saved-list`
           )
           .then(({ data }) => {
-            if (data.hcfa && data.hcfa.length) {
-              data.hcfa.forEach((_h, index) => {
+            if (data && data.length) {
+              data.forEach((_h, index) => {
                 const o = {
-                  hcfa_uuid: _h.hcfa_uuid,
-                  hcfa_patient_id: _h.hcfa_patient_id,
-                  hcfa_doctor_id: _h.hcfa_doctor_id,
+                  hcfa_uuid: _h.hcfa.hcfa_uuid,
+                  hcfa_patient_id: _h.hcfa.hcfa_patient_id,
+                  hcfa_doctor_id: _h.hcfa.hcfa_doctor_id,
                   hcfa_sl: index + 1,
-                  hcfa: _h,
-                  insured_info: data.insured_info,
-                  claims_info: data.claims_info,
-                  patient: data.patient,
-                  doctor: data.doctor,
-                  hcfa_date: _h.hcfa_date,
-                  hcfa_create_date:_h.hcfa_create_date
+                  hcfa: _h.hcfa,
+                  insured_info: _h.insured_info,
+                  claims_info: _h.claims_info,
+                  patient: _h.patient,
+                  doctor: _h.doctor,
+                  hcfa_date: _h.hcfa.hcfa_date,
+                  hcfa_create_date: _h.hcfa.hcfa_create_date,
                 }
                 this.items.push(o)
               })
@@ -272,8 +275,14 @@ export default {
           .finally(() => {
             this.loadingData = false
           })
-      }
+      
     },
+
+
+    export2xml(item) {
+      this.exportHcfa(item)
+    },
+ 
   },
 }
 </script>
@@ -281,5 +290,5 @@ export default {
 
 <style scoped lang="sass">
 .emr-action
-    display: flex
+  display: flex
 </style>

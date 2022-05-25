@@ -1,7 +1,7 @@
 <template>
   <div class="pa-6">
     <div v-if="!editMode" class="d-flex flex-row justify-center mb-5">
-      <div class="d-flex flex-row align-center" style="width: 350px">
+      <div class="d-flex flex-row align-center" style="width: 450px">
         <v-autocomplete
           v-model="currentName"
           :items="patientList"
@@ -21,6 +21,16 @@
         >
           Open
         </v-btn>
+        <v-btn
+           
+            style="margin-left: 10px"
+            depressed
+            color="primary"
+            @click="savedList"
+          >
+            <span  v-if="hcfaCount" class="hcfa-count">{{ hcfaCount }}</span>
+            Saved
+          </v-btn>
       </div>
     </div>
     <div v-if="isLoading === false" class="mh-100v">
@@ -42,9 +52,9 @@
           </div>
         </div>
         <div class="d-flex flex-row">
-          <v-btn depressed color="primary" @click="export2xml">
+          <!-- <v-btn  depressed color="primary" @click="export2xml">
             Export Xml
-          </v-btn>
+          </v-btn> -->
           <v-btn
             style="margin-left: 10px"
             depressed
@@ -54,16 +64,7 @@
             Save
           </v-btn>
 
-          <v-btn
-            v-if="hcfaCount"
-            style="margin-left: 10px"
-            depressed
-            color="primary"
-            @click="savedList"
-          >
-            <span class="hcfa-count">{{ hcfaCount }}</span>
-            SavedList
-          </v-btn>
+     
         </div>
       </div>
 
@@ -3100,10 +3101,7 @@ export default {
 
     savedList() {
       this.$router.push({
-        path: this.localePath('/saved-hcfa'),
-        query: {
-          patient: this.currentName.user_uuid,
-        },
+        path: this.localePath('/saved-hcfa')
       })
     },
   },
