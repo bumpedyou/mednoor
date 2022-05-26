@@ -82,7 +82,7 @@
         <v-skeleton-loader v-if="loadingData" />
         <v-data-table v-else :items="items" :headers="headers">
           <template #[`item.patient`]="{ item }">
-            <nuxt-link :to="localePath('/user/' + item.user_uuid)">
+            <nuxt-link :to="localePath('/user-profile/' + item.user_uuid)">
               {{ item.user_first_name }} {{ item.user_last_name }}
             </nuxt-link>
           </template>
@@ -156,7 +156,7 @@
             Owner name:
             <nuxt-link
               v-if="item && item.owner_uuid"
-              :to="localePath('/user/' + item.owner_uuid)"
+              :to="localePath('/user-profile/' + item.owner_uuid)"
             >
               {{ item.owner_name }} {{ item.owner_last_name }}
             </nuxt-link>

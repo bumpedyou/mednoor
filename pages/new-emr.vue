@@ -71,22 +71,23 @@
         </v-col>
         <v-col v-if="!isTemplate" md="6">
           <div>
-            <v-text-field
+            <!-- <v-text-field
               :value="dateString(picker)"
               placeholder="Date"
               readonly
               @click="visiblePicker = true"
-            ></v-text-field>
-            <v-dialog v-model="visiblePicker" persistent max-width="320px">
-              <v-date-picker
+            ></v-text-field> -->
+             <date-picker
+             
                 v-model="picker"
+                :disabled-date="(date) => date >= new Date()"
+                format="MM/DD/YYYY"
                 :max="new Date().toISOString().substr(0, 10)"
-                year-icon="mdi-calendar-blank"
-                prev-icon="mdi-skip-previous"
-                next-icon="mdi-skip-next"
+                type="date"
+                style="width:100%;margin-top:20px"
                 @change="visiblePicker = false"
-              ></v-date-picker>
-            </v-dialog>
+               
+              ></date-picker>
           </div>
         </v-col>
         <v-col v-if="!isTemplate" md="6">
@@ -368,15 +369,17 @@
   </div>
 </template>
 <script>
+import DatePicker from "vue2-datepicker";
 import formMixin from '~/mixins/formMixin'
 import dateMixin from '~/mixins/dateMixin'
 import uTcDate from '~/mixins/uTcDate'
+import 'vue2-datepicker/index.css';
 const debounce = require('lodash.debounce')
 const { validate } = require('uuid')
 
 export default {
   name: 'NewEmr',
-
+  components:{DatePicker},
   mixins: [formMixin, dateMixin,uTcDate],
   layout: 'dashboard',
   middleware: [
@@ -425,7 +428,7 @@ export default {
     canSaveDraft: false,
     valid: false,
     template_name: '',
-    picker: new Date().toISOString().substr(0, 10),
+    picker: new Date(),
     visiblePicker: false,
     isDeafaultData :false
   }),
@@ -435,6 +438,10 @@ export default {
     }
   },
   computed: {
+
+
+
+
     isDisabled() {
       // return !!this.recordId && this.type === 'record' || this.recordId && !this.isTemplate
       return this.locked
@@ -510,6 +517,8 @@ export default {
     }, 600),
   },
   mounted() {
+
+
     const c = this.$route.query
     if (c.mere) {
       this.recordId = c.mere
@@ -520,7 +529,7 @@ export default {
           this.selectedUser = data.user_uuid
           this.setData(data)
           if (data && data.mere_date) {
-            this.picker = this.getUtcDate(data.mere_date).substr(0, 10)
+            this.picker = new Date(data.mere_date)
             console.log(this.picker,data.mere_date)
           }
 
@@ -568,8 +577,9 @@ export default {
       .then(({ data }) => {
         this.templates = data
         this.templatesList = data.map((tmp) => {
+          const isAdminTemp = tmp.mere_temp_is_admin? ' by Admin':''
           return {
-            text: tmp.mere_name,
+            text: tmp.mere_name +isAdminTemp,
             value: tmp.mere_uuid,
           }
         })
@@ -724,12 +734,12 @@ export default {
 
         // nv.date = this.date.format('YYYY-MM-DD')
 
-          const savingDate = new Date(this.getISODate(this.picker));
-          savingDate.setHours(new Date().getHours());
-          savingDate.setMinutes(new Date().getMinutes());
+          // const savingDate = new Date(this.getISODate(this.picker));
+          // savingDate.setHours(new Date().getHours());
+          // savingDate.setMinutes(new Date().getMinutes());
 
       
-          values.date = new Date(savingDate).toISOString()
+          values.date = new Date(this.picker).toISOString()
          
           console.log('The values --->', values)
           console.log('saving Date :  --->', values.date)
@@ -837,9 +847,7 @@ export default {
             const item = data[0]
              item.mere_sign = null;
             this.setData(item)
-            if (item && item.mere_date) {
-              this.picker = new Date().toISOString().substr(0, 10)
-            }
+           
 
             this.isTemplateD = false
             this.locked = false;

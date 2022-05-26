@@ -30,7 +30,7 @@
             {{ item.hcfa_sl }}
           </template>
           <template #[`item.patient`]="{ item }">
-            <nuxt-link :to="localePath('/user/' + item.patient.user_uuid)">
+            <nuxt-link :to="localePath('/user-profile/' + item.patient.user_uuid)">
               {{ item.patient.user_first_name }}
               {{ item.patient.user_last_name }}
             </nuxt-link>
