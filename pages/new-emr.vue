@@ -804,8 +804,8 @@ export default {
     setData(tm) {
       this.template_name = tm.mere_name
       this.allergies = tm.mere_allergies
-      this.current_meds = tm.mere_allergies
-      this.medical_history = tm.mere_current_meds
+      this.current_meds = tm.mere_current_meds
+      this.medical_history = tm.mere_medical_history
       this.social_history = tm.mere_social_history
       this.family_history = tm.mere_family_history
       this.bp = tm.mere_bp
