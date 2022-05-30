@@ -2,7 +2,7 @@
   <div class='nv-top'>
     <div class='menu-top-bar'>
       <div class='chat-icon'>
-        <nuxt-link v-if='isLoggedIn' :to="localePath('/')">
+        <nuxt-link v-if='isLoggedIn' :to="localePath('www.mednoor.com')">
           <img :src='require("~/static/logo.png")' height='40px' />
         </nuxt-link>
         <nuxt-link v-else :to="localePath('/sign-in')">
@@ -18,7 +18,7 @@
         <nuxt-link :to="localePath('/professionals')">Directory</nuxt-link>
       </div>
       -->
-      <div class='menu-icon'>
+      <div v-if="isLoggedIn" class='menu-icon' >
         
         <!-- <div v-if="isLoggedIn" class='mr-1 pay-icon' >
           <a @click='onClickPayment()'>

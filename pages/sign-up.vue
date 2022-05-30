@@ -1,10 +1,10 @@
 <template>
   <div class="mt-9">
       <v-row>
-        <v-col md="8" offset-md="2">
-        <v-card class="mt-6 gradient-tw" dark elevation="22" outlined :loading="loading">
+        <v-col md="12" >
+        <v-card class="mt-6 sign-up"  elevation="22" outlined :loading="loading">
           <v-card-text>
-          <h1 class="h4 text-center mb-6 dark">{{$t('sign_up')}}</h1>
+          <h1 class="h4 mt-5 text-center mb-6 ">{{'Register Here, We Take Care'}}</h1>
             <v-form ref="form" v-model="validForm" @submit.prevent="handleSubmit">
               <v-row class="mb-0 mb-0 pb-0">
                 <v-col md="12" class="my-0 py-0">
@@ -13,7 +13,13 @@
               </v-row>
               <v-row>
                 <v-col sm="4" md="3">
-                  <v-text-field v-model="country_code" placeholder="Country code" label="Country code" maxlength="4"></v-text-field>
+                  <v-text-field v-model="country_code"  placeholder="Country code"       value="+1"
+                label="Country code"
+                maxlength="4"
+                :rules="[
+                  (v) =>
+                    (!!v && v.length >= 1) || $t('Enter at least 1 characters'),
+                ]"></v-text-field>
                 </v-col>
                 <v-col sm="8" md="9">
                   <v-text-field v-model="phone_no" placeholder="Phone number" label="Phone number" maxlength="10"></v-text-field>
@@ -47,9 +53,9 @@
                   <div class="d-flex" style="align-items: center !important">
                     <v-checkbox v-model="agree" :true-value="true" :false-value="false" :label="$t('i_agree')" :rules="[v => !!v || 'You must agree.']" class="mr-1">
                     </v-checkbox>
-                    <a :href="localePath('/terms-and-conditions')" target="_blank" class="dark-link">{{$t('terms_cond')}}</a>
+                    <a :href="localePath('/terms-and-conditions')" target="_blank" >{{$t('terms_cond')}}</a>
                     <span class="mx-1">&</span>
-                    <a :href="localePath('/privacy-policy')" target="_blank" class="dark-link">{{$t('privacy')}}</a>
+                    <a :href="localePath('/privacy-policy')" target="_blank" >{{$t('privacy')}}</a>
                   </div>
                 </v-col>
                 <v-col md="12" class="py-0">
@@ -63,10 +69,10 @@
               </v-row>
               <div>
                 <hr />
-                <small class="text-center d-block mb-0 mt-3">
+                <small class="text-center d-block mb-0 mt-5">
                   {{$t('alr_h_acc')}}
                 </small>
-                <small class='text-center d-block mt-3'>
+                <small class='text-center d-block mt-5'>
                   <v-btn color="info" tile small :to="localePath('/sign-in')">{{$t('sign_in')}}</v-btn>
                 </small>
               </div>
@@ -143,14 +149,14 @@ export default {
                   // redirect
                 })
                 .catch((e) => {
-                  this.$refs.rmodal.$emit('error', e)
+                  this.$refs.rmodal.$emit('error', e.response.data.msg)
                 })
             } catch (e) {
-              this.$refs.rmodal.$emit('error', e)
+              this.$refs.rmodal.$emit('error', e.response.data.msg)
             }
           })
           .catch((e) => {
-            this.$refs.rmodal.$emit('error', e)
+            this.$refs.rmodal.$emit('error', e.response.data.msg)
           })
           .finally(() => {
             this.loading = false
@@ -160,3 +166,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.sign-up {
+  background: #fff;
+}
+</style>

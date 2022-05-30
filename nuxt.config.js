@@ -117,7 +117,7 @@ export default {
           // },
 
           login: {
-            url: process.env.USER_BASE_URL + '/token-exchange',
+            url: process.env.USER_BASE_URL + '/sign-in',
             method: 'post',
             propertyName: 'data.token',
           },

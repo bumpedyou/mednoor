@@ -1,19 +1,12 @@
 <template>
   <div class="mt-9">
       <v-row>
-          <v-col md="8" offset-md="2">
-            <v-card class="mt-6 gradient-tw" dark elevation="22" outlined :loading="loading">
+          <v-col md="12" >
+            <v-card class="mt-6 sign-in "  elevation="22" outlined :loading="loading">
               <v-card-text>
                 <div class="mednoor-heading-svg">
                   <img :src='require("~/static/logo-white.png")' height="60px" alt="mednoor logo" />
-                  <div>
-                    <p class='h4 text-center dark'>
-                      {{$t('med_med_cen')}}
-                    </p>
-                    <small class="h5 text-center d-block dark mt-1">
-                      +1-251-633-0801
-                    </small>
-                  </div>
+           
                 </div>
                 <v-form ref="form" v-model="validForm" class="mt-6" @submit.prevent='handleSubmit'>
                   <v-text-field v-model="email" label="Email" :rules="[v => !!v || $t('v.email_req'), v => !!v && v.length <= 150 || $t('v.max_email_150')]" prepend-inner-icon="mdi-email"></v-text-field>
@@ -23,7 +16,7 @@
                   </v-btn>
                   <div>
                     <small class="text-center d-block mb-0 mt-3">
-                      <nuxt-link class="dark-link" :to="localePath('/forgot-password')">{{$t('forgot_pwd')}}</nuxt-link>
+                      <nuxt-link  :to="localePath('/forgot-password')">{{$t('forgot_pwd')}}</nuxt-link>
                     </small>
                     <hr class="my-3">
                     <small class="text-center d-block mb-0 mt-3">
@@ -102,14 +95,14 @@ export default {
                 }
               })
               .catch((e) => {
-                console.log(e)
-                this.$refs.rmodal.$emit('error', e)
+                console.log('Error Response', e.response.data.msg)
+                this.$refs.rmodal.$emit('error', e.response.data.msg)
               }).finally(()=>{
               this.loading = false
             })
           } catch (e) {
-            console.log(e)
-            this.$refs.rmodal.$emit('error', e)
+            console.log('Error Response', e.response.data.msg)
+            this.$refs.rmodal.$emit('error', e.response.data.msg)
           }finally {
             this.loading = false
           }
@@ -132,4 +125,7 @@ export default {
   @media screen and (min-width: $md)
     .mednoor-heading-svg
       flex-direction: row
+
+    .sign-in
+      backgroun:#ccc
 </style>

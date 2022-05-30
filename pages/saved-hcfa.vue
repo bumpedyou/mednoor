@@ -1,7 +1,7 @@
 <template>
   <div class="pa-6 mh-100v">
     <v-row class="mb-1">
-      <v-col>
+      <v-col class="saved-header">
         <v-breadcrumbs
           :items="[
             {
@@ -14,6 +14,14 @@
             },
           ]"
         ></v-breadcrumbs>
+        <v-btn
+          style="margin-left: 10px"
+          depressed
+          color="primary"
+          @click="submitHcfa"
+        >
+          Submit
+        </v-btn>
       </v-col>
     </v-row>
     <v-row>
@@ -30,7 +38,9 @@
             {{ item.hcfa_sl }}
           </template>
           <template #[`item.patient`]="{ item }">
-            <nuxt-link :to="localePath('/user-profile/' + item.patient.user_uuid)">
+            <nuxt-link
+              :to="localePath('/user-profile/' + item.patient.user_uuid)"
+            >
               {{ item.patient.user_first_name }}
               {{ item.patient.user_last_name }}
             </nuxt-link>
@@ -61,15 +71,14 @@
                 }"
                 >{{ $t('edit') }}
               </nuxt-link>
-            <span class="clickable mr-5"  @click="export2xml(item)">{{
-                          'Ready'
-                        }}</span>
+              <span class="clickable mr-5" @click="export2xml(item)">{{
+                'Ready'
+              }}</span>
               <span
-                class="red--text clickable "
+                class="red--text clickable"
                 @click="deleteItem(item.hcfa_uuid)"
                 >{{ $t('delete') }}</span
               >
-           
             </div>
           </template>
         </v-data-table>
@@ -88,6 +97,14 @@
       :loading="loadingDelete"
       @accept="confirmDelete"
       @cancel="confirm = false"
+    ></ConfirmDialog>
+
+    <ConfirmDialog
+      v-model="isConfirm"
+      title="Do you want to sumit this list?"
+      :loading="loadingSubmit"
+      @accept="confirmSubmit"
+      @cancel="isConfirm = false"
     ></ConfirmDialog>
   </div>
 </template>
@@ -108,7 +125,7 @@ export default {
   components: {
     ConfirmDialog,
   },
-  mixins: [dateMixin, userRoleMixin, authMixin, timeMixin,exportHcfa],
+  mixins: [dateMixin, userRoleMixin, authMixin, timeMixin, exportHcfa],
   layout: 'dashboard',
   middleware: [
     'authenticated',
@@ -128,10 +145,11 @@ export default {
     valid: false,
     headers: [],
     confirm: false,
+    isConfirm: false,
     deleteId: null,
 
     loadingDelete: false,
-
+    loadingSubmit: false,
   }),
   head() {
     return {
@@ -157,6 +175,25 @@ export default {
     this.setColumns()
   },
   methods: {
+    submitHcfa() {
+      this.isConfirm = true
+    },
+
+    confirmSubmit() {
+      this.loadingSubmit = true
+
+      this.$insuranceApi
+        .put(`hcfa/submit-list`,{is_submit:true})
+        .then(({ data }) => {
+          this.loadingSubmit = false;
+          this.getSavedHcfaList();
+        })
+        .finally(() => {
+          this.loadingSubmit = false
+          this.isConfirm = false
+        })
+    },
+
     isPdfLoading(recordId) {
       return this.printing === recordId
     },
@@ -245,44 +282,44 @@ export default {
         }
       )
 
-   
-        this.loadingData = true
-        this.$insuranceApi
-          .get(
-            `hcfa/saved-list`
-          )
-          .then(({ data }) => {
-            if (data && data.length) {
-              data.forEach((_h, index) => {
-                const o = {
-                  hcfa_uuid: _h.hcfa.hcfa_uuid,
-                  hcfa_patient_id: _h.hcfa.hcfa_patient_id,
-                  hcfa_doctor_id: _h.hcfa.hcfa_doctor_id,
-                  hcfa_sl: index + 1,
-                  hcfa: _h.hcfa,
-                  insured_info: _h.insured_info,
-                  claims_info: _h.claims_info,
-                  patient: _h.patient,
-                  doctor: _h.doctor,
-                  hcfa_date: _h.hcfa.hcfa_date,
-                  hcfa_create_date: _h.hcfa.hcfa_create_date,
-                }
-                this.items.push(o)
-              })
-            }
-            console.log('--->', this.items, '<---')
-          })
-          .finally(() => {
-            this.loadingData = false
-          })
-      
+      this.getSavedHcfaList();
     },
 
+    getSavedHcfaList() {
 
+      this.loadingData = true
+      this.$insuranceApi
+        .get(`hcfa/saved-list`)
+        .then(({ data }) => {
+          this.items=[];
+          if (data && data.length) {
+         
+            data.forEach((_h, index) => {
+              const o = {
+                hcfa_uuid: _h.hcfa.hcfa_uuid,
+                hcfa_patient_id: _h.hcfa.hcfa_patient_id,
+                hcfa_doctor_id: _h.hcfa.hcfa_doctor_id,
+                hcfa_sl: index + 1,
+                hcfa: _h.hcfa,
+                insured_info: _h.insured_info,
+                claims_info: _h.claims_info,
+                patient: _h.patient,
+                doctor: _h.doctor,
+                hcfa_date: _h.hcfa.hcfa_date,
+                hcfa_create_date: _h.hcfa.hcfa_create_date,
+              }
+              this.items.push(o)
+            })
+          }
+          console.log('--->', this.items, '<---')
+        })
+        .finally(() => {
+          this.loadingData = false
+        })
+    },
     export2xml(item) {
       this.exportHcfa(item)
     },
- 
   },
 }
 </script>
@@ -291,4 +328,9 @@ export default {
 <style scoped lang="sass">
 .emr-action
   display: flex
+.saved-header
+  display: flex
+  align-items: center
+  justify-content: space-between
+  margin-right: 5%
 </style>
