@@ -30,6 +30,7 @@ export default {
     '~/plugins/directives',
     '~/plugins/api',
     { src: '~/plugins/pincode', mode: 'client' },
+    {src: '~/plugins/jsZip', mode: 'client'}
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

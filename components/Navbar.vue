@@ -403,9 +403,11 @@ export default {
       this.showMenuNav = this.toggleDirective(this.showMenuNav, clickFromInside)
     },
 
-    onClickPayment(){
-      // console.log(this.myId);
-       const sessionId = this.$cookies.get('session_id');
+   async onClickPayment(){
+     
+         const authData = await this.$auth.refreshTokens()
+      const sessionId =
+        (authData && authData.data && authData.data.session_id) || null
        if(sessionId){
         const url = `${process.env.PAYMENT_URL}?session_id=${sessionId}`;
        window.open(url)

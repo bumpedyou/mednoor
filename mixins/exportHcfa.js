@@ -429,6 +429,22 @@ export default {
         exportHcfa(item) {
             console.log(item.hcfa, item.claims_info, item.insured_info)
 
+            const data = this.createXmlData(item)
+            if (data)
+            this.download(
+                data,
+                new Date().getTime() + '.xml',
+                'application/octet-stream'
+            )
+   
+
+            // export xml
+
+        },
+
+
+        createXmlData(item){
+            let data;
             if (item) {
                 if (item.hcfa && item.hcfa.hcfa_info) {
                     const info = item.hcfa.hcfa_info
@@ -510,17 +526,11 @@ export default {
 
 
 
-                const data = this.makeXml()
-                if (data)
-                    this.download(
-                        data,
-                        new Date().getTime() + '.xml',
-                        'application/octet-stream'
-                    )
+                 data = this.makeXml()
+           
             }
 
-            // export xml
-
+            return data;
         },
 
         download(strData, strFileName, strMimeType) {

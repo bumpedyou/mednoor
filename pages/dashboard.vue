@@ -56,15 +56,17 @@ export default {
     }
   },
   methods: {
-    navigate(value) {
-      console.log(value)
-        const sessionId = this.$cookies.get('session_id')
+    async navigate(value) {
+    //  console.log(await this.$auth.refreshTokens())
+      const authData = await this.$auth.refreshTokens()
+      const sessionId =
+        (authData && authData.data && authData.data.session_id) || null
       if (value && value.redirect && sessionId) {
         const url = `${process.env.PAYMENT_URL}/financial?session_id=${sessionId}`
         window.open(url)
       } else {
-             const  route = this.$router.resolve({ path: value.to });
-             window.open(route.href);
+        const route = this.$router.resolve({ path: value.to })
+        window.open(route.href)
         // this.$router.push(this.localePath(value.to))
       }
     },

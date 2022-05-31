@@ -72,7 +72,7 @@
                 >{{ $t('edit') }}
               </nuxt-link>
               <span class="clickable mr-5" @click="export2xml(item)">{{
-                'Ready'
+                item.hcfa.hcfa_is_submitted===true?'Send': 'Ready'
               }}</span>
               <span
                 class="red--text clickable"
@@ -114,6 +114,7 @@ import authMixin from '~/mixins/authMixin'
 import dateMixin from '~/mixins/dateMixin'
 import timeMixin from '~/mixins/timeMixin'
 import exportHcfa from '~/mixins/exportHcfa'
+import exportAsZip from '~/mixins/exportAsZip'
 import userRoleMixin from '~/mixins/userRoleMixin'
 // import MedDivider from '~/components/MedDivider'
 import ConfirmDialog from '~/components/ConfirmDialog'
@@ -125,7 +126,7 @@ export default {
   components: {
     ConfirmDialog,
   },
-  mixins: [dateMixin, userRoleMixin, authMixin, timeMixin, exportHcfa],
+  mixins: [dateMixin, userRoleMixin, authMixin, timeMixin, exportHcfa,exportAsZip],
   layout: 'dashboard',
   middleware: [
     'authenticated',
@@ -182,16 +183,20 @@ export default {
     confirmSubmit() {
       this.loadingSubmit = true
 
-      this.$insuranceApi
-        .put(`hcfa/submit-list`,{is_submit:true})
-        .then(({ data }) => {
-          this.loadingSubmit = false;
-          this.getSavedHcfaList();
-        })
-        .finally(() => {
-          this.loadingSubmit = false
-          this.isConfirm = false
-        })
+      // this.$insuranceApi
+      //   .put(`hcfa/submit-list`,{is_submit:true})
+      //   .then(({ data }) => {
+      //     this.loadingSubmit = false;
+      //     this.getSavedHcfaList();
+      //   })
+      //   .finally(() => {
+      //     this.loadingSubmit = false
+      //     this.isConfirm = false
+      //   })
+
+      this.zipDownload(this.items);
+        this.isConfirm = false
+        this.loadingSubmit = false
     },
 
     isPdfLoading(recordId) {
