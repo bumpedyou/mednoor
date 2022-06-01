@@ -595,7 +595,7 @@ export default {
       this.$userApi.get('/'+ this.myUserId).then(({data})=>{
         if (data && data.user_uuid){
           this.phone_no = data.user_phone_no
-          this.date_of_birth = new Date(data.user_date_of_birth);
+          this.date_of_birth = this.fromUTC(data.user_date_of_birth);
 
         //  console.log(  this.date_of_birth)
           this.country_code = '+' + data.user_country_code
@@ -800,7 +800,7 @@ export default {
             zip: this.zip,
             first_name: this.first_name,
             last_name: this.last_name,
-            date_of_birth:this.getISODate(this.date_of_birth),
+            date_of_birth:new Date(this.date_of_birth).toISOString(),
             user_email:this.email
           })
           .then(() => {
@@ -874,10 +874,15 @@ export default {
     saveInsured(){
       this.$refs.insuredForm.validate();
       if (this.validInsuredForm){
-        const insuredDate = this.insuredBirthDay.toISOString().substr(0, 10).split('-');
-        this.number11.a.yy = insuredDate[0];
-        this.number11.a.mm = insuredDate[1];
-        this.number11.a.dd = insuredDate[2];
+           if(this.insuredBirthDay){
+           const insuredDate = this.insuredBirthDay
+          .toISOString()
+          .substr(0, 10)
+          .split('-')
+        this.number11.a.yy = insuredDate[0]
+        this.number11.a.mm = insuredDate[1]
+        this.number11.a.dd = insuredDate[2]
+        }
 
         this.number12.date = this.patientSignDate.toISOString().substr(0, 10);
 

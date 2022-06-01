@@ -119,11 +119,7 @@
                     <v-text-field
                       v-model="email"
                       label="Email"
-                      :rules="[
-                        (v) => !!v || $t('v.email_req'),
-                        (v) =>
-                          (!!v && v.length <= 150) || $t('v.max_email_150'),
-                      ]"
+                
                       prepend-inner-icon="mdi-email"
                     ></v-text-field>
                   </v-col>
@@ -239,15 +235,7 @@
                       v-model="number5.patientName"
                       label="Patient Name"
                       placeholder="Patient Name"
-                      :rules="[
-                        (v) => !!v || 'The Patient Name is required',
-                        (v) =>
-                          (!!v && v.length >= 3) ||
-                          'Enter at least 3 characters',
-                        (v) =>
-                          (!!v && v.length <= 12) ||
-                          'Enter a maximum of 12 characters',
-                      ]"
+                  
                       :hide-details="true"
                     >
                     </v-text-field>
@@ -257,15 +245,7 @@
                       v-model="number5.patientAddress"
                       label="Patient Address"
                       placeholder="Patient Address"
-                      :rules="[
-                        (v) => !!v || 'The Patient Address is required',
-                        (v) =>
-                          (!!v && v.length > 1) ||
-                          'Enter at least 2 characters',
-                        (v) =>
-                          (!!v && v.length <= 30) ||
-                          'Enter a maximum of 30 characters',
-                      ]"
+                 
                       :hide-details="true"
                     ></v-text-field>
                   </v-col>
@@ -277,15 +257,7 @@
                       v-model="number5.patientCity"
                       label="Patient City"
                       placeholder="Patient City"
-                      :rules="[
-                        (v) => !!v || 'The Patient City is required',
-                        (v) =>
-                          (!!v && v.length >= 2) ||
-                          'Enter at least 3 characters',
-                        (v) =>
-                          (!!v && v.length <= 12) ||
-                          'Enter a maximum of 12 characters',
-                      ]"
+                 
                       :hide-details="true"
                     >
                     </v-text-field>
@@ -295,15 +267,7 @@
                       v-model="number5.patientState"
                       label="Patient State"
                       placeholder="Patient State"
-                      :rules="[
-                        (v) => !!v || 'The Patient State is required',
-                        (v) =>
-                          (!!v && v.length > 1) ||
-                          'Enter at least 2 characters',
-                        (v) =>
-                          (!!v && v.length <= 30) ||
-                          'Enter a maximum of 30 characters',
-                      ]"
+                  
                       :hide-details="true"
                     ></v-text-field>
                   </v-col>
@@ -312,15 +276,7 @@
                       v-model="number5.patientZipcode"
                       label="PatientZipcode"
                       placeholder="PatientZipcode"
-                      :rules="[
-                        (v) => !!v || 'The PatientZipcode is required',
-                        (v) =>
-                          (!!v && v.length > 1) ||
-                          'Enter at least 2 characters',
-                        (v) =>
-                          (!!v && v.length <= 30) ||
-                          'Enter a maximum of 30 characters',
-                      ]"
+                 
                       :hide-details="true"
                     ></v-text-field>
                   </v-col>
@@ -329,15 +285,7 @@
                       v-model="number5.patientTelephone"
                       label="Patient Teletephone"
                       placeholder="Patient Teletephone"
-                      :rules="[
-                        (v) => !!v || 'The Patient Teletephone is required',
-                        (v) =>
-                          (!!v && v.length > 1) ||
-                          'Enter at least 2 characters',
-                        (v) =>
-                          (!!v && v.length <= 30) ||
-                          'Enter a maximum of 30 characters',
-                      ]"
+                 
                       :hide-details="true"
                     ></v-text-field>
                   </v-col>
@@ -349,15 +297,7 @@
                       v-model="number4.insuredName"
                       label="Insured's Name"
                       placeholder="Insured's Name"
-                      :rules="[
-                        (v) => !!v || 'The Insured\'s Name is required',
-                        (v) =>
-                          (!!v && v.length >= 3) ||
-                          'Enter at least 3 characters',
-                        (v) =>
-                          (!!v && v.length <= 12) ||
-                          'Enter a maximum of 12 characters',
-                      ]"
+               
                       :hide-details="true"
                     >
                     </v-text-field>
@@ -367,15 +307,7 @@
                       v-model="number7.insuredAddress"
                       label="Insured's Address"
                       placeholder="Insured's Address"
-                      :rules="[
-                        (v) => !!v || 'The Insured\'n Address is required',
-                        (v) =>
-                          (!!v && v.length > 1) ||
-                          'Enter at least 2 characters',
-                        (v) =>
-                          (!!v && v.length <= 30) ||
-                          'Enter a maximum of 30 characters',
-                      ]"
+              
                       :hide-details="true"
                     ></v-text-field>
                   </v-col>
@@ -387,15 +319,7 @@
                       v-model="number7.insuredCity"
                       label="Insured's City"
                       placeholder="Insured's City"
-                      :rules="[
-                        (v) => !!v || 'The Insured\'s City is required',
-                        (v) =>
-                          (!!v && v.length >= 3) ||
-                          'Enter at least 3 characters',
-                        (v) =>
-                          (!!v && v.length <= 12) ||
-                          'Enter a maximum of 12 characters',
-                      ]"
+             
                       :hide-details="true"
                     >
                     </v-text-field>
@@ -405,15 +329,7 @@
                       v-model="number7.insuredState"
                       label="Insured's State"
                       placeholder="Insured's State"
-                      :rules="[
-                        (v) => !!v || 'The Insured\'s State is required',
-                        (v) =>
-                          (!!v && v.length > 1) ||
-                          'Enter at least 2 characters',
-                        (v) =>
-                          (!!v && v.length <= 30) ||
-                          'Enter a maximum of 30 characters',
-                      ]"
+                
                       :hide-details="true"
                     ></v-text-field>
                   </v-col>
@@ -422,15 +338,7 @@
                       v-model="number7.insuredZipcode"
                       label="Insured's Zip Code"
                       placeholder="Insured's Zip Code"
-                      :rules="[
-                        (v) => !!v || 'The Insured\'s Zip Code is required',
-                        (v) =>
-                          (!!v && v.length > 1) ||
-                          'Enter at least 2 characters',
-                        (v) =>
-                          (!!v && v.length <= 30) ||
-                          'Enter a maximum of 30 characters',
-                      ]"
+                
                       :hide-details="true"
                     ></v-text-field>
                   </v-col>
@@ -439,15 +347,7 @@
                       v-model="number7.insuredTelephone"
                       label="Insured's Teletephone"
                       placeholder="Insured's Teletephone"
-                      :rules="[
-                        (v) => !!v || 'The Insured\'s Teletephone is required',
-                        (v) =>
-                          (!!v && v.length > 1) ||
-                          'Enter at least 2 characters',
-                        (v) =>
-                          (!!v && v.length <= 30) ||
-                          'Enter a maximum of 30 characters',
-                      ]"
+                 
                       :hide-details="true"
                     ></v-text-field>
                   </v-col>
@@ -807,7 +707,7 @@ export default {
             this.last_name = this.user.user_last_name
             this.email = this.user.user_email
             this.phone_no = data.user_phone_no
-            this.date_of_birth =  new Date(data.user_date_of_birth);
+            this.date_of_birth =  this.fromUTC(data.user_date_of_birth);
             this.country_code = '+' + data.user_country_code
             this.picture = data.user_picture
           }
@@ -1000,7 +900,7 @@ export default {
             first_name: this.first_name,
             last_name: this.last_name,
             user_email: this.email,
-            date_of_birth:this.getISODate(this.date_of_birth)
+            date_of_birth:new Date(this.date_of_birth).toISOString()
           })
           .then(() => {
             setTimeout(() => {
@@ -1080,13 +980,17 @@ export default {
     saveInsured() {
       this.$refs.insuredForm.validate()
       if (this.validInsuredForm) {
-        const insuredDate = this.insuredBirthDay
+
+             if(this.insuredBirthDay){
+           const insuredDate = this.insuredBirthDay
           .toISOString()
           .substr(0, 10)
           .split('-')
         this.number11.a.yy = insuredDate[0]
         this.number11.a.mm = insuredDate[1]
         this.number11.a.dd = insuredDate[2]
+        }
+       
 
         this.number12.date = this.patientSignDate.toISOString().substr(0, 10)
 
@@ -1134,6 +1038,16 @@ export default {
         this.number7.insuredZipcode = this.number5.patientZipcode
         this.number7.insuredTelephone = this.number5.patientTelephone
         this.insuredBirthDay= new Date(this.user.user_date_of_birth)
+      }
+
+      if(this.no){
+        this.number4.insuredName = null;
+        this.number7.insuredAddress = null;
+        this.number7.insuredCity = null;
+        this.number7.insuredState = null;
+        this.number7.insuredZipcode = null;
+        this.number7.insuredTelephone = null;
+        this.insuredBirthDay= null;
       }
     },
   },

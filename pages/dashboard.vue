@@ -65,8 +65,10 @@ export default {
         const url = `${process.env.PAYMENT_URL}/financial?session_id=${sessionId}`
         window.open(url)
       } else {
-        const route = this.$router.resolve({ path: value.to })
-        window.open(route.href)
+
+        
+       // const route = this.$router.resolve({ path: value.to })
+        window.open(this.localePath(value.to))
         // this.$router.push(this.localePath(value.to))
       }
     },
