@@ -43,7 +43,7 @@
           <v-icon>mdi-album</v-icon>
           <p>Record</p>
         </div>
-        <div class="text-center share_screen">
+        <div class="text-center share_screen" @click="share()">
           <v-icon>mdi-share</v-icon>
           <p>Screen Share</p>
         </div>
@@ -115,9 +115,6 @@ export default {
           room: this.room,
           data: event.candidate
         }))
-      } else {
-        // eslint-disable-next-line
-        console.log('allhasbeensent')
       }
     }
 
@@ -161,6 +158,17 @@ export default {
     },
     record(){
       
+    },
+    share(){
+      navigator.mediaDevices.getDisplayMedia({
+        video: {
+          cursor: 'always'
+        },
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true
+        }
+      })
     },
     enableAudio(){
       this.$store.state.setting.audio.getAudioTracks().forEach((track) => {
