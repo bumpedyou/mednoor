@@ -1,5 +1,6 @@
 import path from 'path'
 import fs from 'fs'
+import webpack from 'webpack'
 
 export default {
   head: {
@@ -199,6 +200,13 @@ export default {
         implementation: require('sass'),
       },
     },
+    plugins: [
+      new webpack.ProvidePlugin({
+        $: 'jquery',
+        jQuery: 'jquery',
+        'window.jQuery': 'jquery'
+      })
+    ]
   },
 
   server: {

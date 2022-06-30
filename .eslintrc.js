@@ -3,6 +3,8 @@ module.exports = {
   env: {
     browser: true,
     node: true,
+    commonjs: true,
+    jquery: true
   },
   parserOptions: {
     parser: '@babel/eslint-parser',

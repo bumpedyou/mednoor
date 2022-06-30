@@ -765,10 +765,8 @@ export default {
       left: 0
       top: 50px
       overflow-y: auto
-      height: 100%
       bottom: 0
       border-right: 1px solid $mdn-super-light-grey
-      height: 100%
       .moderators
         position: fixed
         top: 50px
