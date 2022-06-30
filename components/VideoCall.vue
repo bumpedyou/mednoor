@@ -94,6 +94,9 @@ export default {
     this.$store.commit('setting/setCamera', {
       camera: stream
     })
+    this.$store.commit('setting/setAudio', {
+      audio: stream
+    })
 
     stream.getTracks().forEach((track) => {
       localPC.addTrack(track, stream)
@@ -160,10 +163,16 @@ export default {
       
     },
     enableAudio(){
-
+      this.$store.state.setting.audio.getAudioTracks().forEach((track) => {
+        track.enabled = false
+      })
+      this.isShowAudio = false;
     },
     disableAudio(){
-
+      this.$store.state.setting.audio.getAudioTracks().forEach((track) => {
+        track.enabled = true
+      })
+      this.isShowAudio = true;
     },
     enableVideo(){
       this.$store.state.setting.camera.getVideoTracks().forEach((track) => {
@@ -176,7 +185,7 @@ export default {
         track.enabled = true
       })
       this.isShowVideo = true;
-    }
+    },
   }
 }
 </script>

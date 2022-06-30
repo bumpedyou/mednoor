@@ -1,7 +1,8 @@
 export const state = () => ({
     name: 'Guest',
     overlay: false,
-    camera: null
+    camera: null,
+    audio: null
   })
   
   export const mutations = {
@@ -13,6 +14,9 @@ export const state = () => ({
     },
     setCamera (state, payload) {
       state.camera = payload.camera
+    },
+    setAudio (state, payload) {
+      state.audio = payload.audio
     }
   }
   
