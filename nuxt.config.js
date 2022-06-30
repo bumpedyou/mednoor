@@ -1,3 +1,6 @@
+import path from 'path'
+import fs from 'fs'
+
 export default {
   head: {
     titleTemplate: '%s - Medical Center',
@@ -30,7 +33,8 @@ export default {
     '~/plugins/directives',
     '~/plugins/api',
     { src: '~/plugins/pincode', mode: 'client' },
-    {src: '~/plugins/jsZip', mode: 'client'}
+    {src: '~/plugins/jsZip', mode: 'client'},
+    '~/plugins/socket.io.js'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -159,8 +163,8 @@ export default {
     APPOINTMENTS_URL: process.env.APPOINTMENTS_URL,
     INSURANCE_URL: process.env.INSURANCE_URL,
     HOME_URL: process.env.HOME_URL,
-    PAYMENT_URL:process.env.PAYMENT_URL
-
+    PAYMENT_URL:process.env.PAYMENT_URL,
+    WS_URL: process.env.WS_URL || 'https://videocall-rtc.herokuapp.com'
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -196,4 +200,11 @@ export default {
       },
     },
   },
+
+  server: {
+    https: {
+        key: fs.readFileSync(path.resolve(__dirname, 'localhost-key.pem')),
+        cert: fs.readFileSync(path.resolve(__dirname, 'localhost.pem'))
+    }
+  }
 }

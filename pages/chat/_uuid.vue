@@ -768,7 +768,7 @@ export default {
       height: 100%
       bottom: 0
       border-right: 1px solid $mdn-super-light-grey
-      height: calc(100% - 50px)
+      height: 100%
       .moderators
         position: fixed
         top: 50px
