@@ -4,7 +4,7 @@ export const state = () => ({
     camera: null,
     audio: null
   })
-  
+
   export const mutations = {
     setName (state, payload) {
       state.name = payload.name
