@@ -730,6 +730,13 @@ export default {
             this.number12 = data.number12
             this.number13 = data.number13
             this.number17 = data.number17
+
+
+           // console.log(this.number11.a)
+            if(this.number11.a && this.number11.a.dd ){
+              const date = `${this.number11.a.mm}-${this.number11.a.dd}-${this.number11.a.yy}`;
+              this.insuredBirthDay = new Date(date);
+            }
           }
 
           if (this.user) {
@@ -986,6 +993,7 @@ export default {
           .toISOString()
           .substr(0, 10)
           .split('-')
+
         this.number11.a.yy = insuredDate[0]
         this.number11.a.mm = insuredDate[1]
         this.number11.a.dd = insuredDate[2]
@@ -1048,6 +1056,7 @@ export default {
         this.number7.insuredZipcode = null;
         this.number7.insuredTelephone = null;
         this.insuredBirthDay= null;
+        
       }
     },
   },
