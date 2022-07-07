@@ -1,19 +1,7 @@
 <template>
-  <div id="mainFrame">
+  <div id="mainFrame" :class="start ? '' : 'startFrame'">
     <video id="localVideo" ref="localVideo" autoplay muted>LocalVideo</video>
     <video id="remoteVideo" ref="remoteVideo" autoplay>RemoteVideo</video>
-    <div class="bottom-bar d-flex justify-center">
-      <v-btn class="mx-2" fab @click="offCamera()">
-        <v-icon dark>
-          mdi-camera
-        </v-icon>
-      </v-btn>
-      <v-btn class="mx-2" fab>
-        <v-icon dark>
-          mdi-microphone
-        </v-icon>
-      </v-btn>
-    </div>
     <div class="control-bar">
       <div class="left-bar">
         <div class="text-center participant" data-toggle="modal" data-target="#participant-modal">
@@ -35,14 +23,14 @@
           <v-icon v-if="!isShowAudio" class="audio" @click="disableAudio()">mdi-microphone-off</v-icon>
           <v-icon v-if="isShowVideo" class="video" @click="enableVideo()">mdi-video</v-icon>
           <v-icon v-if="!isShowVideo" class="video" @click="disableVideo()">mdi-video-off</v-icon>
-          <v-icon class="phone">mdi-phone</v-icon>
+          <v-icon v-if="role == 'professional'" class="phone" @click="endVideo()">mdi-phone</v-icon>
         </div>
       </div>
       <div class="right-bar">
-        <div id="start_record" class="text-center record" @click="record()">
+        <!-- <div id="start_record" class="text-center record" @click="record()">
           <v-icon>mdi-album</v-icon>
           <p>Record</p>
-        </div>
+        </div> -->
         <div class="text-center share_screen" @click="share()">
           <v-icon>mdi-share</v-icon>
           <p>Screen Share</p>
@@ -53,6 +41,20 @@
         </div>
       </div>
     </div>
+    <!-- Participants modal -->
+    <v-dialog persistent max-width="320px">
+      <v-card>
+        <v-card-title> Add to Call </v-card-title>
+        <v-card-text>
+          <input type="text" class="userid form-control" placeholder="User ID">
+          <ul class="participants"></ul>
+        </v-card-text>
+        <v-card-actions>
+          <button id="add-participant" class="btn btn-info" type="button">Add</button>
+          <button id="close-participant" class="btn btn-danger" type="button" data-dismiss="modal">Close</button>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -70,6 +72,16 @@ const servers = {
 }
 
 export default {
+  props: {
+    role: {
+      type: String,
+      default: 'professional'
+    },
+    start: {
+      type: Boolean,
+      default: false
+    }
+  },
   data () {
     return {
       room: this.$route.params.id,
@@ -194,6 +206,9 @@ export default {
       })
       this.isShowVideo = true;
     },
+    endVideo(){
+      this.$emit("close", this.start)
+    }
   }
 }
 </script>
@@ -201,8 +216,11 @@ export default {
 <style lang="scss">
   #mainFrame {
     position: relative;
-    min-height: calc(100vh - 100px);
+    min-height: calc(100vh - 50px);
     overflow: hidden;
+    &.startFrame{
+      opacity: 0;
+    }
     #localVideo {
       z-index: 100;
       position: absolute;
@@ -215,7 +233,7 @@ export default {
 
     #remoteVideo {
       z-index: 50;
-      min-height: calc(100vh - 100px);
+      min-height: calc(100vh - 50px);
       width: 100%;
       object-fit: cover;
       background-color: #7f828b;
@@ -236,7 +254,7 @@ export default {
       bottom: 0;
       z-index: 99999;
       text-align: center;
-      padding: 20px;
+      padding: 20px 20px 30px 20px;
       i, button{
         color: #fff;
         font-size: 20px;
@@ -284,6 +302,31 @@ export default {
             transform: rotate(135deg);
           }
         }
+      }
+    }
+  }
+  @media screen and (max-width: 500px) {
+    #mainFrame {
+      .control-bar {
+        height: auto;
+        .left-bar, .right-bar{
+          padding-bottom: 40px;
+        }
+        .center-bar{
+          position: absolute;
+          width: 100%;
+          left: 0;
+          bottom: 20px;          
+        }
+        p{
+          display: none;
+        }
+        i{
+          margin: 0 10px;
+        }
+      }
+      #localVideo{
+        bottom: 140px;
       }
     }
   }

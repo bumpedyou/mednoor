@@ -6,10 +6,7 @@
       </div>
     </div>
     <div :class='leftClasses'>
-      <div v-if="show_video" class="video-control" @click="stopVideo">
-        <a-icon type="close"></a-icon>
-      </div>
-      <video-call ref="videoRef" :close="stopVideo"></video-call>
+      <video-call ref="videoRef" :role="view" :start="show_video" @close="stopVideo"></video-call>
     </div>
     <div ref='chatView' class='chat-view'>
       <div ref='chatBox' class='chat-box-wrapper'>
@@ -452,17 +449,17 @@ export default {
     },
     stopVideo() {
       this.show_video = false
-      if (this.view === 'professional') {
-        console.log(this.videoRoomId)
-        this.socket.emit('stop-video', {
-          from: this.myID,
-          to: this.to,
-          roomId: this.videoRoomId
-        })
-      }
-      this.videoRoomId = null
-      if (this.$refs.videoRef)
-        this.$refs.videoRef.stop()
+      // if (this.view === 'professional') {
+      //   console.log(this.videoRoomId)
+      //   this.socket.emit('stop-video', {
+      //     from: this.myID,
+      //     to: this.to,
+      //     roomId: this.videoRoomId
+      //   })
+      // }
+      // this.videoRoomId = null
+      // if (this.$refs.videoRef)
+      //   this.$refs.videoRef.stop()
     },
     stopVideoByPro(roomId) {
       if (roomId === this.videoRoomId) {
