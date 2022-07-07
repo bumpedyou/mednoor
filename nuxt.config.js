@@ -165,7 +165,7 @@ export default {
     INSURANCE_URL: process.env.INSURANCE_URL,
     HOME_URL: process.env.HOME_URL,
     PAYMENT_URL:process.env.PAYMENT_URL,
-    WS_URL: process.env.WS_URL || 'https://videocall-rtc.herokuapp.com'
+    WS_URL: process.env.WS_URL
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
