@@ -32,6 +32,7 @@
     "moment": "^2.29.1",
     "nuxt": "^2.15.7",
     "nuxt-socket-io": "^1.1.24",
+    "skyway-js": "^4.4.4",
     "slugify": "^1.6.3",
     "socket.io-client": "^4.3.1",
     "uuid": "^8.3.2",

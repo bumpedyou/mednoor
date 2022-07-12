@@ -1,7 +1,24 @@
 <template>
-  <div id="mainFrame" :class="start ? '' : 'startFrame'">
-    <video id="localVideo" ref="localVideo" autoplay muted>LocalVideo</video>
-    <video id="remoteVideo" ref="remoteVideo" autoplay>RemoteVideo</video>
+  <div id="mainFrame">
+    <div v-for="p in peers" :key="p.peerId">
+      <video
+        :id="p.peerId"
+        ref="remoteVideo"
+        class="remoteVideo"
+        :peerId="p.peerId"
+        :srcObject.prop="p.stream"
+        autoplay
+        playsinline
+      ></video>
+    </div>
+    <video
+      ref="localVideo"
+      class="localVideo"      
+      :srcObject.prop="localStream"
+      autoplay
+      muted
+    ></video>
+
     <div class="control-bar">
       <div class="left-bar">
         <div class="text-center participant" data-toggle="modal" data-target="#participant-modal">
@@ -60,6 +77,7 @@
 
 <script>
 import $ from 'jquery';
+import Peer from "skyway-js";
 const servers = {
   configuration: {
     offerToReceiveAudio: true,
@@ -77,17 +95,19 @@ export default {
       type: String,
       default: 'professional'
     },
-    start: {
-      type: Boolean,
-      default: false
-    }
   },
   data () {
     return {
-      room: this.$route.params.id,
+      // room: this.$route.params.id,
       transform: 1,
       isShowAudio: true,
       isShowVideo: true,
+      localStream: null,
+      peerId: "",
+      inputId: "",
+      peer: null,
+      room: null,
+      peers: [],
     }
   },
   async beforeMount () {
@@ -99,6 +119,23 @@ export default {
     localStorage.setItem('lastId', this.room)
   },
   async mounted () {
+    this.peer = new Peer({
+      key: "744f5ca5-2168-4721-ac0d-9155af0ce003",
+      debug: 3,
+    });
+    this.peer.on("open", (peerId) => {
+      this.peerId = peerId;
+      navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        this.localStream = stream;
+      })
+      .then(this.joinRoom)
+      .catch((err) => {
+        console.log(err)
+      });
+    });
+
     const localPC = new RTCPeerConnection(servers)
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true })
 
@@ -156,31 +193,72 @@ export default {
     await this.$socket.emit('leave', this.room)
   },
   methods: {
+    join(joinroom){
+      navigator.mediaDevices
+        .getUserMedia({ video: true, audio: true })
+        .then((stream) => {
+          this.localStream = stream;
+        })
+        .then(this.joinRoom(joinroom))
+        .catch((err) => {
+          console.log(err)
+        });
+    },
+    joinRoom(id) {
+      const peer = this.peer;
+      if (this.room) {
+        this.room.replaceStream(this.localStream);
+        return;
+      }
+      this.room = peer.joinRoom(id, {
+        mode: "mesh",
+        stream: this.localStream,
+      });
+
+      this.room.once("open", () => {
+      });
+      this.room.on("peerJoin", (peerId) => {
+      });
+
+      this.room.on("peerLeave", (peerId) => {
+        this.peers = this.peers.filter((p) => p.peerId !== peerId);
+      });
+
+      this.room.on("stream", async (stream) => {
+        this.peers = this.peers.filter((p) => p.peerId !== stream.peerId);
+        await this.peers.push({ peerId: stream.peerId, stream });
+      });
+    },
     zoomIn(){
       this.transform += 0.1;
       const scale = "scale(" + this.transform + ")";
-      $("#remoteVideo").css("transform", scale);
+      $(".remoteVideo").css("transform", scale);
     },
     zoomOut(){
       if(this.transform > 1){
         this.transform -= 0.1;
         const scale = "scale(" + this.transform + ")";
-        $("#remoteVideo").css("transform", scale);
+        $(".remoteVideo").css("transform", scale);
       }
     },
     record(){
       
     },
     share(){
-      navigator.mediaDevices.getDisplayMedia({
-        video: {
-          cursor: 'always'
-        },
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true
-        }
+      if (!navigator.mediaDevices.getDisplayMedia) {
+        alert(`Error: Your device cannot use this type of stream.`);
+        return;
+      }
+      navigator.mediaDevices
+      .getDisplayMedia()
+      .then((stream) => {
+        this.localStream = stream;
       })
+      .then(this.joinRoom)
+      .catch((err) => {
+        console.log(err)
+        alert(`Error: Your device cannot use this type of stream.`);
+      });
     },
     enableAudio(){
       this.$store.state.setting.audio.getAudioTracks().forEach((track) => {
@@ -221,7 +299,7 @@ export default {
     &.startFrame{
       opacity: 0;
     }
-    #localVideo {
+    .localVideo {
       z-index: 100;
       position: absolute;
       right: 25px;
@@ -230,22 +308,19 @@ export default {
       height: 150px;
       width: 200px;
     }
-
-    #remoteVideo {
+    .remoteVideo {
       z-index: 50;
-      min-height: calc(100vh - 50px);
+      min-height: calc(100vh - 130px);
       width: 100%;
       object-fit: cover;
       background-color: #7f828b;
     }
-
     .bottom-bar {
       position: absolute;
       bottom: 25px;
       width: 100vw;
       text-align: center;
     }
-
     .control-bar{
       width: 100%;
       height: 80px;
@@ -276,7 +351,6 @@ export default {
         float: right;
       }
     }
-
     .center-bar{
       .center-icons{
         display: flex;
@@ -316,7 +390,7 @@ export default {
           position: absolute;
           width: 100%;
           left: 0;
-          bottom: 20px;          
+          bottom: 20px;
         }
         p{
           display: none;

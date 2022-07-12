@@ -6,7 +6,7 @@
       </div>
     </div>
     <div :class='leftClasses'>
-      <video-call ref="videoRef" :role="view" :start="show_video" @close="stopVideo"></video-call>
+      <video-call ref="videoRef" :role="view" @close="stopVideo"></video-call>
     </div>
     <div ref='chatView' class='chat-view'>
       <div ref='chatBox' class='chat-box-wrapper'>
@@ -272,11 +272,6 @@ export default {
       this.ring().then(()=>{
       }).catch(()=>{
       })
-      /*
-      if (from === this.to && roomId) {
-        this.joinVideo(roomId)
-      } */
-
       this.callingRoomId = roomId
     })
     this.socket.on('stop-video', ({ from, roomId }) => {
@@ -286,7 +281,7 @@ export default {
     })
     this.socket.on('call-accepted', ({roomId})=>{
       this.stopAudio()
-      this.$refs.videoRef.start(roomId)
+      this.$refs.videoRef.join(roomId)
       this.videoRoomId = roomId
     })
 
@@ -420,10 +415,13 @@ export default {
       }
     },
     showVideo() {
-      if (this.show_video) return
+      // if (this.show_video) return
       this.show_video = true
       const roomId = 'videoRoom_' + Math.round(Math.random() * 1000);
       this.startVideo(roomId)
+      this.$store.state.setting.camera.getVideoTracks().forEach((track) => {
+        track.enabled = true
+      })
     },
     // Start the call
     startVideo(roomId) {
@@ -437,6 +435,7 @@ export default {
         this.audio = this.getSound('ringing-internal.mp3')
         this.audio.play()
         this.callingRoomId = roomId
+        this.videoRoomId = roomId        
       }
     },
     joinVideo(roomId) {
@@ -445,7 +444,7 @@ export default {
       this.videoRoomId = roomId
       console.log('join room', roomId)
       if (this.$refs.videoRef)
-        this.$refs.videoRef.join(roomId)
+        this.$refs.videoRef.join(roomId);
     },
     stopVideo() {
       this.show_video = false
