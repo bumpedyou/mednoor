@@ -129,6 +129,12 @@ export default {
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
         this.localStream = stream;
+        this.$store.commit('setting/setCamera', {
+          camera: stream
+        })
+        this.$store.commit('setting/setAudio', {
+          audio: stream
+        })
       })
       .then(this.joinRoom)
       .catch((err) => {
@@ -140,12 +146,7 @@ export default {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true })
 
     this.$refs.localVideo.srcObject = stream
-    this.$store.commit('setting/setCamera', {
-      camera: stream
-    })
-    this.$store.commit('setting/setAudio', {
-      audio: stream
-    })
+    
 
     stream.getTracks().forEach((track) => {
       localPC.addTrack(track, stream)
@@ -274,6 +275,7 @@ export default {
     },
     enableVideo(){
       this.$store.state.setting.camera.getVideoTracks().forEach((track) => {
+        console.log(track)
         track.enabled = false
       })
       this.isShowVideo = false;
