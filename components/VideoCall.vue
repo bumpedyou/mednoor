@@ -350,7 +350,7 @@ export default {
           margin: 0 10px;
         }
       }
-      #localVideo{
+      .localVideo{
         bottom: 140px;
       }
     }
