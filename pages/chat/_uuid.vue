@@ -6,7 +6,7 @@
       </div>
     </div>
     <div :class='leftClasses'>
-      <video-call ref="videoRef" :role="view" @close="stopVideo"></video-call>
+      <video-call ref="videoRef" :role="view" :start="show_video" @close="stopVideo"></video-call>
     </div>
     <div ref='chatView' class='chat-view'>
       <div ref='chatBox' class='chat-box-wrapper'>
@@ -283,6 +283,7 @@ export default {
       this.stopAudio()
       this.$refs.videoRef.join(roomId)
       this.videoRoomId = roomId
+      this.show_video = true
     })
 
     this.socket.on('stop-ringing', ({roomId})=>{
@@ -310,6 +311,7 @@ export default {
         to: this.to,
         from: this.myUserId
       })
+      this.show_video = true
     },
     ring(){
       this.audio = this.getSound('phone-ringing.mp3')
@@ -416,7 +418,6 @@ export default {
     },
     showVideo() {
       // if (this.show_video) return
-      this.show_video = true
       const roomId = 'videoRoom_' + Math.round(Math.random() * 1000);
       this.startVideo(roomId)
       this.$store.state.setting.camera.getVideoTracks().forEach((track) => {
@@ -435,7 +436,7 @@ export default {
         this.audio = this.getSound('ringing-internal.mp3')
         this.audio.play()
         this.callingRoomId = roomId
-        this.videoRoomId = roomId        
+        this.videoRoomId = roomId
       }
     },
     joinVideo(roomId) {
@@ -448,17 +449,12 @@ export default {
     },
     stopVideo() {
       this.show_video = false
-      // if (this.view === 'professional') {
-      //   console.log(this.videoRoomId)
-      //   this.socket.emit('stop-video', {
-      //     from: this.myID,
-      //     to: this.to,
-      //     roomId: this.videoRoomId
-      //   })
-      // }
-      // this.videoRoomId = null
-      // if (this.$refs.videoRef)
-      //   this.$refs.videoRef.stop()
+      this.socket.emit('stop-video', {
+        from: this.myID,
+        to: this.to,
+        roomId: this.videoRoomId
+      })
+      this.videoRoomId = null
     },
     stopVideoByPro(roomId) {
       if (roomId === this.videoRoomId) {
@@ -471,7 +467,6 @@ export default {
           })
         }
         this.videoRoomId = null
-        this.$refs.videoRef.stop()
       }
     },
     saveChatAsPdf() {

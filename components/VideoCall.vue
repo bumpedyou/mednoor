@@ -1,5 +1,5 @@
 <template>
-  <div id="mainFrame">
+  <div id="mainFrame" :class="start ? '' : 'startFrame'">
     <div v-for="p in peers" :key="p.peerId">
       <video
         :id="p.peerId"
@@ -19,7 +19,7 @@
       muted
     ></video>
 
-    <div class="control-bar">
+    <div class="control-bar" :class="start ? '' : 'startFrame'">
       <div class="left-bar">
         <div class="text-center participant" data-toggle="modal" data-target="#participant-modal">
           <v-icon>mdi-account-plus</v-icon>
@@ -78,16 +78,6 @@
 <script>
 import $ from 'jquery';
 import Peer from "skyway-js";
-const servers = {
-  configuration: {
-    offerToReceiveAudio: true,
-    offerToReceiveVideo: true
-  },
-  iceServers: [
-    { urls: 'stun:stun.l.google.com:19302' },
-    { urls: 'stun:stun1.l.google.com:19302' }
-  ]
-}
 
 export default {
   props: {
@@ -95,10 +85,13 @@ export default {
       type: String,
       default: 'professional'
     },
+    start: {
+      type: Boolean,
+      default: false
+    },
   },
   data () {
     return {
-      // room: this.$route.params.id,
       transform: 1,
       isShowAudio: true,
       isShowVideo: true,
@@ -108,26 +101,18 @@ export default {
       peer: null,
       room: null,
       peers: [],
+      videoStream: null
     }
   },
-  async beforeMount () {
-    const lastId = localStorage.getItem('lastId')
-    if (lastId) {
-      await this.$socket.emit('leave', this.room)
-    }
-    await this.$socket.emit('join', lastId)
-    localStorage.setItem('lastId', this.room)
-  },
-  async mounted () {
+  mounted () {
     this.peer = new Peer({
       key: "744f5ca5-2168-4721-ac0d-9155af0ce003",
       debug: 3,
     });
+    this.videoStream = navigator.mediaDevices.getUserMedia({ video: true, audio: true })
     this.peer.on("open", (peerId) => {
       this.peerId = peerId;
-      navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
-      .then((stream) => {
+      this.videoStream.then((stream) => {
         this.localStream = stream;
         this.$store.commit('setting/setCamera', {
           camera: stream
@@ -141,91 +126,45 @@ export default {
         console.log(err)
       });
     });
-
-    const localPC = new RTCPeerConnection(servers)
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true })
-
-    this.$refs.localVideo.srcObject = stream
-    
-
-    stream.getTracks().forEach((track) => {
-      localPC.addTrack(track, stream)
-    })
-
-    const offer = await localPC.createOffer()
-    await localPC.setLocalDescription(offer)
-    await this.$socket.emit('message', JSON.stringify({
-      room: this.room,
-      data: localPC.localDescription
-    }))
-
-    localPC.onicecandidate = async (event) => {
-      if (event.candidate) {
-        await this.$socket.emit('message', JSON.stringify({
-          room: this.room,
-          data: event.candidate
-        }))
-      }
-    }
-
-    localPC.ontrack = (event) => {
-      if (event.streams[0]) {
-        this.$refs.remoteVideo.srcObject = event.streams[0]
-      }
-    }
-
-    this.$socket.on('message', async (data) => {
-      if (data.type === 'offer') {
-        await localPC.setRemoteDescription(new RTCSessionDescription(data))
-        const answer = await localPC.createAnswer()
-        await localPC.setLocalDescription(answer)
-        await this.$socket.emit('message', JSON.stringify({
-          room: this.room,
-          data: localPC.localDescription
-        }))
-      } else if (data.type === 'answer') {
-        await localPC.setRemoteDescription(new RTCSessionDescription(data))
-      } else {
-        await localPC.addIceCandidate(new RTCIceCandidate(data))
-      }
-    })
-  },
-  async beforeDestroy () {
-    await this.$socket.emit('leave', this.room)
   },
   methods: {
     join(joinroom){
-      navigator.mediaDevices
-        .getUserMedia({ video: true, audio: true })
-        .then((stream) => {
-          this.localStream = stream;
-        })
-        .then(this.joinRoom(joinroom))
-        .catch((err) => {
-          console.log(err)
-        });
+      this.videoStream.then((stream) => {
+        this.localStream = stream;
+      })
+      .then(this.joinRoom(joinroom))
+      .catch((err) => {
+        console.log(err)
+      });
     },
     joinRoom(id) {
       const peer = this.peer;
       if (this.room) {
-        this.room.replaceStream(this.localStream);
+        this.room.on("stream", async (stream) => {
+        this.peers = this.peers.filter((p) => p.peerId !== stream.peerId);
+          await this.peers.push({ peerId: stream.peerId, stream });
+        });
+        this.peers.forEach((peer) => {
+          peer.stream.getTracks().forEach((track) => {
+            console.log(track)
+            track.enabled = true
+          })
+        })
         return;
       }
       this.room = peer.joinRoom(id, {
         mode: "mesh",
         stream: this.localStream,
       });
-
       this.room.once("open", () => {
       });
-      this.room.on("peerJoin", (peerId) => {
+      this.room.on("peerJoin", () => {
       });
-
       this.room.on("peerLeave", (peerId) => {
         this.peers = this.peers.filter((p) => p.peerId !== peerId);
       });
-
       this.room.on("stream", async (stream) => {
+        console.log("stream: " + this.peers)
         this.peers = this.peers.filter((p) => p.peerId !== stream.peerId);
         await this.peers.push({ peerId: stream.peerId, stream });
       });
@@ -287,7 +226,17 @@ export default {
       this.isShowVideo = true;
     },
     endVideo(){
-      this.$emit("close", this.start)
+      if(confirm("Do you want to close video call?")){
+        this.peers.forEach((peer) => {
+          peer.stream.getTracks().forEach((track) => {
+            track.enabled = false
+          })
+        })
+        this.$refs.localVideo.srcObject.getTracks().forEach((track) => {
+          track.enabled = false
+        })
+        this.$emit("close")
+      }
     }
   }
 }
