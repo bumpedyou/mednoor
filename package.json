@@ -39,6 +39,7 @@
     "v-emoji-picker": "^2.3.3",
     "vue-advanced-cropper": "^1.10.1",
     "vue-cal": "^3.10.1",
+    "vue-good-table": "^2.21.11",
     "vue-pincode-input": "^0.4.0",
     "vue-slick-carousel": "^1.0.6",
     "vue2-datepicker": "^3.10.4",
@@ -65,7 +66,7 @@
   "config": {
     "nuxt": {
       "host": "0.0.0.0",
-      "port": "4900"
+      "port": "4901"
     }
   }
 }
