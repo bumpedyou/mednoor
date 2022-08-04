@@ -141,9 +141,11 @@ export default {
       const peer = this.peer;
       if (this.room) {
         this.room.on("stream", async (stream) => {
-        this.peers = this.peers.filter((p) => p.peerId !== stream.peerId);
-          await this.peers.push({ peerId: stream.peerId, stream });
-        });
+          this.localStream = stream;
+          this.peers = this.peers.filter((p) => p.peerId !== stream.peerId);
+            await this.peers.push({ peerId: stream.peerId, stream });
+          }
+        );
         this.peers.forEach((peer) => {
           peer.stream.getTracks().forEach((track) => {
             console.log(track)
@@ -167,6 +169,7 @@ export default {
         console.log("stream: " + this.peers)
         this.peers = this.peers.filter((p) => p.peerId !== stream.peerId);
         await this.peers.push({ peerId: stream.peerId, stream });
+        this.videoStream = stream
       });
     },
     zoomIn(){
@@ -261,7 +264,7 @@ export default {
     }
     .remoteVideo {
       z-index: 50;
-      min-height: calc(100vh - 130px);
+      height: calc(100vh - 130px);
       width: 100%;
       object-fit: cover;
       background-color: #7f828b;
@@ -351,7 +354,12 @@ export default {
         }
       }
       .localVideo{
-        bottom: 140px;
+        bottom: auto;
+        right: auto;
+        width: 110px;
+        height: 82px;
+        left: 5px;
+        top: 5px;
       }
     }
   }
