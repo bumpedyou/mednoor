@@ -132,6 +132,13 @@
               </div>
             </a-form-item>
           </a-tab-pane>
+           <a-tab-pane key="6" tab="Medical History">
+              <a-tabs>
+                <a-tab-pane v-for="t in tabs" :key="t.key" :tab="t.tab">
+              <v-text-field type="text" :v-model="t.data" height="100" :label="t.tab"> </v-text-field>
+            </a-tab-pane>
+              </a-tabs>
+            </a-tab-pane>
           <a-tab-pane v-if="isProfessional" key="4" tab="Professional Information" force-render>
             <div v-if='!isComplete'>
               <a-alert message='Please complete your profile information' :show-icon='true' type='warning' :banner='true'></a-alert>
@@ -460,6 +467,53 @@ export default {
       medical_license: '',
       license_state: '',
       credentials: '',
+       tabs:[
+        {
+        key:0,
+        tab:"Allergies",
+        data: '',
+      },
+       {
+        key:1,
+        tab:"Current Meds",
+        data: '',
+      },
+       {
+        key:2,
+        tab:"Medical History",
+        data: '',
+      },
+       {
+        key:3,
+        tab:"Social History",
+        data: '',
+      },
+       {
+        key:4,
+        tab:"Social History",
+        data: '',
+      },
+       {
+        key:5,
+        tab:"Family History",
+        data: '',
+      },
+       {
+        key:6,
+        tab:"Past Medications",
+        data: '',
+      },
+       {
+        key:7,
+        tab:"Current Medications",
+        data: '',
+      },
+       {
+        key:8,
+        tab:"Surgical History",
+        data: '',
+      },
+      ],
 
       // Copy All Data
       yes: false,
@@ -648,14 +702,14 @@ export default {
 
 
         if(userInfo){
-           
+
         this.number5.patientAddress=  this.number5.patientAddress|| userInfo.addr_line1;
          this.number5.patientCity=  this.number5.patientCity || userInfo.addr_city;
          this.number5.patientState=  this.number5.patientState||  userInfo.addr_state;
          this.number5.patientZipcode= this.number5.patientZipcode|| userInfo.addr_zip;
          this.number5.patientTelephone= this.number5.patientTelephone||  userInfo.user_phone_no;
          this.number5.patientName= this.number5.patientName || userInfo.user_first_name +' '+userInfo.user_last_name;
-     
+
         }
       })
       .catch(() => {

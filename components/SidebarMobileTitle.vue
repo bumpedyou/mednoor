@@ -3,6 +3,7 @@
     <span class='h3 mr-auto'><slot></slot></span>
     <v-icon class='mx-1 xx d-flex' @click="$emit('click', $event)">mdi-chevron-left</v-icon>
   </div>
+
 </template>
 
 <script>
