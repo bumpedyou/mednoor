@@ -119,7 +119,6 @@
                     <v-text-field
                       v-model="email"
                       label="Email"
-                
                       prepend-inner-icon="mdi-email"
                     ></v-text-field>
                   </v-col>
@@ -142,10 +141,15 @@
                   </v-col>
                   <v-col sm="4" md="4">
                     <div class="d-flex flex-row align-end">
-                       <label for="">Date Of Birth: </label>
-                      <date-picker v-model="date_of_birth" format="MM/DD/YYYY" type="date" style="margin-left: 15px"></date-picker>
+                      <label for="">Date Of Birth: </label>
+                      <date-picker
+                        v-model="date_of_birth"
+                        format="MM/DD/YYYY"
+                        type="date"
+                        style="margin-left: 15px"
+                      ></date-picker>
                     </div>
-                </v-col>
+                  </v-col>
                 </v-row>
                 <v-row v-if="isUser">
                   <v-col>
@@ -235,7 +239,6 @@
                       v-model="number5.patientName"
                       label="Patient Name"
                       placeholder="Patient Name"
-                  
                       :hide-details="true"
                     >
                     </v-text-field>
@@ -245,7 +248,6 @@
                       v-model="number5.patientAddress"
                       label="Patient Address"
                       placeholder="Patient Address"
-                 
                       :hide-details="true"
                     ></v-text-field>
                   </v-col>
@@ -257,7 +259,6 @@
                       v-model="number5.patientCity"
                       label="Patient City"
                       placeholder="Patient City"
-                 
                       :hide-details="true"
                     >
                     </v-text-field>
@@ -267,7 +268,6 @@
                       v-model="number5.patientState"
                       label="Patient State"
                       placeholder="Patient State"
-                  
                       :hide-details="true"
                     ></v-text-field>
                   </v-col>
@@ -276,7 +276,6 @@
                       v-model="number5.patientZipcode"
                       label="PatientZipcode"
                       placeholder="PatientZipcode"
-                 
                       :hide-details="true"
                     ></v-text-field>
                   </v-col>
@@ -285,7 +284,6 @@
                       v-model="number5.patientTelephone"
                       label="Patient Teletephone"
                       placeholder="Patient Teletephone"
-                 
                       :hide-details="true"
                     ></v-text-field>
                   </v-col>
@@ -297,7 +295,6 @@
                       v-model="number4.insuredName"
                       label="Insured's Name"
                       placeholder="Insured's Name"
-               
                       :hide-details="true"
                     >
                     </v-text-field>
@@ -307,7 +304,6 @@
                       v-model="number7.insuredAddress"
                       label="Insured's Address"
                       placeholder="Insured's Address"
-              
                       :hide-details="true"
                     ></v-text-field>
                   </v-col>
@@ -319,7 +315,6 @@
                       v-model="number7.insuredCity"
                       label="Insured's City"
                       placeholder="Insured's City"
-             
                       :hide-details="true"
                     >
                     </v-text-field>
@@ -329,7 +324,6 @@
                       v-model="number7.insuredState"
                       label="Insured's State"
                       placeholder="Insured's State"
-                
                       :hide-details="true"
                     ></v-text-field>
                   </v-col>
@@ -338,7 +332,6 @@
                       v-model="number7.insuredZipcode"
                       label="Insured's Zip Code"
                       placeholder="Insured's Zip Code"
-                
                       :hide-details="true"
                     ></v-text-field>
                   </v-col>
@@ -347,7 +340,6 @@
                       v-model="number7.insuredTelephone"
                       label="Insured's Teletephone"
                       placeholder="Insured's Teletephone"
-                 
                       :hide-details="true"
                     ></v-text-field>
                   </v-col>
@@ -359,7 +351,6 @@
                       v-model="number11.c"
                       label="Insurance Plan Name"
                       placeholder="Insurance Plan Name"
-                   
                       :hide-details="true"
                     ></v-text-field>
                   </v-col>
@@ -367,11 +358,10 @@
                     <div class="d-flex flex-row align-end">
                       <label for="">Insured's Date Of Birth: </label>
                       <date-picker
-                     
                         v-model="insuredBirthDay"
                         type="date"
                         style="margin-left: 15px"
-                         format="MM/DD/YYYY"
+                        format="MM/DD/YYYY"
                       ></date-picker>
                     </div>
                   </v-col>
@@ -397,7 +387,6 @@
                       v-model="number17.value"
                       label="name of referring provider"
                       placeholder="name of referring provider"
-                    
                     >
                     </v-text-field>
                   </v-col>
@@ -406,7 +395,6 @@
                       v-model="number17.a.first"
                       label="17.a.1"
                       placeholder="17.a.1"
-                   
                     ></v-text-field>
                   </v-col>
                   <v-col md="6" lg="3">
@@ -414,7 +402,6 @@
                       v-model="number17.a.second"
                       label="17.a.2"
                       placeholder="17.a.2"
-                   
                     >
                     </v-text-field>
                   </v-col>
@@ -423,7 +410,6 @@
                       v-model="number17.b"
                       label="17.b"
                       placeholder="17.b"
-                    
                     >
                     </v-text-field>
                   </v-col>
@@ -435,7 +421,6 @@
                       v-model="number13.value"
                       label="Insured's Sign"
                       placeholder="Insured's Sign"
-                   
                       :hide-details="true"
                     ></v-text-field>
                   </v-col>
@@ -444,7 +429,6 @@
                       v-model="number12.signed"
                       label="Patient Sign"
                       placeholder="Patient Sign"
-                   
                       :hide-details="true"
                     >
                     </v-text-field>
@@ -453,11 +437,10 @@
                     <div class="d-flex flex-row align-end">
                       <label for="">Patient Sign Date: </label>
                       <date-picker
-                    
                         v-model="patientSignDate"
                         type="date"
                         style="margin-left: 15px"
-                          format="MM/DD/YYYY"
+                        format="MM/DD/YYYY"
                       ></date-picker>
                     </div>
                   </v-col>
@@ -471,6 +454,20 @@
                   </a-button>
                 </a-form-item>
               </v-form>
+            </a-tab-pane>
+            <a-tab-pane key="6" tab="Medical History">
+              <a-tabs>
+                <a-tab-pane v-for="t in tabs" :key="t.key" :tab="t.tab">
+                  <v-text-field
+                    v-model="t.data"
+                    type="text"
+                    height="100"
+                    :label="t.tab.replaceAll('-', ' ')"
+                    @input="updateMedHistory(t.tab, t.data)"
+                  >
+                  </v-text-field>
+                </a-tab-pane>
+              </a-tabs>
             </a-tab-pane>
             <!-- Claims -->
           </a-tabs>
@@ -511,7 +508,7 @@ export default {
     uploadMixin,
     addressMixin,
     dateMixin,
-    uTcDate
+    uTcDate,
   ],
   middleware: [
     'authenticated',
@@ -524,6 +521,7 @@ export default {
     return {
       email: '',
       first_name: '',
+      fetchingMedHistory: false,
       last_name: '',
       user: {},
       user_uuid: null,
@@ -559,7 +557,53 @@ export default {
       medical_license: '',
       license_state: '',
       credentials: '',
-
+      tabs: [
+        {
+          key: 0,
+          tab: 'Allergies',
+          data: '',
+        },
+        {
+          key: 1,
+          tab: 'Current-Meds',
+          data: '',
+        },
+        {
+          key: 2,
+          tab: 'Medical-History',
+          data: '',
+        },
+        {
+          key: 3,
+          tab: 'Social-History',
+          data: '',
+        },
+        {
+          key: 4,
+          tab: 'Pharmacies',
+          data: '',
+        },
+        {
+          key: 5,
+          tab: 'Family-History',
+          data: '',
+        },
+        {
+          key: 6,
+          tab: 'Past-Medications',
+          data: '',
+        },
+        {
+          key: 7,
+          tab: 'Current-Medications',
+          data: '',
+        },
+        {
+          key: 8,
+          tab: 'Surgical-History',
+          data: '',
+        },
+      ],
       // Copy All Data
       yes: false,
       no: true,
@@ -681,7 +725,9 @@ export default {
   },
   mounted() {
     this.getuser()
-
+    this.$api.get('/medical-record/?template=key').then((x) => {
+      console.log('res', x)
+    })
     this.$api
       .get('/category')
       .then(({ data }) => {
@@ -694,8 +740,34 @@ export default {
       .catch(() => {
         this.$toast.error('Failed to load categories.')
       })
+    this.$api
+      .get('/medical-record/' + this.$auth.user.uuid)
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((err) => {
+        console.log(err.data)
+      })
   },
   methods: {
+    async updateMedHistory(tab, data) {
+      const tabName = tab.toLowerCase()
+      if (!this.fetchingMedHistory) {
+        this.fetchingMedHistory = true
+        await this.$api
+          .patch('/medical-record/' + tabName + '/' + this.$auth.user.uuid, {
+            v: data,
+          })
+          .then((res) => {
+            this.fetchingMedHistory = false
+            console.log(res)
+          })
+          .catch((err) => {
+            this.fetchingMedHistory = false
+            console.log(err.data)
+          })
+      }
+    },
     getuser() {
       const q = this.$route.params
       this.user_uuid = q.uuid
@@ -707,7 +779,7 @@ export default {
             this.last_name = this.user.user_last_name
             this.email = this.user.user_email
             this.phone_no = data.user_phone_no
-            this.date_of_birth =  this.fromUTC(data.user_date_of_birth);
+            this.date_of_birth = this.fromUTC(data.user_date_of_birth)
             this.country_code = '+' + data.user_country_code
             this.picture = data.user_picture
           }
@@ -731,11 +803,10 @@ export default {
             this.number13 = data.number13
             this.number17 = data.number17
 
-
-           // console.log(this.number11.a)
-            if(this.number11.a && this.number11.a.dd ){
-              const date = `${this.number11.a.mm}-${this.number11.a.dd}-${this.number11.a.yy}`;
-              this.insuredBirthDay = new Date(date);
+            // console.log(this.number11.a)
+            if (this.number11.a && this.number11.a.dd) {
+              const date = `${this.number11.a.mm}-${this.number11.a.dd}-${this.number11.a.yy}`
+              this.insuredBirthDay = new Date(date)
             }
           }
 
@@ -753,7 +824,6 @@ export default {
             this.number5.patientName =
               this.number5.patientName ||
               this.user.user_first_name + ' ' + this.user.user_last_name
-              
           }
         })
         .catch(() => {
@@ -893,7 +963,7 @@ export default {
       this.$refs.personalForm.validate()
       if (this.validPersonalForm) {
         this.loading = true
-        console.log('date of birth',this.date_of_birth)
+        console.log('date of birth', this.date_of_birth)
         this.$api
           .put('/user', {
             user_uuid: this.user_uuid,
@@ -907,7 +977,7 @@ export default {
             first_name: this.first_name,
             last_name: this.last_name,
             user_email: this.email,
-            date_of_birth:new Date(this.date_of_birth).toISOString()
+            date_of_birth: new Date(this.date_of_birth).toISOString(),
           })
           .then(() => {
             setTimeout(() => {
@@ -987,18 +1057,16 @@ export default {
     saveInsured() {
       this.$refs.insuredForm.validate()
       if (this.validInsuredForm) {
+        if (this.insuredBirthDay) {
+          const insuredDate = this.insuredBirthDay
+            .toISOString()
+            .substr(0, 10)
+            .split('-')
 
-             if(this.insuredBirthDay){
-           const insuredDate = this.insuredBirthDay
-          .toISOString()
-          .substr(0, 10)
-          .split('-')
-
-        this.number11.a.yy = insuredDate[0]
-        this.number11.a.mm = insuredDate[1]
-        this.number11.a.dd = insuredDate[2]
+          this.number11.a.yy = insuredDate[0]
+          this.number11.a.mm = insuredDate[1]
+          this.number11.a.dd = insuredDate[2]
         }
-       
 
         this.number12.date = this.patientSignDate.toISOString().substr(0, 10)
 
@@ -1045,18 +1113,17 @@ export default {
         this.number7.insuredState = this.number5.patientState
         this.number7.insuredZipcode = this.number5.patientZipcode
         this.number7.insuredTelephone = this.number5.patientTelephone
-        this.insuredBirthDay= new Date(this.user.user_date_of_birth)
+        this.insuredBirthDay = new Date(this.user.user_date_of_birth)
       }
 
-      if(this.no){
-        this.number4.insuredName = null;
-        this.number7.insuredAddress = null;
-        this.number7.insuredCity = null;
-        this.number7.insuredState = null;
-        this.number7.insuredZipcode = null;
-        this.number7.insuredTelephone = null;
-        this.insuredBirthDay= null;
-        
+      if (this.no) {
+        this.number4.insuredName = null
+        this.number7.insuredAddress = null
+        this.number7.insuredCity = null
+        this.number7.insuredState = null
+        this.number7.insuredZipcode = null
+        this.number7.insuredTelephone = null
+        this.insuredBirthDay = null
       }
     },
   },

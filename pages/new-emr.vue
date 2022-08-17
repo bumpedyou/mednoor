@@ -78,7 +78,7 @@
               @click="visiblePicker = true"
             ></v-text-field> -->
              <date-picker
-             
+
                 v-model="picker"
                 :disabled-date="(date) => date >= new Date()"
                 format="MM/DD/YYYY"
@@ -86,7 +86,7 @@
                 type="date"
                 style="width:100%;margin-top:20px"
                 @change="visiblePicker = false"
-               
+
               ></date-picker>
           </div>
         </v-col>
@@ -517,8 +517,6 @@ export default {
     }, 600),
   },
   mounted() {
-
-
     const c = this.$route.query
     if (c.mere) {
       this.recordId = c.mere
@@ -610,7 +608,7 @@ export default {
                 if(!this.isDeafaultData){
                 this.$toast.success('A new draft has been created')
                 }
-                
+
                 this.draft = true
                 this.putData(arg, v || valueOverride)
               }
@@ -738,9 +736,9 @@ export default {
           // savingDate.setHours(new Date().getHours());
           // savingDate.setMinutes(new Date().getMinutes());
 
-      
+
           values.date = new Date(this.picker).toISOString()
-         
+
           console.log('The values --->', values)
           console.log('saving Date :  --->', values.date)
         // 2022-01-14
@@ -843,11 +841,11 @@ export default {
                 return new Date(b.mere_date) - new Date(a.mere_date)
               })
             }
-        
+
             const item = data[0]
              item.mere_sign = null;
             this.setData(item)
-           
+
 
             this.isTemplateD = false
             this.locked = false;
