@@ -458,14 +458,14 @@
             <a-tab-pane key="6" tab="Medical History">
               <a-tabs>
                 <a-tab-pane v-for="t in tabs" :key="t.key" :tab="t.tab">
-                  <v-text-field
+                  <v-textarea
                     v-model="t.data"
                     type="text"
                     height="100"
                     :label="t.tab.replaceAll('-', ' ')"
                     @input="updateMedHistory(t.tab, t.data)"
                   >
-                  </v-text-field>
+                  </v-textarea>
                 </a-tab-pane>
               </a-tabs>
             </a-tab-pane>
