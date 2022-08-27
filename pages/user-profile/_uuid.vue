@@ -591,12 +591,12 @@ export default {
         },
         {
           key: 6,
-          tab: 'Social-Medications',
+          tab: 'Social-History',
           data: '',
         },
         {
           key: 7,
-          tab: 'Family-Medications',
+          tab: 'Family-History',
           data: '',
         },
       ],
