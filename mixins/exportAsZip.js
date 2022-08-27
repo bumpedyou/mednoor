@@ -1,4 +1,5 @@
 import exportHcfa from '~/mixins/exportHcfa'
+
 const JSZip = require('jszip')
 
 export default {
@@ -6,10 +7,11 @@ export default {
 
     methods: {
 
-        zipDownload(items) {
+        zipDownload(items,date) {
 
+            const todate=`${new Date(date).getDate()}-${new Date(date).getMonth()+1}-${new Date(date).getFullYear()}`
             const zip = new JSZip();
-            const zipFiles = zip.folder("savedHcfa")
+            const zipFiles = zip.folder("hcfa-"+todate)
             items.forEach((_i,index) => {
                 const xmlFile = this.createXmlData(_i);
                 zipFiles.file(index+new Date().getTime() + '.xml', xmlFile)
@@ -17,7 +19,7 @@ export default {
             console.log(zipFiles)
             zip.generateAsync({ type: "blob" }).then(function (blob) {
 
-                const filename = 'hcfa-' + new Date().getTime() + '.zip'
+                const filename = 'hcfa-' + todate + '.zip'
                 if (window.navigator.msSaveOrOpenBlob) {
                     window.navigator.msSaveOrOpenBlob(blob, filename);
                 } else {

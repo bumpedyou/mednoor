@@ -28,6 +28,7 @@
     "jspdf": "^2.4.0",
     "jszip": "^3.10.0",
     "lodash.debounce": "^4.0.8",
+    "lodash.groupby": "^4.6.0",
     "mediasoup-client": "^3.6.37",
     "moment": "^2.29.1",
     "nuxt": "^2.15.7",

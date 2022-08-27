@@ -9,85 +9,34 @@
               to: localePath('/dashboard'),
             },
             {
-              text: 'Saved',
+              text: $t('Saved'),
+              to: localePath('/saved-hcfa'),
+            },
+            {
+              text: 'Batch',
               disabled: false,
             },
           ]"
         ></v-breadcrumbs>
-        <v-btn
-          v-if="items && items.length"
-          style="margin-left: 10px"
-          depressed
-          color="primary"
-          @click="submitHcfa"
-        >
-          Submit
-        </v-btn>
-        <v-btn
-          style="margin-left: 10px"
-          depressed
-          color="primary"
-          @click="batchList"
-        >
-          Batch
-        </v-btn>
       </v-col>
     </v-row>
     <v-row>
-      <!-- <v-col md="12">
-        <p class="h4 mb-1">
-          {{ $t('emr_lng') }}
-        </p>
-      </v-col> -->
-
       <v-col md="12">
         <v-skeleton-loader v-if="loadingData" />
-        <v-data-table v-else :items="items" :headers="headers">
-          <template #[`item.hcfa_sl`]="{ item }">
-            {{ item.hcfa_sl }}
-          </template>
-          <template #[`item.patient`]="{ item }">
-            <nuxt-link
-              :to="localePath('/user-profile/' + item.patient.user_uuid)"
-            >
-              {{ item.patient.user_first_name }}
-              {{ item.patient.user_last_name }}
-            </nuxt-link>
+        <v-data-table v-else :items="batchItems" :headers="headers">
+          <template #[`item.batch_sl`]="{ item }">
+            {{ item.sl }}
           </template>
 
-          <template #[`item.hcfa_create_date`]="{ value }">
+          <template #[`item.hcfa_batch_date`]="{ value }">
             {{ dateString(value) }} {{ timeString(value) }}
           </template>
-          <template #[`item.hcfa_date`]="{ value }">
-            {{ dateString(value) }} {{ timeString(value) }}
-          </template>
-          <template #[`item.doctor`]="{ item }">
-            <span>
-              {{ item.doctor.user_first_name }} {{ item.doctor.user_last_name }}
-            </span>
-          </template>
+
           <template #[`item.actions`]="{ item }">
             <div class="emr-action">
-              <nuxt-link
-                class="mr-5"
-                :to="{
-                  path: localePath('/hcfa'),
-
-                  query: {
-                    patientId: item.hcfa_patient_id,
-                    id: item.hcfa_uuid,
-                  },
-                }"
-                >{{ $t('edit') }}
-              </nuxt-link>
-              <span class="clickable mr-5" @click="export2xml(item)">{{
-                item.hcfa.hcfa_is_submitted === true ? 'Sent' : 'Ready'
+              <span class="red--text clickable" @click="export2xml(item)">{{
+                $t('Download')
               }}</span>
-              <span
-                class="red--text clickable"
-                @click="deleteItem(item.hcfa_uuid)"
-                >{{ $t('delete') }}</span
-              >
             </div>
           </template>
         </v-data-table>
@@ -129,7 +78,7 @@ import userRoleMixin from '~/mixins/userRoleMixin'
 import ConfirmDialog from '~/components/ConfirmDialog'
 
 const debounce = require('lodash.debounce')
-
+const groupBy = require('lodash.groupby')
 export default {
   name: 'EMR',
   components: {
@@ -153,6 +102,7 @@ export default {
   ],
   data: () => ({
     items: [],
+    batchItems: [],
     type: 'record',
     pdfFile: '',
     loadingPdf: false,
@@ -195,49 +145,13 @@ export default {
     submitHcfa() {
       this.isConfirm = true
     },
-    batchList() {
-      this.$router.push({
-        path: this.localePath('/batch-hcfa'),
-      })
-    },
-    confirmSubmit() {
-      this.loadingSubmit = true
 
-      this.$insuranceApi
-        .put(`hcfa/submit-list`, { is_submit: true })
-        .then(({ data }) => {
-          this.loadingSubmit = false
-          this.getSavedHcfaList()
-        })
-        .finally(() => {
-          this.loadingSubmit = false
-          this.isConfirm = false
-        })
-    },
+    confirmSubmit() {},
 
     isPdfLoading(recordId) {
       return this.printing === recordId
     },
-    printRecord(id) {
-      //   this.printing = id
-      //   this.loadingPdf = true
-      //   this.$api
-      //     .get('/medical-record/pdf/' + id)
-      //     .then(({ data }) => {
-      //       this.$toast.success(this.$t('pdf_gend').toString())
-      //       this.pdfFile = process.env.API_URL + '/generated/record/' + data.file
-      //       setTimeout(() => {
-      //         this.$refs.pdfDownload.click()
-      //       }, 500)
-      //     })
-      //     .catch(() => {
-      //       this.$toast.error(this.$t('pdf_fail').toString())
-      //     })
-      //     .finally(() => {
-      //       this.loadingPdf = false
-      //       this.printing = null
-      //     })
-    },
+
     confirmDelete() {
       this.loadingDelete = true
       this.$insuranceApi
@@ -267,41 +181,22 @@ export default {
     setColumns() {
       this.headers = [
         {
-          text: 'Hcfa',
-          value: 'hcfa_sl',
+          text: 'Batch',
+          value: 'sl',
           sortable: false,
         },
         {
-          text: 'Patient',
-          value: 'patient',
+          text: 'Create Date',
+          value: 'hcfa_batch_date',
           sortable: false,
         },
       ]
-      if (this.isAdmin || this.isSuper) {
-        this.headers.push({
-          text: this.$t('created_by'),
-          value: 'doctor',
-        })
-      }
 
-      this.headers.push(
-        {
-          text: 'Created At',
-          value: 'hcfa_create_date',
-          sortable: false,
-        },
-        {
-          text: 'Updated At',
-          value: 'hcfa_date',
-          sortable: false,
-        },
-
-        {
-          text: 'Actions',
-          value: 'actions',
-          sortable: false,
-        }
-      )
+      this.headers.push({
+        text: 'Actions',
+        value: 'actions',
+        sortable: false,
+      })
 
       this.getSavedHcfaList()
     },
@@ -311,10 +206,12 @@ export default {
       this.$insuranceApi
         .get(`hcfa/saved-list`)
         .then(({ data }) => {
-          this.items = []
+          // this.items = [];
+          this.batchItems = []
+          const hcfaList = []
           if (data && data.length) {
             data.forEach((_h, index) => {
-              if (_h.hcfa.hcfa_is_submitted!==true) {
+              if (_h.hcfa.hcfa_batch_no !== null) {
                 const o = {
                   hcfa_uuid: _h.hcfa.hcfa_uuid,
                   hcfa_patient_id: _h.hcfa.hcfa_patient_id,
@@ -327,19 +224,36 @@ export default {
                   doctor: _h.doctor,
                   hcfa_date: _h.hcfa.hcfa_date,
                   hcfa_create_date: _h.hcfa.hcfa_create_date,
+                  hcfa_batch_no: _h.hcfa.hcfa_batch_no,
+                  hcfa_batch_date: _h.hcfa.hcfa_batch_date,
                 }
                 this.items.push(o)
+                hcfaList.push(o)
               }
             })
           }
-          console.log('--->', this.items, '<---')
+          const groupBatch = groupBy(hcfaList, 'hcfa_batch_no')
+          //   console.log(groupBatch)
+          let sl = 1
+          for (const key in groupBatch) {
+            if (Object.hasOwnProperty.call(groupBatch, key)) {
+              const element = {}
+              element.sl = sl
+              element.batch_items = groupBatch[key]
+              element.hcfa_batch_date = groupBatch[key][0].hcfa_batch_date
+              this.batchItems.push(element)
+              sl++
+            }
+          }
+          console.log('--->', this.batchItems, '<---')
         })
         .finally(() => {
           this.loadingData = false
         })
     },
     export2xml(item) {
-      this.exportHcfa(item)
+      console.log(item)
+      this.zipDownload(item.batch_items, item.hcfa_batch_date)
     },
   },
 }
