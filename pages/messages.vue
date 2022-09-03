@@ -12,42 +12,57 @@ export default {
   // TODO: render a table of messages with the following columns:
   // Date, Time, Name, Email, Message, Actions
 
+  mounted() {
+    this.getMessages()
+  },
+
   data() {
     return {
       messages: [],
       columns: [
         {
-          name: 'Date',
-          field: 'date',
+          label: 'Date',
+          field: 'sent_date',
+          sortable: true,
+        },
+
+        {
+          label: 'Name',
+          field: 'sender_name',
           sortable: true,
         },
         {
-          name: 'Time',
-          field: 'time',
+          label: 'Email',
+          field: 'sender_email',
           sortable: true,
         },
         {
-          name: 'Name',
-          field: 'name',
+          label: 'Subject',
+          field: 'message_subject',
           sortable: true,
         },
         {
-          name: 'Email',
-          field: 'email',
+          label: 'Message',
+          field: 'message_body',
           sortable: true,
         },
         {
-          name: 'Message',
-          field: 'message',
-          sortable: true,
-        },
-        {
-          name: 'Actions',
+          label: 'Actions',
           field: 'actions',
-          sortable: false,
+          sortable: true,
         },
       ],
     }
+  },
+
+  methods: {
+    getMessages() {
+      this.$axios
+        .get('https://murmuring-taiga-10309.herokuapp.com/feed-back/messages')
+        .then((response) => {
+          this.messages = response.data
+        })
+    },
   },
 }
 </script>
