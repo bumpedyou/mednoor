@@ -202,14 +202,13 @@
                   :key="t.key"
                   :tab="t.tab.replaceAll('-', ' ')"
                 >
-                  <v-text-field
+                  <v-textarea
                     v-model="t.data"
                     type="text"
-                    height="100"
                     :label="t.tab.replaceAll('-', ' ')"
                     @input="updateMedHistory(t.tab, t.data)"
                   >
-                  </v-text-field>
+                  </v-textarea>
                 </a-tab-pane>
               </a-tabs>
             </a-tab-pane>
@@ -1071,44 +1070,40 @@ export default {
 
         {
           key: 1,
-          tab: 'Current-Meds',
+          tab: 'Current-Medication',
           data: '',
         },
         {
           key: 2,
-          tab: 'Medical-History',
-          data: '',
-        },
-        {
-          key: 3,
-          tab: 'Social-History',
-          data: '',
-        },
-        {
-          key: 4,
           tab: 'Pharmacies',
           data: '',
         },
         {
+          key: 3,
+          tab: 'Past-Medication',
+          data: '',
+        },
+        {
+          key: 4,
+          tab: 'Medical-History',
+          data: '',
+        },
+        {
           key: 5,
-          tab: 'Family-History',
+          tab: 'Surgical-History',
           data: '',
         },
         {
           key: 6,
-          tab: 'Past-Medications',
+          tab: 'Social-History',
           data: '',
         },
         {
           key: 7,
-          tab: 'Current-Medications',
+          tab: 'Family-History',
           data: '',
         },
-        {
-          key: 8,
-          tab: 'Surgical-History',
-          data: '',
-        },
+ 
       ],
 
       // Copy All Data
