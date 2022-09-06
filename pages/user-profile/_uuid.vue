@@ -456,18 +456,35 @@
               </v-form>
             </a-tab-pane>
             <a-tab-pane key="6" tab="Medical History">
-              <a-tabs>
-                <a-tab-pane v-for="t in tabs" :key="t.key" :tab="t.tab">
-                  <v-textarea
-                    v-model="t.data"
-                    type="text"
-                    height="100"
-                    :label="t.tab.replaceAll('-', ' ')"
-                    @input="updateMedHistory(t.tab, t.data)"
-                  >
-                  </v-textarea>
-                </a-tab-pane>
-              </a-tabs>
+              <v-form
+                ref="insuredForm"
+                v-model="validInsuredForm"
+                @submit.prevent="saveMedicalHistory"
+              >
+                <a-tabs>
+
+                  <a-tab-pane v-for="t in tabs" :key="t.key" :tab="t.tab">
+                    <v-textarea
+                      v-model="t.data"
+                      type="text"
+                      height="100"
+                      class="mt-5"
+                      :label="t.tab.replaceAll('-', ' ')"
+
+                    >
+                    </v-textarea>
+                  </a-tab-pane>
+
+
+                </a-tabs>
+                <a-form-item class="mt-5">
+                  <a-button type="primary" html-type="submit">
+                    <SpinOrText v-model="loadingSaveP">
+                      {{ $t('save_changes') }}
+                    </SpinOrText>
+                  </a-button>
+                </a-form-item>
+              </v-form>
             </a-tab-pane>
             <!-- Claims -->
           </a-tabs>
@@ -557,6 +574,7 @@ export default {
       medical_license: '',
       license_state: '',
       credentials: '',
+      recordId: 0,
       tabs: [
           {
           key: 0,
@@ -737,12 +755,22 @@ export default {
         this.$toast.error('Failed to load categories.')
       })
     this.$api
-      .get('/medical-record/' + this.$auth.user.uuid)
-      .then((res) => {
-        console.log(res)
-      })
-      .catch((err) => {
-        console.log(err.data)
+      .get(
+        '/medical-record/record/' + this.user_uuid
+      )
+      .then(({ data }) => {
+        console.log(data);
+        if(data.length > 0) {
+          this.recordId = data[0].mere_uuid;
+          this.tabs[0].data = data[0].mere_allergies;
+          this.tabs[1].data = data[0].mere_current_meds;
+          this.tabs[2].data = data[0].mere_pharmicies;
+          this.tabs[3].data = data[0].mere_past_meds;
+          this.tabs[4].data = data[0].mere_medical_history;
+          this.tabs[5].data = data[0].mere_surgical_history;
+          this.tabs[6].data = data[0].mere_social_history;
+          this.tabs[7].data = data[0].mere_family_history;
+        }
       })
   },
   methods: {
@@ -1010,7 +1038,7 @@ export default {
         }
         this.loadingSaveP = true
         this.$api
-          .put('/professional', values)
+          .put('/user/', values)
           .then(() => {
             this.$toast.success(this.$t('updated_suc').toString())
           })
@@ -1092,6 +1120,34 @@ export default {
             this.loadingSaveP = false
           })
       }
+    },
+
+    saveMedicalHistory() {
+      console.log("Save Medical History");
+      this.loadingSaveP = true;
+      const values = {
+        allergies: this.tabs[0].data,
+        current_meds: this.tabs[1].data,
+        pharmacies: this.tabs[2].data,
+        past_meds: this.tabs[3].data,
+        medical_history: this.tabs[4].data,
+        surgical_history: this.tabs[5].data,
+        social_history: this.tabs[6].data,
+        family_history: this.tabs[7].data,
+        recordId: this.recordId
+      }
+      this.loadingSaveP = true
+      this.$api
+        .put('/medical-record/record/' + this.user_uuid, values)
+        .then(() => {
+          this.$toast.success(this.$t('updated_suc').toString())
+        })
+        .catch((e) => {
+          this.$refs.rmodal.$emit('error', e)
+        })
+        .finally(() => {
+          this.loadingSaveP = false
+        })
     },
 
     checkCopy(value) {

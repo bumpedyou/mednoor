@@ -112,7 +112,10 @@
           <v-tabs v-model="tab">
             <v-tab>{{ $t('allergies') }}</v-tab>
             <v-tab>{{ $t('current_meds') }}</v-tab>
+            <v-tab>{{ $t('pharmacies') }}</v-tab>
+            <v-tab>{{ $t('past_meds') }}</v-tab>
             <v-tab>{{ $t('med_htry') }}</v-tab>
+            <v-tab>{{ $t('surgical_htry') }}</v-tab>
             <v-tab>{{ $t('soc_htry') }}</v-tab>
             <v-tab>{{ $t('fam_hry') }}</v-tab>
           </v-tabs>
@@ -137,11 +140,38 @@
             </v-tab-item>
             <v-tab-item>
               <v-textarea
+                v-model="pharmacies"
+                :label="$t('pharmacies')"
+                :placeholder="$t('pharmacies')"
+                :disabled="isDisabled"
+                @input="inputReceived('pharmacies')"
+              />
+            </v-tab-item>
+            <v-tab-item>
+              <v-textarea
+                v-model="past_meds"
+                :label="$t('past_meds')"
+                :placeholder="$t('past_meds')"
+                :disabled="isDisabled"
+                @input="inputReceived('past_meds')"
+              />
+            </v-tab-item>
+            <v-tab-item>
+              <v-textarea
                 v-model="medical_history"
                 :label="$t('med_htry')"
                 :placeholder="$t('med_htry')"
                 :disabled="isDisabled"
                 @input="inputReceived('medical_history')"
+              />
+            </v-tab-item>
+            <v-tab-item>
+              <v-textarea
+                v-model="surgical_history"
+                :label="$t('surgical_htry')"
+                :placeholder="$t('surgical_htry')"
+                :disabled="isDisabled"
+                @input="inputReceived('surgical_history')"
               />
             </v-tab-item>
             <v-tab-item>
@@ -396,7 +426,10 @@ export default {
     tab2: 0,
     allergies: '',
     current_meds: '',
+    pharmacies: '',
+    past_meds: '',
     medical_history: '',
+    surgical_history: '',
     social_history: '',
     family_history: '',
     chief_complaint: '',
@@ -525,7 +558,7 @@ export default {
         .get('/medical-record/' + this.recordId)
         .then(({ data }) => {
           this.selectedUser = data.user_uuid
-          this.setData(data)
+          this.setData(data, true)
           if (data && data.mere_date) {
             this.picker = new Date(data.mere_date)
             console.log(this.picker,data.mere_date)
@@ -705,7 +738,10 @@ export default {
           patient: this.selectedUser,
           allergies: this.allergies,
           current_meds: this.current_meds,
+          pharmacies: this.pharmacies,
+          past_meds: this.past_meds,
           medical_history: this.medical_history,
+          surgical_history: this.surgical_history,
           social_history: this.social_history,
           family_history: this.family_history,
           bp: this.bp,
@@ -799,13 +835,19 @@ export default {
         }
       }
     },
-    setData(tm) {
-      this.template_name = tm.mere_name
-      this.allergies = tm.mere_allergies
-      this.current_meds = tm.mere_current_meds
-      this.medical_history = tm.mere_medical_history
-      this.social_history = tm.mere_social_history
-      this.family_history = tm.mere_family_history
+    setData(tm, type) {
+      if(type) {
+        this.template_name = tm.mere_name
+        this.allergies = tm.mere_allergies
+        this.current_meds = tm.mere_current_meds
+        this.pharmacies = tm.mere_pharmicies
+        this.past_meds = tm.mere_past_meds
+        this.medical_history = tm.mere_medical_history
+        this.surgical_history = tm.mere_surgical_history
+        this.social_history = tm.mere_social_history
+        this.family_history = tm.mere_family_history
+      }
+
       this.bp = tm.mere_bp
       this.pulse = tm.mere_pulse
       this.resp_rate = tm.mere_resp_rate
@@ -826,13 +868,13 @@ export default {
     changeTemplate(t) {
       this.templates.forEach((tm) => {
         if (tm.mere_uuid === t) {
-          this.setData(tm)
+          this.setData(tm, false)
         }
       })
     },
     UserSelectedFunc(u) {
       this.$api
-        .get('/medical-record?type=record&mrus_user_uuid=' + u)
+        .get('/medical-record?type=record&create=true&mrus_user_uuid=' + u)
         .then(({ data }) => {
              console.log('user last record ', data)
           if (data && data.length) {
@@ -844,7 +886,7 @@ export default {
 
             const item = data[0]
              item.mere_sign = null;
-            this.setData(item)
+            this.setData(item, true)
 
 
             this.isTemplateD = false

@@ -206,7 +206,7 @@
                     v-model="t.data"
                     type="text"
                     :label="t.tab.replaceAll('-', ' ')"
-                    @input="updateMedHistory(t.tab, t.data)"
+                    @input="updateMedHistory(t.route, t.data)"
                   >
                   </v-textarea>
                 </a-tab-pane>
@@ -1065,46 +1065,55 @@ export default {
         {
           key: 0,
           tab: 'Allergies',
+          route: 'allergies',
           data: '',
         },
 
         {
           key: 1,
           tab: 'Current-Medication',
+          route: 'current-meds',
           data: '',
         },
         {
           key: 2,
           tab: 'Pharmacies',
+          route: 'pharmacies',
           data: '',
         },
         {
           key: 3,
           tab: 'Past-Medication',
+          route: 'past-meds',
           data: '',
         },
         {
           key: 4,
           tab: 'Medical-History',
+          route: 'medical-history',
           data: '',
         },
         {
           key: 5,
           tab: 'Surgical-History',
+          route: 'surgical-history',
           data: '',
         },
         {
           key: 6,
           tab: 'Social-History',
+          route: 'social-history',
           data: '',
         },
         {
           key: 7,
           tab: 'Family-History',
+          route: 'family-history',
           data: '',
         },
- 
+
       ],
+      recordId: 0,
 
       // Copy All Data
       yes: false,
@@ -1279,19 +1288,22 @@ export default {
   methods: {
     async getUserMedHistory() {
       await this.$api
-        .get('/medical-record/' + this.$auth.user.uuid)
-        .then((res) => {
-          console.log(res)
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-      await this.$api
         .get(
           '/medical-record?type=record&mrus_user_uuid=' + this.$auth.user.uuid
         )
-        .then((res) => {
-          console.log(res)
+        .then(({ data }) => {
+          console.log(data);
+          if(data.length > 0) {
+            this.recordId = data[0].mere_uuid;
+            this.tabs[0].data = data[0].mere_allergies;
+            this.tabs[1].data = data[0].mere_current_meds;
+            this.tabs[2].data = data[0].mere_pharmicies;
+            this.tabs[3].data = data[0].mere_past_meds;
+            this.tabs[4].data = data[0].mere_medical_history;
+            this.tabs[5].data = data[0].mere_surgical_history;
+            this.tabs[6].data = data[0].mere_social_history;
+            this.tabs[7].data = data[0].mere_family_history;
+          }
         })
     },
     getInsuranceClaimInfo(userInfo) {
@@ -1347,15 +1359,16 @@ export default {
         })
     },
     async updateMedHistory(tab, data) {
+
       if (!this.fetchingMedHistory) {
         this.fetchingMedHistory = true
-        const userId = this.$auth.user.uuid
+        // const userId = this.$auth.user.uuid
         const tabName = tab.toLowerCase()
         await this.$api
-          .patch('/medical-record/' + tabName + '/' + userId, { v: data })
-          .then((res) => {
+          .patch('/medical-record/' + tabName + '/' + this.recordId, { value: data })
+          .then(({data}) => {
             this.fetchingMedHistory = false
-            console.log(res)
+            this.recordId = data.recordId;
           })
           .catch((err) => {
             this.fetchingMedHistory = false
