@@ -22,15 +22,14 @@
           Open
         </v-btn>
         <v-btn
-           
-            style="margin-left: 10px"
-            depressed
-            color="primary"
-            @click="savedList"
-          >
-            <span  v-if="hcfaCount" class="hcfa-count">{{ hcfaCount }}</span>
-            Saved
-          </v-btn>
+          style="margin-left: 10px"
+          depressed
+          color="primary"
+          @click="savedList"
+        >
+          <span v-if="hcfaCount" class="hcfa-count">{{ hcfaCount }}</span>
+          Saved
+        </v-btn>
       </div>
     </div>
     <div v-if="isLoading === false" class="mh-100v">
@@ -55,7 +54,7 @@
           <!-- <v-btn  depressed color="primary" @click="export2xml">
             Export Xml
           </v-btn> -->
-          <v-btn
+          <v-btn 
             style="margin-left: 10px"
             depressed
             color="primary"
@@ -63,12 +62,18 @@
           >
             Save
           </v-btn>
-
-     
+          <v-btn v-if="printMode"
+            style="margin-left: 10px"
+            depressed
+            color="primary"
+            @click="printHcfa"
+          >
+            Print
+          </v-btn>
         </div>
       </div>
 
-      <div class="hcfa-container">
+      <div id="printElement" class="hcfa-container">
         <!-- Line 1 -->
         <v-row class="bb-1">
           <v-col cols="8" sm="8" md="8">
@@ -1660,6 +1665,7 @@
 </template>
 
 <script>
+
 import userRoleMixin from '~/mixins/userRoleMixin'
 import inputMixin from '~/mixins/inputMixin'
 import authMixin from '~/mixins/authMixin'
@@ -1672,6 +1678,7 @@ export default {
     return {
       hcfaCount: 0,
       editMode: false,
+      printMode:false,
       hcfa: {
         hcfaTitle: {
           pNo: 1500,
@@ -2123,9 +2130,17 @@ export default {
   mounted() {
     this.init()
 
-    if (this.$route.query && this.$route.query.id && this.$route.query.patientId) {
-      this.editMode= true;
+
+    if (
+      this.$route.query &&
+      this.$route.query.id &&
+      this.$route.query.patientId 
+    ) {
+      this.editMode = true
     }
+
+
+
     this.$userApi
       .get(`/list?view=users`)
       .then((res) => {
@@ -2137,16 +2152,15 @@ export default {
             }
           })
           // check edit mode
-            if (this.editMode) {
-              
-              const selectedUser = this.patientList.find(
-                (x) => x.user_uuid === this.$route.query.patientId
-              )
-              if (selectedUser) {
-                this.currentName = selectedUser
-                this.openHcfa()
-              }
+          if (this.editMode) {
+            const selectedUser = this.patientList.find(
+              (x) => x.user_uuid === this.$route.query.patientId
+            )
+            if (selectedUser) {
+              this.currentName = selectedUser
+              this.openHcfa()
             }
+          }
         }
       })
       .catch(() => {
@@ -2164,7 +2178,7 @@ export default {
       if (this.editMode) {
         url = `/hcfa/${this.$route.query.id}?doctorId=${this.$auth.user.uuid}&patientId=${this.currentName.user_uuid}`
       } else {
-        url=`/hcfa/?doctorId=${this.$auth.user.uuid}&patientId=${this.currentName.user_uuid}`
+        url = `/hcfa/?doctorId=${this.$auth.user.uuid}&patientId=${this.currentName.user_uuid}`
       }
       this.$insuranceApi
         .get(url)
@@ -3081,7 +3095,7 @@ export default {
       let posturl
       if (this.editMode) {
         sendingData.hcfa_uuid = this.$route.query.id
-        sendingData.hcfa_date= new Date().toISOString()
+        sendingData.hcfa_date = new Date().toISOString()
         posturl = '/hcfa/update'
       } else {
         posturl = '/hcfa/save'
@@ -3090,7 +3104,7 @@ export default {
       console.log(response)
 
       if (response.status === 200) {
-        this.$toast.success(this.editMode?'Updated success':'save success')
+        this.$toast.success(this.editMode ? 'Updated success' : 'save success')
         this.getHcfaCount()
       } else this.$toast.error('save error')
     },
@@ -3098,10 +3112,24 @@ export default {
     savehcfa() {
       this.createOrUpdate()
     },
+     printHcfa() {
+      window.print()
+    //   const element = document.getElementById('printElement')
+    //   console.log(element, html2canvas)
+    //   const doc = new JsPDF()
+    //   /** WITH CSS */
+    //  // const CanvasElement = document.createElement('canvas')
+    //   const options = {
+    //     type: 'dataURL',
+    //   }
 
+    //   const img = await html2canvas(element, options)
+    //   doc.addImage(img, 'JPEG', 20, 20)
+    //   doc.save('sample.pdf')
+    },
     savedList() {
       this.$router.push({
-        path: this.localePath('/saved-hcfa')
+        path: this.localePath('/saved-hcfa'),
       })
     },
   },
