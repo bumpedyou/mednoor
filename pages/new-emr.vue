@@ -836,8 +836,8 @@ export default {
       }
     },
     setData(tm, type) {
+      this.template_name = tm.mere_name
       if(type) {
-        this.template_name = tm.mere_name
         this.allergies = tm.mere_allergies
         this.current_meds = tm.mere_current_meds
         this.pharmacies = tm.mere_pharmicies
@@ -847,7 +847,6 @@ export default {
         this.social_history = tm.mere_social_history
         this.family_history = tm.mere_family_history
       }
-
       this.bp = tm.mere_bp
       this.pulse = tm.mere_pulse
       this.resp_rate = tm.mere_resp_rate
@@ -862,8 +861,6 @@ export default {
       this.plan = tm.mere_plan
       this.sign = tm.mere_sign
       this.addendum = tm.mere_addendum
-
-      console.log('Setting data.', tm, this.template_name)
     },
     changeTemplate(t) {
       this.templates.forEach((tm) => {
