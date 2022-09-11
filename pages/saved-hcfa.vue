@@ -80,6 +80,20 @@
                 }"
                 >{{ $t('edit') }}
               </nuxt-link>
+
+              <nuxt-link
+                class="mr-5"
+                :to="{
+                  path: localePath('/hcfa'),
+                  query: {
+                    patientId: item.hcfa_patient_id,
+                    id: item.hcfa_uuid,
+                    isPrint:true
+                  },
+                }"
+                >{{ $t('Print') }}
+              </nuxt-link>
+
               <span class="clickable mr-5" @click="export2xml(item)">{{
                 item.hcfa.hcfa_is_submitted === true ? 'Sent' : 'Ready'
               }}</span>
@@ -315,7 +329,7 @@ export default {
           this.items = []
           if (data && data.length) {
             data.forEach((_h, index) => {
-              if (_h.hcfa.hcfa_is_submitted!==true) {
+              if (_h.hcfa.hcfa_is_submitted !== true) {
                 const o = {
                   hcfa_uuid: _h.hcfa.hcfa_uuid,
                   hcfa_patient_id: _h.hcfa.hcfa_patient_id,
