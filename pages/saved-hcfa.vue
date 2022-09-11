@@ -218,25 +218,26 @@ export default {
     isPdfLoading(recordId) {
       return this.printing === recordId
     },
+    
     printRecord(id) {
-      //   this.printing = id
-      //   this.loadingPdf = true
-      //   this.$api
-      //     .get('/medical-record/pdf/' + id)
-      //     .then(({ data }) => {
-      //       this.$toast.success(this.$t('pdf_gend').toString())
-      //       this.pdfFile = process.env.API_URL + '/generated/record/' + data.file
-      //       setTimeout(() => {
-      //         this.$refs.pdfDownload.click()
-      //       }, 500)
-      //     })
-      //     .catch(() => {
-      //       this.$toast.error(this.$t('pdf_fail').toString())
-      //     })
-      //     .finally(() => {
-      //       this.loadingPdf = false
-      //       this.printing = null
-      //     })
+      this.printing = id
+      this.loadingPdf = true
+      this.$api
+        .get('/medical-record/pdf/' + id)
+        .then(({ data }) => {
+          this.$toast.success(this.$t('pdf_gend').toString())
+          this.pdfFile = process.env.API_URL + '/generated/record/' + data.file
+          setTimeout(() => {
+            this.$refs.pdfDownload.click()
+          }, 500)
+        })
+        .catch(() => {
+          this.$toast.error(this.$t('pdf_fail').toString())
+        })
+        .finally(() => {
+          this.loadingPdf = false
+          this.printing = null
+        })
     },
     confirmDelete() {
       this.loadingDelete = true
