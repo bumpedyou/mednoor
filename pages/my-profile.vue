@@ -75,7 +75,7 @@
                 @submit.prevent="handleSubmit"
               >
                 <v-row>
-                  <v-col md="6">
+                  <v-col md="4">
                     <v-text-field
                       v-model="first_name"
                       :placeholder="$t('fn')"
@@ -91,7 +91,15 @@
                       ]"
                     ></v-text-field>
                   </v-col>
-                  <v-col md="6">
+                  <v-col md="4">
+                    <v-text-field
+                      v-model="middle_name"
+                      :placeholder="$t('mn')"
+                      :label="$t('mn')"
+
+                    ></v-text-field>
+                  </v-col>
+                  <v-col md="4">
                     <v-text-field
                       v-model="last_name"
                       :placeholder="$t('ln')"
@@ -244,7 +252,7 @@
                       item-value="cate_id"
                     ></v-autocomplete>
                   </v-col>
-                  <v-col md="6">
+                  <v-col md="3">
                     <v-text-field
                       v-model="npi"
                       placeholder="NPI"
@@ -255,6 +263,13 @@
                           (!!v && v.length === 10) ||
                           'Enter exactly 10 characters',
                       ]"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col md="3">
+                    <v-text-field
+                      v-model="dea"
+                      placeholder="DEA(Optional)"
+                      label="DEA"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -1044,6 +1059,7 @@ export default {
       loading: false,
       category: null,
       npi: '',
+      dea: '',
       categories: [],
       country_code: '',
       phone_no: '',
@@ -1191,6 +1207,10 @@ export default {
         a: '',
         b: '',
       },
+      user: null,
+      first_name: '',
+      middle_name: '',
+      last_name: '',
     }
   },
   head() {
@@ -1199,17 +1219,23 @@ export default {
     }
   },
   computed: {
-    user() {
-      return this.$auth.user
-    },
-    first_name() {
-      return this.user.user_first_name
-    },
-    last_name() {
-      return this.user.last_name
-    },
+    // user() {
+    //   return this.$auth.user
+    // },
+    // first_name() {
+    //   return this.user.user_first_name
+    // },
+    // middle_name() {
+    //   return this.user.user_middle_name
+    // },
+    // last_name() {
+    //   return this.user.last_name
+    // },
     name() {
-      return this.user.user_first_name + ' ' + this.user.last_name
+      if(this.middle_name && this.middle_name.length > 0) {
+        return this.first_name + ' ' + this.middle_name + ' ' + this.last_name
+      }
+      return this.first_name + ' ' + this.last_name
     },
     email() {
       return this.user.email
@@ -1247,6 +1273,11 @@ export default {
     },
   },
   mounted() {
+    this.user = this.$auth.user
+    console.log(this.user);
+    this.first_name = this.user.user_first_name
+    this.middle_name = this.user.user_middle_name
+    this.last_name = this.user.last_name
     if (this.myUserId) {
       this.$userApi.get('/' + this.myUserId).then(({ data }) => {
         if (data && data.user_uuid) {
@@ -1476,6 +1507,7 @@ export default {
 
             if (this.isModerator) {
               this.npi = data.profe_npi
+              this.dea = data.profe_dea
               this.practice_name = data.profe_practice_name
               this.medical_license = data.profe_medical_license
               this.license_state = data.profe_license_state
@@ -1497,6 +1529,7 @@ export default {
       this.$refs.personalForm.validate()
       if (this.validPersonalForm) {
         this.loading = true
+        console.log(this.middle_name);
         this.$api
           .put('/user', {
             user_uuid: this.$auth.user.uuid,
@@ -1509,6 +1542,7 @@ export default {
             state: this.state,
             zip: this.zip,
             first_name: this.first_name,
+            middle_name: this.middle_name,
             last_name: this.last_name,
             date_of_birth: new Date(this.date_of_birth).toISOString(),
             user_email: this.email,
@@ -1516,6 +1550,7 @@ export default {
           .then(() => {
             setTimeout(async () => {
               await this.$auth.fetchUser()
+              console.log(this.name)
               console.log('Fetched user --->', this.$auth.user)
               this.$toast.success(this.$t('updated_suc').toString())
             }, 100)
@@ -1536,6 +1571,7 @@ export default {
         const values = {
           category: this.category,
           npi: this.npi,
+          dea: this.dea,
           specialty: this.specialty,
           practice_name: this.practice_name,
           medical_license: this.medical_license,

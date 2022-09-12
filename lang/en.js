@@ -7,6 +7,7 @@ export default {
   name: 'Name',
   role: 'Role',
   fn: 'First Name',
+  mn: 'Middle Name',
   ln: 'Last Name',
   pwd: 'Password',
   cpwd: 'Confirm password',
