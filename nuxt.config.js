@@ -157,6 +157,7 @@ export default {
 
   env: {
     BASE_URL: process.env.BASE_URL,
+    API_FB:process.env.API_FB,
     API_URL: process.env.API_URL,
     MEDIA_URL: process.env.MEDIA_URL,
     USER_BASE_URL: process.env.USER_BASE_URL,
