@@ -78,12 +78,6 @@
         </v-icon>  Read
       </v-btn>
         </template>
-
-        /** new Date */
-        <template #[`item.sent_date`] = "{item}">
-        {{adjustDate(item.sent_date)}}
-        
-        </template>
         </v-data-table>
     </v-row>
   </div>
@@ -111,9 +105,7 @@ export default {
       this.$feedBackApi
         .get('/messages')
         .then(({ data }) => {
-          this.messages = data.sort( (a,b)=>{
-            return new Date(b.sent_date) - new Date(a.sent_date)
-          });
+          this.messages = this.messagesData(data)
         })
         .catch((err) => {
           console.log(err);
@@ -123,27 +115,12 @@ export default {
       return Number(unread) ?'red darken-2':'green darken-2'
     },getStateIcon(unread){
       return Number(unread)? ' mdi-email-outline':'mdi-email-open-outline'
-    },viewMessage(x){
-      this.$feedBackApi
-        .get(`/messages/${x.message_id}`)
-        .then(({data}) => {
-        this.messages=this.messages.map(m=>{
-          console.log(m.message_id)
-          return m.message_id=== x.message_id ? data : m
-        })
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-      window.alert(x.message_id)
     },
     getUnread(){
       this.$feedBackApi
         .get('/messages/unread')
         .then(({ data }) => {
-          this.messages = data.sort( (a,b)=>{
-            return new Date(b.sent_date) - new Date(a.sent_date)
-          });
+          this.messages = this.messagesData(data)
         })
         .catch((err) => {
           console.log(err);
@@ -153,9 +130,7 @@ export default {
       this.$feedBackApi
       .get('/messages/readed')
         .then(({ data }) => {
-          this.messages = data.sort( (a,b)=>{
-            return new Date(b.sent_date) - new Date(a.sent_date)
-          });
+          this.messages = this.messagesData(data)
         })
         .catch((err) => {
           console.log(err);
@@ -168,6 +143,12 @@ export default {
         return newDate.split(",")[1]
       }
       return newDate.split(",")[0]
+    },messagesData (data) {
+      return data.map((row)=>{
+            return {...row,sent_date:this.adjustDate(row.sent_date)}
+          }).sort( (a,b)=>{
+            return new Date(b.sent_date) - new Date(a.sent_date)
+          });
     }
   }
 }

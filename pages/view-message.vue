@@ -43,7 +43,7 @@
       <v-col cols="2" >
         <v-card elevation="2" class=".caption" >Date</v-card>
       </v-col>
-      <v-col><b>{{adjustDate(message.sent_date)}}</b></v-col>
+      <v-col><b>{{message.sent_date}}</b></v-col>
     </v-row>
     <v-row no-gutters>
       <v-col cols="2" >
@@ -104,7 +104,7 @@ export default {
       this.$feedBackApi
         .get(`/messages/${id}`)
         .then(({data}) => {
-        this.message=data
+        this.message={...data,sent_date:this.adjustDate(data.sent_date)}
         })
         .catch((err) => {
           console.log(err);
