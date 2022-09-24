@@ -75,7 +75,7 @@
                 @submit.prevent="handleSubmit"
               >
                 <v-row>
-                  <v-col md="6">
+                  <v-col md="4">
                     <v-text-field
                       v-model="first_name"
                       :placeholder="$t('fn')"
@@ -91,7 +91,15 @@
                       ]"
                     ></v-text-field>
                   </v-col>
-                  <v-col md="6">
+                  <v-col md="4">
+                    <v-text-field
+                      v-model="middle_name"
+                      :placeholder="$t('mn')"
+                      :label="$t('mn')"
+
+                    ></v-text-field>
+                  </v-col>
+                  <v-col md="4">
                     <v-text-field
                       v-model="last_name"
                       :placeholder="$t('ln')"
@@ -244,7 +252,7 @@
                       item-value="cate_id"
                     ></v-autocomplete>
                   </v-col>
-                  <v-col md="6">
+                  <v-col md="3">
                     <v-text-field
                       v-model="npi"
                       placeholder="NPI"
@@ -255,6 +263,13 @@
                           (!!v && v.length === 10) ||
                           'Enter exactly 10 characters',
                       ]"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col md="3">
+                    <v-text-field
+                      v-model="dea"
+                      placeholder="DEA(Optional)"
+                      label="DEA"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -503,12 +518,74 @@
                 </v-row>
 
                 <v-row>
-                  <v-col md="6" lg="6">
-                    <v-text-field
-                      v-model="number4.insuredName"
-                      label="Insured's Name"
-                      placeholder="Insured's Name"
-                      :rules="[
+                  <v-col md="6">
+                    <v-col>
+                      <p class="h6">Primary Insurance</p>
+
+                    </v-col>
+                    <v-row>
+                      <v-col md="4" lg="4">
+                        <v-text-field
+                          v-model="number4.insuredContract"
+                          label="Contract"
+                          placeholder="Contract"
+                          :rules="[
+                        (v) => !!v || 'The Insured\'s Contract is required',
+                        (v) =>
+                          (!!v && v.length >= 3) ||
+                          'Enter at least 3 characters',
+                        (v) =>
+                          (!!v && v.length <= 12) ||
+                          'Enter a maximum of 12 characters',
+                      ]"
+                          :hide-details="true"
+                        >
+                        </v-text-field>
+                      </v-col>
+                      <v-col md="4" lg="4">
+                        <v-text-field
+                          v-model="number4.insuredPolicy"
+                          label="Policy"
+                          placeholder="Policy"
+                          :rules="[
+                        (v) => !!v || 'The Insured\'s Policy is required',
+                        (v) =>
+                          (!!v && v.length >= 3) ||
+                          'Enter at least 3 characters',
+                        (v) =>
+                          (!!v && v.length <= 12) ||
+                          'Enter a maximum of 12 characters',
+                      ]"
+                          :hide-details="true"
+                        >
+                        </v-text-field>
+                      </v-col>
+                      <v-col md="4" lg="4">
+                        <v-text-field
+                          v-model="number4.insuredGroup"
+                          label="Group"
+                          placeholder="Group"
+                          :rules="[
+                        (v) => !!v || 'The Insured\'s Group is required',
+                        (v) =>
+                          (!!v && v.length >= 3) ||
+                          'Enter at least 3 characters',
+                        (v) =>
+                          (!!v && v.length <= 12) ||
+                          'Enter a maximum of 12 characters',
+                      ]"
+                          :hide-details="true"
+                        >
+                        </v-text-field>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col md="6" lg="6">
+                        <v-text-field
+                          v-model="number4.insuredName"
+                          label="Insured's Name"
+                          placeholder="Insured's Name"
+                          :rules="[
                         (v) => !!v || 'The Insured\'s Name is required',
                         (v) =>
                           (!!v && v.length >= 3) ||
@@ -517,16 +594,16 @@
                           (!!v && v.length <= 12) ||
                           'Enter a maximum of 12 characters',
                       ]"
-                      :hide-details="true"
-                    >
-                    </v-text-field>
-                  </v-col>
-                  <v-col md="6" lg="6">
-                    <v-text-field
-                      v-model="number7.insuredAddress"
-                      label="Insured's Address"
-                      placeholder="Insured's Address"
-                      :rules="[
+                          :hide-details="true"
+                        >
+                        </v-text-field>
+                      </v-col>
+                      <v-col md="6" lg="6">
+                        <v-text-field
+                          v-model="number7.insuredAddress"
+                          label="Insured's Address"
+                          placeholder="Insured's Address"
+                          :rules="[
                         (v) => !!v || 'The Insured\'n Address is required',
                         (v) =>
                           (!!v && v.length > 1) ||
@@ -535,18 +612,18 @@
                           (!!v && v.length <= 30) ||
                           'Enter a maximum of 30 characters',
                       ]"
-                      :hide-details="true"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
+                          :hide-details="true"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
 
-                <v-row>
-                  <v-col md="6" lg="3">
-                    <v-text-field
-                      v-model="number7.insuredCity"
-                      label="Insured's City"
-                      placeholder="Insured's City"
-                      :rules="[
+                    <v-row>
+                      <v-col md="6" lg="3">
+                        <v-text-field
+                          v-model="number7.insuredCity"
+                          label="Insured's City"
+                          placeholder="Insured's City"
+                          :rules="[
                         (v) => !!v || 'The Insured\'s City is required',
                         (v) =>
                           (!!v && v.length >= 3) ||
@@ -555,16 +632,16 @@
                           (!!v && v.length <= 12) ||
                           'Enter a maximum of 12 characters',
                       ]"
-                      :hide-details="true"
-                    >
-                    </v-text-field>
-                  </v-col>
-                  <v-col md="6" lg="3">
-                    <v-text-field
-                      v-model="number7.insuredState"
-                      label="Insured's State"
-                      placeholder="Insured's State"
-                      :rules="[
+                          :hide-details="true"
+                        >
+                        </v-text-field>
+                      </v-col>
+                      <v-col md="6" lg="3">
+                        <v-text-field
+                          v-model="number7.insuredState"
+                          label="Insured's State"
+                          placeholder="Insured's State"
+                          :rules="[
                         (v) => !!v || 'The Insured\'s State is required',
                         (v) =>
                           (!!v && v.length > 1) ||
@@ -573,15 +650,15 @@
                           (!!v && v.length <= 30) ||
                           'Enter a maximum of 30 characters',
                       ]"
-                      :hide-details="true"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col md="6" lg="3">
-                    <v-text-field
-                      v-model="number7.insuredZipcode"
-                      label="Insured's Zip Code"
-                      placeholder="Insured's Zip Code"
-                      :rules="[
+                          :hide-details="true"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col md="6" lg="3">
+                        <v-text-field
+                          v-model="number7.insuredZipcode"
+                          label="Insured's Zip Code"
+                          placeholder="Insured's Zip Code"
+                          :rules="[
                         (v) => !!v || 'The Insured\'s Zip Code is required',
                         (v) =>
                           (!!v && v.length > 1) ||
@@ -590,15 +667,15 @@
                           (!!v && v.length <= 30) ||
                           'Enter a maximum of 30 characters',
                       ]"
-                      :hide-details="true"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col md="6" lg="3">
-                    <v-text-field
-                      v-model="number7.insuredTelephone"
-                      label="Insured's Teletephone"
-                      placeholder="Insured's Teletephone"
-                      :rules="[
+                          :hide-details="true"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col md="6" lg="3">
+                        <v-text-field
+                          v-model="number7.insuredTelephone"
+                          label="Insured's Teletephone"
+                          placeholder="Insured's Teletephone"
+                          :rules="[
                         (v) => !!v || 'The Insured\'s Teletephone is required',
                         (v) =>
                           (!!v && v.length > 1) ||
@@ -607,18 +684,18 @@
                           (!!v && v.length <= 30) ||
                           'Enter a maximum of 30 characters',
                       ]"
-                      :hide-details="true"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
+                          :hide-details="true"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
 
-                <v-row>
-                  <v-col md="6" lg="3">
-                    <v-text-field
-                      v-model="number11.c"
-                      label="Insurance Plan Name"
-                      placeholder="Insurance Plan Name"
-                      :rules="[
+                    <v-row>
+                      <v-col md="6" lg="3">
+                        <v-text-field
+                          v-model="number11.c"
+                          label="Insurance Plan Name"
+                          placeholder="Insurance Plan Name"
+                          :rules="[
                         (v) => !!v || 'The Insurance Plan Name is required',
                         (v) =>
                           (!!v && v.length > 1) ||
@@ -627,35 +704,174 @@
                           (!!v && v.length <= 30) ||
                           'Enter a maximum of 30 characters',
                       ]"
-                      :hide-details="true"
-                    ></v-text-field>
+                          :hide-details="true"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col md="6" lg="4">
+                        <div class="d-flex flex-row align-end">
+                          <label for="">Insured's Date Of Birth: </label>
+                          <date-picker
+                            v-model="insuredBirthDay"
+                            format="MM/DD/YYYY"
+                            type="date"
+                            style="margin-left: 15px"
+                          ></date-picker>
+                        </div>
+                      </v-col>
+                      <v-col md="6" lg="2">
+                        <v-select
+                          v-model="number11.a.sex"
+                          :items="sexs"
+                          label="Insured's Sex"
+                        ></v-select>
+                      </v-col>
+                      <v-col md="6" lg="3">
+                        <v-select
+                          v-model="number6"
+                          :items="relations"
+                          label="Relation with patient"
+                        ></v-select>
+                      </v-col>
+                    </v-row>
                   </v-col>
-                  <v-col md="6" lg="4">
-                    <div class="d-flex flex-row align-end">
-                      <label for="">Insured's Date Of Birth: </label>
-                      <date-picker
-                        v-model="insuredBirthDay"
-                        format="MM/DD/YYYY"
-                        type="date"
-                        style="margin-left: 15px"
-                      ></date-picker>
-                    </div>
-                  </v-col>
-                  <v-col md="6" lg="2">
-                    <v-select
-                      v-model="number11.a.sex"
-                      :items="sexs"
-                      label="Insured's Sex"
-                    ></v-select>
-                  </v-col>
-                  <v-col md="6" lg="3">
-                    <v-select
-                      v-model="number6"
-                      :items="relations"
-                      label="Relation with patient"
-                    ></v-select>
+                  <v-col md="6">
+                    <v-col>
+                      <p class="h6">Secondary Insurance</p>
+
+                    </v-col>
+                    <v-row>
+                      <v-col md="4" lg="4">
+                        <v-text-field
+                          v-model="number4_2.insuredContract"
+                          label="Contract"
+                          placeholder="Contract"
+
+                          :hide-details="true"
+                        >
+                        </v-text-field>
+                      </v-col>
+                      <v-col md="4" lg="4">
+                        <v-text-field
+                          v-model="number4_2.insuredPolicy"
+                          label="Policy"
+                          placeholder="Policy"
+
+                          :hide-details="true"
+                        >
+                        </v-text-field>
+                      </v-col>
+                      <v-col md="4" lg="4">
+                        <v-text-field
+                          v-model="number4_2.insuredGroup"
+                          label="Group"
+                          placeholder="Group"
+
+                          :hide-details="true"
+                        >
+                        </v-text-field>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col md="6" lg="6">
+                        <v-text-field
+                          v-model="number4_2.insuredName"
+                          label="Insured's Name"
+                          placeholder="Insured's Name"
+
+                          :hide-details="true"
+                        >
+                        </v-text-field>
+                      </v-col>
+                      <v-col md="6" lg="6">
+                        <v-text-field
+                          v-model="number7_2.insuredAddress"
+                          label="Insured's Address"
+                          placeholder="Insured's Address"
+
+                          :hide-details="true"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+
+                    <v-row>
+                      <v-col md="6" lg="3">
+                        <v-text-field
+                          v-model="number7_2.insuredCity"
+                          label="Insured's City"
+                          placeholder="Insured's City"
+
+                          :hide-details="true"
+                        >
+                        </v-text-field>
+                      </v-col>
+                      <v-col md="6" lg="3">
+                        <v-text-field
+                          v-model="number7_2.insuredState"
+                          label="Insured's State"
+                          placeholder="Insured's State"
+
+                          :hide-details="true"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col md="6" lg="3">
+                        <v-text-field
+                          v-model="number7_2.insuredZipcode"
+                          label="Insured's Zip Code"
+                          placeholder="Insured's Zip Code"
+
+                          :hide-details="true"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col md="6" lg="3">
+                        <v-text-field
+                          v-model="number7_2.insuredTelephone"
+                          label="Insured's Teletephone"
+                          placeholder="Insured's Teletephone"
+
+                          :hide-details="true"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+
+                    <v-row>
+                      <v-col md="6" lg="3">
+                        <v-text-field
+                          v-model="number11_2.c"
+                          label="Insurance Plan Name"
+                          placeholder="Insurance Plan Name"
+
+                          :hide-details="true"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col md="6" lg="4">
+                        <div class="d-flex flex-row align-end">
+                          <label for="">Insured's Date Of Birth: </label>
+                          <date-picker
+                            v-model="secondInsuredBirthDay"
+                            format="MM/DD/YYYY"
+                            type="date"
+                            style="margin-left: 15px"
+                          ></date-picker>
+                        </div>
+                      </v-col>
+                      <v-col md="6" lg="2">
+                        <v-select
+                          v-model="number11_2.a.sex"
+                          :items="sexs"
+                          label="Insured's Sex"
+                        ></v-select>
+                      </v-col>
+                      <v-col md="6" lg="3">
+                        <v-select
+                          v-model="number6_2"
+                          :items="relations"
+                          label="Relation with patient"
+                        ></v-select>
+                      </v-col>
+                    </v-row>
                   </v-col>
                 </v-row>
+
 
                 <v-row>
                   <v-col md="6" lg="3">
@@ -787,7 +1003,7 @@
               </v-form>
             </a-tab-pane>
             <!-- Claims -->
-            <a-tab-pane v-if="isProfessional" key="6" tab="Claims" force-render>
+            <a-tab-pane v-if="isProfessional" key="8" tab="Claims" force-render>
               <div v-if="!isCompletedClaims">
                 <a-alert
                   message="Please complete your Claims information"
@@ -1044,6 +1260,7 @@ export default {
       loading: false,
       category: null,
       npi: '',
+      dea: '',
       categories: [],
       country_code: '',
       phone_no: '',
@@ -1119,7 +1336,8 @@ export default {
       yes: false,
       no: true,
       // Insured Information
-      number4: { insuredName: '' },
+      number4: { insuredName: '', insuredContract: '', insuredPolicy: '', insuredGroup: '' },
+      number4_2: { insuredName: '', insuredContract: '', insuredPolicy: '', insuredGroup: '' },
       number5: {
         patientAddress: '',
         patientCity: '',
@@ -1128,14 +1346,37 @@ export default {
         patientTelephone: '',
       },
       number6: '',
+      number6_2: '',
       number7: {
         insuredAddress: '',
         insuredCity: '',
         insuredState: '',
         insuredZipcode: '',
         insuredTelephone: '',
+        insuredContract: '',
+        insuredPolicy: '',
+        insuredGroup: '',
+      },
+      number7_2: {
+        insuredAddress: '',
+        insuredCity: '',
+        insuredState: '',
+        insuredZipcode: '',
+        insuredTelephone: '',
+        insuredContract: '',
+        insuredPolicy: '',
+        insuredGroup: '',
       },
       number11: {
+        a: {
+          mm: '',
+          dd: '',
+          yy: '',
+          sex: '',
+        },
+        c: '',
+      },
+      number11_2: {
         a: {
           mm: '',
           dd: '',
@@ -1152,6 +1393,7 @@ export default {
         value: '',
       },
       insuredBirthDay: new Date(),
+      secondInsuredBirthDay: new Date(),
       insuredSign: '',
       patientSign: '',
       patientSignDate: new Date(),
@@ -1191,6 +1433,10 @@ export default {
         a: '',
         b: '',
       },
+      user: null,
+      first_name: '',
+      middle_name: '',
+      last_name: '',
     }
   },
   head() {
@@ -1199,17 +1445,23 @@ export default {
     }
   },
   computed: {
-    user() {
-      return this.$auth.user
-    },
-    first_name() {
-      return this.user.user_first_name
-    },
-    last_name() {
-      return this.user.last_name
-    },
+    // user() {
+    //   return this.$auth.user
+    // },
+    // first_name() {
+    //   return this.user.user_first_name
+    // },
+    // middle_name() {
+    //   return this.user.user_middle_name
+    // },
+    // last_name() {
+    //   return this.user.last_name
+    // },
     name() {
-      return this.user.user_first_name + ' ' + this.user.last_name
+      if(this.middle_name && this.middle_name.length > 0) {
+        return this.first_name + ' ' + this.middle_name + ' ' + this.last_name
+      }
+      return this.first_name + ' ' + this.last_name
     },
     email() {
       return this.user.email
@@ -1247,6 +1499,11 @@ export default {
     },
   },
   mounted() {
+    this.user = this.$auth.user
+    console.log(this.user);
+    this.first_name = this.user.user_first_name
+    this.middle_name = this.user.user_middle_name
+    this.last_name = this.user.last_name
     if (this.myUserId) {
       this.$userApi.get('/' + this.myUserId).then(({ data }) => {
         if (data && data.user_uuid) {
@@ -1312,11 +1569,34 @@ export default {
         .then(({ data }) => {
           if (data && Object.keys(data).length > 0) {
             console.log('insured --->', data)
+            if(data.number4_2) {
+              this.number4_2 = data.number4_2
+            }
             this.number4 = data.number4
             this.number5 = data.number5
             this.number6 = data.number6
+            if(data.number6_2) {
+              this.number6_2 = data.number6_2
+            }
+
             this.number7 = data.number7
+            if(data.number7_2) {
+              this.number7_2 = data.number7_2
+            }
             this.number11 = data.number11
+            if(data.number11_2) {
+              this.number11_2 = data.number11_2
+            }
+
+            if (this.number11.a && this.number11.a.dd) {
+              const date = `${this.number11.a.mm}-${this.number11.a.dd}-${this.number11.a.yy}`
+              this.insuredBirthDay = new Date(date)
+            }
+
+            if (this.number11_2.a && this.number11_2.a.dd) {
+              const date = `${this.number11_2.a.mm}-${this.number11_2.a.dd}-${this.number11_2.a.yy}`
+              this.secondInsuredBirthDay = new Date(date)
+            }
             this.number12 = data.number12
             this.number13 = data.number13
             this.number17 = data.number17
@@ -1476,6 +1756,7 @@ export default {
 
             if (this.isModerator) {
               this.npi = data.profe_npi
+              this.dea = data.profe_dea
               this.practice_name = data.profe_practice_name
               this.medical_license = data.profe_medical_license
               this.license_state = data.profe_license_state
@@ -1497,6 +1778,7 @@ export default {
       this.$refs.personalForm.validate()
       if (this.validPersonalForm) {
         this.loading = true
+        console.log(this.middle_name);
         this.$api
           .put('/user', {
             user_uuid: this.$auth.user.uuid,
@@ -1509,6 +1791,7 @@ export default {
             state: this.state,
             zip: this.zip,
             first_name: this.first_name,
+            middle_name: this.middle_name,
             last_name: this.last_name,
             date_of_birth: new Date(this.date_of_birth).toISOString(),
             user_email: this.email,
@@ -1516,6 +1799,7 @@ export default {
           .then(() => {
             setTimeout(async () => {
               await this.$auth.fetchUser()
+              console.log(this.name)
               console.log('Fetched user --->', this.$auth.user)
               this.$toast.success(this.$t('updated_suc').toString())
             }, 100)
@@ -1536,6 +1820,7 @@ export default {
         const values = {
           category: this.category,
           npi: this.npi,
+          dea: this.dea,
           specialty: this.specialty,
           practice_name: this.practice_name,
           medical_license: this.medical_license,
@@ -1601,16 +1886,30 @@ export default {
           this.number11.a.dd = insuredDate[2]
         }
 
+        if (this.secondInsuredBirthDay) {
+          const insuredDate = this.secondInsuredBirthDay
+            .toISOString()
+            .substr(0, 10)
+            .split('-')
+          this.number11_2.a.yy = insuredDate[0]
+          this.number11_2.a.mm = insuredDate[1]
+          this.number11_2.a.dd = insuredDate[2]
+        }
+
         this.number12.date = this.patientSignDate.toISOString().substr(0, 10)
 
         const data = {
           user_uuid: this.$auth.user.uuid,
           insured_info: {
             number4: this.number4,
+            number4_2: this.number4_2,
             number5: this.number5,
             number6: this.number6,
+            number6_2: this.number6_2,
             number7: this.number7,
+            number7_2: this.number7_2,
             number11: this.number11,
+            number11_2: this.number11_2,
             number12: this.number12,
             number13: this.number13,
             number17: this.number17,
@@ -1641,11 +1940,18 @@ export default {
       }
       if (this.yes) {
         this.number4.insuredName = this.number5.patientName
+        this.number4_2.insuredName = this.number5.patientName
         this.number7.insuredAddress = this.number5.patientAddress
         this.number7.insuredCity = this.number5.patientCity
         this.number7.insuredState = this.number5.patientState
         this.number7.insuredZipcode = this.number5.patientZipcode
         this.number7.insuredTelephone = this.number5.patientTelephone
+
+        this.number7_2.insuredAddress = this.number5.patientAddress
+        this.number7_2.insuredCity = this.number5.patientCity
+        this.number7_2.insuredState = this.number5.patientState
+        this.number7_2.insuredZipcode = this.number5.patientZipcode
+        this.number7_2.insuredTelephone = this.number5.patientTelephone
       }
     },
   },
