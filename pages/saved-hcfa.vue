@@ -81,18 +81,21 @@
                 >{{ $t('edit') }}
               </nuxt-link>
 
-              <nuxt-link
-                class="mr-5"
-                :to="{
-                  path: localePath('/hcfa'),
-                  query: {
-                    patientId: item.hcfa_patient_id,
-                    id: item.hcfa_uuid,
-                    isPrint:true
-                  },
-                }"
-                >{{ $t('Print') }}
-              </nuxt-link>
+              <a
+              style="margin-right:10px"
+                href="javascript:void(0)"
+                type="old-rose mr-5"
+                @click="printRecord(item.hcfa_uuid, item.hcfa_patient_id)"
+              >
+                <v-progress-circular
+                  v-if="isPdfLoading(item.hcfa_uuid)"
+                  indeterminate
+                ></v-progress-circular>
+                <div v-else>
+                  <v-icon style="font-size:17px" type="file-pdf">mdi-file</v-icon>
+                  {{ $t('print') }}
+                </div>
+              </a>
 
               <span class="clickable mr-5" @click="export2xml(item)">{{
                 item.hcfa.hcfa_is_submitted === true ? 'Sent' : 'Ready'
@@ -232,15 +235,20 @@ export default {
     isPdfLoading(recordId) {
       return this.printing === recordId
     },
-    
-    printRecord(id) {
+
+    printRecord(id, patientId) {
       this.printing = id
       this.loadingPdf = true
-      this.$api
-        .get('/medical-record/pdf/' + id)
+      const url = `/hcfa/print/${id}?doctorId=${this.$auth.user.uuid}&patientId=${patientId}`
+      this.$insuranceApi
+        .get(url)
         .then(({ data }) => {
           this.$toast.success(this.$t('pdf_gend').toString())
-          this.pdfFile = process.env.API_URL + '/generated/record/' + data.file
+          this.pdfFile =
+            process.env.INSURANCE_BASE_URL +
+            '/generated/hcfa-record/' +
+            data.file;
+            console.log('pdf url', this.pdfFile)
           setTimeout(() => {
             this.$refs.pdfDownload.click()
           }, 500)
@@ -362,6 +370,7 @@ export default {
 
 
 <style scoped lang="sass">
+
 .emr-action
   display: flex
 .saved-header
