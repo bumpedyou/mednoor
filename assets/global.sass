@@ -418,3 +418,42 @@ h1.dark, h2.dark, h3.dark, h4.dark, h5.dark, h6.dark, .h1.dark, .h2.dark, .h3.da
   height: 100% !important
 .flex-col
   flex-direction: column
+.vital-table
+  border: 1px solid #7f828b
+  td
+    border-left: 1px solid #7f828b
+    border-bottom: 1px solid #7f828b
+  tr
+    th:first-child, td:first-child
+      border-right: 2px solid #7f828b
+      width: 100px
+      justify-content: left
+      padding-left: 0.4rem
+    th:last-child, td:last-child
+      width: 36px
+    th, td
+      width: 120px
+      align-items: center
+      justify-content: center
+      height: 60px
+      input
+        max-width: 120px
+
+.vital-head
+  background: lightslategrey
+
+
+.vital-second-head
+  background: #a8c0ff
+  th:first-child
+    border-right: 0 !important
+
+.text-right
+  text-align: right
+
+.emr-container
+  height: calc(100vh - 450px)
+  overflow: hidden
+  .col
+    overflow: auto
+    max-height: 100%

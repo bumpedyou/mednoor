@@ -1,5 +1,5 @@
 <template>
-  <div class="pa-6 mh-100v">
+  <div class="pa-6">
     <v-row class="mb-1">
       <v-col>
         <v-breadcrumbs
@@ -107,247 +107,386 @@
           ></v-autocomplete>
         </v-col>
       </v-row>
-      <v-row>
-        <v-col md="12">
-          <v-tabs v-model="tab">
-            <v-tab>{{ $t('allergies') }}</v-tab>
-            <v-tab>{{ $t('current_meds') }}</v-tab>
-            <v-tab>{{ $t('pharmacies') }}</v-tab>
-            <v-tab>{{ $t('past_meds') }}</v-tab>
-            <v-tab>{{ $t('med_htry') }}</v-tab>
-            <v-tab>{{ $t('surgical_htry') }}</v-tab>
-            <v-tab>{{ $t('soc_htry') }}</v-tab>
-            <v-tab>{{ $t('fam_hry') }}</v-tab>
+      <v-row class="emr-container">
+        <v-col md="3">
+          <v-tabs v-model="tab" vertical>
+            <v-tab href="#allergies">{{ $t('allergies') }}</v-tab>
+            <v-tab href="#current_meds">{{ $t('current_meds') }}</v-tab>
+            <v-tab href="#pharmacies">{{ $t('pharmacies') }}</v-tab>
+            <v-tab href="#past_meds">{{ $t('past_meds') }}</v-tab>
+            <v-tab href="#med_htry">{{ $t('med_htry') }}</v-tab>
+            <v-tab href="#surgical_htry">{{ $t('surgical_htry') }}</v-tab>
+            <v-tab href="#soc_htry">{{ $t('soc_htry') }}</v-tab>
+            <v-tab href="#fam_hry">{{ $t('fam_hry') }}</v-tab>
           </v-tabs>
-          <v-tabs-items v-model="tab">
-            <v-tab-item>
-              <v-textarea
+          <div class="mt-2">
+            <v-tabs v-model="tab2" vertical>
+              <v-tab href="#chief_complaint">{{ $t('chief_complaint') }}</v-tab>
+              <v-tab href="#hpi">{{ $t('hpi') }}</v-tab>
+              <v-tab href="#subject">{{ $t('subject') }}</v-tab>
+              <v-tab href="#objective">{{ $t('objective') }}</v-tab>
+              <v-tab href="#assessment">{{ $t('assessment') }}</v-tab>
+              <v-tab href="#plan">{{ $t('plan') }}</v-tab>
+              <v-tab href="#sign" @click="askSign" >{{ $t('sign') }}</v-tab>
+              <v-tab href="#addendum">{{ $t('addendum') }}</v-tab>
+            </v-tabs>
+
+          </div>
+        </v-col>
+        <v-col md="9">
+          <div id="medical_history_container" ref="medical_history_container" v-on:scroll="onMedicalHistoryScroll" style="height: 400px;overflow: auto; position: relative">
+            <div ref="allergies">
+              <vue-editor
                 v-model="allergies"
                 :label="$t('allergies')"
                 :placeholder="$t('allergies')"
                 :disabled="isDisabled"
-                @input="inputReceived('allergies')"
+
               />
-            </v-tab-item>
-            <v-tab-item>
-              <v-textarea
+              <v-row v-if="selectedUser">
+                <v-col class="text-right mt-1">
+                  <v-btn
+                    color="primary"
+                    tile
+                    small
+                    @click="saveMedicalHistory('allergies', allergies)"
+
+                  >
+                    {{ $t('save_changes') }}
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </div>
+            <div ref="current_meds" class="mt-1" >
+              <vue-editor
                 v-model="current_meds"
                 :label="$t('current_meds')"
                 :placeholder="$t('current_meds')"
                 :disabled="isDisabled"
-                @input="inputReceived('current_meds')"
               />
-            </v-tab-item>
-            <v-tab-item>
-              <v-textarea
+              <v-row v-if="selectedUser">
+                <v-col class="text-right mt-1">
+                  <v-btn
+                    color="primary"
+                    tile
+                    small
+                    @click="saveMedicalHistory('current_meds', current_meds)"
+
+                  >
+                    {{ $t('save_changes') }}
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </div>
+            <div ref="pharmacies" class="mt-1">
+              <vue-editor
                 v-model="pharmacies"
                 :label="$t('pharmacies')"
                 :placeholder="$t('pharmacies')"
                 :disabled="isDisabled"
-                @input="inputReceived('pharmacies')"
               />
-            </v-tab-item>
-            <v-tab-item>
-              <v-textarea
+              <v-row v-if="selectedUser">
+                <v-col class="text-right mt-1">
+                  <v-btn
+                    color="primary"
+                    tile
+                    small
+                    @click="saveMedicalHistory('pharmacies', pharmacies)"
+
+                  >
+                    {{ $t('save_changes') }}
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </div>
+            <div ref="past_meds" class="mt-1">
+              <vue-editor
                 v-model="past_meds"
                 :label="$t('past_meds')"
                 :placeholder="$t('past_meds')"
                 :disabled="isDisabled"
-                @input="inputReceived('past_meds')"
               />
-            </v-tab-item>
-            <v-tab-item>
-              <v-textarea
+              <v-row v-if="selectedUser">
+                <v-col class="text-right mt-1">
+                  <v-btn
+                    color="primary"
+                    tile
+                    small
+                    @click="saveMedicalHistory('past_meds', past_meds)"
+
+                  >
+                    {{ $t('save_changes') }}
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </div>
+            <div ref="med_htry" class="mt-1">
+              <vue-editor
                 v-model="medical_history"
                 :label="$t('med_htry')"
                 :placeholder="$t('med_htry')"
                 :disabled="isDisabled"
-                @input="inputReceived('medical_history')"
               />
-            </v-tab-item>
-            <v-tab-item>
-              <v-textarea
+              <v-row v-if="selectedUser">
+                <v-col class="text-right mt-1">
+                  <v-btn
+                    color="primary"
+                    tile
+                    small
+                    @click="saveMedicalHistory('medical_history', medical_history)"
+
+                  >
+                    {{ $t('save_changes') }}
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </div>
+            <div ref="surgical_htry" class="mt-1">
+              <vue-editor
                 v-model="surgical_history"
                 :label="$t('surgical_htry')"
                 :placeholder="$t('surgical_htry')"
                 :disabled="isDisabled"
-                @input="inputReceived('surgical_history')"
               />
-            </v-tab-item>
-            <v-tab-item>
-              <v-textarea
+              <v-row v-if="selectedUser">
+                <v-col class="text-right mt-1">
+                  <v-btn
+                    color="primary"
+                    tile
+                    small
+                    @click="saveMedicalHistory('surgical_history', surgical_history)"
+
+                  >
+                    {{ $t('save_changes') }}
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </div>
+            <div ref="soc_htry" class="mt-1">
+              <vue-editor
                 v-model="social_history"
                 :label="$t('soc_htry')"
                 :placeholder="$t('soc_htry')"
                 :disabled="isDisabled"
-                @input="inputReceived('social_history')"
               />
-            </v-tab-item>
-            <v-tab-item>
-              <v-textarea
+              <v-row v-if="selectedUser">
+                <v-col class="text-right mt-1">
+                  <v-btn
+                    color="primary"
+                    tile
+                    small
+                    @click="saveMedicalHistory('social_history', social_history)"
+
+                  >
+                    {{ $t('save_changes') }}
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </div>
+            <div ref="fam_hry" class="mt-1">
+              <vue-editor
                 v-model="family_history"
                 :label="$t('fam_hry')"
                 :placeholder="$t('fam_hry')"
                 :disabled="isDisabled"
-                @input="inputReceived('family_history')"
               />
-            </v-tab-item>
-          </v-tabs-items>
-        </v-col>
-      </v-row>
-      <v-row class="mt-1 mb-1">
-        <v-col>
-          <div class="emr-inline-inputs">
-            <div>
-              <v-text-field
-                v-model="bp"
-                :label="$t('bp')"
-                :placeholder="$t('bp')"
-                :disabled="isDisabled"
-              />
-            </div>
-            <div>
-              <v-text-field
-                :label="$t('pulse')"
-                :placeholder="$t('pulse')"
-                :disabled="isDisabled"
-                @input="inputReceived('pulse')"
-              />
-            </div>
-            <div>
-              <v-text-field
-                v-model="resp_rate"
-                :label="$t('resp_rate')"
-                :placeholder="$t('resp_rate')"
-                :disabled="isDisabled"
-                @input="inputReceived('resp_rate')"
-              />
-            </div>
-            <div>
-              <v-text-field
-                v-model="temp"
-                :placeholder="$t('temp')"
-                :label="$t('temp')"
-                :disabled="isDisabled"
-                @input="inputReceived('temp')"
-              />
-            </div>
-            <div>
-              <v-text-field
-                v-model="height"
-                :label="$t('height_in')"
-                :placeholder="$t('height_in')"
-                :disabled="isDisabled"
-                @input="updateBMI('height')"
-              />
-            </div>
-            <div>
-              <v-text-field
-                v-model="weight"
-                :label="$t('weight_lb')"
-                :placeholder="$t('weight_lb')"
-                :disabled="isDisabled"
-                @input="updateBMI('weight')"
-              />
-            </div>
-            <div>
-              <v-text-field
-                v-model="bmi"
-                :label="$t('bmi')"
-                :placeholder="$t('bmi')"
-                disabled
-              />
+              <v-row v-if="selectedUser">
+                <v-col class="text-right mt-1">
+                  <v-btn
+                    color="primary"
+                    tile
+                    small
+                    @click="saveMedicalHistory('family_history', family_history)"
+
+                  >
+                    {{ $t('save_changes') }}
+                  </v-btn>
+                </v-col>
+              </v-row>
             </div>
           </div>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <v-tabs v-model="tab2">
-            <v-tab>{{ $t('chief_complaint') }}</v-tab>
-            <v-tab>{{ $t('hpi') }}</v-tab>
-            <v-tab>{{ $t('subject') }}</v-tab>
-            <v-tab>{{ $t('objective') }}</v-tab>
-            <v-tab>{{ $t('assessment') }}</v-tab>
-            <v-tab>{{ $t('plan') }}</v-tab>
-            <v-tab>{{ $t('sign') }}</v-tab>
-            <v-tab>{{ $t('addendum') }}</v-tab>
-          </v-tabs>
-          <v-tabs-items v-model="tab2">
-            <v-tab-item>
-              <v-textarea
+          <table v-if="selectedUser" class="vital-table mt-4">
+            <tr class="vital-head">
+              <th v-for="(header,index) in vitalHeaders"
+                  :key="header.value">
+                <div v-if="index != 0">
+                  <h6 class="text-center">{{header.date}}</h6>
+                  <h6 class="text-center">{{header.time}}</h6>
+                </div>
+              </th>
+              <th><v-icon @click="addVital">mdi-plus</v-icon></th>
+            </tr>
+
+            <tr class="vital-second-head">
+              <th v-for="(header,index) in vitalHeaders"
+                  :key="header.value" >
+
+                <h6 v-if="index == 0"><v-icon  color="#333" class="submenu--icon">mdi-menu-down</v-icon> Vitals</h6>
+              </th>
+              <th></th>
+            </tr>
+            <tr v-for="(item) in vitalContents" :key="item.key">
+              <td>{{item.title}}</td>
+              <td v-for="(value) in item.content" :key="value.id">
+                <input  v-model="value.content" type='number' class="text-center" :disabled="item.key == 'bmi'"  @change='changeVital(value, item.key)' />
+              </td>
+              <td></td>
+            </tr>
+
+          </table>
+
+          <div ref="detail_container" style="height: 400px;overflow: auto; position: relative" class="mt-4">
+            <div ref="chief_complaint">
+              <vue-editor
                 v-model="chief_complaint"
                 :label="$t('chief_complaint')"
                 :placeholder="$t('chief_complaint')"
                 :disabled="isDisabled"
-                @input="inputReceived('chief_complaint')"
               />
-            </v-tab-item>
-            <v-tab-item>
-              <v-textarea
+              <v-row v-if="selectedUser">
+                <v-col class="text-right mt-1">
+                  <v-btn
+                    color="primary"
+                    tile
+                    small
+                    @click="saveDetail('chief_complaint', chief_complaint)"
+                  >
+                    {{ $t('save_changes') }}
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </div>
+            <div ref="hpi" class="mt-1">
+              <vue-editor
                 v-model="hip"
                 :label="$t('hpi')"
                 :placeholder="$t('hpi')"
                 :disabled="isDisabled"
-                @input="inputReceived('hip')"
               />
-            </v-tab-item>
-            <v-tab-item>
-              <v-textarea
+              <v-row v-if="selectedUser">
+                <v-col class="text-right mt-1">
+                  <v-btn
+                    color="primary"
+                    tile
+                    small
+                    @click="saveDetail('hip', hip)"
+                  >
+                    {{ $t('save_changes') }}
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </div>
+            <div ref="subject" class="mt-1">
+              <vue-editor
                 v-model="subject"
                 :label="$t('subject')"
                 :placeholder="$t('subject')"
                 :disabled="isDisabled"
-                @input="inputReceived('subject')"
               />
-            </v-tab-item>
-            <v-tab-item>
-              <v-textarea
+              <v-row v-if="selectedUser">
+                <v-col class="text-right mt-1">
+                  <v-btn
+                    color="primary"
+                    tile
+                    small
+                    @click="saveDetail('subject', subject)"
+                  >
+                    {{ $t('save_changes') }}
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </div>
+            <div ref="objective" class="mt-1">
+              <vue-editor
                 v-model="objective"
                 :label="$t('objective')"
                 :placeholder="$t('objective')"
                 :disabled="isDisabled"
-                @input="inputReceived('objective')"
               />
-            </v-tab-item>
-            <v-tab-item>
-              <v-textarea
+              <v-row v-if="selectedUser">
+                <v-col class="text-right mt-1">
+                  <v-btn
+                    color="primary"
+                    tile
+                    small
+                    @click="saveDetail('objective', objective)"
+                  >
+                    {{ $t('save_changes') }}
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </div>
+            <div ref="assessment" class="mt-1">
+              <vue-editor
                 v-model="assessment"
                 :label="$t('assessment')"
                 :placeholder="$t('assessment')"
                 :disabled="isDisabled"
-                @input="inputReceived('assessment')"
               />
-            </v-tab-item>
-            <v-tab-item>
-              <v-textarea
+              <v-row v-if="selectedUser">
+                <v-col class="text-right mt-1">
+                  <v-btn
+                    color="primary"
+                    tile
+                    small
+                    @click="saveDetail('assessment', assessment)"
+                  >
+                    {{ $t('save_changes') }}
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </div>
+            <div ref="plan" class="mt-1">
+              <vue-editor
                 v-model="plan"
                 :label="$t('plan')"
                 :placeholder="$t('plan')"
                 :disabled="isDisabled"
-                @input="inputReceived('plan')"
               />
-            </v-tab-item>
-            <v-tab-item>
+              <v-row v-if="selectedUser">
+                <v-col class="text-right mt-1">
+                  <v-btn
+                    color="primary"
+                    tile
+                    small
+                    @click="saveDetail('plan', plan)"
+                  >
+                    {{ $t('save_changes') }}
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </div>
+            <div ref="sign" class="mt-1">
               <v-textarea
                 v-model="sign"
                 :label="$t('sign')"
                 :placeholder="$t('sign')"
-                :disabled="isDisabled"
-                @input="inputReceived('sign')"
+                :disabled="true"
               />
-            </v-tab-item>
-            <v-tab-item>
-              <v-textarea
+            </div>
+            <div ref="addendum" class="mt-1">
+              <vue-editor
                 v-model="addendum"
                 :label="$t('addendum')"
                 :placeholder="$t('addendum')"
-                @input="inputReceived('addendum')"
               />
-            </v-tab-item>
-          </v-tabs-items>
+              <v-row v-if="selectedUser">
+                <v-col class="text-right mt-1">
+                  <v-btn
+                    color="primary"
+                    tile
+                    small
+                    @click="saveDetail('addendum', addendum)"
+                  >
+                    {{ $t('save_changes') }}
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </div>
+          </div>
         </v-col>
       </v-row>
+
       <v-row class="mt-1">
         <v-col>
           <v-btn color="primary" small tile type="submit" :loading="loading">
@@ -396,6 +535,13 @@
         target="_blank"
       ></a>
     </v-form>
+    <ConfirmDialog
+      v-model="loadingSign"
+
+      title="Are you sure you want to lock this encounter?"
+      @accept="confirmSign"
+      @cancel="cancelSign"
+    ></ConfirmDialog>
   </div>
 </template>
 <script>
@@ -422,8 +568,10 @@ export default {
   data: () => ({
     selectedUser: null,
     loadingUsers: false,
-    tab: 0,
-    tab2: 0,
+    loadingSign: false,
+    selectedTab: '',
+    selectedTab2: '',
+    oldTab2: 0,
     allergies: '',
     current_meds: '',
     pharmacies: '',
@@ -432,6 +580,7 @@ export default {
     surgical_history: '',
     social_history: '',
     family_history: '',
+    scrollMedicalHistory: 0,
     chief_complaint: '',
     hip: '',
     subject: '',
@@ -439,6 +588,9 @@ export default {
     assessment: '',
     plan: '',
     sign: '',
+    vitalHeaders: [],
+    vitalContents: [],
+    vitalData: [],
     addendum: '',
     resp_rate: '',
     temp: '',
@@ -472,7 +624,51 @@ export default {
   },
   computed: {
 
+    tab: {
+      set (tab) {
+        if(tab !== this.selectedTab) {
+          this.selectedTab = tab;
+          if(this.$refs[tab]) {
+            this.$refs[tab].scrollIntoView(true);
+          }
+          this.$router.replace({ query: { ...this.$route.query, tab } })
+        }
 
+      },
+      get () {
+        return this.$route.query.tab
+      }
+    },
+
+    tab2: {
+      set (tab2) {
+        if(tab2 === this.selectedTab2) {
+          return ;
+        }
+        this.selectedTab2 = tab2;
+        if(this.$route.query.tab) {
+          if(this.$refs[tab2]) {
+            console.log("Change tab2");
+            this.$refs[tab2].scrollIntoView(true);
+          }
+          this.$router.replace({ query: { ...this.$route.query, tab2 } })
+        } else {
+          const that = this;
+          const checkTabInterval = setInterval(function() {
+            if(that.$route.query.tab) {
+              if(this.$refs[tab2]) {
+                this.$refs[tab2].scrollIntoView(true);
+              }
+              that.$router.replace({ query: { ...that.$route.query, tab2 } })
+              clearInterval(checkTabInterval);
+            }
+          }, 500);
+        }
+      },
+      get () {
+        return this.$route.query.tab2
+      }
+    },
 
 
     isDisabled() {
@@ -513,7 +709,7 @@ export default {
       if (this.bp.length > 7) {
         this.bp = this.bp.substr(0, 7)
       }
-      this.saveDraft('bp')
+      // this.saveDraft('bp')
     },
     userSearch: debounce(function (v) {
       if (validate(v)) {
@@ -550,6 +746,9 @@ export default {
     }, 600),
   },
   mounted() {
+    this.vitalHeaders = [
+      {value: 'title'},
+    ];
     const c = this.$route.query
     if (c.mere) {
       this.recordId = c.mere
@@ -620,6 +819,60 @@ export default {
     }
   },
   methods: {
+    selectTab() {
+      console.log("Select tab");
+      console.log(this.$refs.medical_history_container);
+      this.$refs.medical_history_container.scrollIntoView(true);
+    },
+    selectTab2() {
+      console.log("Select tab 2");
+      this.$refs.detail_container.scrollIntoView(true);
+    },
+    saveMedicalHistory(arg, value) {
+      console.log(arg + ":" + this.recordId);
+      if (validate(this.recordId)) {
+        this.putData(arg, value)
+      }
+    },
+    detectScrollPos() {
+      const scrollTop = this.$refs.medical_history_container.scrollTop;
+      // const menus = [
+      //   'allergies',
+      //   'current_meds',
+      //   'pharmacies',
+      //   'past_meds',
+      //   'med_htry',
+      //   'surgical_htry',
+      //   'soc_htry',
+      //   'fam_hry'
+      // ]
+      console.log(scrollTop);
+      // if(scrollTop < 0) {
+      //   this.tab = menus[0];
+      // } else if(scrollTop > this.$refs.medical_history_container.scrollHeight) {
+      //   this.tab = menus[menus.length - 1];
+      // } else {
+      //   menus.forEach(menu => {
+      //     console.log(this.$refs[menu].offsetTop + ":" + (this.$refs[menu].offsetTop + this.$refs[menu].offsetHeight));
+      //     if(scrollTop >= this.$refs[menu].offsetTop && scrollTop < this.$refs[menu].offsetTop + this.$refs[menu].offsetHeight) {
+      //       console.log("Menu is " + menu);
+      //       if(this.tab.value !== menu) {
+      //         this.tab = menu;
+      //         console.log("selected menu " + menu);
+      //       }
+      //
+      //     }
+      //   });
+      // }
+    },
+    onMedicalHistoryScroll(evt, el) {
+      this.detectScrollPos();
+    },
+    saveDetail(arg, value) {
+      if (validate(this.recordId)) {
+        this.putData(arg, value)
+      }
+    },
     inputReceived: debounce(function (arg) {
       this.saveDraft(arg)
     }, 1000),
@@ -655,6 +908,164 @@ export default {
           this.putData(arg, v || valueOverride)
         }
       }
+    },
+    changeVital(item, key) {
+      const id = item.id;
+      let height = 0;
+      let weight = 0;
+      console.log(item);
+      console.log(this.vitalContents[0].content);
+      this.vitalContents[0].content.forEach((heightData) => {
+        console.log(heightData);
+        if(heightData.id === id) {
+          height = heightData.content;
+        }
+      });
+
+      this.vitalContents[1].content.forEach((weightData) => {
+        if(weightData.id === id) {
+          weight = weightData.content;
+        }
+      });
+
+      const bmi = this.getBMI(weight, height);
+      this.vitalContents[2].content.forEach((bmiData) => {
+        if(bmiData.id === id) {
+          bmiData.content = bmi;
+        }
+      });
+
+
+      this.$api
+        .patch('/medical-record/' + key + '/' + item.id, {
+          value: item.content,
+        })
+        .then(({ data }) => {
+          console.log(`Updated ${name} successfully`)
+        })
+        .catch(() => {
+          this.$toast.error(`Failed to update ${key}`)
+        })
+    },
+    getVitals() {
+      this.vitalHeaders = [
+        {value: 'title'}
+      ];
+      this.vitalContents = [
+        {
+          title: 'Height',
+          key: 'height',
+          content: [],
+        },
+        {
+          title: 'Weight',
+          key: 'weight',
+          content: [],
+        },
+        {
+          title: 'BMI',
+          key: 'bmi',
+          content: [],
+        },
+        {
+          title: 'BP',
+          content: [],
+          key: 'bp',
+        },
+        {
+          title: 'Temp',
+          content: [],
+          key: 'temp',
+        },
+        {
+          title: 'Pulse',
+          content: [],
+          key: 'pulse',
+        },
+        {
+          title: 'Resp Rate',
+          content: [],
+          key: 'resp-rate',
+        }
+      ];
+      this.vitalData.forEach(data => {
+        let dateTime = data.mruv_date;
+        if(dateTime) {
+          dateTime = new Date(dateTime);
+          console.log(dateTime);
+          const date = dateTime.toISOString().substring(0,10);
+          const time = dateTime.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true
+          });
+          this.vitalHeaders.push({
+            value: data.mruv_uuid,
+            date,
+            time,
+          });
+
+          this.vitalContents[0].content.push({
+            id: data.mruv_uuid,
+            content: data.mruv_height
+          })
+
+          this.vitalContents[1].content.push({
+            id: data.mruv_uuid,
+            content: data.mruv_weight
+          })
+
+          this.vitalContents[2].content.push({
+            id: data.mruv_uuid,
+            content: this.getBMI(data.mruv_weight, data.mruv_height)
+          })
+
+          this.vitalContents[3].content.push({
+            id: data.mruv_uuid,
+            content: data.mruv_bp
+          })
+
+          this.vitalContents[4].content.push({
+            id: data.mruv_uuid,
+            content: data.mruv_temp
+          })
+
+          this.vitalContents[5].content.push({
+            id: data.mruv_uuid,
+            content: data.mruv_pulse
+          })
+
+          this.vitalContents[6].content.push({
+            id: data.mruv_uuid,
+            content: data.mruv_resp_rate
+          })
+        }
+
+      });
+      console.log(this.vitalHeaders);
+      console.log(this.vitalContents);
+    },
+    addVital() {
+      this.$api
+        .post('/medical-record/record-vital', {
+          recordId: this.recordId,
+          uuid: this.selectedUser,
+          date: new Date()
+        })
+        .then(({ data }) => {
+          console.log(data);
+          this.vitalData.push({
+            mruv_uuid: data.mruv_uuid,
+            mruv_date: new Date()
+          });
+          this.getVitals();
+          console.log(this.vitalData);
+          console.log(`Updated ${name} successfully`)
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$toast.error(`Failed to create vital record`)
+        });
     },
     putData(name, value) {
       const values = this[name]
@@ -707,6 +1118,16 @@ export default {
         }
       })
       return r
+    },
+    getBMI(w, h) {
+      let r = 0
+      if (w && h) {
+        // [weight (lb) / height (in) / height (in)] x 703
+        w = parseFloat(w)
+        h = parseFloat(h)
+        r = (w / h / h) * 703
+      }
+      return r.toFixed(2)
     },
     updateBMI(arg) {
       let w = this.weight
@@ -836,6 +1257,8 @@ export default {
       }
     },
     setData(tm, type) {
+      console.log(tm);
+      this.recordId = tm.mere_uuid
       this.template_name = tm.mere_name
       if(type) {
         this.allergies = tm.mere_allergies
@@ -883,7 +1306,9 @@ export default {
 
             const item = data[0]
              item.mere_sign = null;
-            this.setData(item, true)
+            this.setData(item, true);
+            this.vitalData = data;
+            this.getVitals();
 
 
             this.isTemplateD = false
@@ -899,6 +1324,27 @@ export default {
           this.loadingData = false
         })
     },
+
+    askSign() {
+      this.oldTab2 = this.tab2;
+      if(this.sign.length === 0) {
+        this.loadingSign = true;
+      }
+
+    },
+
+    confirmSign() {
+      this.loadingSign = false;
+      this.sign = this.$auth.user.last_name + "," + this.$auth.user.user_first_name;
+      if(this.selectedUser) {
+        this.saveDetail('sign', this.sign);
+      }
+
+    },
+    cancelSign() {
+      this.loadingSign = false;
+      this.tab2 = this.oldTab2;
+    }
   },
 }
 </script>
