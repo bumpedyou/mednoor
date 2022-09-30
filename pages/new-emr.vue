@@ -41,7 +41,7 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col md="12">
+        <v-col sm="12">
           <div>
             <v-text-field
               v-if="isTemplate"
@@ -69,7 +69,7 @@
             ></v-autocomplete>
           </div>
         </v-col>
-        <v-col v-if="!isTemplate" md="6">
+        <v-col v-if="!isTemplate" sm="6">
           <div>
             <!-- <v-text-field
               :value="dateString(picker)"
@@ -90,7 +90,7 @@
               ></date-picker>
           </div>
         </v-col>
-        <v-col v-if="!isTemplate" md="6">
+        <v-col v-if="!isTemplate" sm="6">
           <v-text-field
             v-if="template_name"
             v-model="template_name"
@@ -136,6 +136,9 @@
         <v-col md="9">
           <div id="medical_history_container" ref="medical_history_container" v-on:scroll="onMedicalHistoryScroll" style="height: 400px;overflow: auto; position: relative">
             <div ref="allergies">
+              <label class="v-label theme--light" style="margin-bottom: 10px">
+                {{$t('allergies')}}
+              </label>
               <vue-editor
                 v-model="allergies"
                 :label="$t('allergies')"
@@ -158,6 +161,9 @@
               </v-row>
             </div>
             <div ref="current_meds" class="mt-1" >
+              <label class="v-label theme--light" style="margin-bottom: 10px">
+                {{$t('current_meds')}}
+              </label>
               <vue-editor
                 v-model="current_meds"
                 :label="$t('current_meds')"
@@ -179,6 +185,9 @@
               </v-row>
             </div>
             <div ref="pharmacies" class="mt-1">
+              <label class="v-label theme--light" style="margin-bottom: 10px">
+                {{$t('pharmacies')}}
+              </label>
               <vue-editor
                 v-model="pharmacies"
                 :label="$t('pharmacies')"
@@ -200,6 +209,9 @@
               </v-row>
             </div>
             <div ref="past_meds" class="mt-1">
+              <label class="v-label theme--light" style="margin-bottom: 10px">
+                {{$t('past_meds')}}
+              </label>
               <vue-editor
                 v-model="past_meds"
                 :label="$t('past_meds')"
@@ -221,6 +233,9 @@
               </v-row>
             </div>
             <div ref="med_htry" class="mt-1">
+              <label class="v-label theme--light" style="margin-bottom: 10px">
+                {{$t('med_htry')}}
+              </label>
               <vue-editor
                 v-model="medical_history"
                 :label="$t('med_htry')"
@@ -242,6 +257,9 @@
               </v-row>
             </div>
             <div ref="surgical_htry" class="mt-1">
+              <label class="v-label theme--light" style="margin-bottom: 10px">
+                {{$t('surgical_htry')}}
+              </label>
               <vue-editor
                 v-model="surgical_history"
                 :label="$t('surgical_htry')"
@@ -263,6 +281,9 @@
               </v-row>
             </div>
             <div ref="soc_htry" class="mt-1">
+              <label class="v-label theme--light" style="margin-bottom: 10px">
+                {{$t('soc_htry')}}
+              </label>
               <vue-editor
                 v-model="social_history"
                 :label="$t('soc_htry')"
@@ -284,6 +305,9 @@
               </v-row>
             </div>
             <div ref="fam_hry" class="mt-1">
+              <label class="v-label theme--light" style="margin-bottom: 10px">
+                {{$t('fam_hry')}}
+              </label>
               <vue-editor
                 v-model="family_history"
                 :label="$t('fam_hry')"
@@ -314,29 +338,32 @@
                   <h6 class="text-center">{{header.time}}</h6>
                 </div>
               </th>
-              <th><v-icon @click="addVital">mdi-plus</v-icon></th>
+              <th  v-if="isNew"><v-icon @click="addVital">mdi-plus</v-icon></th>
             </tr>
 
             <tr class="vital-second-head">
               <th v-for="(header,index) in vitalHeaders"
                   :key="header.value" >
 
-                <h6 v-if="index == 0"><v-icon  color="#333" class="submenu--icon">mdi-menu-down</v-icon> Vitals</h6>
+                <h6 v-if="index == 0"><v-icon  color="#333" class="submenu--icon" @click="changeShowVital">{{showVital? 'mdi-menu-down': 'mdi-menu-up'}}</v-icon> Vitals</h6>
               </th>
-              <th></th>
+              <th v-if="isNew"></th>
             </tr>
-            <tr v-for="(item) in vitalContents" :key="item.key">
+            <tr  v-for="(item) in vitalContents" v-show="showVital" :key="item.key">
               <td>{{item.title}}</td>
               <td v-for="(value) in item.content" :key="value.id">
                 <input  v-model="value.content" type='number' class="text-center" :disabled="item.key == 'bmi'"  @change='changeVital(value, item.key)' />
               </td>
-              <td></td>
+              <td v-if="isNew"></td>
             </tr>
 
           </table>
 
           <div ref="detail_container" style="height: 400px;overflow: auto; position: relative" class="mt-4">
             <div ref="chief_complaint">
+              <label class="v-label theme--light" style="margin-bottom: 10px">
+                {{$t('chief_complaint')}}
+              </label>
               <vue-editor
                 v-model="chief_complaint"
                 :label="$t('chief_complaint')"
@@ -357,6 +384,9 @@
               </v-row>
             </div>
             <div ref="hpi" class="mt-1">
+              <label class="v-label theme--light" style="margin-bottom: 10px">
+                {{$t('hpi')}}
+              </label>
               <vue-editor
                 v-model="hip"
                 :label="$t('hpi')"
@@ -377,6 +407,9 @@
               </v-row>
             </div>
             <div ref="subject" class="mt-1">
+              <label class="v-label theme--light" style="margin-bottom: 10px">
+                {{$t('subject')}}
+              </label>
               <vue-editor
                 v-model="subject"
                 :label="$t('subject')"
@@ -397,6 +430,9 @@
               </v-row>
             </div>
             <div ref="objective" class="mt-1">
+              <label class="v-label theme--light" style="margin-bottom: 10px">
+                {{$t('objective')}}
+              </label>
               <vue-editor
                 v-model="objective"
                 :label="$t('objective')"
@@ -417,6 +453,9 @@
               </v-row>
             </div>
             <div ref="assessment" class="mt-1">
+              <label class="v-label theme--light" style="margin-bottom: 10px">
+                {{$t('assessment')}}
+              </label>
               <vue-editor
                 v-model="assessment"
                 :label="$t('assessment')"
@@ -437,6 +476,9 @@
               </v-row>
             </div>
             <div ref="plan" class="mt-1">
+              <label class="v-label theme--light" style="margin-bottom: 10px">
+                {{$t('plan')}}
+              </label>
               <vue-editor
                 v-model="plan"
                 :label="$t('plan')"
@@ -465,6 +507,9 @@
               />
             </div>
             <div ref="addendum" class="mt-1">
+              <label class="v-label theme--light" style="margin-bottom: 10px">
+                {{$t('addendum')}}
+              </label>
               <vue-editor
                 v-model="addendum"
                 :label="$t('addendum')"
@@ -566,6 +611,7 @@ export default {
     'pin-set',
   ],
   data: () => ({
+    isNew: true,
     selectedUser: null,
     loadingUsers: false,
     loadingSign: false,
@@ -592,6 +638,7 @@ export default {
     vitalContents: [],
     vitalData: [],
     addendum: '',
+    showVital: true,
     resp_rate: '',
     temp: '',
     height: '',
@@ -656,8 +703,8 @@ export default {
           const that = this;
           const checkTabInterval = setInterval(function() {
             if(that.$route.query.tab) {
-              if(this.$refs[tab2]) {
-                this.$refs[tab2].scrollIntoView(true);
+              if(that.$refs[tab2]) {
+                that.$refs[tab2].scrollIntoView(true);
               }
               that.$router.replace({ query: { ...that.$route.query, tab2 } })
               clearInterval(checkTabInterval);
@@ -986,7 +1033,12 @@ export default {
           title: 'Resp Rate',
           content: [],
           key: 'resp-rate',
-        }
+        },
+        {
+          title: 'Pulse Ox %',
+          content: [],
+          key: 'pulse-ox',
+        },
       ];
       this.vitalData.forEach(data => {
         let dateTime = data.mruv_date;
@@ -1039,6 +1091,11 @@ export default {
             id: data.mruv_uuid,
             content: data.mruv_resp_rate
           })
+
+          this.vitalContents[7].content.push({
+            id: data.mruv_uuid,
+            content: data.mruv_pulse_ox
+          })
         }
 
       });
@@ -1059,6 +1116,7 @@ export default {
             mruv_date: new Date()
           });
           this.getVitals();
+          this.isNew = false;
           console.log(this.vitalData);
           console.log(`Updated ${name} successfully`)
         })
@@ -1066,6 +1124,9 @@ export default {
           console.log(err);
           this.$toast.error(`Failed to create vital record`)
         });
+    },
+    changeShowVital() {
+      this.showVital = !this.showVital;
     },
     putData(name, value) {
       const values = this[name]
@@ -1314,6 +1375,10 @@ export default {
             this.isTemplateD = false
             this.locked = false;
         //    this.updateBMI()
+          } else {
+            this.isNew = true;
+            this.vitalData = [];
+            this.getVitals();
           }
         })
         .catch(() => {
