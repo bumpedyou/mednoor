@@ -96,4 +96,29 @@ export default function ({ $axios, app }, inject) {
   })
   insuranceApi.setBaseURL(process.env.INSURANCE_URL)
   inject('insuranceApi', insuranceApi)
+
+    // Create feedback  axios instance
+    const feedBackApi = $axios.create({
+      headers: {
+        common: {
+          Accept: 'application/json',
+        },
+      },
+    })
+    // Create interceptor to add the user's token.
+    feedBackApi.onRequest((config) => {
+      if (app.$auth.loggedIn) {
+        const token = app.$auth.strategy.token.get().split(' ')[1] // Get the token only
+        feedBackApi.setToken(token, 'Bearer') // Bearer token
+      }
+      return config
+    })
+  
+    // SET THE APIS URL
+  
+    
+    feedBackApi.setBaseURL(process.env.API_FB)
+  
+    // Inject to context as $api
+    inject('feedBackApi', feedBackApi)
 }
