@@ -1,0 +1,25 @@
+.blog-comments-contain {
+    display: flex;
+    flex-direction: column;
+
+    .comments-toolbar {
+        flex: 0;
+    }
+
+    .comments-body-contain {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+
+        .comments-body {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            overflow-y: auto;
+
+            .commit-submit-btn {
+                text-transform: none;
+            }
+        }
+    }
+}

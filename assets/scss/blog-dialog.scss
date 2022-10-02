@@ -1,0 +1,101 @@
+.blog-dialog-contain {
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+
+    .blog-dialog-header {
+        background-color: #CFD8DC;
+        justify-content: space-between;
+
+        .blog-dialog-closebtn {
+            display: flex;
+            cursor: pointer;
+        }
+    }
+
+    .blog-dialog-body {
+        flex: 1;
+        position: relative;
+        padding: unset !important;
+
+        .dialog-body-contain {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            overflow-y: auto;
+            padding: 0 24px 20px;
+
+            .blog-new-img {
+                height: 100px;
+                display: flex;
+                flex-direction: inherit;
+                justify-content: center;
+
+                img {
+                    height: 100%;
+                }
+            }
+        }
+    }
+
+    .blog-dialog-footer {
+        button {
+            text-transform: unset;
+        }
+    }
+
+    @media (max-width: 960px) {
+        .blog-dialog-body {
+            .dialog-body-contain {
+                padding: 0 10px 10px;
+
+                .blog-new-img {
+                    height: 70px;
+
+                    img {
+                        height: 100%;
+                        max-width: 100%;
+                    }
+                }
+            }
+        }
+    }
+
+    @media (min-width: 600px) and (max-width: 960px) {
+        .blog-dialog-body {
+            .dialog-body-contain {
+                padding: 0 15px 10px;
+
+                .col-12 {
+                    padding: 3px;
+                }
+            }
+        }
+    }
+
+    @media (max-width: 600px) {
+        .blog-dialog-body {
+            .dialog-body-contain {
+                .blog-new-img {
+                    height: 100px;
+
+                    img {
+                        height: 100%;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 600px) {
+    .v-dialog--persistent.v-dialog {
+        margin: unset;
+        max-width: 100vh !important;
+        max-height: 100vh !important;
+    }
+
+    .blog-dialog-contain {
+        height: 100vh;
+    }
+}
