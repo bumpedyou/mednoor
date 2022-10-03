@@ -1252,24 +1252,25 @@ export default {
           this.$api
             .put('/medical-record/' + this.recordId, values)
             .then(() => {
-              if (this.isValidUser() && !this.$route.query.mere) {
-                this.$api
-                  .post('/medical-record/record', values)
-                  .then(() => {
-                    this.$toast.success(this.$t('record_hb_created').toString())
-                    setTimeout(() => {
-                      this.$router.push(this.localePath('/emr'))
-                    }, 500)
-                  })
-                  .catch((err) => {
-                    this.$refs.rmodal.$emit('error', err)
-                  })
-                  .finally(() => {
-                    this.loading = false
-                  })
-              } else {
-                this.$router.push(this.localePath('/emr'))
-              }
+              // if (this.isValidUser() && !this.$route.query.mere) {
+              //   this.$api
+              //     .post('/medical-record/record', values)
+              //     .then(() => {
+              //       this.$toast.success(this.$t('record_hb_created').toString())
+              //       setTimeout(() => {
+              //         this.$router.push(this.localePath('/emr'))
+              //       }, 500)
+              //     })
+              //     .catch((err) => {
+              //       this.$refs.rmodal.$emit('error', err)
+              //     })
+              //     .finally(() => {
+              //       this.loading = false
+              //     })
+              // } else {
+              //   this.$router.push(this.localePath('/emr'))
+              // }
+              this.$router.push(this.localePath('/emr'))
               // this.$router.push(this.localePath('/emr'))
             })
             .catch((err) => {
