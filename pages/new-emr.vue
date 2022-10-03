@@ -141,8 +141,7 @@
               </label>
               <vue-editor
                 v-model="allergies"
-                :label="$t('allergies')"
-                :placeholder="$t('allergies')"
+
                 :disabled="isDisabled"
 
               />
@@ -166,8 +165,6 @@
               </label>
               <vue-editor
                 v-model="current_meds"
-                :label="$t('current_meds')"
-                :placeholder="$t('current_meds')"
                 :disabled="isDisabled"
               />
               <v-row v-if="selectedUser">
@@ -190,8 +187,6 @@
               </label>
               <vue-editor
                 v-model="pharmacies"
-                :label="$t('pharmacies')"
-                :placeholder="$t('pharmacies')"
                 :disabled="isDisabled"
               />
               <v-row v-if="selectedUser">
@@ -214,8 +209,6 @@
               </label>
               <vue-editor
                 v-model="past_meds"
-                :label="$t('past_meds')"
-                :placeholder="$t('past_meds')"
                 :disabled="isDisabled"
               />
               <v-row v-if="selectedUser">
@@ -238,8 +231,6 @@
               </label>
               <vue-editor
                 v-model="medical_history"
-                :label="$t('med_htry')"
-                :placeholder="$t('med_htry')"
                 :disabled="isDisabled"
               />
               <v-row v-if="selectedUser">
@@ -262,8 +253,6 @@
               </label>
               <vue-editor
                 v-model="surgical_history"
-                :label="$t('surgical_htry')"
-                :placeholder="$t('surgical_htry')"
                 :disabled="isDisabled"
               />
               <v-row v-if="selectedUser">
@@ -286,8 +275,6 @@
               </label>
               <vue-editor
                 v-model="social_history"
-                :label="$t('soc_htry')"
-                :placeholder="$t('soc_htry')"
                 :disabled="isDisabled"
               />
               <v-row v-if="selectedUser">
@@ -310,8 +297,6 @@
               </label>
               <vue-editor
                 v-model="family_history"
-                :label="$t('fam_hry')"
-                :placeholder="$t('fam_hry')"
                 :disabled="isDisabled"
               />
               <v-row v-if="selectedUser">
@@ -352,7 +337,8 @@
             <tr  v-for="(item) in vitalContents" v-show="showVital" :key="item.key">
               <td>{{item.title}}</td>
               <td v-for="(value) in item.content" :key="value.id">
-                <input  v-model="value.content" type='number' class="text-center" :disabled="item.key == 'bmi'"  @change='changeVital(value, item.key)' />
+                <input v-if="item.key == 'bp'" v-model="value.content" type='text' class="text-center" :disabled="item.key == 'bmi'"  @change='changeVital(value, item.key)' />
+                <input v-else v-model="value.content" type='number' class="text-center" :disabled="item.key == 'bmi'"  @change='changeVital(value, item.key)' />
               </td>
               <td v-if="isNew"></td>
             </tr>
@@ -366,8 +352,6 @@
               </label>
               <vue-editor
                 v-model="chief_complaint"
-                :label="$t('chief_complaint')"
-                :placeholder="$t('chief_complaint')"
                 :disabled="isDisabled"
               />
               <v-row v-if="selectedUser">
@@ -389,8 +373,6 @@
               </label>
               <vue-editor
                 v-model="hip"
-                :label="$t('hpi')"
-                :placeholder="$t('hpi')"
                 :disabled="isDisabled"
               />
               <v-row v-if="selectedUser">
@@ -412,8 +394,6 @@
               </label>
               <vue-editor
                 v-model="subject"
-                :label="$t('subject')"
-                :placeholder="$t('subject')"
                 :disabled="isDisabled"
               />
               <v-row v-if="selectedUser">
@@ -435,8 +415,6 @@
               </label>
               <vue-editor
                 v-model="objective"
-                :label="$t('objective')"
-                :placeholder="$t('objective')"
                 :disabled="isDisabled"
               />
               <v-row v-if="selectedUser">
@@ -458,8 +436,6 @@
               </label>
               <vue-editor
                 v-model="assessment"
-                :label="$t('assessment')"
-                :placeholder="$t('assessment')"
                 :disabled="isDisabled"
               />
               <v-row v-if="selectedUser">
@@ -481,8 +457,6 @@
               </label>
               <vue-editor
                 v-model="plan"
-                :label="$t('plan')"
-                :placeholder="$t('plan')"
                 :disabled="isDisabled"
               />
               <v-row v-if="selectedUser">
@@ -512,8 +486,6 @@
               </label>
               <vue-editor
                 v-model="addendum"
-                :label="$t('addendum')"
-                :placeholder="$t('addendum')"
               />
               <v-row v-if="selectedUser">
                 <v-col class="text-right mt-1">
@@ -761,7 +733,7 @@ export default {
     userSearch: debounce(function (v) {
       if (validate(v)) {
         // The professional selected a valid user.
-        this.saveDraft('user')
+        // this.saveDraft('user')
       }
       if (v && v.length > 0) {
         this.loadingUsers = true
@@ -830,7 +802,7 @@ export default {
             this.$route.query.type = 'template'
             this.isTemplateD = true
           }
-          this.updateBMI()
+          // this.updateBMI()
           setTimeout(() => {
             this.canSaveDraft = true
           }, 1000)
@@ -916,6 +888,7 @@ export default {
       this.detectScrollPos();
     },
     saveDetail(arg, value) {
+      console.log(this.recordId);
       if (validate(this.recordId)) {
         this.putData(arg, value)
       }
@@ -937,6 +910,7 @@ export default {
             })
             .then(({ data }) => {
               if (data && data.mere_uuid) {
+                console.log("Draft Data: " + data.mere_uuid);
                 this.recordId = data.mere_uuid
                 if(!this.isDeafaultData){
                 this.$toast.success('A new draft has been created')
@@ -944,6 +918,9 @@ export default {
 
                 this.draft = true
                 this.putData(arg, v || valueOverride)
+                if (data.mere_sign) {
+                  this.locked = true
+                }
               }
             })
             .catch(() => {
@@ -1345,6 +1322,7 @@ export default {
       this.plan = tm.mere_plan
       this.sign = tm.mere_sign
       this.addendum = tm.mere_addendum
+
     },
     changeTemplate(t) {
       this.templates.forEach((tm) => {
@@ -1364,9 +1342,10 @@ export default {
                 return new Date(b.mere_date) - new Date(a.mere_date)
               })
             }
+            console.log(data);
 
             const item = data[0]
-             item.mere_sign = null;
+             item.mere_sign = '';
             this.setData(item, true);
             this.vitalData = data;
             this.getVitals();
@@ -1374,6 +1353,7 @@ export default {
 
             this.isTemplateD = false
             this.locked = false;
+            this.saveDetail('sign', this.sign);
         //    this.updateBMI()
           } else {
             this.isNew = true;
@@ -1392,15 +1372,14 @@ export default {
 
     askSign() {
       this.oldTab2 = this.tab2;
-      if(this.sign.length === 0) {
+      if(!this.sign || this.sign.length === 0) {
         this.loadingSign = true;
       }
-
     },
 
     confirmSign() {
       this.loadingSign = false;
-      this.sign = this.$auth.user.last_name + "," + this.$auth.user.user_first_name;
+      this.sign = this.$auth.user.last_name + ", " + this.$auth.user.user_first_name;
       if(this.selectedUser) {
         this.saveDetail('sign', this.sign);
       }
