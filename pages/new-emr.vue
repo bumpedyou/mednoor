@@ -1380,7 +1380,7 @@ export default {
 
     confirmSign() {
       this.loadingSign = false;
-      this.sign = this.$auth.user.last_name + ", " + this.$auth.user.user_first_name;
+      this.sign = this.$auth.user.last_name + ", " + this.$auth.user.user_first_name + " " + this.$auth.user.credentials;
       if(this.selectedUser) {
         this.saveDetail('sign', this.sign);
       }
