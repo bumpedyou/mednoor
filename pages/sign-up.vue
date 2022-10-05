@@ -6,7 +6,7 @@
         <v-col md="12" >
         <v-card class="mt-6 sign-up"  elevation="22" outlined :loading="loading">
           <v-card-text>
-          <h1 class="h4 mt-5 text-center mb-6 ">{{'Register Here, We Take Care'}}</h1>
+          <h1 class="h4 mt-5 text-center mb-6 ">{{$t('reg_title')}}</h1>
             <v-form ref="form" v-model="validForm" @submit.prevent="handleSubmit">
               <v-row class="mb-0 mb-0 pb-0">
                 <v-col md="12" class="my-0 py-0">

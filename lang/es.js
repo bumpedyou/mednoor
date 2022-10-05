@@ -1,4 +1,5 @@
 export default {
+  reg_title:'MedNoor comienza Aquí',
   dashboard: 'Dashboard',
   list_usrs: 'Lista de Usuarios',
   list: 'Lista',
@@ -176,7 +177,7 @@ export default {
   sign_out: 'Salir',
   i_agree: 'Estoy de acuerdo con los',
   terms_cond: 'Terminos y condiciones',
-  privacy: 'Privacidad',
+  privacy: 'Política de privacidad',
   alr_h_acc: '¿Ya tiene una cuenta?',
   unauthorized: 'No autorizado',
   yornt_auth: 'No esta autorizado para acceder a esa página',
