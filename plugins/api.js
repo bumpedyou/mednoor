@@ -96,4 +96,19 @@ export default function ({ $axios, app }, inject) {
   })
   insuranceApi.setBaseURL(process.env.INSURANCE_URL)
   inject('insuranceApi', insuranceApi)
+  // countries API
+     // Create interceptor to add the user's token.
+      // Create feedback  axios instance
+      const globalApi = $axios.create({
+        headers: {
+          common: {
+            Accept: 'application/json',
+          },
+        },
+      })
+      globalApi.setBaseURL("https://api.global.pronoor.com/")
+    
+      // Inject to context as $api
+      inject('globalApi', globalApi)
+      // EO Countries API
 }
