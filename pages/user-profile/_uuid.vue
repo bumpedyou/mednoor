@@ -247,13 +247,6 @@
                   </v-combobox>
                 </v-col>
                 </v-row>
-                <v-row v-if="isUser">
-                  <v-col>
-                    <hr />
-                    <p class="h4">Address</p>
-                    <UserAddress></UserAddress>
-                  </v-col>
-                </v-row>
                 <v-row>
                   <v-col>
                     <v-btn
@@ -866,7 +859,7 @@ import authMixin from '~/mixins/authMixin'
 import RequestModal from '~/components/RequestModal'
 import ProfilePicture from '~/components/ProfilePicture'
 import uploadMixin from '~/mixins/uploadMixin'
-import UserAddress from '~/components/UserAddress'
+
 import addressMixin from '~/mixins/addressMixin'
 import uTcDate from '~/mixins/uTcDate'
 import 'vue2-datepicker/index.css'
@@ -874,7 +867,6 @@ import dateMixin from '~/mixins/dateMixin'
 export default {
   name: 'MyProfile',
   components: {
-    UserAddress,
     ProfilePicture,
     SpinOrText,
     RequestModal,
@@ -1144,14 +1136,16 @@ export default {
     this.getuser()
     
     this.$api.get('/medical-record/?template=key').then((x) => {
-      console.log('res', x)
+      //console.log('res', x)
+      // res {data: Array(6), status: 200, statusText: 'OK', headers: {…}, config: {…}, …}
     })
     this.$api
       .get('/category')
       .then(({ data }) => {
         if (data) {
           this.categories = data
-          console.log('Categories --->', data)
+         // console.log('Categories --->', data)
+         //Categories ---> (4) [{…}, {…}, {…}, {…}, __ob__: Observer]
           this.getMyRecord()
         }
       })
@@ -1163,7 +1157,7 @@ export default {
         '/medical-record/record/' + this.user_uuid
       )
       .then(({ data }) => {
-        console.log(data);
+        //console.log(data);
         if(data.length > 0) {
           this.recordId = data[0].mere_uuid;
           this.tabs[0].data = data[0].mere_allergies;
