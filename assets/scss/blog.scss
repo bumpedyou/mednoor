@@ -1,0 +1,104 @@
+.blog-containner {
+    height: calc(100vh - 50px);
+    display: flex;
+    flex-direction: column;
+
+    .blog-header {
+        justify-content: right;
+        justify-items: end;
+        align-items: end;
+    }
+
+    .blog-component-contain {
+        border: 1px solid #E0E0E0;
+        background-color: #EEEEEE;
+        flex: 1;
+    }
+
+    .blog-component {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+
+        .blog_com-header {
+            color: #0D47A1;
+            background-color: #CFD8DC;
+            font-family: emoji;
+        }
+
+        .blog_com-body {
+            flex: 1;
+            position: relative;
+            overflow-y: auto;
+
+            .blog_com-body-contain {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+
+                .blogT-img {
+                    width: 100px;
+                    max-width: 100%;
+                    height: auto;
+                }
+
+                .blogT-actionbtn {
+                    display: flex;
+                    flex-direction: row;
+
+                    button {
+                        text-transform: none;
+                    }
+                }
+
+                .blogT-column {
+                    height: 100%;
+                    width: 100%;
+                }
+
+                .tabl_comments {
+                    color: #00695C;
+                    cursor: pointer;
+                }
+
+                table {
+                    thead {
+                        th {
+                            font-weight: bold;
+                            font-size: 17px;
+                            font-family: emoji;
+                        }
+                    }
+
+                    tr td {
+                        padding-top: 10px;
+                        padding-bottom: 10px;
+                    }
+                }
+            }
+        }
+    }
+
+    @media (max-width: 960px) {
+        .blog-component {
+            .blog_com-body {
+                .blog_com-body-contain {
+                    .blogT-actionbtn {
+                        flex-direction: column;
+
+                        button {
+                            text-transform: none;
+                            margin-bottom: 5px;
+                        }
+                    }
+
+                    table {
+                        tr td {
+                            padding: 5px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

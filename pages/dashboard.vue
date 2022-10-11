@@ -2,26 +2,20 @@
   <div class="mh-100v pa-6">
     <v-row class="mb-3">
       <v-col>
-        <v-breadcrumbs
-          :items="[
-            {
-              text: $t('dashboard'),
-              disabled: true,
-            },
-          ]"
-        >
+        <v-breadcrumbs :items="[
+          {
+            text: $t('dashboard'),
+            disabled: true,
+          },
+        ]">
         </v-breadcrumbs>
       </v-col>
     </v-row>
+
     <v-row>
       <v-col md="12">
         <div class="card-deck">
-          <div
-            v-for="(o, i) in dashboardItems"
-            :key="'dashboard-' + i"
-            class="pa-3"
-            @click="navigate(o)"
-          >
+          <div v-for="(o, i) in dashboardItems" :key="'dashboard-' + i" class="pa-3" @click="navigate(o)">
             <v-card-text>
               <v-btn :color="o.type" small tile :dark="o.dark">
                 <v-icon class="mr-1">mdi-{{ o.icon }}</v-icon>
@@ -50,24 +44,26 @@ export default {
     'pin-set',
     'view-set',
   ],
-  head() {
+  head()
+  {
     return {
       title: this.$t('dashboard'),
     }
   },
   methods: {
-    async navigate(value) {
-    //  console.log(await this.$auth.refreshTokens())
+    async navigate(value)
+    {
+      //  console.log(await this.$auth.refreshTokens())
       const authData = await this.$auth.refreshTokens()
       const sessionId =
         (authData && authData.data && authData.data.session_id) || null
-      if (value && value.redirect && sessionId) {
+      if (value && value.redirect && sessionId)
+      {
         const url = `${process.env.PAYMENT_URL}/financial?session_id=${sessionId}`
         window.open(url)
-      } else {
-
-        
-       // const route = this.$router.resolve({ path: value.to })
+      } else
+      {
+        // const route = this.$router.resolve({ path: value.to })
         window.open(this.localePath(value.to))
         // this.$router.push(this.localePath(value.to))
       }

@@ -1,5 +1,7 @@
 <template>
   <div class='pa-6 mh-100v'>
+    <v-list-item to="blog-view" tag="a">Blog Posts</v-list-item>
+
     <v-row>
       <v-col>
         <div v-if='doctors && doctors.length' class='mb-1'>
@@ -17,17 +19,20 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col  md="6" offset-md="3" lg="6" offset-lg="3">
+            <v-col md="6" offset-md="3" lg="6" offset-lg="3">
               <div class="flex-center">
-                <v-text-field v-model="term" type="search" placeholder="Search by professional name" @keyup.enter="search"></v-text-field>
-                <v-btn small tile color="primary" @click="search"><v-icon>mdi-magnify</v-icon></v-btn>
+                <v-text-field v-model="term" type="search" placeholder="Search by professional name"
+                  @keyup.enter="search"></v-text-field>
+                <v-btn small tile color="primary" @click="search">
+                  <v-icon>mdi-magnify</v-icon>
+                </v-btn>
               </div>
             </v-col>
           </v-row>
         </div>
         <v-row>
           <v-col md="12">
-            <v-skeleton-loader v-if='loadingResults'/>
+            <v-skeleton-loader v-if='loadingResults' />
             <div v-else-if="results.length > 0">
               <section v-for="(r, i) in results" :key="i" class="professional-bar">
                 <div>
@@ -42,16 +47,10 @@
                       {{display_address(r)}}
                     </p>
                     <p>
-                      <v-chip
-                        v-if="r.category"
-                        color="primary"
-                      >
+                      <v-chip v-if="r.category" color="primary">
                         {{ r.category }}
                       </v-chip>
-                      <v-chip
-                        v-if="r.specialty"
-                        color="success"
-                      >
+                      <v-chip v-if="r.specialty" color="success">
                         {{ r.specialty }}
                       </v-chip>
                       <v-divider vertical></v-divider>
@@ -79,11 +78,7 @@
         <RequestModal ref='rmodal'></RequestModal>
       </v-col>
       <v-col>
-        <v-dialog
-          v-model='visible'
-          max-width="320px"
-          persistent
-        >
+        <v-dialog v-model='visible' max-width="320px" persistent>
           <v-card>
             <v-card-title>
               $t('conf_action')
@@ -112,7 +107,8 @@ export default {
 
   mixins: [authMixin, addressDisplayMixin],
   middleware: ['verified'],
-  data() {
+  data()
+  {
     return {
       term: '',
       visible: false,
@@ -121,13 +117,13 @@ export default {
           title: this.$t('full_name'),
           dataIndex: 'user_first_name',
           key: 'user_first_name',
-          slots: {title: this.$t('full_name')},
-          scopedSlots: {customRender: 'full_name'}
+          slots: { title: this.$t('full_name') },
+          scopedSlots: { customRender: 'full_name' }
         },
         {
           title: this.$t('action'),
           key: 'action',
-          scopedSlots: {customRender: 'action'}
+          scopedSlots: { customRender: 'action' }
         }
       ],
       users: [],
@@ -141,34 +137,40 @@ export default {
       results: []
     }
   },
-  head() {
+  head()
+  {
     return {
       title: this.$t('profs')
     }
   },
-  mounted() {
+  mounted()
+  {
     this.search()
     this.getModerators()
     this.socket = this.$nuxtSocket({})
     this.socket.emit('join-room', this.myUserId)
-    this.socket.on('chat-allowed', () => {
+    this.socket.on('chat-allowed', () =>
+    {
       this.getModerators()
     })
 
 
 
-    if (this.isLoggedIn) {
+    if (this.isLoggedIn)
+    {
       this.$api.get('/my-doctor', {
         params: {
           five: true
         }
-      }).then(({data}) => {
+      }).then(({ data }) =>
+      {
         this.doctors = data
       })
     }
   },
   methods: {
-    search() {
+    search()
+    {
       this.loadingResults = true
       this.$userApi.get('/search', {
         params: {
@@ -176,46 +178,59 @@ export default {
           type: 'MODERATOR',
           categories: this.selectedCategories
         }
-      }).then(({data}) => {
-        if (data) {
+      }).then(({ data }) =>
+      {
+        if (data)
+        {
           this.results = data
         }
         this.searched = true
-      }).catch((err) => {
+      }).catch((err) =>
+      {
         this.$toast.error(err)
-      }).finally(() => {
+      }).finally(() =>
+      {
         this.loadingResults = false
       })
     },
-    getModerators() {
+    getModerators()
+    {
       this.loading = true
     },
-    handleCancel() {
+    handleCancel()
+    {
       this.visible = false
       this.uuid = null
       this.confirmLoading = false
     },
-    handleOk() {
+    handleOk()
+    {
       this.confirmLoading = true
-      if (this.action === 'save') {
+      if (this.action === 'save')
+      {
         this.$api.post('/my-professional', {
           professional: this.uuid
-        }).then(() => {
+        }).then(() =>
+        {
           this.getModerators()
-        }).catch((err) => {
+        }).catch((err) =>
+        {
           this.$refs.rmodal.$emit('error', err)
-        }).finally(() => {
+        }).finally(() =>
+        {
           this.confirmLoading = false
           this.visible = false
         })
       }
     },
-    save(uuid) {
+    save(uuid)
+    {
       this.uuid = uuid
       this.action = 'save'
       this.visible = true
     },
-    remove(uuid) {
+    remove(uuid)
+    {
       this.uuid = uuid
       this.action = 'remove'
       this.visible = true

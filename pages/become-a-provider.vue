@@ -8,8 +8,8 @@
     <v-row>
       <v-col>
         <p class="h1 mb-3">Do you want to be a provider?</p>
-        <v-btn color='error' small tile @click='$router.push(localePath("/view-mode"))'>No Thanks</v-btn>
-        <v-btn color='primary' small tile @click='$router.push(localePath("/join-professionals"))'>Yes <v-btn>mdi-check-circle</v-btn></v-btn>
+        <v-btn color='error' small tile @click='$router.push(localePath("/view-mode"))'>No Thanks <v-icon>mdi-close-circle</v-icon></v-btn>
+        <v-btn color='primary' small tile @click='$router.push(localePath("/join-professionals"))'>Yes <v-icon>mdi-check-circle</v-icon></v-btn>
       </v-col>
     </v-row>
   </div>

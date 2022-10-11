@@ -8,7 +8,9 @@
     <a-row v-else class="pa-6">
       <v-col :xs="24" :sm="24">
         <div>
-          <p class="h1 flex-line align-f-md">
+          <v-row>
+          <v-col :xs="11" :sm="11">
+            <p class="h1 flex-line align-f-md">
             {{ user.user_first_name }} {{ user.user_last_name }}
             <v-btn
               v-if="user && user.usro_key"
@@ -21,7 +23,14 @@
               {{ user.usro_role }}
             </v-btn>
           </p>
+          </v-col>
+          <v-col :xs="1" :sm="1">
+            <v-btn color="warning" @click="$router.push(localePath('/users-list/'))">
+              <v-icon dark left>mdi-arrow-left</v-icon>Back</v-btn>
+          </v-col>
+        </v-row>
         </div>
+        
         <div>
           <a-tabs v-if="showTabs" :default-active-key="tab.toString()">
             <a-tab-pane key="1" tab="Profile Picture">
@@ -81,7 +90,7 @@
                 @submit.prevent="handleSubmit"
               >
                 <v-row>
-                  <v-col md="6">
+                  <v-col md="4">
                     <v-text-field
                       v-model="first_name"
                       :placeholder="$t('fn')"
@@ -97,7 +106,14 @@
                       ]"
                     ></v-text-field>
                   </v-col>
-                  <v-col md="6">
+                  <v-col md="4">
+                    <v-text-field
+                      v-model="middle_name"
+                      :placeholder="$t('mn')"
+                      :label="$t('mn')"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col md="4">
                     <v-text-field
                       v-model="last_name"
                       :placeholder="$t('ln')"
@@ -124,20 +140,67 @@
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col sm="4" md="4">
-                    <v-text-field
-                      v-model="country_code"
-                      placeholder="Country code"
-                      label="Country code"
-                    ></v-text-field>
+                  <!-- country code -->
+                  <v-col sm="2" md="2">
+                    <v-combobox 
+                      v-model="global_lists.selected_country"
+                      :hint="`${global_lists.selected_country.name} ${' '} ${global_lists.selected_country.code}`"
+                      :items="global_lists.countries_list"
+                      item-value="name"
+                      item-text="name"
+                      :label="$t('country_code')"
+                      persistent-hint 
+                      auto-select-first
+                      return-object
+                      :rules="[v => !!v || $t('v.country_code'), v => !!v &&v.name && v.name.length >=4 || $t('v.country_code')]"
+                      @change="handleSelectCountry"
+                      >
+                      <template #[`item`] = "{item}">
+                       <v-row   ma-0 pa-0 fill-height  >
+                        <v-col  cols="2" ><div>
+                              <v-avatar tile>
+                                {{item.phone}}
+                              </v-avatar>
+                            </div></v-col>
+                          <v-col cols="7"><div>
+                            <v-avatar tile width="250">{{item.name}}</v-avatar>
+                          </div></v-col>
+                          <v-col cols="2">
+                          <v-avatar tile><v-img :src="`https://flagcdn.com/${item.alpha2.toLowerCase()}.svg`" max-height="20" max-width="30"  ></v-img></v-avatar>
+                        </v-col>
+                            
+                       </v-row>
+                      </template>
+                      <template slot="selection"   >
+                        <v-avatar  tile size="25%" >
+                          <v-img v-if="global_lists.selected_country.alpha2" :src="`https://flagcdn.com/${global_lists.selected_country.alpha2.toLowerCase()}.svg`" max-height="20" max-width="30"  ></v-img>
+                        </v-avatar>
+                        <v-avatar  tile size="75%">{{global_lists.selected_country.phone}}</v-avatar>   
+                      </template>
+                    </v-combobox>
                   </v-col>
-                  <v-col sm="4" md="4">
-                    <v-text-field
-                      v-model="phone_no"
-                      placeholder="Phone number"
-                      label="Phone number"
-                      maxlength="10"
-                    ></v-text-field>
+                  <v-col sm="3" md="3">
+                    <v-text-field v-model="phone_no"  :value="phone_no" :placeholder="$t('phone_no')" :label="$t('phone_no')" maxlength="10" :hint="`${global_lists.selected_country.phone}${' '}${phone_no}`"
+                  :rules="[v => !!v || $t('v.phone_req'), v => !!v && v.length >=10 || $t('v.min_10')]" 
+                  persistent-hint	
+                  @keypress="handlePhone"
+                  ></v-text-field> 
+                  </v-col>
+                  <v-col sm="3" md="3">
+                    <v-combobox
+                      v-model="global_lists.selected_state"
+                      :hint="`${global_lists.selected_state.code} `"
+                      :items="global_lists.state_list"
+                      item-value="name"
+                      item-text="name"
+                      :label="$t('state')"
+                      persistent-hint
+                      auto-select-first
+                      return-object
+                      :rules="[v => !!v || $t('v.state'), v => !!v && v.name && v.name.length >=1 || $t('v.state')]"
+                      @change="handleSelectState"
+                      >  
+                    </v-combobox>
                   </v-col>
                   <v-col sm="4" md="4">
                     <div class="d-flex flex-row align-end">
@@ -150,6 +213,39 @@
                       ></date-picker>
                     </div>
                   </v-col>
+                </v-row>
+                <v-row >
+                <v-col md="8" sm="8">
+                  <v-text-field v-model="user_addr.address"  :autocomplete="false" :label="$t('address')" :rules="[v => !!v ||  $t('v.address_req'), v => !!v  && v.length >= 10  || $t('v.min_10', v => !!v && v.length <= 30 || $t('v.max_30'))]"></v-text-field>
+                </v-col>
+                <v-col  md="2" sm="2">
+                  <v-combobox
+                      v-model="global_lists.selected_city"
+                      :items="global_lists.city_list"
+                      item-value="name"
+                      item-text="name"
+                      :label="$t('city')"
+                      return-object
+                      auto-select-first
+                      :rules="[v => !!v || $t('v.city'), v => !!v && v.name && v.name.length >=1 || $t('v.city')]"
+                      @change="handleSelectCity"
+                      >  
+                      </v-combobox>
+                </v-col>
+                <v-col  md="2" sm="2">
+                  <v-combobox
+                      v-model="global_lists.selected_zip"
+                      :items="global_lists.zip_list"
+                      item-value="code"
+                      item-text="code"
+                      :label="$t('zip_code')"
+                      return-object
+                      auto-select-first
+                      :rules="[v => !!v || $t('v.zip'), v => !!v && v.code && v.code.length >=1 || $t('v.zip')]"
+                      @change="handleSelectZip"
+                      >  
+                  </v-combobox>
+                </v-col>
                 </v-row>
                 <v-row v-if="isUser">
                   <v-col>
@@ -172,7 +268,9 @@
                   </v-col>
                 </v-row>
               </v-form>
+              
             </a-tab-pane>
+            
             <!-- <a-tab-pane key="3" tab="Security" force-render>
             <a-form-item>
               <p class="h4">
@@ -754,6 +852,7 @@
         </div>
       </v-col>
     </a-row>
+
     <request-modal ref="rmodal"></request-modal>
   </div>
 </template>
@@ -801,8 +900,9 @@ export default {
     return {
       email: '',
       first_name: '',
-      fetchingMedHistory: false,
+      middle_name:'',
       last_name: '',
+      fetchingMedHistory: false,
       user: {},
       user_uuid: null,
       validPersonalForm: false,
@@ -824,6 +924,21 @@ export default {
       categories: [],
       country_code: '',
       phone_no: '',
+      global_lists:{
+        countries_list:[],
+        selected_country:{ id:"d2b7d01d-33c6-45e8-9fac-24fcbc386e17",code: "USA",name: "United States of America",alpha2: "US",phone: "+1",capital: "DCA"},
+      state_list:[],
+      selected_state:{code: "AL",id: "110c1a91-fb92-41e8-b40d-37d3befefafe",name:"Alabama"},
+      city_list:[],
+      selected_city:{id:"81db56a1-a665-46b7-8df0-6e59fba0e7c0",name:"Abernant"},
+      zip_list:[],selected_zip:{id:"072afa05-c93c-4a78-9b8f-8b7427c42124",code:"35440"}
+      },user_addr:{
+        country:'',
+        state:'',
+        address:'',
+        city:'',
+        zip_code:'',
+      },
       loadingSaveP: false,
       loadingPage: true,
       date_of_birth: null,
@@ -1027,6 +1142,7 @@ export default {
   },
   mounted() {
     this.getuser()
+    
     this.$api.get('/medical-record/?template=key').then((x) => {
       console.log('res', x)
     })
@@ -1062,6 +1178,77 @@ export default {
       })
   },
   methods: {
+    async handleSelectCountry(){
+      const selectedCountry= this.global_lists.selected_country
+      if (selectedCountry===null || selectedCountry==="" || !selectedCountry.id){
+        this.global_lists.selected_country={ id:"",code: "",name: "",alpha2: "",phone: "",capital: ""}
+        this.global_lists.state_list=[]
+        this.global_lists.selected_state={code: "",id:"",name:""}
+        this.global_lists.city_list=[]
+        this.global_lists.selected_city={id:'',name:''}
+        this.global_lists.zip_list=[]
+        this.global_lists.selected_zip={id:"",code:""}
+        return 
+      }
+       const res = await this.$globalApi.get('/state',{params:{country:this.global_lists.selected_country.id}})
+          if (res.data.length>0){this.global_lists.state_list = res.data.map(s=>{
+            return {code:s.code,id:s.id,name:s.name}
+          })}
+          else {this.global_lists.state_list = [{code: "N/A",id:"N/A",name:"N/A"}]}
+          this.global_lists.selected_state=this.global_lists.state_list[0]
+          this.user_addr.country=this.global_lists.selected_country.name
+          this.country_code=this.global_lists.selected_country.phone
+            this.handleSelectState()
+      },
+      async handleSelectState(){
+        const selectedState = this.global_lists.selected_state
+        if (selectedState===null || selectedState==="" || !selectedState.id){
+        this.global_lists.selected_state={code: "",id:"",name:""}
+        this.global_lists.city_list=[]
+        this.global_lists.selected_city={id:'',name:''}
+        this.global_lists.zip_list=[]
+        this.global_lists.selected_zip={id:"",code:""}
+        return 
+      }
+        const res = await this.$globalApi.get('/city',{params:{state:selectedState.id}})
+        if (res.data.length>0){this.global_lists.city_list = res.data.map(c=>{
+          return {id:c.id,name:c.name}
+        })}
+        else {this.global_lists.city_list = [{id:"N/A",name:"N/A"}]}
+        this.global_lists.selected_city=this.global_lists.city_list[0]
+        this.user_addr.state=this.global_lists.selected_state.name
+        this.handleSelectCity()
+      },
+      async handleSelectCity(){
+        const selectedCity = this.global_lists.selected_city
+        if (selectedCity===null || selectedCity==="" || !selectedCity.id){
+        this.global_lists.selected_city={id:'',name:''}
+        this.global_lists.zip_list=[]
+        this.global_lists.selected_zip={id:"",code:""}
+        return 
+      }
+        const res= await this.$globalApi.get('/zip',{params:{city:selectedCity.id}})
+        if (res.data.length>0){this.global_lists.zip_list = res.data.map(z=>{
+          return {id:z.id,code:z.code}
+        })}
+        else {this.global_lists.zip_list=[{id:"N/A",code:"N/A"}]}
+        this.global_lists.selected_zip=this.global_lists.zip_list[0]
+        this.user_addr.city=this.global_lists.selected_city.name
+        this.handleSelectZip()
+      },
+      handleSelectZip(){
+        const selectedZip = this.global_lists.selected_zip
+        if (selectedZip===null || selectedZip==="" || !selectedZip.id){
+        this.global_lists.selected_zip={id:"",code:""}
+        return 
+      }
+        this.user_addr.zip_code=this.global_lists.selected_zip.code
+      },
+       handlePhone(e){
+        if ( !e )e = window.event 
+      const val = e.target.value.toString() + e.key.toString();
+      return  !/^[-+]?[0-9]*\.?[0-9]*$/.test(val)? e.preventDefault():true 
+      },
     async updateMedHistory(tab, data) {
       const tabName = tab.toLowerCase()
       if (!this.fetchingMedHistory) {
@@ -1080,21 +1267,103 @@ export default {
           })
       }
     },
-    getuser() {
+    async getuser() {
       const q = this.$route.params
       this.user_uuid = q.uuid
+      let res = await this.$globalApi.get('/country')
+      res= res.data.filter(c=>{
+        return c.name && c.name.length>3 
+      })
+          this.global_lists.countries_list=res.map(c=>{
+            return { 
+            id:c.id, code: c.code?c.code:"N/A",
+            name: c.name,
+            alpha2: c.alpha2?c.alpha2:c.code?c.code.substr(0,2):c.name.substr(0,2),
+            phone: c.phone?c.phone.startsWith("+")?c.phone: `+${c.phone}`:"+00",
+            capital: c.capital
+          }
+          })
+      
       if (this.user_uuid) {
         this.$userApi.get('/' + this.user_uuid).then(({ data }) => {
           if (data && data.user_uuid) {
             this.user = data
             this.first_name = this.user.user_first_name
+            this.middle_name=this.user.user_middle_name
             this.last_name = this.user.user_last_name
             this.email = this.user.user_email
-            this.phone_no = data.user_phone_no
+            this.phone_no = data.user_phone_no?data.user_phone_no:''
             this.date_of_birth = this.fromUTC(data.user_date_of_birth)
             this.country_code = '+' + data.user_country_code
+            this.user_addr.address=this.user.user_address
+            this.user_addr.city=this.user.user_city
+            this.user_addr.state=this.user.user_state
+            this.user_addr.zip_code=this.user.user_zip_code
             this.picture = data.user_picture
+            this.number5.patientAddress=this.user.user_address
+            this.number5.patientTelephone=this.phone_no
+            this.number5.patientCity=this.user_addr.city
+            this.number5.patientState=this.user_addr.state
+            this.number5.patientZipcode=this.user_addr.zip_code
           }
+          
+          const phone= this.user.user_country_code?`+${this.user.user_country_code}`:this.global_lists.selected_country.phone
+          const country=this.user.user_country?this.user.user_country: this.global_lists.selected_country.name
+          this.global_lists.selected_country=this.global_lists.countries_list.filter(c=>{
+            return c.name === country
+          })[0]
+          this.user_addr.country=country
+          this.country_code=phone
+          this.$globalApi.get('/state',{params:{country:this.global_lists.selected_country.id}}).then(d=>{
+            if (d.data.length){this.global_lists.state_list=d.data.map(s=>{
+              return {code: s.code,id:s.id,name:s.name}
+            })}
+            else{
+              this.global_lists.state_list=[{code:'N/A',id:'N/A',name:'N/A'}]
+            }
+            if (this.user.user_state&& this.global_lists.state_list.length>1){
+              this.global_lists.selected_state=this.global_lists.state_list.filter(s=>{
+                return s.name=== this.user.user_state
+              })[0]
+            }
+            else{this.global_lists.selected_state=this.global_lists.state_list[0]}
+            this.user_addr.state= this.global_lists.selected_state.name
+            this.$globalApi.get('/city',{params:{state:this.global_lists.selected_state.id}}).then(d=>{
+              if (d.data.length){
+                this.global_lists.city_list=d.data.map(c=>{
+                  return {id:c.id,name:c.name}
+                })
+              }
+              else {this.global_lists.city_list=[{id:"N/A",name:"N/A"}]}
+              if(this.user.user_city && this.global_lists.city_list.length>1){
+                this.global_lists.selected_city=this.global_lists.city_list.filter(c=>{
+                  return c.name===this.user.user_city
+                })[0]
+              }
+              else{this.global_lists.selected_city= this.global_lists.city_list[0]}
+              this.user_addr.city=this.global_lists.selected_city.name
+              this.$globalApi.get('/zip',{params:{city:this.global_lists.selected_city.id}}).then(d=>{
+                
+                if(d.data.length){
+                  this.global_lists.zip_list=d.data.map(z=>{
+                    return {id:z.id,code:z.code}
+                  })
+                }
+                else{
+                  this.global_lists.zip_list=[{id:"N/A",code:"N/A"}]
+                  }
+                if (this.user.user_zip_code && this.global_lists.zip_list.length>1){
+                  this.global_lists.selected_zip=this.global_lists.zip_list.filter(z=>{
+                    return Number(z.code) === Number(this.user.user_zip_code)
+                  })[0]
+                }
+                else{this.global_lists.selected_zip=this.global_lists.zip_list[0]}
+              })
+            })
+            
+          })
+            console.log(this.user)
+            
           this.getInsuranceClaimInfo()
         })
       }
@@ -1299,18 +1568,19 @@ export default {
       this.$refs.personalForm.validate()
       if (this.validPersonalForm) {
         this.loading = true
-        console.log('date of birth', this.date_of_birth)
         this.$api
           .put('/user', {
             user_uuid: this.user_uuid,
             country_code: this.country_code,
             phone_no: this.phone_no,
             is_patient: false,
-            line1: this.line1,
-            city: this.city,
-            state: this.state,
-            zip: this.zip,
+            city: this.user_addr.city,
+            state: this.user_addr.state,
+            country:this.user_addr.country,
+            zip: this.user_addr.zip_code,
+            address:this.user_addr.address,
             first_name: this.first_name,
+            middle_name:this.middle_name,
             last_name: this.last_name,
             user_email: this.email,
             date_of_birth: new Date(this.date_of_birth).toISOString(),

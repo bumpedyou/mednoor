@@ -3,9 +3,12 @@ import userRoleMixin from './userRoleMixin'
 export default {
   mixins: [userRoleMixin],
   computed: {
-    dashboardItems() {
+    dashboardItems()
+    {
       const i = []
-      if (this.isAdminOrSuper) {
+
+      if (this.isAdminOrSuper)
+      {
         i.push({
           title: 'Website',
           icon: 'application-outline',
@@ -85,7 +88,8 @@ export default {
         })
       }
 
-      if (this.isModeratorOrHigher && this.isProfessional) {
+      if (this.isModeratorOrHigher && this.isProfessional)
+      {
         i.push({
           title: this.$t('my_patients'),
           cardTitle: this.$t('my_patients'),
@@ -95,7 +99,8 @@ export default {
           type: 'pink',
           dark: true,
         })
-      } else {
+      } else
+      {
         i.push({
           shortTitle: this.$t('list_usrs'),
           cardTitle: this.$t('list_usrs'),
@@ -107,7 +112,8 @@ export default {
         })
       }
 
-      if (this.isModeratorOrHigher) {
+      if (this.isModeratorOrHigher)
+      {
         i.push({
           title: this.$t('my_chats'),
           to: '/',
@@ -151,9 +157,24 @@ export default {
           dark: true,
           redirect: true,
         })
+
+        i.push({
+          title: 'Blog',
+          to: '/admin-blog',
+          icon: 'application-edit-outline',
+          type: 'success',
+        })
       }
-      if (this.isAdminOrSuper) {
+      if (this.isAdminOrSuper)
+      {
         i.push(
+          {
+            title: 'blog option manage',
+            to: '/blog-option-manage',
+            icon: 'box-cutter',
+            type: 'primary',
+          },
+
           {
             title: this.$t('professionals_list'),
             to: {
@@ -203,7 +224,7 @@ export default {
             icon: 'card-text-outline',
             dark: true,
             redirect: true,
-          }
+          },
           /*
           {
             title: 'Claims',
