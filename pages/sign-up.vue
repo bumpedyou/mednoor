@@ -12,7 +12,10 @@
                 </v-col>
               </v-row>
               <v-row>
-                <v-col sm="4" md="3">
+                <v-col sm="12" md="12">
+                  <PhoneNo :cc="country_code" :pn="phone_no" :uc="user_country"></PhoneNo>
+                </v-col>
+                <!--<v-col sm="4" md="3">
                   <v-text-field v-model="country_code"  placeholder="Country code"       value="+1"
                 label="Country code"
                 maxlength="4"
@@ -23,7 +26,7 @@
                 </v-col>
                 <v-col sm="8" md="9">
                   <v-text-field v-model="phone_no" placeholder="Phone number" label="Phone number" maxlength="10"></v-text-field>
-                </v-col>
+                </v-col>-->
               </v-row>
               <v-row class="my-0 py-0">
                 <v-col xs="12" md="6" class="my-0 py-0">
@@ -88,12 +91,14 @@
 <script>
 import RequestModal from '~/components/RequestModal'
 import formMixin from '~/mixins/formMixin'
+import PhoneNo from '~/components/phoneNo'
+import phoneNoMixin from '~/mixins/phoneNoMixin'
 import inputMixin from "~/mixins/inputMixin";
 export default {
   components: {
-    RequestModal,
+    RequestModal,PhoneNo
   },
-  mixins: [formMixin, inputMixin],
+  mixins: [formMixin, inputMixin,phoneNoMixin],
   layout: 'home',
   middleware: ['unauthenticated'],
   data() {
@@ -103,6 +108,9 @@ export default {
       email: '',
       password: '',
       confirm_password: '',
+      country_code:'+1',
+      user_country:'United States of America',
+      phone_no:'',
       first_name: '',
       last_name: '',
       agree: false,
@@ -125,6 +133,7 @@ export default {
       this.$refs.form.validate()
       if (this.validForm){
         this.loading = true
+        
         this.$userApi
           .post('/register', {
             first_name: this.first_name,
@@ -132,9 +141,10 @@ export default {
             email: this.email,
             password: this.password,
             confirm_password: this.confirm_password,
-            phone_no: this.phone_no,
-            country_code: this.country_code,
-            // dob: [this.year, this.month, this.day].join('-')
+            country_code: this.selectedCountry.phone,
+            user_country:this.selectedCountry.name,
+            phone_no: this.number,
+        // dob: [this.year, this.month, this.day].join('-')
           })
           .then(async () => {
             try {
