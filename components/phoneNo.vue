@@ -29,8 +29,8 @@
                                 {{item.phone}}
                               </v-avatar>
                             </div></v-col>
-                          <v-col cols="7"><div>
-                            <v-avatar tile width="250">{{item.name}}</v-avatar>
+                          <v-col cols="10"><div>
+                            <v-avatar tile width="200">{{item.name}}</v-avatar>
                           </div></v-col>  
                        </v-row>
                       </template>
