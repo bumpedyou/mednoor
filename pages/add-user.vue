@@ -11,10 +11,10 @@
             {
               text: isProfessional ? 'Patient\'s List' : $t('list_usrs'),
               disabled: false,
-              to: localePath('/dashboard'),
+              to: localePath('/users-list'),
             },
             {
-              text: isProfessional ? 'Patient\'s List' : $t('list_usrs'),
+              text: isProfessional ? 'Add patient' : $t('add_urs'),
               disabled: true,
             },
           ]"
@@ -152,18 +152,22 @@
 
           <v-row>
             <v-col sm="12" md="12">
-            <PhoneNo :cc="country_code" :pn="phone_no" :uc="user_country"></PhoneNo>
+            <div data-app>
+              <PhoneNo :cc="country_code" :pn="phone_no" :uc="user_country"/>
+            </div>
           </v-col>
           </v-row>
           <v-row>
             <v-col sm="12" md="12">
-              <UserAddress :ac="country" :owner="owner"></UserAddress>
+              <div data-app>
+                <UserAddress :ac="country" :owner="owner"/>
+              </div>
             </v-col>
           </v-row>
           <v-row>
             <v-col>
               <v-text-field
-                v-model="password"
+                v-model="input_password"
                 :autocomplete="false"
                 label="Password"
                 prepend-inner-icon="mdi-lock"
@@ -223,7 +227,7 @@ export default {
       first_name: '',
       middle_name:'',
       last_name: '',
-      password: '',
+      input_password: '',
       owner:'',
       confirm_password: '',
       valid: false,
@@ -252,7 +256,7 @@ export default {
   
   methods: {
     generateEmail() {
-      console.log(this.first_name, this.last_name)
+      console.log(this.first_name, this.last_name,this.pnumber)
       if (this.first_name && this.last_name) {
         this.email = `${String(this.first_name).trim().toLowerCase()}.${String(this.last_name).trim().toLowerCase()}@pronoor.com`
       }
@@ -279,8 +283,8 @@ export default {
         }
       }
 
-      if (this.password) {
-        if (this.password !== this.confirm_password) {
+      if (this.input_password) {
+        if (this.input_password !== this.confirm_password) {
           const err = {
             response: { message: 'Password not match', status: 400 },
           }
@@ -296,9 +300,9 @@ export default {
           middle_name:this.middle_name,
           last_name: this.last_name,
           email: this.email,
-          password: this.password,
+          password: this.input_password,
           confirm_password: this.confirm_password,
-          phone_no: this.number,
+          phone_no: this.pnumber,
           country_code: this.selectedCountry.phone,
           user_country:this.selectedCountry.name,
           state:this.state,

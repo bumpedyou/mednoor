@@ -133,7 +133,9 @@
                 </v-row>
                 <v-row>
                   <v-col sm="8" md="8">
-                    <PhoneNo :cc="country_code" :pn="phone_no" :uc="user_country"></PhoneNo>
+                    <div data-app>
+                      <PhoneNo :cc="country_code" :pn="phone_no" :uc="user_country"/>
+                    </div>
                   </v-col>
                   <v-col sm="4" md="4">
                     <div class="d-flex flex-row align-end">
@@ -150,9 +152,9 @@
 
                 <v-row >
                   <v-col sm="12" md="12">
-                    <!-- <hr /> -->
-                    <!--<p class="h4">Address</p> -->
-                    <UserAddress :ac="country" :owner="owner"></UserAddress>
+                    <div data-app>
+                      <UserAddress :ac="country" :owner="owner"/>
+                    </div>
                   </v-col>
                 </v-row>
                 <v-row>
@@ -1777,7 +1779,7 @@ export default {
             country_code: this.selectedCountry.phone,
             user_country:this.selectedCountry.name,
             is_patient:this.is_patient,
-            phone_no: this.number,
+            phone_no: this.pnumber,
             line1: this.line1,
             city: this.city,
             state: this.state,

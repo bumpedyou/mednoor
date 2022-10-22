@@ -1,4 +1,5 @@
 <template>
+  <v-app>
   <div class="mh-100v">
     <v-row v-if="loadingPage">
       <v-col cols="12">
@@ -141,7 +142,9 @@
                 </v-row>
                 <v-row>
                   <v-col sm="8" md="8">
-                    <PhoneNo :cc="country_code" :pn="phone_no" :uc="user_country"></PhoneNo>
+                    <div data-app>
+                      <PhoneNo :cc="country_code" :pn="phone_no" :uc="user_country"/>
+                    </div>
                   </v-col>
                   <v-col sm="4" md="4">
                     <div class="d-flex flex-row align-end">
@@ -157,14 +160,16 @@
                 </v-row>
                 <v-row>
                   <v-col sm="12" md="12">
-                    <UserAddress :ac="country" :owner="owner"></UserAddress>
+                    <div data-app>
+                      <UserAddress :ac="country" :owner="owner"/>
+                    </div>
                   </v-col>
                 </v-row>
             
                 <v-row>
                   <v-col>
                     <v-btn
-                      color="primary"
+                      color="primary" 
                       tile
                       small
                       type="submit"
@@ -762,6 +767,7 @@
 
     <request-modal ref="rmodal"></request-modal>
   </div>
+</v-app>
 </template>
 
 <script>
@@ -1319,7 +1325,7 @@ export default {
             user_uuid: this.$route.params.uuid,
             country_code: this.selectedCountry.phone,
             user_country:this.selectedCountry.name,
-            phone_no: this.number,
+            phone_no: this.pnumber,
             addr_is_patient: this.user.add_is_patient||false,
             line1: this.line1,
             city: this.city,

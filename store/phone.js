@@ -1,12 +1,12 @@
 /** بسم الله الرحمن الرحيم */
 export const state = () => ({
-    number: '',
+    pnumber: '',
     selectedCountry:{}
   })
   
   export const mutations = {
-    setPhone(store, number) {
-      store.number = number
+    setPhone(store, pnumber) {
+      store.pnumber = pnumber
     },
     setCountry(state, selectedCountry) {
       state.selectedCountry = selectedCountry
