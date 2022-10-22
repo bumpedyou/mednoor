@@ -27,7 +27,8 @@
           {{ isProfessional ? 'Add patient' : $t('add_urs') }}
         </p>
         <v-form ref="form" v-model="valid" @submit.prevent="handleSubmit">
-          <v-row>
+         <!-- <v-row>
+            
             <v-col>
               <div>
                 <v-text-field
@@ -65,8 +66,51 @@
                   @change="generateEmail"
                 ></v-text-field>
               </div>
-            </v-col>
-          </v-row>
+            </v-col> 
+          </v-row> -->
+          <v-row>
+                  <v-col md="4">
+                    <v-text-field
+                      v-model="first_name"
+                      :placeholder="$t('fn')"
+                      :label="$t('fn')"
+                      :rules="[
+                        (v) => !!v || $t('v.fn_req'),
+                        (v) =>
+                          (!!v && v.length > 2) ||
+                          $t(
+                            'v.min_3',
+                            (v) => (!!v && v.length <= 30) || $t('v.max_30')
+                          ),
+                      ]"
+                      @change="generateEmail"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col md="4">
+                    <v-text-field
+                      v-model="middle_name"
+                      :placeholder="$t('mn')"
+                      :label="$t('mn')"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col md="4">
+                    <v-text-field
+                      v-model="last_name"
+                      :placeholder="$t('ln')"
+                      :label="$t('ln')"
+                      :rules="[
+                        (v) => !!v || $t('v.fn_req'),
+                        (v) =>
+                          (!!v && v.length > 2) ||
+                          $t(
+                            'v.min_3',
+                            (v) => (!!v && v.length <= 30) || $t('v.max_30')
+                          ),
+                      ]"
+                      @change="generateEmail"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
           <v-row>
             <v-col>
               <div>
@@ -75,6 +119,7 @@
                   type="search"
                   :autocomplete="false"
                   label="Email"
+                  disabled
                   prepend-inner-icon="mdi-email"
                 ></v-text-field>
               </div>
@@ -85,10 +130,11 @@
                 <v-text-field
                   v-model="dob"
                   type="search"
+                  :label="$t('dob')"
                     placeholder="MM.DD.YYYY"
                   :autocomplete="false"
             
-                  :rules="[(v) => !!v || $t('Date of Birth required')]"
+                  :rules="[(v) => !!v || $t('v.dob')]"
                 ></v-text-field>
               </div>
               <!-- <div class="d-flex flex-column align-start">
@@ -105,27 +151,13 @@
           </v-row>
 
           <v-row>
-            <v-col sm="4" md="3">
-              <v-text-field
-                v-model="country_code"
-                placeholder="Country code"
-                value="+1"
-                label="Country code"
-                maxlength="4"
-                :rules="[
-                  (v) =>
-                    (!!v && v.length >= 1) || $t('Enter at least 1 characters'),
-                ]"
-              ></v-text-field>
-            </v-col>
-            <v-col sm="8" md="9">
-              <v-text-field
-                v-model="phone_no"
-                placeholder="Phone number"
-                label="Phone number"
-                maxlength="10"
-                :rules="[(v) => (!!v && v.length <= 10) || $t('v.min_10')]"
-              ></v-text-field>
+            <v-col sm="12" md="12">
+            <PhoneNo :cc="country_code" :pn="phone_no" :uc="user_country"></PhoneNo>
+          </v-col>
+          </v-row>
+          <v-row>
+            <v-col sm="12" md="12">
+              <UserAddress :ac="country" :owner="owner"></UserAddress>
             </v-col>
           </v-row>
           <v-row>
@@ -171,10 +203,16 @@
 
 import formMixin from '~/mixins/formMixin'
 import userRoleMixin from '~/mixins/userRoleMixin'
-
+import UserAddress from '~/components/UserAddress'
+import addressMixin from '~/mixins/addressMixin'
+import PhoneNo from '~/components/phoneNo'
+import phoneNoMixin from '~/mixins/phoneNoMixin'
 export default {
   name: 'AddUser',
-  mixins: [formMixin, userRoleMixin],
+  comments:{
+    UserAddress,PhoneNo
+  },
+  mixins: [formMixin, userRoleMixin,addressMixin,phoneNoMixin],
   layout: 'dashboard',
   middleware: ['authenticated', 'verified', 'not-blocked', 'not-deleted'],
   data() {
@@ -183,11 +221,14 @@ export default {
       loading: false,
       email: ``,
       first_name: '',
+      middle_name:'',
       last_name: '',
       password: '',
+      owner:'',
       confirm_password: '',
       valid: false,
       country_code: '+1',
+      user_country:'',
       phone_no: null,
       dob: '',
     }
@@ -205,6 +246,10 @@ export default {
       ],
     }
   },
+  computed:{
+    country(){return this.selectedCountry.id},
+  },
+  
   methods: {
     generateEmail() {
       console.log(this.first_name, this.last_name)
@@ -248,12 +293,18 @@ export default {
         this.loading = true
         const values = {
           first_name: this.first_name,
+          middle_name:this.middle_name,
           last_name: this.last_name,
           email: this.email,
           password: this.password,
           confirm_password: this.confirm_password,
-          phone_no: this.phone_no,
-          country_code: this.country_code,
+          phone_no: this.number,
+          country_code: this.selectedCountry.phone,
+          user_country:this.selectedCountry.name,
+          state:this.state,
+          city:this.city,
+          zip:this.zip,
+          address:this.line1,
           date_of_birth: _dob.join('-'),
         }
 

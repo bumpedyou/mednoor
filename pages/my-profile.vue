@@ -132,20 +132,8 @@
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col sm="4" md="4">
-                    <v-text-field
-                      v-model="country_code"
-                      placeholder="Country code"
-                      label="Country code"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col sm="4" md="4">
-                    <v-text-field
-                      v-model="phone_no"
-                      placeholder="Phone number"
-                      label="Phone number"
-                      maxlength="10"
-                    ></v-text-field>
+                  <v-col sm="8" md="8">
+                    <PhoneNo :cc="country_code" :pn="phone_no" :uc="user_country"></PhoneNo>
                   </v-col>
                   <v-col sm="4" md="4">
                     <div class="d-flex flex-row align-end">
@@ -160,11 +148,11 @@
                   </v-col>
                 </v-row>
 
-                <v-row v-if="isUser">
-                  <v-col>
-                    <hr />
-                    <p class="h4">Address</p>
-                    <UserAddress></UserAddress>
+                <v-row >
+                  <v-col sm="12" md="12">
+                    <!-- <hr /> -->
+                    <!--<p class="h4">Address</p> -->
+                    <UserAddress :ac="country" :owner="owner"></UserAddress>
                   </v-col>
                 </v-row>
                 <v-row>
@@ -1212,14 +1200,17 @@ import RequestModal from '~/components/RequestModal'
 import ProfilePicture from '~/components/ProfilePicture'
 import uploadMixin from '~/mixins/uploadMixin'
 import UserAddress from '~/components/UserAddress'
+import PhoneNo from '~/components/phoneNo.vue'
 import addressMixin from '~/mixins/addressMixin'
 import dateMixin from '~/mixins/dateMixin'
 import 'vue2-datepicker/index.css'
+import phoneNoMixin from '~/mixins/phoneNoMixin'
 
 export default {
   name: 'MyProfile',
   components: {
     UserAddress,
+    PhoneNo,
     ProfilePicture,
     SpinOrText,
     RequestModal,
@@ -1230,6 +1221,7 @@ export default {
     inputMixin,
     authMixin,
     uploadMixin,
+    phoneNoMixin,
     addressMixin,
     dateMixin,
     uTcDate,
@@ -1243,6 +1235,7 @@ export default {
   ],
   data() {
     return {
+      owner:'',
       fetchingMedHistory: false,
       validPersonalForm: false,
       validProfForm: false,
@@ -1262,8 +1255,6 @@ export default {
       npi: '',
       dea: '',
       categories: [],
-      country_code: '',
-      phone_no: '',
       date_of_birth: null,
       loadingSaveP: false,
       loadingPage: true,
@@ -1328,6 +1319,7 @@ export default {
           route: 'family-history',
           data: '',
         },
+        
 
       ],
       recordId: 0,
@@ -1438,6 +1430,7 @@ export default {
       middle_name: '',
       last_name: '',
     }
+
   },
   head() {
     return {
@@ -1457,6 +1450,7 @@ export default {
     // last_name() {
     //   return this.user.last_name
     // },
+    country(){return this.selectedCountry.id},
     name() {
       if(this.middle_name && this.middle_name.length > 0) {
         return this.first_name + ' ' + this.middle_name + ' ' + this.last_name
@@ -1468,6 +1462,7 @@ export default {
     },
   },
   watch: {
+    
     categories() {
       this.specialty = null
     },
@@ -1492,30 +1487,26 @@ export default {
           })
       }
     },
-    zip(v) {
-      if (v) {
-        this.zip = this.numbersOnly(v)
-      }
-    },
+    
   },
   mounted() {
     this.user = this.$auth.user
-    console.log(this.user);
+    console.log('this.user',this.user);
     this.first_name = this.user.user_first_name
-    this.middle_name = this.user.user_middle_name
     this.last_name = this.user.last_name
+    this.owner=this.myUserId
     if (this.myUserId) {
       this.$userApi.get('/' + this.myUserId).then(({ data }) => {
         if (data && data.user_uuid) {
+          console.log('d')
           this.phone_no = data.user_phone_no
           this.date_of_birth = this.fromUTC(data.user_date_of_birth)
-
-          //  console.log(  this.date_of_birth)
-          this.country_code = '+' + data.user_country_code
+          this.middle_name=data.user_middle_name|| this.user.user_middle_name
+          this.user_country=data.user_country||''
+          this.country_code =  data.user_country_code?`+${data.user_country_code}`:''
           this.picture = data.user_picture
-
+          this.is_patient=data.addr_is_patient
           if (!this.$auth.user.has_phone) {
-            console.log('Dont have a phone no')
             this.showTabs = false
             this.tab = '2'
             setTimeout(() => {
@@ -1549,7 +1540,7 @@ export default {
           '/medical-record?type=record&mrus_user_uuid=' + this.$auth.user.uuid
         )
         .then(({ data }) => {
-          console.log(data);
+          
           if(data.length > 0) {
             this.recordId = data[0].mere_uuid;
             this.tabs[0].data = data[0].mere_allergies;
@@ -1775,17 +1766,18 @@ export default {
         })
     },
     handleSubmit() {
+      console.log('citu,',this.city,'state,',this.state,'zip,',this.zip)
       this.$refs.personalForm.validate()
       if (this.validPersonalForm) {
         this.loading = true
-        console.log(this.middle_name);
         this.$api
           .put('/user', {
             user_uuid: this.$auth.user.uuid,
             uuid: this.$auth.user.uuid,
-            country_code: this.country_code,
-            phone_no: this.phone_no,
-            is_patient: this.isUser,
+            country_code: this.selectedCountry.phone,
+            user_country:this.selectedCountry.name,
+            is_patient:this.is_patient,
+            phone_no: this.number,
             line1: this.line1,
             city: this.city,
             state: this.state,
@@ -1796,7 +1788,8 @@ export default {
             date_of_birth: new Date(this.date_of_birth).toISOString(),
             user_email: this.email,
           })
-          .then(() => {
+          .then((d) => {
+            //  console.log('data,',d)
             setTimeout(async () => {
               await this.$auth.fetchUser()
               console.log(this.name)
