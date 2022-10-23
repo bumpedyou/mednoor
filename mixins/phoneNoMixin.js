@@ -18,9 +18,9 @@ export default {
         this.$store.commit('phone/setCountry', v)
       },
     },
-    number: {
+    pnumber: {
         get() {
-          return this.phone.number || ''
+          return this.phone.pnumber || ''
         },
         set(v) {
           this.$store.commit('phone/setPhone', v)

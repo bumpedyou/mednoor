@@ -9,7 +9,7 @@
                   <v-col sm="4" md="4" >
                     <v-autocomplete 
                       v-model="selectedCountry"
-                      :hint="`${selectedCountry.name} ${' '} ${selectedCountry.code}`"
+                      :hint="countryHint"
                       :items="countries_list"
                       :filter="filter"
                       item-value="name"
@@ -43,9 +43,12 @@
                     </v-autocomplete>
                     </v-col>
                     <v-col sm="8" md="8" >
-                    <v-text-field v-model="number"  :value="number" :placeholder="$t('phone_no')" :label="$t('phone_no')" maxlength="10" :hint="`${selectedCountry.phone}${' '}${number}`"
+                    <v-text-field v-model="pnumber"  :value="pnumber" :placeholder="$t('phone_no')" 
+                    :label="$t('phone_no')" maxlength="10" :hint="phoneHint"
                   :rules="[v => !!v || $t('v.phone_req'), v => !!v && v.length >=10 || $t('v.min_10')]" 
+                  :autocomplete="false"
                   persistent-hint	
+                  
                   @keypress="handlePhone"
                   ></v-text-field> 
                   </v-col>
@@ -74,6 +77,18 @@ import phoneNoMixin from "~/mixins/phoneNoMixin";
         countries_list:[],
       }
     },
+    computed:{
+      countryHint(){
+        const cCode=this.selectedCountry.code|| ''
+        const cName = this.selectedCountry.name || ''
+        return cCode && cName ? `${cName} ${' '} ${cCode}`:''
+      },
+      phoneHint(){
+        const cc= this.selectedCountry.phone||''
+        const pno= this.pnumber||''
+        return cc?pno? `${cc}${' '}${pno}`:cc:''
+      },
+    },
     mounted(){
       this.load()
     },
@@ -101,8 +116,8 @@ import phoneNoMixin from "~/mixins/phoneNoMixin";
             filter=cName?filter.filter(c=>{return c.name===cName})[0]:filter[0]
             this.countries_list=dList
             this.selectedCountry=filter
-            this.number=null
-            if(this.pn){this.number=this.pn}
+            this.pnumber=null
+            if(this.pn !==null){this.pnumber=this.pn}
         })
         
       },

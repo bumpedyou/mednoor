@@ -13,7 +13,9 @@
               </v-row>
               <v-row>
                 <v-col sm="12" md="12">
-                  <PhoneNo :cc="country_code" :pn="phone_no" :uc="user_country"></PhoneNo>
+                  <div data-app>
+                  <PhoneNo :cc="country_code" :pn="phone_no" :uc="user_country" />
+                </div>
                 </v-col>
                 <!--<v-col sm="4" md="3">
                   <v-text-field v-model="country_code"  placeholder="Country code"       value="+1"
@@ -143,7 +145,7 @@ export default {
             confirm_password: this.confirm_password,
             country_code: this.selectedCountry.phone,
             user_country:this.selectedCountry.name,
-            phone_no: this.number,
+            phone_no: this.pnumber,
         // dob: [this.year, this.month, this.day].join('-')
           })
           .then(async () => {
