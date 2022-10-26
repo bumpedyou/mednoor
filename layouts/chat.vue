@@ -46,6 +46,9 @@
                   <img :src="require('~/static/icon/video.svg')" alt='video icon' @click='showVideo'>
                   <img :src="require('~/static/icon/close.svg')" alt='close icon' @click='leaveChat'>
                 </div>
+                <span class="week-day" style="z-index: 999;opacity: 0.8;position: fixed;top: 12%;right: 19%;background-color: powderblue;padding: 6px;font-size: 16px;border-radius: 18px;width: 100px;height: 32px;text-align: center;">
+                  {{getWeekOfDay(new Date())}}
+                </span>
                 <div id='messages' ref='messages' :key='messages.length' class='message-container-100'>
                   <div v-if='!allowed && to && !isAdmin' class='messages-overlay'>
                     <div v-if='isModerator'>
@@ -214,6 +217,12 @@ export default {
     this.run_once(this.listen)
   },
   methods: {
+    getWeekOfDay(day){
+        const weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const currentDate  = new Date(day);
+        return weekday[currentDate.getDay()];
+
+    },
     selectEmoji(e){
       this.message += e.data
       this.showEmojiPicker = false

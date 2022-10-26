@@ -35,7 +35,7 @@
               <v-icon v-if="view === 'professional'" class="mx-1" @click='showVideo'>mdi-video</v-icon>
               <v-icon class="mx-1" @click='leaveChat'>mdi-chevron-left</v-icon>
             </div>
-            <span class="week-day" style="z-index: 999;opacity: 0.8;position: fixed;top: 12%;right: 16%;background-color: powderblue;padding: 6px;font-size: 16px;border-radius: 18px;width: 100px;height: 32px;text-align: center;">
+            <span class="week-day" style="z-index: 999;opacity: 0.8;position: fixed;top: 12%;right: 19%;background-color: powderblue;padding: 6px;font-size: 16px;border-radius: 18px;width: 100px;height: 32px;text-align: center;">
               {{getWeekOfDay(new Date())}}
             </span>
             <div id='messages' ref='messages' :key='messages.length' class='message-container-100'>

@@ -30,7 +30,7 @@
             >
               <v-icon>mdi-close</v-icon>
             </v-btn>
-            <v-toolbar-title>Upload a File</v-toolbar-title>
+            <v-toolbar-title>{{ uploadDialogTitle }}</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
               <v-btn
@@ -103,7 +103,7 @@
               <div v-if="loadingFiles">
                 <v-progress-circular indeterminate></v-progress-circular>
               </div>
-              <v-data-table v-else :items="convFiles" :headers="[
+              <v-data-table  v-else :items="convFiles" :headers="[
                 {
                   text: 'Title',
                   value: 'file_title',
@@ -120,7 +120,8 @@
                   text: 'Date',
                   value: 'mess_date'
                 }
-              ]" :search="search">
+              ]" :search="search"
+              >
                 <template #top>
                   <v-text-field
                     v-model="search"
@@ -128,16 +129,16 @@
                     class="mx-4"
                   ></v-text-field>
                 </template>
-                <template #[`item.file_title`] = "{item}">
+                <template #[`item.file_title`] = "{item}" >
                   <a target='_blank' :href='filePath(item.file_name)' :download='filePath(item.file_name)' style="text-decoration: underline !important">
                     {{ item.file_title }}
                   </a>
                 </template>
-                <template #[`item.file_ext`]="{item}" ]>
-                  {{ getExt(item.file_name) }}
+                <template  #[`item.file_ext`]="{item}" ]>
+                  <span style="cursor: pointer;" @dblclick="showEditDialog(item)">{{ getExt(item.file_name) }}</span>
                 </template>
                 <template #[`item.mess_date`] = "{value}">
-                  {{dateString(value)}}<br>
+                 {{dateString(value)}}<br>
                   <small class="d-block text-center text-muted">{{hour(value)}}</small>
                 </template>
               </v-data-table>
@@ -158,7 +159,7 @@
             </div>
           </div>
         </div>
-        <div class='w-controls' @click="dialog=true">
+        <div class='w-controls' @click="ShowUploadDialog()">
           <v-icon>mdi-upload</v-icon>
         </div>
       </div>
@@ -192,6 +193,9 @@
               -->
               <v-icon class="mx-1" @click='leaveChat'>mdi-chevron-left</v-icon>
             </div>
+            <span class="week-day" style="z-index: 999;opacity: 0.8;position: fixed;top: 12%;right: 19%;background-color: powderblue;padding: 6px;font-size: 16px;border-radius: 18px;width: 100px;height: 32px;text-align: center;">
+              {{getWeekOfDay(new Date())}}
+            </span>
             <div id='messages' ref='messages' :key='messages.length' class='message-container-100'>
               <chat-messages :messages='messages'></chat-messages>
             </div>
@@ -275,6 +279,8 @@ export default {
   middleware: ['authenticated', 'verified', 'pin-set', 'view-set'],
   data() {
     return {
+      uploadDialogTitle: "Upload a File",
+      editFileId: null,
       conversationId: null,
       loadingFiles: false,
       uploadingFile: false,
@@ -444,6 +450,26 @@ export default {
     setInterval(this.getNow, 1000);
   },
   methods: {
+
+    ShowUploadDialog(){
+      this.uploadDialogTitle = "Upload a File";
+      this.dialog = true;
+    },
+
+    showEditDialog(item){
+      this.uploadDialogTitle = "Update upload File";
+      this.dialog = true;
+      this.editFileId = item.file_uuid;
+      this.fileTitle = item.file_title;
+      this.description = item.file_description;
+    },
+
+    getWeekOfDay(day){
+        const weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const currentDate  = new Date(day);
+        return weekday[currentDate.getDay()];
+    },
+
     loadFiles(){
       if (this.conversationId){
         this.loadingFiles = true
@@ -548,42 +574,46 @@ export default {
       this.visible = true
     },
     uploadFile() {
-      const file = this.$refs.fileInput.files
-      if (file && file.length && file.length > 0) {
-        const data = new FormData()
-        data.append('file', file[0])
 
-        data.append('title', this.fileTitle)
-        data.append('description', this.description)
-        this.uploadingFile = true
-        this.$api.post('/file', data, {
-          onUploadProgress: (evt) => {
-            this.onProgress(evt)
-          }
-        }).then(({data}) => {
-          console.log('Data ---->', data)
-          this.fileName = 0
-          this.umUploadProgress = 0
-          const opts = {
-            mimetype: data.mimetype,
-            type: 'file',
-            name: data.originalName,
-            finalName: data.fName,
-            path: process.env.API_URL + '/file/' + data.fName,
-            owner: true,
-            uuid: data.uuid
-          }
-          this.messages.push(opts)
-          this.sendMessage(opts)
-          this.dialog = false
-          this.loadFiles()
-        }).catch((err) => {
-          this.umUploadProgress = 0
-          this.$refs.rmodal.$emit('error', err)
-        }).finally(() => {
-          this.uploadingFile = false
-        })
+      if(this.editFileId == null){
+        const file = this.$refs.fileInput.files
+        if (file && file.length && file.length > 0) {
+          const data = new FormData()
+          data.append('file', file[0])
+
+          data.append('title', this.fileTitle)
+          data.append('description', this.description)
+          this.uploadingFile = true
+          this.$api.post('/file', data, {
+            onUploadProgress: (evt) => {
+              this.onProgress(evt)
+            }
+          }).then(({data}) => {
+            console.log('Data ---->', data)
+            this.fileName = 0
+            this.umUploadProgress = 0
+            const opts = {
+              mimetype: data.mimetype,
+              type: 'file',
+              name: data.originalName,
+              finalName: data.fName,
+              path: process.env.API_URL + '/file/' + data.fName,
+              owner: true,
+              uuid: data.uuid
+            }
+            this.messages.push(opts)
+            this.sendMessage(opts)
+            this.dialog = false
+            this.loadFiles()
+          }).catch((err) => {
+            this.umUploadProgress = 0
+            this.$refs.rmodal.$emit('error', err)
+          }).finally(() => {
+            this.uploadingFile = false
+          })
+        }
       }
+
     },
     cancelUpload() {
       this.fileName = ''
