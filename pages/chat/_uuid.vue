@@ -35,6 +35,9 @@
               <v-icon v-if="view === 'professional'" class="mx-1" @click='showVideo'>mdi-video</v-icon>
               <v-icon class="mx-1" @click='leaveChat'>mdi-chevron-left</v-icon>
             </div>
+            <span class="week-day" style="z-index: 999;opacity: 0.8;position: fixed;top: 12%;right: 16%;background-color: powderblue;padding: 6px;font-size: 16px;border-radius: 18px;width: 100px;height: 32px;text-align: center;">
+              {{getWeekOfDay(new Date())}}
+            </span>
             <div id='messages' ref='messages' :key='messages.length' class='message-container-100'>
               <chat-messages :messages='messages'></chat-messages>
             </div>
@@ -225,7 +228,7 @@ export default {
       let u = ''
       if (this.to) {
         this.moderators.forEach((m) => {
-         
+
           if (m.user_uuid === this.to) {
             // console.log(m)
             this.allowed = true;
@@ -296,6 +299,12 @@ export default {
     setInterval(this.getNow, 1000);
   },
   methods: {
+    getWeekOfDay(day){
+        const weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const currentDate  = new Date(day);
+        return weekday[currentDate.getDay()];
+
+    },
     stopAudio() {
       if (this.audio){
         this.audio.currentTime = 0
@@ -580,6 +589,7 @@ export default {
 
 #app-content
   margin-top: 50px
+
 
 .chats-list
   display: none

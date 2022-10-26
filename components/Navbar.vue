@@ -19,13 +19,13 @@
       </div>
       -->
       <div v-if="isLoggedIn" class='menu-icon' >
-        
+
         <!-- <div v-if="isLoggedIn" class='mr-1 pay-icon' >
           <a @click='onClickPayment()'>
           <img :src="require('~/static/pay.png')" alt="pay">
           </a>
         </div> -->
-        
+
         <!--
         <div v-if="isLoggedIn" class='mx-1'>
           <v-tab>
@@ -88,7 +88,7 @@
           <ChatItems :data='moderators' :selected-chat='to' @open-chat='openChat'></ChatItems>
         </div>
       </transition>
-      <transition name='side-slide' mode='in-out'> 
+      <transition name='side-slide' mode='in-out'>
         <div v-if='showMenuNav' class='sidebar menu-sidebar'>
           <sidebar-mobile-title>{{ $t('menu') }}</sidebar-mobile-title>
           <ul class='sidebar-menu-items'>
@@ -99,17 +99,11 @@
                 </span>
                 <v-icon v-if="item.icon"  color="#333">mdi-{{item.icon}}</v-icon>
               </nuxt-link>
-
-             
-         
-                      <a  v-if="item.to=='redirect'"  @click='onClickPayment()'>
-                        <span style="margin-right:57%!important">Financial </span>
-                      <img style="width:25px;height: 25px;" :src="require('~/static/pay.png')" alt="pay">
-                      </a>
-           
+                  <a  v-if="item.to=='redirect'"  @click='onClickPayment()'>
+                    <span style="margin-right:57%!important">Financial </span>
+                  <img style="width:25px;height: 25px;" :src="require('~/static/pay.png')" alt="pay">
+                  </a>
             </li>
-
-
           </ul>
         </div>
       </transition>
@@ -184,9 +178,6 @@ export default {
             icon: 'account-circle-outline',
             to: '/my-profile'
           })
-    
-
-     
 
 
           if (this.isAdmin || this.isSuper) {
@@ -219,14 +210,26 @@ export default {
               icon: 'emoticon-sick-outline',
               to: '/emr'
             })
-                   items.push({
-            text: 'Financial',
-            icon: 'static/pay.png',
-            to: 'redirect',
-            
-          })
-        
+            items.push({
+              text: 'Financial',
+              icon: 'static/pay.png',
+              to: 'redirect',
+
+            })
+            items.push({
+              text: 'Claims',
+              to: '/hcfa',
+              icon: 'card-text-outline',
+              dark: true,
+            })
+            items.push({
+              text: 'Blog',
+              to: '/admin-blog',
+              icon: 'application-edit-outline',
+              type: 'success',
+            })
           }
+
           if (this.isUser) {
             items.push({
               text: 'My appointments',
@@ -234,8 +237,33 @@ export default {
               to: '/professionals'
             })
           }
+
+          if (this.isModeratorOrHigher && this.isProfessional)
+          {
+            items.push({
+              text: this.$t('my_patients'),
+              cardTitle: this.$t('my_patients'),
+              to: '/users-list',
+              btnText: this.$t('my_patients'),
+              icon: 'account-group-outline',
+              type: 'pink',
+              dark: true,
+            })
+          } else
+          {
+            items.push({
+              shortTitle: this.$t('list_usrs'),
+              cardTitle: this.$t('list_usrs'),
+              to: '/users-list',
+              btnText: this.$t('list_usrs'),
+              icon: 'account-group-outline',
+              type: 'pink',
+              dark: true,
+            })
+          }
+
           if (this.isLoggedIn) {
-            
+
             items.push({
               text: this.$t('prev_c_pdf'),
               icon: 'file-outline',
@@ -247,7 +275,7 @@ export default {
               to: '/'
             })
 
-            
+
 
             items.push({
               text: 'Messenger',
@@ -256,9 +284,9 @@ export default {
             })
           }
         }
-           
+
         if (this.isAdmin || this.isSuper || this.isModerator) {
-          
+
             items.push({
               text: 'Appointments',
               icon: 'calendar-month',
@@ -269,7 +297,7 @@ export default {
           text: this.$t('sign_out'),
           icon: 'logout',
           to: '/sign-out',
-          
+
         })
       } else {
         items.push({
@@ -291,10 +319,10 @@ export default {
       }
 
       items.forEach(_i=>{
-            
+
         if(_i.to!=='/sign-out'){
           _i.openWith="_blank"
-           console.log(_i.to) 
+           console.log(_i.to)
         }
       })
 
@@ -404,7 +432,7 @@ export default {
     },
 
    async onClickPayment(){
-     
+
          const authData = await this.$auth.refreshTokens()
       const sessionId =
         (authData && authData.data && authData.data.session_id) || null
@@ -412,7 +440,7 @@ export default {
         const url = `${process.env.PAYMENT_URL}?session_id=${sessionId}`;
        window.open(url)
        }
-       
+
     // console.log(url )
     }
   }

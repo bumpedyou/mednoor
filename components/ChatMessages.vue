@@ -1,6 +1,8 @@
 <template>
   <div>
     <div v-for='(msg, i) in msgs' :key="'msg-' + i" :ref="'msg-' + i" :class='messageClass(msg)'>
+      {{ hour(msg.mess_date) }}
+      <br>
       <span v-if='msg'>
         {{ msg.message }}
       </span>
@@ -27,7 +29,6 @@
         <a target='_blank' :href='msg.path' :download='msg.path'>{{ msg.name }}</a>
       </span>
       <div class='chat-time'>
-        {{ hour(msg.mess_date) }}
         <div v-if="msg.mess_sender === myUserId || msg.from === myUserId" class>
           <v-icon v-if="msg && msg.mess_read" x-small color="primary">mdi-check-all</v-icon>
           <v-icon v-else x-small>mdi-check</v-icon>

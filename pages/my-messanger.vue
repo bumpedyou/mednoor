@@ -77,12 +77,12 @@ export default {
     },
   },
   mounted() {
- 
+
     this.getChats()
   },
   methods: {
     openChat(uuid) {
-    
+
       if (this.$route.path.includes('messanger')) {
         this.$router.push(this.localePath('/messanger/' + uuid))
       }

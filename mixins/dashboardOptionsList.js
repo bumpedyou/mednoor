@@ -164,7 +164,18 @@ export default {
           icon: 'application-edit-outline',
           type: 'success',
         })
+
       }
+
+      if (this.isAdmin || this.isSuper || this.isModerator) {
+          i.push({
+            title: 'Appointments',
+            icon: 'calendar-month',
+            to: '/calendar-appointments',
+            type: 'success'
+          })
+      }
+
       if (this.isAdminOrSuper)
       {
         i.push(

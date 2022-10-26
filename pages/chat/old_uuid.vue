@@ -114,7 +114,7 @@
                 },
                 {
                   text: 'File Title',
-                  value: 'file_ext',
+                  value: '1file_ext',
                 },
                 {
                   text: 'Date',
